@@ -777,7 +777,7 @@ document.addEventListener('submit', async e=>{
     if(ok) await logIt('email', `${isNew?'Email filed':'Email edited'}: ${v.subject.trim()}${v.from?` · ${v.from.trim()}`:''}`, v.jobId||null);
     if(ok) closePanel();
   } else if(kind==='show'){
-    ok=await write('show',id,{id,title:v.title.trim(),kind:v.kind.trim(),jobId:v.jobId||null,url:v.url.trim(),talk:v.talk,order:v.order===''?null:+v.order});
+    ok=await write('show',id,{...(state.show[id]||{}),id,title:v.title.trim(),kind:v.kind.trim(),jobId:v.jobId||null,url:v.url.trim(),talk:v.talk,order:v.order===''?null:+v.order});
     if(ok){ state.showSel=id; closePanel(); if(state.tab!=='show'){ state.tab='show'; try{localStorage.setItem('md.tab','show')}catch(err){} } render(); }
   } else if(kind==='time'){
     const j=state.jobs[v.jobId]; if(!j){ toast('Pick a job'); btn.disabled=false; return; }
