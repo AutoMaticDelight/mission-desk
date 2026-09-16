@@ -1,0 +1,44 @@
+/* Automatic Delight — design tokens. The single source. Every page links this file.
+   Rules: DESIGN.md. Names are roles, not values. */
+:root {
+  /* brand — the accent */
+  --brand: #FF2E88;
+  /* brand-2 — old-school web cyan: hero headline accent, AD in the mark, secondary button */
+  --brand-2: #00FFFF;
+
+  /* ground */
+  --bg: #111111;
+  --bg-2: #181818;
+  --bg-3: #202020;
+
+  /* foreground */
+  --cream: #FFFFFF;
+  --cream-2: #E9E9E9;
+  --muted: #B8B8B8;
+  --faint: #6F6F6F;
+
+  /* rules */
+  --rule: #1F1F1F;
+  --rule-2: #2E2E2E;
+
+  /* signals (status only, never decoration) */
+  --signal-ok: #A4C2A8;
+  --signal-info: #8FB8D9;
+
+  /* type */
+  --display: 'Archivo', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+  --mono: 'JetBrains Mono', 'SF Mono', 'Fira Code', Consolas, monospace;
+
+  /* layout */
+  --max: 1280px;
+  --pad-x: clamp(20px, 5vw, 80px);
+
+  /* legacy aliases — resolve to roles above; do not add new ones */
+  --coral: var(--brand);
+  --coral-2: var(--brand);
+  --lime: var(--brand);
+  --serif: var(--sans);
+  --sage: var(--signal-ok);
+  --sky: var(--signal-info);
+}
