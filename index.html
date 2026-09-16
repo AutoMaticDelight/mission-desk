@@ -1,0 +1,792 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Mission Desk</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700&family=Public+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap">
+<style>
+:root{
+  --bg:#ffffff; --panel:#f4f6f8; --panel-2:#e9edf1; --ink:#1b1f27; --ink-2:#555d6b; --ink-3:#8a92a0;
+  --line:#e1e5ea; --line-2:#c9cfd7;
+  --accent:#0e6f6c; --accent-ink:#ffffff; --accent-bg:#e2f2f1;
+  --today:#a85b00; --today-bg:#fff1dc;
+  --good:#1f7a3f; --good-bg:#e4f4ea; --warn:#a85b00; --warn-bg:#fff1dc; --bad:#b3313d; --bad-bg:#fbe7e9;
+  --display:'Sora',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;
+  --body:'Public Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg)}
+body{color:var(--ink);font:15px/1.5 var(--body);-webkit-font-smoothing:antialiased;padding-bottom:calc(84px + env(safe-area-inset-bottom,0px))}
+button,input,select,textarea{font:inherit;color:inherit}
+a{color:var(--accent)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+
+/* top */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:8;background:var(--bg);border-bottom:1px solid var(--line)}
+.top-in{max-width:1100px;margin:0 auto;padding:12px 16px 0;display:flex;align-items:center;gap:12px}
+.brand{font:700 20px/1 var(--display);letter-spacing:-.02em;display:flex;align-items:baseline;gap:8px}
+.brand small{font:500 12px var(--body);color:var(--ink-3);letter-spacing:.06em;text-transform:uppercase}
+.sync{margin-left:auto;font-size:12px;color:var(--ink-3);display:flex;align-items:center;gap:6px;white-space:nowrap}
+.sync i{width:8px;height:8px;border-radius:50%;background:var(--ink-3);display:inline-block}
+.sync.on i{background:var(--good)} .sync.off i{background:var(--warn)}
+.tabs{max-width:1100px;margin:0 auto;padding:8px 8px 0;display:flex;gap:2px;overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{border:0;background:none;padding:10px 12px 12px;font:600 14px var(--body);color:var(--ink-2);border-bottom:2px solid transparent;white-space:nowrap;cursor:pointer;display:flex;gap:6px;align-items:center}
+.tab .n{font:600 11px var(--mono);background:var(--panel-2);color:var(--ink-2);border-radius:99px;padding:1px 6px}
+.tab.on{color:var(--ink);border-bottom-color:var(--accent)}
+.tab.on .n{background:var(--accent-bg);color:var(--accent)}
+
+.page{max-width:1100px;margin:0 auto;padding:18px 16px 0}
+.section{margin-top:26px}
+.page>.section:first-child,.page>.banner+.section{margin-top:0}
+.h2{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:0 0 10px}
+.h2 h2{font:600 17px/1.2 var(--display);letter-spacing:-.01em;margin:0}
+.h2 span{font-size:13px;color:var(--ink-3)}
+.h2 .lnk{border:0;background:none;color:var(--accent);font-weight:600;font-size:13px;cursor:pointer;padding:0}
+.empty{padding:22px 16px;border:1px dashed var(--line-2);border-radius:10px;color:var(--ink-3);font-size:14px;text-align:center}
+
+/* chips */
+.chip{display:inline-flex;align-items:center;gap:6px;height:24px;padding:0 9px;border-radius:99px;font-size:12px;font-weight:700;white-space:nowrap;background:var(--panel-2);color:var(--ink-2)}
+.chip.lead{background:var(--panel-2);color:var(--ink-2)}
+.chip.applied{background:#e4ebf7;color:#2c4f8f}
+.chip.interviewing{background:var(--accent-bg);color:var(--accent)}
+.chip.offer{background:var(--good-bg);color:var(--good)}
+.chip.won{background:var(--good);color:#fff}
+.chip.passed{background:var(--panel-2);color:var(--ink-3)}
+.chip.lost{background:var(--bad-bg);color:var(--bad)}
+.chip.client{background:var(--warn-bg);color:var(--warn)}
+.chip.today{background:var(--today-bg);color:var(--today)}
+.chip.src{background:transparent;border:1px solid var(--line-2);color:var(--ink-2);font-weight:600}
+
+/* buttons */
+.btn{height:40px;padding:0 14px;border-radius:9px;border:1px solid var(--line-2);background:#fff;font-weight:600;font-size:14px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px;white-space:nowrap;text-decoration:none;color:var(--ink)}
+.btn:hover{border-color:var(--ink-3)}
+.btn.p{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn.p:hover{background:#0b5a58}
+.btn.sm{height:32px;padding:0 10px;font-size:13px;border-radius:7px}
+.btn.q{border-color:transparent;background:transparent;color:var(--ink-2)}
+.btn.q:hover{background:var(--panel)}
+.btn.danger{color:var(--bad)}
+.btn[disabled]{opacity:.5;cursor:default}
+
+/* today */
+.now{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.stat{background:var(--panel);border-radius:10px;padding:12px 14px}
+.stat .k{font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-3);font-weight:600}
+.stat .v{font:700 26px/1.1 var(--display);letter-spacing:-.02em;margin-top:4px}
+.stat .v small{font:500 13px var(--body);color:var(--ink-3);margin-left:4px}
+.next{border:1px solid var(--line);border-left:4px solid var(--today);border-radius:10px;padding:14px 16px;display:grid;gap:10px;background:#fff}
+.next .when{font:600 13px var(--mono);color:var(--today)}
+.next h3{margin:0;font:600 19px/1.25 var(--display);letter-spacing:-.01em}
+.next .sub{color:var(--ink-2);font-size:14px}
+.next .acts{display:flex;gap:8px;flex-wrap:wrap}
+.quick{display:flex;gap:8px;flex-wrap:wrap}
+
+/* rows */
+.rows{border-top:1px solid var(--line)}
+.row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 12px;align-items:center;padding:12px 4px;border-bottom:1px solid var(--line);cursor:pointer;text-align:left;width:100%;background:none;border-left:0;border-right:0;border-top:0;color:inherit}
+.row:hover{background:var(--panel)}
+.row .t{font-weight:600;font-size:15px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.row .s{font-size:13px;color:var(--ink-2);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;grid-column:1}
+.row .r{display:flex;gap:8px;align-items:center;grid-row:1/3;grid-column:2}
+.row .time{font:600 13px var(--mono);color:var(--ink-2)}
+.row.past{opacity:.6}
+.dot{width:8px;height:8px;border-radius:50%;display:inline-block;background:var(--ink-3);flex:none}
+.dot.zoom{background:#2d8cff}
+
+/* link provenance */
+.linkfrom{font:500 12px var(--mono);color:var(--ink-3);overflow-wrap:anywhere}
+.chip.changed{background:var(--bad-bg);color:var(--bad)}
+.chip.reply{background:var(--today-bg);color:var(--today)}
+.prev{font:500 12px var(--mono);color:var(--ink-3);text-decoration:line-through;overflow-wrap:anywhere}
+/* clients table */
+.clients{border-top:1px solid var(--line)}
+.client{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr) minmax(0,1fr) auto;gap:4px 14px;align-items:center;padding:12px 6px;border-bottom:1px solid var(--line);cursor:pointer;width:100%;background:none;border-left:0;border-right:0;border-top:0;color:inherit;text-align:left}
+.client:hover{background:var(--panel)}
+.client .n{font-weight:700;font-size:15px}
+.client .c{font-size:13px;color:var(--ink-2)}
+.client .k{font:500 11px var(--body);letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3)}
+.client .v{font-size:13px;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.client .r{display:flex;gap:6px;align-items:center;justify-content:flex-end;flex-wrap:wrap}
+@media (max-width:819px){ .client{grid-template-columns:minmax(0,1fr) auto} .client .col{grid-column:1} }
+/* inbox filters + threads */
+.filters{display:flex;gap:6px;overflow-x:auto;padding-bottom:8px;scrollbar-width:none}
+.filters::-webkit-scrollbar{display:none}
+.filt{border:1px solid var(--line-2);background:#fff;border-radius:99px;height:32px;padding:0 12px;font-weight:600;font-size:13px;white-space:nowrap;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.filt.on{background:var(--ink);border-color:var(--ink);color:#fff}
+.filt .n{font:600 11px var(--mono);opacity:.7}
+.thread{border-bottom:1px solid var(--line)}
+.thread>summary{list-style:none;cursor:pointer;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 12px;padding:12px 4px;align-items:center}
+.thread>summary::-webkit-details-marker{display:none}
+.thread>summary:hover{background:var(--panel)}
+.thread .t{font-weight:600;font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.thread .s{font-size:13px;color:var(--ink-2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;grid-column:1}
+.thread .r{grid-row:1/3;grid-column:2;display:flex;gap:8px;align-items:center}
+.thread .cnt{font:600 11px var(--mono);background:var(--panel-2);border-radius:99px;padding:2px 7px;color:var(--ink-2)}
+.thread .msgs{padding:0 0 8px 12px;border-left:2px solid var(--line-2);margin:0 0 10px 6px}
+.thread .msgs .row{padding:8px 6px}
+/* meetings by day */
+.day{font:600 12px var(--mono);letter-spacing:.04em;text-transform:uppercase;color:var(--ink-3);margin:18px 0 4px}
+.day.today{color:var(--today)}
+
+/* show tab: one kit per interview */
+.kits{display:flex;gap:6px;overflow-x:auto;padding-bottom:8px;scrollbar-width:none}
+.kits::-webkit-scrollbar{display:none}
+.kit{border:1px solid var(--line-2);background:#fff;border-radius:99px;height:36px;padding:0 14px;font-weight:700;font-size:14px;white-space:nowrap;cursor:pointer;display:inline-flex;align-items:center;gap:8px}
+.kit .n{font:600 11px var(--mono);background:var(--panel-2);border-radius:99px;padding:1px 6px;color:var(--ink-2)}
+.kit.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.kit.on .n{background:rgba(255,255,255,.22);color:#fff}
+.kithead{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:14px 0 8px;flex-wrap:wrap}
+.kithead h3{margin:0;font:600 20px/1.2 var(--display);letter-spacing:-.01em}
+.kithead .meta{font-size:13px;color:var(--ink-2)}
+.openall{display:grid;gap:8px;margin-top:12px}
+.openall a{display:flex;align-items:center;justify-content:space-between;gap:10px;border:1px solid var(--line);border-radius:10px;padding:12px 14px;text-decoration:none;color:var(--ink);background:#fff}
+.openall a:hover{border-color:var(--ink-3)}
+.openall .t{font-weight:600}
+.openall .u{font:500 12px var(--mono);color:var(--ink-3);overflow-wrap:anywhere}
+/* show tab */
+.showtabs{display:flex;gap:6px;overflow-x:auto;padding-bottom:6px;scrollbar-width:none}
+.showtabs::-webkit-scrollbar{display:none}
+.showtab{border:1px solid var(--line-2);background:#fff;border-radius:99px;height:34px;padding:0 14px;font-weight:600;font-size:13px;white-space:nowrap;cursor:pointer}
+.showtab.on{background:var(--ink);border-color:var(--ink);color:#fff}
+.showcard{margin-top:14px;border:1px solid var(--line);border-radius:12px;padding:18px;display:grid;gap:12px;background:#fff}
+.showcard h3{margin:0;font:600 24px/1.2 var(--display);letter-spacing:-.015em;text-wrap:balance}
+.showcard .url{font:500 12px var(--mono);color:var(--ink-3);overflow-wrap:anywhere}
+.showcard .talk{white-space:pre-wrap;color:var(--ink-2);font-size:15px;line-height:1.55}
+.showcard .acts{display:flex;gap:8px;flex-wrap:wrap}
+
+/* log */
+.log{display:grid;gap:0;border-top:1px solid var(--line)}
+.log div{display:grid;grid-template-columns:92px minmax(0,1fr);gap:10px;padding:10px 4px;border-bottom:1px solid var(--line);font-size:14px}
+.log .w{font:500 12px var(--mono);color:var(--ink-3);padding-top:3px}
+.log b{font-weight:600}
+.log .k{color:var(--ink-3);font-size:12px;margin-left:6px}
+
+/* detail view — a page inside the app, never a sheet */
+.backbar{display:flex;align-items:center;gap:10px;margin:0 0 16px}
+.back{height:36px;padding:0 12px 0 8px;border-radius:8px;border:1px solid var(--line-2);background:#fff;font-weight:600;font-size:14px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;color:var(--ink)}
+.back:hover{border-color:var(--ink-3)}
+.backbar .crumb{font:600 12px var(--mono);letter-spacing:.04em;text-transform:uppercase;color:var(--ink-3)}
+.panel{max-width:none}
+.detail{display:grid;gap:26px;margin-top:18px}
+@media (min-width:820px){ .detail{grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:40px;align-items:start} }
+.detail h4:first-child{margin-top:0}
+.sub2{color:var(--ink-2);font-size:15px;margin-top:6px}
+.linkbox{border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:10px;padding:14px 16px;display:grid;gap:8px;background:#fff}
+.linkbox .big{font:600 15px var(--mono);overflow-wrap:anywhere}
+.threadwrap .thread>summary{padding:10px 4px}
+.panel .head{display:flex;align-items:flex-start;gap:10px;justify-content:space-between}
+.panel h2{margin:0;font:600 24px/1.2 var(--display);letter-spacing:-.015em;text-wrap:balance}
+.panel .close{display:none}
+.panel h4{font:600 11px var(--body);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);margin:20px 0 8px;display:flex;justify-content:space-between;align-items:baseline}
+.panel h4 button{border:0;background:none;color:var(--accent);font:600 13px var(--body);cursor:pointer;letter-spacing:0;text-transform:none;padding:0}
+.kv{display:grid;gap:6px;font-size:14px}
+.kv div{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;padding:6px 0;border-bottom:1px solid var(--line)}
+.kv em{font-style:normal;color:var(--ink-3);font:500 12px var(--mono);white-space:nowrap}
+.kv a{font-weight:600;text-decoration:none;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.timer{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:var(--panel);border-radius:10px;padding:12px 14px}
+.timer .big{font:700 26px/1 var(--display);letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.timer .big small{font:500 13px var(--body);color:var(--ink-3);margin-left:4px}
+.timer .run{color:var(--accent);font:600 13px var(--mono)}
+.statuses{display:flex;gap:6px;flex-wrap:wrap}
+.statuses button{border:1px solid var(--line-2);background:#fff;border-radius:99px;height:30px;padding:0 11px;font-weight:600;font-size:12px;cursor:pointer;color:var(--ink-2)}
+.statuses button.on{background:var(--ink);border-color:var(--ink);color:#fff}
+.notes{width:100%;min-height:80px;border:1px solid var(--line-2);border-radius:9px;padding:9px 11px;resize:vertical;font-size:14px;line-height:1.5;background:#fff}
+
+/* form sheet */
+.form{display:grid;gap:12px;margin-top:8px}
+.field{display:grid;gap:5px}
+.field label{font-size:12px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-3)}
+.field input,.field select,.field textarea{height:42px;border:1px solid var(--line-2);border-radius:9px;padding:0 11px;background:#fff;font-size:15px;width:100%}
+.field textarea{height:auto;min-height:84px;padding:9px 11px;resize:vertical}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.form .acts{display:flex;gap:8px;justify-content:flex-end;padding-top:6px}
+
+/* fab */
+.fab{position:fixed;right:16px;bottom:calc(18px + env(safe-area-inset-bottom,0px));z-index:9;height:52px;padding:0 18px 0 14px;border-radius:99px;background:var(--accent);color:#fff;border:0;font:600 15px var(--body);box-shadow:0 10px 24px rgba(14,111,108,.28);cursor:pointer;display:flex;align-items:center;gap:8px}
+.fab span{font-size:22px;line-height:1;margin-top:-2px}
+
+.toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom,0px));transform:translate(-50%,10px);background:var(--ink);color:#fff;border-radius:10px;padding:10px 14px;font-size:14px;opacity:0;pointer-events:none;transition:.18s;z-index:40;max-width:calc(100vw - 32px)}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+.banner{background:var(--warn-bg);color:var(--warn);border-radius:9px;padding:9px 12px;font-size:13px;margin-bottom:14px}
+
+@media (min-width:820px){
+  body{padding-bottom:60px}
+  .page{padding-top:26px}
+  .grid2{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:32px;align-items:start}
+  .fab{right:calc((100vw - 1100px)/2 + 16px)}
+  .row{padding:12px 10px}
+}
+@media (max-width:819px){ .fab{right:16px} }
+</style>
+
+<header class="top">
+  <div class="top-in">
+    <div class="brand">Automatic Delight <small>mission desk</small></div>
+    <div class="sync" id="sync"><i></i><span>connecting</span></div>
+  </div>
+  <nav class="tabs" id="tabs" aria-label="Sections"></nav>
+</header>
+<main class="page" id="page"></main>
+<button type="button" class="fab" id="fab"><span>+</span><b id="fabLabel">Add</b></button>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+/* ============================================================
+   Mission Desk — one place for the a.team chaos.
+   Collections (db): jobs · meetings · emails · show · log
+   Every action appends to `log`, so the Log tab is the record.
+   ============================================================ */
+const $ = (s,el=document)=>el.querySelector(s);
+const esc = s => String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const STATUSES = ['lead','applied','interviewing','offer','won','passed','lost','client'];
+const STATUS_LABEL = {lead:'Lead',applied:'Applied',interviewing:'Interviewing',offer:'Offer',won:'Won',passed:'Passed',lost:'Lost',client:'Active client'};
+const TABS = [
+  {id:'today',label:'Today'},
+  {id:'jobs',label:'Jobs'},
+  {id:'meetings',label:'Meetings'},
+  {id:'inbox',label:'Inbox'},
+  {id:'show',label:'Show'},
+  {id:'log',label:'Log'},
+];
+const state = {showJob:null, tab:'today', jobs:{}, meetings:{}, emails:{}, show:{}, log:[], db:null, showSel:null, open:null, view:null, viewCrumb:''};
+try{ state.tab = localStorage.getItem('md.tab') || 'today'; }catch(e){}
+
+/* ---------- helpers ---------- */
+const uid = ()=> (crypto.randomUUID ? crypto.randomUUID() : 'id'+Date.now()+Math.random().toString(36).slice(2,8)).replace(/-/g,'').slice(0,20);
+const nowISO = ()=> new Date().toISOString();
+const pad = n=>String(n).padStart(2,'0');
+function localDate(d=new Date()){ return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`; }
+function localTime(d=new Date()){ return `${pad(d.getHours())}:${pad(d.getMinutes())}`; }
+const todayStr = localDate();
+function fmtWhen(iso){ const d=new Date(iso); if(isNaN(d)) return '—'; const day=localDate(d); const t=d.toLocaleTimeString([], {hour:'numeric',minute:'2-digit'}); if(day===todayStr) return `Today · ${t}`; const tomorrow=localDate(new Date(Date.now()+864e5)); if(day===tomorrow) return `Tomorrow · ${t}`; return d.toLocaleDateString([], {weekday:'short',month:'short',day:'numeric'})+' · '+t; }
+function fmtDay(iso){ const d=new Date(iso); const day=localDate(d); if(day===todayStr) return 'Today'; return d.toLocaleDateString([], {weekday:'long',month:'short',day:'numeric'}); }
+function fmtShort(iso){ const d=new Date(iso); if(isNaN(d)) return ''; const day=localDate(d); if(day===todayStr) return d.toLocaleTimeString([], {hour:'numeric',minute:'2-digit'}); return d.toLocaleDateString([], {month:'short',day:'numeric'}); }
+function hm(min){ min=Math.round(min||0); const h=Math.floor(min/60), m=min%60; if(!h) return `${m}m`; return m?`${h}h ${m}m`:`${h}h`; }
+function jobName(id){ const j=state.jobs[id]; return j? j.name : ''; }
+function jobMinutes(j){ return (j.time||[]).reduce((a,t)=>a+(+t.minutes||0),0); }
+function host(u){ try{ return new URL(u).host.replace(/^www\./,''); }catch(e){ return ''; } }
+function isZoom(u){ return /zoom\.us/i.test(u||''); }
+let toastT; function toast(msg){ const t=$('#toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove('show'),2200); }
+function setSync(on,label){ const s=$('#sync'); s.className='sync '+(on?'on':'off'); s.querySelector('span').textContent=label; }
+
+/* ---------- storage ---------- */
+async function write(coll,id,data){
+  if(!state.db){ toast('Saving is off in this view'); return false; }
+  try{ await state.db.doc(`${coll}/${id}`).set(data); return true; }
+  catch(e){ toast(e.code==='quota_exceeded' ? 'Storage is full. Delete old log entries.' : 'Could not save. Try again.'); return false; }
+}
+async function patch(coll,id,data){
+  if(!state.db){ toast('Saving is off in this view'); return false; }
+  try{ await state.db.doc(`${coll}/${id}`).update(data); return true; }
+  catch(e){ toast('Could not save. Try again.'); return false; }
+}
+async function remove(coll,id){ if(!state.db) return false; try{ await state.db.doc(`${coll}/${id}`).delete(); return true; }catch(e){ toast('Could not delete.'); return false; } }
+async function logIt(kind,text,jobId){ const id=uid(); return write('log',id,{when:nowISO(),kind,text,jobId:jobId||null}); }
+
+/* ---------- tabs ---------- */
+function renderTabs(){
+  const upcoming = Object.values(state.meetings).filter(m=>new Date(m.when)>=new Date(Date.now()-3600e3)).length;
+  const counts = {jobs:Object.values(state.jobs).filter(j=>!['passed','lost'].includes(j.status)).length, meetings:upcoming, inbox:Object.keys(state.emails).length, show:Object.keys(state.show).length};
+  $('#tabs').innerHTML = TABS.map(t=>`<button type="button" class="tab ${state.tab===t.id?'on':''}" data-tab="${t.id}">${t.label}${counts[t.id]?`<span class="n">${counts[t.id]}</span>`:''}</button>`).join('');
+  $('#fabLabel').textContent = {today:'Log time',jobs:'Add job',meetings:'Add meeting',inbox:'Add email',show:'Add tool',log:'Add note'}[state.tab];
+}
+$('#tabs').addEventListener('click',e=>{ const b=e.target.closest('[data-tab]'); if(!b) return; state.view=null; state.open=null; state.tab=b.dataset.tab; try{localStorage.setItem('md.tab',state.tab)}catch(err){} render(); });
+
+/* ---------- render ---------- */
+const TAB_LABEL={today:'Today',jobs:'Jobs',meetings:'Meetings',inbox:'Inbox',show:'Show',log:'Log'};
+function render(){ renderTabs(); const p=$('#page'); const banner=(state.db===null && state.dbChecked ? `<div class="banner">This view can't save. Open the page signed in on claude.ai to keep changes.</div>` : '');
+  if(state.view){ p.innerHTML = banner + `<div class="backbar"><button type="button" class="back" data-close>‹ ${esc(TAB_LABEL[state.tab]||'Back')}</button><span class="crumb">${esc(state.viewCrumb||'')}</span></div><div class="panel">${state.view}</div>`; $('#fab').hidden=true; return; }
+  $('#fab').hidden=false;
+  const fn={today:renderToday,jobs:renderJobs,meetings:renderMeetings,inbox:renderInbox,show:renderShow,log:renderLog}[state.tab]; p.innerHTML = banner + fn(); }
+
+function jobRow(j){
+  const nextM = Object.values(state.meetings).filter(m=>m.jobId===j.id && new Date(m.when)>=new Date(Date.now()-3600e3)).sort((a,b)=>a.when.localeCompare(b.when))[0];
+  const sub = [j.role, j.company && j.company!==j.name ? j.company : null, nextM ? fmtWhen(nextM.when) : null].filter(Boolean).join(' · ');
+  return `<button type="button" class="row" data-open="job:${j.id}">
+    <div class="t">${esc(j.name)}</div>
+    <div class="s">${esc(sub)||'&nbsp;'}</div>
+    <div class="r"><span class="time" title="Time spent landing">${hm(jobMinutes(j))}</span><span class="chip ${j.status}">${STATUS_LABEL[j.status]||j.status}</span></div>
+  </button>`;
+}
+function meetingRow(m,past){
+  const j=state.jobs[m.jobId];
+  return `<button type="button" class="row ${past?'past':''}" data-open="meeting:${m.id}">
+    <div class="t">${esc(m.title)}</div>
+    <div class="s">${esc([j?j.name:null, new Date(m.when).toLocaleTimeString([], {hour:'numeric',minute:'2-digit'})].filter(Boolean).join(' · '))}</div>
+    <div class="r">${m.linkChanged?`<span class="chip changed" title="An updated invite replaced the link">Link changed</span>`:''}${m.url?`<span class="dot ${isZoom(m.url)?'zoom':''}" title="${isZoom(m.url)?'Zoom':'Link'}"></span>`:''}${m.url && !past ? `<a class="btn sm p" href="${esc(m.url)}" target="_blank" rel="noopener" data-stop>Join</a>`:''}</div>
+  </button>`;
+}
+function emailRow(e){
+  const j=state.jobs[e.jobId];
+  return `<button type="button" class="row" data-open="email:${e.id}">
+    <div class="t">${esc(e.subject||'(no subject)')}</div>
+    <div class="s">${esc([e.from, j?j.name:null, e.gist].filter(Boolean).join(' · '))}</div>
+    <div class="r"><span class="time">${fmtShort(e.when)}</span></div>
+  </button>`;
+}
+
+function renderToday(){
+  const now=Date.now();
+  const meetings=Object.values(state.meetings).sort((a,b)=>a.when.localeCompare(b.when));
+  const todays=meetings.filter(m=>localDate(new Date(m.when))===todayStr);
+  const next=meetings.find(m=>new Date(m.when).getTime()>=now-45*60e3);
+  const active=Object.values(state.jobs).filter(j=>['interviewing','offer','client'].includes(j.status)).sort((a,b)=>(a.status==='client'?1:0)-(b.status==='client'?1:0)||a.name.localeCompare(b.name));
+  const weekStart=new Date(); weekStart.setDate(weekStart.getDate()-((weekStart.getDay()+6)%7)); weekStart.setHours(0,0,0,0);
+  let weekMin=0, totalMin=0; Object.values(state.jobs).forEach(j=>(j.time||[]).forEach(t=>{ totalMin+=+t.minutes||0; if(new Date(t.date)>=weekStart) weekMin+=+t.minutes||0; }));
+  const running = runningTimer();
+  const nextJob = next? state.jobs[next.jobId] : null;
+  const emailsToday = Object.values(state.emails).filter(e=>localDate(new Date(e.when))===todayStr).length;
+  return `
+  <section class="section">
+    ${next?`<div class="next">
+      <div class="when">${esc(fmtWhen(next.when).toUpperCase())}${nextJob?` · ${esc(nextJob.name.toUpperCase())}`:''}</div>
+      <h3>${esc(next.title)}</h3>
+      ${next.url?`<div class="linkfrom">${esc(next.url)}${next.linkFrom?` · from ${esc(next.linkFrom)}`:''}</div>`:''}
+      ${next.linkChanged?`<div><span class="chip changed">Link changed</span> <span class="prev">${esc(next.linkChanged)}</span></div>`:''}
+      ${next.notes?`<div class="sub" style="white-space:pre-wrap;max-height:9em;overflow:auto">${esc(next.notes)}</div>`:''}
+      <div class="acts">
+        ${next.url?`<a class="btn p" href="${esc(next.url)}" target="_blank" rel="noopener">Join ${isZoom(next.url)?'Zoom':host(next.url)}</a>`:''}
+        ${nextJob?`<button type="button" class="btn" data-open="job:${nextJob.id}">Open ${esc(nextJob.name)}</button>`:''}
+        <button type="button" class="btn" data-go-kit="${nextJob?nextJob.id:''}">Interview kit${nextJob?' · '+esc(nextJob.name):''}</button>
+      </div>
+    </div>`:`<div class="empty">Nothing on the calendar. Add a meeting from the Meetings tab.</div>`}
+  </section>
+  <section class="section">
+    <div class="now">
+      <div class="stat"><div class="k">Today</div><div class="v">${todays.length}<small>meeting${todays.length===1?'':'s'}</small></div></div>
+      <div class="stat"><div class="k">In play</div><div class="v">${active.length}<small>interviewing</small></div></div>
+      <div class="stat"><div class="k">This week</div><div class="v">${hm(weekMin)}<small>landing</small></div></div>
+      <div class="stat"><div class="k">All time</div><div class="v">${hm(totalMin)}<small>${emailsToday?`· ${emailsToday} email${emailsToday===1?'':'s'} today`:'landing'}</small></div></div>
+    </div>
+  </section>
+  ${running?`<section class="section"><div class="timer"><div><div class="run">TIMER RUNNING</div><div class="big">${hm((Date.now()-running.startedAt)/60e3)}<small>on ${esc(jobName(running.jobId))}</small></div></div><button type="button" class="btn p" data-stop-timer>Stop &amp; save</button></div></section>`:''}
+  ${(()=>{ const owed=Object.values(state.emails).filter(e=>e.reply).sort((a,b)=>b.when.localeCompare(a.when)); if(!owed.length) return ''; return `<section class="section"><div class="h2"><h2>Replies owed</h2><span>${owed.length}</span></div><div class="rows">${owed.map(emailRow).join('')}</div></section>`; })()}
+  <section class="section">
+    <div class="h2"><h2>Quick capture</h2></div>
+    <div class="quick">
+      <button type="button" class="btn" data-add="email">Paste an email</button>
+      <button type="button" class="btn" data-add="meeting">Meeting + Zoom link</button>
+      <button type="button" class="btn" data-add="time">Log time</button>
+      <button type="button" class="btn" data-add="note">Note</button>
+    </div>
+  </section>
+  <div class="grid2">
+    <section class="section">
+      <div class="h2"><h2>In play</h2><button type="button" class="lnk" data-go="jobs">All jobs</button></div>
+      <div class="rows">${active.length?active.map(jobRow).join(''):'<div class="empty">No interviews in play.</div>'}</div>
+    </section>
+    <section class="section">
+      <div class="h2"><h2>Latest</h2><button type="button" class="lnk" data-go="log">Full log</button></div>
+      ${logList(state.log.slice(0,8))}
+    </section>
+  </div>`;
+}
+
+function lastEmail(jobId){ return Object.values(state.emails).filter(e=>e.jobId===jobId).sort((a,b)=>b.when.localeCompare(a.when))[0]; }
+function nextMeeting(jobId){ return Object.values(state.meetings).filter(m=>m.jobId===jobId && new Date(m.when)>=new Date(Date.now()-3600e3)).sort((a,b)=>a.when.localeCompare(b.when))[0]; }
+function clientRow(j){
+  const nm=nextMeeting(j.id), le=lastEmail(j.id); const owed=Object.values(state.emails).filter(e=>e.jobId===j.id&&e.reply).length;
+  return `<button type="button" class="client" data-open="job:${j.id}">
+    <div class="col"><div class="n">${esc(j.name)}</div><div class="c">${esc([j.company&&j.company!==j.name?j.company:null,j.role].filter(Boolean).join(' · ')||'&nbsp;')}</div></div>
+    <div class="col"><div class="k">a.team</div><div class="v">${esc(j.ateamContact||'—')}</div></div>
+    <div class="col"><div class="k">${nm?'Next':'Last email'}</div><div class="v">${nm?esc(fmtWhen(nm.when)+' · '+nm.title):le?esc(fmtShort(le.when)+' · '+(le.subject||'')):'—'}</div></div>
+    <div class="r">${owed?`<span class="chip reply">${owed} reply owed</span>`:''}<span class="chip ${j.status}">${STATUS_LABEL[j.status]||j.status}</span></div>
+  </button>`;
+}
+function renderJobs(){
+  const jobs=Object.values(state.jobs);
+  if(!jobs.length) return `<div class="empty">No jobs yet. Tap <b>Add job</b>.</div>`;
+  const order={client:0,interviewing:1,offer:2,applied:3,lead:4,won:5,passed:6,lost:7};
+  const at=jobs.filter(j=>j.source==='a.team'||j.source==='client').sort((a,b)=>(order[a.status]??9)-(order[b.status]??9)||a.name.localeCompare(b.name));
+  const rest=jobs.filter(j=>!at.includes(j));
+  const table=list=>`<div class="clients">${list.map(clientRow).join('')}</div>`;
+  return `<section class="section"><div class="h2"><h2>a.team clients</h2><span>${at.length} · every mission, one row</span></div>${at.length?table(at):'<div class="empty">No a.team missions yet.</div>'}</section>
+  ${rest.length?`<section class="section"><div class="h2"><h2>Direct</h2><span>${rest.length}</span></div>${table(rest)}</section>`:''}`;
+}
+function renderJobsByStatus(jobs){
+  const groups=[['interviewing','Interviewing'],['offer','Offers'],['applied','Applied'],['lead','Leads'],['client','Active clients'],['won','Won'],['passed','Passed'],['lost','Lost']];
+  return groups.map(([s,label])=>{ const list=jobs.filter(j=>j.status===s).sort((a,b)=>a.name.localeCompare(b.name)); if(!list.length) return ''; const mins=list.reduce((a,j)=>a+jobMinutes(j),0); return `<section class="section"><div class="h2"><h2>${label}</h2><span>${list.length} · ${hm(mins)}</span></div><div class="rows">${list.map(jobRow).join('')}</div></section>`; }).join('');
+}
+
+function renderMeetings(){
+  const all=Object.values(state.meetings).sort((a,b)=>a.when.localeCompare(b.when));
+  if(!all.length) return `<div class="empty">No meetings yet. Tap <b>Add meeting</b> and paste the Zoom link.</div>`;
+  const cut=Date.now()-3600e3;
+  const up=all.filter(m=>new Date(m.when).getTime()>=cut), past=all.filter(m=>new Date(m.when).getTime()<cut).reverse();
+  let out='';
+  if(up.length){ let last=''; out+='<section class="section"><div class="h2"><h2>Upcoming</h2></div>'; up.forEach(m=>{ const d=fmtDay(m.when); if(d!==last){ out+=`<div class="day ${d==='Today'?'today':''}">${esc(d)}</div><div class="rows">`; last=d; } out+=meetingRow(m,false); }); out+='</div></section>'; }
+  if(past.length){ out+=`<section class="section"><div class="h2"><h2>Past</h2><span>${past.length}</span></div><div class="rows">${past.map(m=>meetingRow(m,true)).join('')}</div></section>`; }
+  return out;
+}
+
+const NOISE=/timesheet|update your hours|knowledge vault|ai stack|stacktalk|deep dive|builder dispatch|should we reach out|received your mission request|thanks for contacting|we have a cool new mission|a\.team \/\/|payment details have been changed/i;
+function isNoise(e){ return NOISE.test((e.subject||'')+' '+(e.gist||'').slice(0,80)) && !e.reply; }
+function threadKey(e){ return (e.subject||'').replace(/^((re|fwd?|fw|updated invitation|invitation)\s*:\s*)+/i,'').replace(/\s*@ .*$/,'').replace(/\s+/g,' ').trim().toLowerCase().slice(0,80) || '(no subject)'; }
+state.inboxFilter = 'all'; state.inboxNoise=false;
+try{ state.inboxFilter=localStorage.getItem('md.inboxFilter')||'all'; }catch(e){}
+function buildThreads(list){ const threads=new Map(); for(const e of list){ const k=(e.jobId||'')+'|'+threadKey(e); if(!threads.has(k)) threads.set(k,[]); threads.get(k).push(e); } return threads; }
+function threadRows(threads){
+  return [...threads.values()].map(msgs=>{
+    const top=msgs[0]; const j=state.jobs[top.jobId]; const owedHere=msgs.some(m=>m.reply);
+    if(msgs.length===1) return emailRow(top);
+    return `<details class="thread"><summary>
+      <div class="t">${esc(threadKey(top).replace(/^./,c=>c.toUpperCase()))}</div>
+      <div class="s">${esc([j?j.name:null, top.from, top.gist].filter(Boolean).join(' · '))}</div>
+      <div class="r">${owedHere?'<span class="chip reply">Reply owed</span>':''}<span class="cnt">${msgs.length}</span><span class="time">${esc(fmtShort(top.when))}</span></div>
+    </summary><div class="msgs">${msgs.map(emailRow).join('')}</div></details>`;
+  }).join('');
+}
+function contactsKv(j){ if(!j||!(j.ateamContact||j.clientContact||j.mission)) return ''; return `<div class="kv">${j.mission?`<div><span>${esc(j.mission)}</span><em>mission</em></div>`:''}${j.ateamContact?`<div><span>${esc(j.ateamContact)}</span><em>a.team</em></div>`:''}${j.clientContact?`<div><span>${esc(j.clientContact)}</span><em>client</em></div>`:''}</div>`; }
+function linkBox(m){ if(!m.url) return '<div class="empty">No link yet. Edit the meeting and paste it.</div>'; return `<div class="linkbox">
+  <div class="big">${esc(m.url)}</div>
+  ${m.linkFrom?`<div class="linkfrom">from ${esc(m.linkFrom)}</div>`:''}
+  ${m.linkChanged?`<div><span class="chip changed">Link changed</span> <span class="prev">${esc(m.linkChanged)}</span></div>`:''}
+  <div class="acts" style="display:flex;gap:8px;flex-wrap:wrap"><a class="btn p" href="${esc(m.url)}" target="_blank" rel="noopener">Join ${isZoom(m.url)?'Zoom':host(m.url)}</a><button type="button" class="btn" data-edit-meeting="${m.id}">Edit</button></div>
+</div>`; }
+function renderInbox(){
+  const every=Object.values(state.emails).sort((a,b)=>b.when.localeCompare(a.when));
+  if(!every.length) return `<div class="empty">Nothing filed. Tap <b>Add email</b>: who, subject, one line of gist, and the job it belongs to.</div>`;
+  const owed=every.filter(e=>e.reply).length;
+  const counts={}; every.forEach(e=>{ const k=e.jobId||'none'; counts[k]=(counts[k]||0)+1; });
+  const jobsSorted=Object.values(state.jobs).filter(j=>counts[j.id]).sort((a,b)=>counts[b.id]-counts[a.id]);
+  const f=state.inboxFilter;
+  let list=every.filter(e=> f==='all' ? true : f==='owed' ? e.reply : f==='none' ? !e.jobId : e.jobId===f);
+  const noiseN=list.filter(isNoise).length; if(!state.inboxNoise) list=list.filter(e=>!isNoise(e));
+  const threads=buildThreads(list);
+  const chips=`<div class="filters">
+    <button type="button" class="filt ${f==='all'?'on':''}" data-filter="all">All <span class="n">${every.length}</span></button>
+    ${owed?`<button type="button" class="filt ${f==='owed'?'on':''}" data-filter="owed">Reply owed <span class="n">${owed}</span></button>`:''}
+    ${jobsSorted.map(j=>`<button type="button" class="filt ${f===j.id?'on':''}" data-filter="${j.id}">${esc(j.name)} <span class="n">${counts[j.id]}</span></button>`).join('')}
+    ${counts.none?`<button type="button" class="filt ${f==='none'?'on':''}" data-filter="none">Unfiled <span class="n">${counts.none}</span></button>`:''}
+  </div>`;
+  const rows=threadRows(threads);
+  return `<section class="section"><div class="h2"><h2>Inbox</h2><span>${threads.size} thread${threads.size===1?'':'s'}${noiseN?` · <button type="button" class="lnk" data-noise>${state.inboxNoise?'hide':'show'} ${noiseN} routine</button>`:''}</span></div>${chips}<div class="rows">${rows||'<div class="empty">Nothing here.</div>'}</div></section>`;
+}
+
+function kitFor(jobId){ return Object.values(state.show).filter(t=>(t.jobId||null)===jobId).sort((a,b)=>(a.order??99)-(b.order??99) || a.title.localeCompare(b.title)); }
+function kitList(tools){ if(!tools.length) return ''; return `<div class="openall">${tools.map(t=>`<a href="${esc(t.url)}" target="_blank" rel="noopener"><span><span class="t">${esc(t.title)}</span>${t.kind?` <span class="chip" style="margin-left:6px">${esc(t.kind)}</span>`:''}<div class="u">${esc(t.url)}</div></span><span class="btn sm p">Open</span></a>`).join('')}</div>`; }
+function renderShow(){
+  const tools=Object.values(state.show);
+  if(!tools.length) return `<div class="empty">Nothing to show yet. Add the links you open in interviews: demos, prototypes, case studies.</div>`;
+  const jobIds=[...new Set(tools.map(t=>t.jobId||null))];
+  const kits=jobIds.map(id=>({id, job:id?state.jobs[id]:null, tools:kitFor(id)})).filter(k=>k.tools.length);
+  const order={interviewing:0,offer:1,applied:2,lead:3,client:4,won:5,passed:6,lost:7};
+  kits.sort((a,b)=>{ if(!a.job) return 1; if(!b.job) return -1; const na=nextMeeting(a.id), nb=nextMeeting(b.id); if(na&&!nb) return -1; if(nb&&!na) return 1; return (order[a.job.status]??9)-(order[b.job.status]??9) || a.job.name.localeCompare(b.job.name); });
+  if(!state.showJob || !kits.find(k=>k.id===state.showJob)) state.showJob=kits[0].id;
+  const kit=kits.find(k=>k.id===state.showJob);
+  if(!state.showSel || !state.show[state.showSel] || (state.show[state.showSel].jobId||null)!==kit.id) state.showSel=kit.tools[0].id;
+  const t=state.show[state.showSel]; const j=kit.job; const nm=j?nextMeeting(j.id):null;
+  return `<section class="section">
+    <div class="h2"><h2>Interview kits</h2><span>one per client · tap a kit, then a tab, then Open</span></div>
+    <div class="kits">${kits.map(k=>`<button type="button" class="kit ${k.id===state.showJob?'on':''}" data-kit="${k.id||'none'}">${esc(k.job?k.job.name:'General')}<span class="n">${k.tools.length}</span></button>`).join('')}</div>
+    <div class="kithead"><h3>${esc(j?j.name:'General')}${j&&j.company&&j.company!==j.name?` <span class="meta">· ${esc(j.company)}</span>`:''}</h3><span class="meta">${nm?`Next: ${esc(fmtWhen(nm.when))} · ${esc(nm.title)}`:j?esc(j.role||''):''}</span></div>
+    ${nm&&nm.url?`<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:6px"><a class="btn p" href="${esc(nm.url)}" target="_blank" rel="noopener">Join ${isZoom(nm.url)?'Zoom':host(nm.url)}</a><button type="button" class="btn" data-open="meeting:${nm.id}">Meeting</button>${j?`<button type="button" class="btn" data-open="job:${j.id}">Client</button>`:''}</div>`:''}
+    <div class="showtabs">${kit.tools.map(x=>`<button type="button" class="showtab ${x.id===state.showSel?'on':''}" data-show="${x.id}">${esc(x.title)}</button>`).join('')}</div>
+    <div class="showcard">
+      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">${t.kind?`<span class="chip">${esc(t.kind)}</span>`:''}${j?`<span class="chip src">${esc(j.name)}</span>`:''}</div>
+      <h3>${esc(t.title)}</h3>
+      ${t.url?`<div class="url">${esc(t.url)}</div>`:''}
+      ${t.talk?`<div class="talk">${esc(t.talk)}</div>`:''}
+      <div class="acts">
+        ${t.url?`<a class="btn p" href="${esc(t.url)}" target="_blank" rel="noopener">Open</a>`:''}
+        <button type="button" class="btn" data-open="show:${t.id}">Edit</button>
+      </div>
+    </div>
+    <h4 style="font:600 11px var(--body);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);margin:22px 0 8px">Everything in this kit</h4>
+    ${kitList(kit.tools)}
+  </section>`;
+}
+
+function logList(items){
+  if(!items.length) return '<div class="empty">Nothing logged yet.</div>';
+  return `<div class="log">${items.map(l=>`<div><span class="w">${esc(fmtShort(l.when))}</span><span>${esc(l.text)}${l.jobId&&state.jobs[l.jobId]?`<span class="k">${esc(state.jobs[l.jobId].name)}</span>`:''}</span></div>`).join('')}</div>`;
+}
+function renderLog(){ return `<section class="section"><div class="h2"><h2>Everything that happened</h2><span>${state.log.length}</span></div>${logList(state.log)}</section>`; }
+
+/* ---------- panel (detail + forms) ---------- */
+function openPanel(html,crumb){ const fresh=state.view===null; state.view=html; state.viewCrumb=crumb||({job:'Client',meeting:'Meeting',email:'Email'}[(state.open||'').split(':')[0]]||''); render(); if(fresh) window.scrollTo({top:0}); }
+function closePanel(){ state.view=null; state.open=null; render(); }
+
+function jobOptions(sel){ return `<option value="">— none —</option>`+Object.values(state.jobs).sort((a,b)=>a.name.localeCompare(b.name)).map(j=>`<option value="${j.id}" ${j.id===sel?'selected':''}>${esc(j.name)}</option>`).join(''); }
+function head(title,sub){ return `<div class="head"><div><h2>${esc(title)}</h2>${sub?`<div style="color:var(--ink-2);font-size:14px;margin-top:4px">${sub}</div>`:''}</div><button type="button" class="close" data-close>×</button></div>`; }
+
+function openJob(id){
+  const j=state.jobs[id]; if(!j) return; state.open='job:'+id;
+  const meetings=Object.values(state.meetings).filter(m=>m.jobId===id).sort((a,b)=>b.when.localeCompare(a.when));
+  const emails=Object.values(state.emails).filter(e=>e.jobId===id).sort((a,b)=>b.when.localeCompare(a.when));
+  const tools=Object.values(state.show).filter(t=>t.jobId===id).sort((a,b)=>(a.order??99)-(b.order??99));
+  const logs=state.log.filter(l=>l.jobId===id).slice(0,20);
+  const running=runningTimer();
+  const mine = running && running.jobId===id;
+  const owed=emails.filter(e=>e.reply);
+  const cut=Date.now()-3600e3;
+  const up=meetings.filter(m=>new Date(m.when).getTime()>=cut).reverse(), past=meetings.filter(m=>new Date(m.when).getTime()<cut);
+  const nextM=up[0]||past[0];
+  const noiseN=emails.filter(isNoise).length; const shown=state.inboxNoise?emails:emails.filter(e=>!isNoise(e));
+  openPanel(`
+    ${head(j.name, esc([j.mission||null, j.company&&j.company!==j.name?j.company:null, j.role, j.rate].filter(Boolean).join(' · ')))}
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:12px"><span class="chip ${j.status}">${STATUS_LABEL[j.status]}</span>${j.source?`<span class="chip src">${esc(j.source)}</span>`:''}${owed.length?`<span class="chip reply">${owed.length} reply owed</span>`:''}${j.url?`<a class="chip src" href="${esc(j.url)}" target="_blank" rel="noopener" style="text-decoration:none">${esc(host(j.url)||'link')} ↗</a>`:''}</div>
+    <div class="detail">
+      <div>
+        ${nextM?`<h4>${up[0]?'Next meeting':'Latest meeting'}</h4>
+        <div class="next"><div class="when">${esc(fmtWhen(nextM.when).toUpperCase())}</div><h3><button type="button" class="btn q" style="padding:0;height:auto;font:inherit;color:inherit" data-open="meeting:${nextM.id}">${esc(nextM.title)}</button></h3>${linkBox(nextM)}</div>`:''}
+        <h4>Meetings <button type="button" data-add="meeting" data-job="${id}">+ meeting</button></h4>
+        ${meetings.length?`<div class="rows">${up.map(m=>meetingRow(m,false)).join('')}${past.map(m=>meetingRow(m,true)).join('')}</div>`:`<div class="empty">No meetings filed.</div>`}
+        <h4>Emails <span style="display:flex;gap:10px;align-items:baseline">${noiseN?`<button type="button" data-noise>${state.inboxNoise?'hide':'show'} ${noiseN} routine</button>`:''}<button type="button" data-add="email" data-job="${id}">+ email</button></span></h4>
+        ${owed.length?`<div class="rows" style="margin-bottom:14px">${owed.map(emailRow).join('')}</div>`:''}
+        ${shown.length?`<div class="rows threadwrap">${threadRows(buildThreads(shown))}</div>`:`<div class="empty">No emails filed.</div>`}
+      </div>
+      <div>
+        ${(j.ateamContact||j.clientContact||j.mission)?`<h4>Who</h4>${contactsKv(j)}`:''}
+        <h4>Status</h4>
+        <div class="statuses">${STATUSES.map(s=>`<button type="button" class="${s===j.status?'on':''}" data-status="${s}">${STATUS_LABEL[s]}</button>`).join('')}</div>
+        <h4>Notes</h4>
+        <textarea class="notes" id="jobNotes" style="min-height:160px" placeholder="What they need, what to send next…">${esc(j.notes||'')}</textarea>
+        <div style="display:flex;justify-content:flex-end;margin-top:8px;gap:8px"><button type="button" class="btn sm" data-save-notes="${id}">Save notes</button></div>
+        <h4>Show them <span style="display:flex;gap:10px"><button type="button" data-go-kit="${id}">Open the kit</button><button type="button" data-add="show" data-job="${id}">+ link</button></span></h4>
+        ${tools.length?kitList(tools):`<div class="empty">Nothing linked yet.</div>`}
+        <h4>Time <button type="button" data-add="time" data-job="${id}">+ minutes</button></h4>
+        <div class="timer">
+          <div><div class="big">${hm(jobMinutes(j) + (mine?(Date.now()-running.startedAt)/60e3:0))}${mine?`<small>running</small>`:''}</div>${mine?`<div class="run">started ${esc(fmtShort(new Date(running.startedAt).toISOString()))}</div>`:''}</div>
+          ${mine?`<button type="button" class="btn p" data-stop-timer>Stop &amp; save</button>`:running?`<button type="button" class="btn" disabled>Timer on ${esc(jobName(running.jobId))}</button>`:`<button type="button" class="btn" data-start-timer="${id}">Start timer</button>`}
+        </div>
+        ${(j.time||[]).length?`<div class="kv" style="margin-top:8px">${[...j.time].sort((a,b)=>b.date.localeCompare(a.date)).slice(0,6).map(t=>`<div><span>${esc(t.note||'Work')}</span><em>${esc(fmtShort(t.date))} · ${hm(t.minutes)}</em></div>`).join('')}</div>`:''}
+        <h4>History</h4>
+        ${logList(logs)}
+        <div style="display:flex;justify-content:space-between;margin-top:22px;gap:8px"><button type="button" class="btn q danger sm" data-del="jobs:${id}">Delete</button><button type="button" class="btn sm" data-edit-job="${id}">Edit details</button></div>
+      </div>
+    </div>
+  `,'Client');
+}
+function openMeeting(id){
+  const m=state.meetings[id]; if(!m) return; state.open='meeting:'+id; const j=state.jobs[m.jobId];
+  const t=new Date(m.when).getTime();
+  const related=Object.values(state.emails).filter(e=>e.jobId===m.jobId && Math.abs(new Date(e.when).getTime()-t)<8*864e5).sort((a,b)=>b.when.localeCompare(a.when));
+  const others=Object.values(state.meetings).filter(x=>x.jobId===m.jobId && x.id!==id).sort((a,b)=>b.when.localeCompare(a.when));
+  openPanel(`${head(m.title, esc(fmtWhen(m.when))+(j?` · <button type="button" class="btn q sm" style="padding:0;height:auto" data-open="job:${j.id}">${esc(j.name)}</button>`:''))}
+    <div class="detail">
+      <div>
+        <h4>The link</h4>
+        ${linkBox(m)}
+        <h4>Prep / agenda</h4><div style="white-space:pre-wrap;color:var(--ink-2)">${esc(m.notes||'—')}</div>
+        <h4>Outcome</h4>
+        <textarea class="notes" id="meetOutcome" placeholder="What happened, what's next…">${esc(m.outcome||'')}</textarea>
+        <div style="display:flex;justify-content:space-between;margin-top:8px;gap:8px"><button type="button" class="btn q danger sm" data-del="meetings:${id}">Delete</button><button type="button" class="btn sm p" data-save-outcome="${id}">Save outcome</button></div>
+      </div>
+      <div>
+        ${j?`<h4>Show them <button type="button" data-go-kit="${j.id}">Open the kit</button></h4>${kitList(kitFor(j.id))||'<div class="empty">Nothing in the kit yet. Add links on the client page.</div>'}`:''}
+        ${j?`<h4>Who</h4>${contactsKv(j)||'<div class="empty">No contacts on this client yet.</div>'}`:''}
+        <h4>Mail around this meeting <span>${related.length}</span></h4>
+        ${related.length?`<div class="rows threadwrap">${threadRows(buildThreads(related))}</div>`:'<div class="empty">No mail within a week of it.</div>'}
+        ${others.length?`<h4>Other meetings · ${esc(j?j.name:'')}</h4><div class="rows">${others.map(x=>meetingRow(x,new Date(x.when).getTime()<Date.now()-3600e3)).join('')}</div>`:''}
+      </div>
+    </div>`,'Meeting');
+}
+function openEmail(id){
+  const e=state.emails[id]; if(!e) return; state.open='email:'+id; const j=state.jobs[e.jobId];
+  const thread=Object.values(state.emails).filter(x=>x.jobId===e.jobId && threadKey(x)===threadKey(e)).sort((a,b)=>a.when.localeCompare(b.when));
+  openPanel(`${head(e.subject||'(no subject)', esc([e.from, fmtWhen(e.when)].filter(Boolean).join(' · '))+(j?` · <button type="button" class="btn q sm" style="padding:0;height:auto" data-open="job:${j.id}">${esc(j.name)}</button>`:''))}
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:12px">${e.reply?'<span class="chip reply">Reply owed</span>':''}${e.folder?`<span class="chip src">${esc(e.folder)}</span>`:''}</div>
+    <div class="detail">
+      <div>
+        <h4>Gist</h4><div style="white-space:pre-wrap;color:var(--ink-2);font-size:15px">${esc(e.gist||'—')}</div>
+        ${e.url?`<h4>Link</h4><a href="${esc(e.url)}" target="_blank" rel="noopener" style="overflow-wrap:anywhere">${esc(e.url)}</a>`:''}
+        <div style="display:flex;justify-content:space-between;margin-top:22px;gap:8px"><button type="button" class="btn q danger sm" data-del="emails:${id}">Delete</button><div style="display:flex;gap:8px"><button type="button" class="btn sm" data-edit-email="${id}">Edit</button>${e.reply?`<button type="button" class="btn sm p" data-replied="${id}">Mark replied</button>`:''}</div></div>
+      </div>
+      <div>
+        ${j?`<h4>Who</h4>${contactsKv(j)||'<div class="empty">No contacts on this client yet.</div>'}`:''}
+        ${thread.length>1?`<h4>The thread <span>${thread.length}</span></h4><div class="rows">${thread.map(x=>x.id===id?`<div class="row" style="cursor:default;background:var(--panel)"><div class="t">${esc(x.subject||'')}</div><div class="s">${esc([x.from,x.gist].filter(Boolean).join(' · '))}</div><div class="r"><span class="time">${esc(fmtShort(x.when))}</span></div></div>`:emailRow(x)).join('')}</div>`:''}
+      </div>
+    </div>`,'Email');
+}
+
+/* forms */
+function formJob(j={}){
+  state.open=null; openPanel(`${head(j.id?'Edit job':'Add job')}
+  <form class="form" id="f" data-kind="job" data-id="${j.id||''}">
+    <div class="field"><label for="f_name">Name (how you say it)</label><input id="f_name" name="name" required value="${esc(j.name||'')}" placeholder="Baba"></div>
+    <div class="two"><div class="field"><label for="f_company">Company</label><input id="f_company" name="company" value="${esc(j.company||'')}" placeholder="Spruce House Capital"></div><div class="field"><label for="f_role">Role</label><input id="f_role" name="role" value="${esc(j.role||'')}" placeholder="Product designer"></div></div>
+    <div class="two"><div class="field"><label for="f_source">Source</label><select id="f_source" name="source">${['a.team','direct','referral','recruiter','client'].map(s=>`<option ${s===(j.source||'a.team')?'selected':''}>${s}</option>`).join('')}</select></div><div class="field"><label for="f_status">Status</label><select id="f_status" name="status">${STATUSES.map(s=>`<option value="${s}" ${s===(j.status||'lead')?'selected':''}>${STATUS_LABEL[s]}</option>`).join('')}</select></div></div>
+    <div class="two"><div class="field"><label for="f_rate">Rate / comp</label><input id="f_rate" name="rate" value="${esc(j.rate||'')}" placeholder="$150/h"></div><div class="field"><label for="f_url">Link (mission, JD)</label><input id="f_url" name="url" type="url" value="${esc(j.url||'')}" placeholder="https://"></div></div>
+    <div class="field"><label for="f_mission">Mission (as a.team names it)</label><input id="f_mission" name="mission" value="${esc(j.mission||'')}" placeholder="Designer, Spruce House"></div>
+    <div class="two"><div class="field"><label for="f_ateam">a.team contact</label><input id="f_ateam" name="ateamContact" value="${esc(j.ateamContact||'')}" placeholder="Ofri Kutzi · ofri@a.team"></div><div class="field"><label for="f_client">Client contact</label><input id="f_client" name="clientContact" value="${esc(j.clientContact||'')}" placeholder="Anne Griffin (PM)"></div></div>
+    <div class="field"><label for="f_notes">Notes</label><textarea id="f_notes" name="notes" placeholder="What they need, next step">${esc(j.notes||'')}</textarea></div>
+    <div class="acts"><button type="button" class="btn" data-close>Cancel</button><button class="btn p">Save</button></div>
+  </form>`);
+  state.viewCrumb='Job'; render(); $('#f_name').focus();
+}
+function formMeeting(m={},jobId){
+  const d=m.when?new Date(m.when):null;
+  openPanel(`${head(m.id?'Edit meeting':'Add meeting')}
+  <form class="form" id="f" data-kind="meeting" data-id="${m.id||''}">
+    <div class="field"><label for="f_title">Title</label><input id="f_title" name="title" required value="${esc(m.title||'')}" placeholder="Interview · Baba"></div>
+    <div class="field"><label for="f_job">Job</label><select id="f_job" name="jobId">${jobOptions(m.jobId||jobId)}</select></div>
+    <div class="two"><div class="field"><label for="f_date">Date</label><input id="f_date" name="date" type="date" required value="${d?localDate(d):todayStr}"></div><div class="field"><label for="f_time">Time</label><input id="f_time" name="time" type="time" required value="${d?localTime(d):localTime()}"></div></div>
+    <div class="field"><label for="f_url">Zoom / meeting link</label><input id="f_url" name="url" type="url" value="${esc(m.url||'')}" placeholder="https://…zoom.us/j/…"></div>
+    <div class="field"><label for="f_linkfrom">Link came from (who, which invite, when)</label><input id="f_linkfrom" name="linkFrom" value="${esc(m.linkFrom||'')}" placeholder="Daniel · Updated invitation · Sep 15 9:05am"></div>
+    <div class="field"><label for="f_notes">Prep / agenda</label><textarea id="f_notes" name="notes" placeholder="Who's on, what to show, questions to ask">${esc(m.notes||'')}</textarea></div>
+    <div class="acts"><button type="button" class="btn" data-close>Cancel</button><button class="btn p">Save</button></div>
+  </form>`);
+  state.viewCrumb='Meeting'; render(); $('#f_title').focus();
+}
+function formEmail(e={},jobId){
+  const d=e.when?new Date(e.when):new Date();
+  openPanel(`${head(e.id?'Edit email':'File an email')}
+  <form class="form" id="f" data-kind="email" data-id="${e.id||''}">
+    <div class="two"><div class="field"><label for="f_from">From / to</label><input id="f_from" name="from" value="${esc(e.from||'')}" placeholder="Name @ company"></div><div class="field"><label for="f_job">Job</label><select id="f_job" name="jobId">${jobOptions(e.jobId||jobId)}</select></div></div>
+    <div class="field"><label for="f_subject">Subject</label><input id="f_subject" name="subject" required value="${esc(e.subject||'')}"></div>
+    <div class="field"><label for="f_gist">Gist (paste the email, or one line)</label><textarea id="f_gist" name="gist" placeholder="What it says and what it needs">${esc(e.gist||'')}</textarea></div>
+    <div class="two"><div class="field"><label for="f_date">Date</label><input id="f_date" name="date" type="date" value="${localDate(d)}"></div><div class="field"><label for="f_url">Link (Zoho, thread)</label><input id="f_url" name="url" type="url" value="${esc(e.url||'')}" placeholder="https://"></div></div>
+    <label style="display:flex;gap:8px;align-items:center;font-size:14px"><input type="checkbox" name="reply" id="f_reply" ${e.reply?'checked':''} style="width:18px;height:18px"> Reply owed</label>
+    <div class="acts"><button type="button" class="btn" data-close>Cancel</button><button class="btn p">Save</button></div>
+  </form>`);
+  state.viewCrumb='Email'; render(); $('#f_subject').focus();
+}
+function formShow(t={},jobId){
+  openPanel(`${head(t.id?'Edit tool':'Add to the toolkit')}
+  <form class="form" id="f" data-kind="show" data-id="${t.id||''}">
+    <div class="field"><label for="f_title">Title (the tab)</label><input id="f_title" name="title" required value="${esc(t.title||'')}" placeholder="Acts · live tester funnel"></div>
+    <div class="two"><div class="field"><label for="f_kind">Kind</label><input id="f_kind" name="kind" value="${esc(t.kind||'')}" placeholder="demo · prototype · case study"></div><div class="field"><label for="f_job">For job</label><select id="f_job" name="jobId">${jobOptions(t.jobId||jobId)}</select></div></div>
+    <div class="field"><label for="f_url">URL</label><input id="f_url" name="url" type="url" value="${esc(t.url||'')}" placeholder="https://"></div>
+    <div class="field"><label for="f_talk">Talking points</label><textarea id="f_talk" name="talk" placeholder="What to say while it's on screen">${esc(t.talk||'')}</textarea></div>
+    <div class="two"><div class="field"><label for="f_order">Order</label><input id="f_order" name="order" type="number" value="${t.order??''}" placeholder="1"></div></div>
+    <div class="acts">${t.id?`<button type="button" class="btn q danger" data-del="show:${t.id}">Delete</button>`:''}<button type="button" class="btn" data-close>Cancel</button><button class="btn p">Save</button></div>
+  </form>`);
+  state.viewCrumb='Toolkit'; render(); $('#f_title').focus();
+}
+function formTime(jobId){
+  openPanel(`${head('Log time')}
+  <form class="form" id="f" data-kind="time">
+    <div class="field"><label for="f_job">Job</label><select id="f_job" name="jobId" required>${jobOptions(jobId)}</select></div>
+    <div class="two"><div class="field"><label for="f_min">Minutes</label><input id="f_min" name="minutes" type="number" min="1" step="5" required value="30"></div><div class="field"><label for="f_date">Date</label><input id="f_date" name="date" type="date" value="${todayStr}"></div></div>
+    <div class="field"><label for="f_note">What</label><input id="f_note" name="note" placeholder="Portfolio prep, call, proposal…"></div>
+    <div class="acts"><button type="button" class="btn" data-close>Cancel</button><button class="btn p">Save</button></div>
+  </form>`);
+  state.viewCrumb='Time'; render(); $('#f_min').focus();
+}
+function formNote(){
+  openPanel(`${head('Note')}
+  <form class="form" id="f" data-kind="note">
+    <div class="field"><label for="f_job">Job (optional)</label><select id="f_job" name="jobId">${jobOptions('')}</select></div>
+    <div class="field"><label for="f_text">What happened</label><textarea id="f_text" name="text" required placeholder="Recruiter pinged, sent the deck, waiting on Steve…"></textarea></div>
+    <div class="acts"><button type="button" class="btn" data-close>Cancel</button><button class="btn p">Save</button></div>
+  </form>`);
+  state.viewCrumb='Note'; render(); $('#f_text').focus();
+}
+
+/* submit */
+document.addEventListener('submit', async e=>{
+  const f=e.target.closest('#f'); if(!f) return; e.preventDefault();
+  const fd=new FormData(f); const v=Object.fromEntries(fd.entries()); const kind=f.dataset.kind; const id=f.dataset.id||uid(); const isNew=!f.dataset.id;
+  const btn=f.querySelector('.btn.p'); btn.disabled=true;
+  let ok=false;
+  if(kind==='job'){
+    const prev=state.jobs[id]||{};
+    ok=await write('jobs',id,{id,name:v.name.trim(),company:v.company.trim(),role:v.role.trim(),source:v.source,status:v.status,rate:v.rate.trim(),url:v.url.trim(),mission:(v.mission||'').trim(),ateamContact:(v.ateamContact||'').trim(),clientContact:(v.clientContact||'').trim(),notes:v.notes,time:prev.time||[],createdAt:prev.createdAt||nowISO(),updatedAt:nowISO()});
+    if(ok) await logIt('job', isNew?`Added job ${v.name.trim()} (${STATUS_LABEL[v.status]})`:`Edited job ${v.name.trim()}`, id);
+    if(ok){ closePanel(); if(!isNew) openJob(id); }
+  } else if(kind==='meeting'){
+    const when=new Date(`${v.date}T${v.time}`).toISOString();
+    const prevM=state.meetings[id]||{}; const newUrl=v.url.trim(); const linkChanged = prevM.url && newUrl && prevM.url!==newUrl ? `${prevM.url} (until ${fmtShort(nowISO())})` : (prevM.linkChanged||'');
+    ok=await write('meetings',id,{id,title:v.title.trim(),jobId:v.jobId||null,when,url:newUrl,linkFrom:(v.linkFrom||'').trim(),linkChanged,notes:v.notes,outcome:prevM.outcome||'',createdAt:prevM.createdAt||nowISO()});
+    if(ok) await logIt('meeting', `${isNew?'Meeting set':'Meeting edited'}: ${v.title.trim()} · ${fmtWhen(when)}`, v.jobId||null);
+    if(ok) closePanel();
+  } else if(kind==='email'){
+    const when=v.date?new Date(`${v.date}T${localTime()}`).toISOString():nowISO();
+    ok=await write('emails',id,{id,from:v.from.trim(),jobId:v.jobId||null,subject:v.subject.trim(),gist:v.gist,when,url:v.url.trim(),reply:!!v.reply,createdAt:(state.emails[id]||{}).createdAt||nowISO()});
+    if(ok) await logIt('email', `${isNew?'Email filed':'Email edited'}: ${v.subject.trim()}${v.from?` · ${v.from.trim()}`:''}`, v.jobId||null);
+    if(ok) closePanel();
+  } else if(kind==='show'){
+    ok=await write('show',id,{id,title:v.title.trim(),kind:v.kind.trim(),jobId:v.jobId||null,url:v.url.trim(),talk:v.talk,order:v.order===''?null:+v.order});
+    if(ok){ state.showSel=id; closePanel(); if(state.tab!=='show'){ state.tab='show'; try{localStorage.setItem('md.tab','show')}catch(err){} } render(); }
+  } else if(kind==='time'){
+    const j=state.jobs[v.jobId]; if(!j){ toast('Pick a job'); btn.disabled=false; return; }
+    const entry={date:new Date(`${v.date||todayStr}T${localTime()}`).toISOString(),minutes:+v.minutes,note:v.note.trim()};
+    ok=await patch('jobs',j.id,{time:[...(j.time||[]),entry],updatedAt:nowISO()});
+    if(ok) await logIt('time', `${hm(entry.minutes)} on ${j.name}${entry.note?` — ${entry.note}`:''}`, j.id);
+    if(ok){ closePanel(); if(state.open==='job:'+j.id) openJob(j.id); }
+  } else if(kind==='note'){
+    ok=await logIt('note', v.text.trim(), v.jobId||null);
+    if(ok) closePanel();
+  }
+  btn.disabled=false; if(ok) toast('Saved');
+});
+
+/* timer (per device; the stop writes a time entry) */
+function runningTimer(){ try{ const t=JSON.parse(localStorage.getItem('md.timer')||'null'); return t&&t.jobId&&state.jobs[t.jobId]?t:null; }catch(e){ return null; } }
+function startTimer(jobId){ try{ localStorage.setItem('md.timer',JSON.stringify({jobId,startedAt:Date.now()})); }catch(e){ toast('Timer needs browser storage'); return; } toast('Timer started'); openJob(jobId); render(); }
+async function stopTimer(){
+  const t=runningTimer(); if(!t) return; const j=state.jobs[t.jobId]; const minutes=Math.max(1,Math.round((Date.now()-t.startedAt)/60e3));
+  const ok=await patch('jobs',j.id,{time:[...(j.time||[]),{date:new Date(t.startedAt).toISOString(),minutes,note:'Timer'}],updatedAt:nowISO()});
+  if(ok){ try{ localStorage.removeItem('md.timer'); }catch(e){} await logIt('time',`${hm(minutes)} on ${j.name} — timer`,j.id); toast(`Saved ${hm(minutes)}`); if(state.open==='job:'+j.id) openJob(j.id); render(); }
+}
+setInterval(()=>{ if(runningTimer() && (state.tab==='today' || (state.open||'').startsWith('job:'))){ if(state.open&&state.open.startsWith('job:')) openJob(state.open.slice(4)); else render(); } }, 30e3);
+
+/* clicks */
+document.addEventListener('click', async e=>{
+  const t=e.target;
+  if(t.closest('[data-stop]')) { e.stopPropagation(); return; }
+  const close=t.closest('[data-close]'); if(close){ closePanel(); return; }
+  const go=t.closest('[data-go]'); if(go){ state.tab=go.dataset.go; try{localStorage.setItem('md.tab',state.tab)}catch(err){} render(); return; }
+  const open=t.closest('[data-open]'); if(open){ const [k,id]=open.dataset.open.split(':'); ({job:openJob,meeting:openMeeting,email:openEmail,show:x=>formShow(state.show[x])})[k](id); return; }
+  const show=t.closest('[data-show]'); if(show){ state.showSel=show.dataset.show; render(); return; }
+  const kit=t.closest('[data-kit]'); if(kit){ state.showJob=kit.dataset.kit==='none'?null:kit.dataset.kit; state.showSel=null; render(); return; }
+  const gk=t.closest('[data-go-kit]'); if(gk){ state.showJob=gk.dataset.goKit||null; state.showSel=null; state.view=null; state.open=null; state.tab='show'; try{localStorage.setItem('md.tab','show')}catch(err){} render(); return; }
+  const fl=t.closest('[data-filter]'); if(fl){ state.inboxFilter=fl.dataset.filter; try{localStorage.setItem('md.inboxFilter',state.inboxFilter)}catch(err){} render(); return; }
+  if(t.closest('[data-noise]')){ state.inboxNoise=!state.inboxNoise; if(state.open){ const [k,id]=state.open.split(':'); if(k==='job'){ openJob(id); return; } } render(); return; }
+  const add=t.closest('[data-add]'); if(add){ const job=add.dataset.job||''; ({job:()=>formJob(),meeting:()=>formMeeting({},job),email:()=>formEmail({},job),show:()=>formShow({},job),time:()=>formTime(job),note:()=>formNote()})[add.dataset.add](); return; }
+  if(t.closest('#fab')){ ({today:()=>formTime(''),jobs:()=>formJob(),meetings:()=>formMeeting({}),inbox:()=>formEmail({}),show:()=>formShow({}),log:()=>formNote()})[state.tab](); return; }
+  const st=t.closest('[data-status]'); if(st){ const id=state.open.slice(4); const j=state.jobs[id]; if(j.status!==st.dataset.status){ const ok=await patch('jobs',id,{status:st.dataset.status,updatedAt:nowISO()}); if(ok){ await logIt('status',`${j.name} → ${STATUS_LABEL[st.dataset.status]}`,id); toast('Status saved'); } } return; }
+  const start=t.closest('[data-start-timer]'); if(start){ startTimer(start.dataset.startTimer); return; }
+  if(t.closest('[data-stop-timer]')){ stopTimer(); return; }
+  const sn=t.closest('[data-save-notes]'); if(sn){ const id=sn.dataset.saveNotes; const ok=await patch('jobs',id,{notes:$('#jobNotes').value,updatedAt:nowISO()}); if(ok) toast('Notes saved'); return; }
+  const so=t.closest('[data-save-outcome]'); if(so){ const id=so.dataset.saveOutcome; const ok=await patch('meetings',id,{outcome:$('#meetOutcome').value}); if(ok){ await logIt('meeting',`Outcome · ${state.meetings[id].title}: ${$('#meetOutcome').value.slice(0,120)}`,state.meetings[id].jobId); toast('Outcome saved'); } return; }
+  const rp=t.closest('[data-replied]'); if(rp){ const id=rp.dataset.replied; const ok=await patch('emails',id,{reply:false}); if(ok){ await logIt('email',`Replied · ${state.emails[id].subject}`,state.emails[id].jobId); toast('Marked replied'); openEmail(id); } return; }
+  const ej=t.closest('[data-edit-job]'); if(ej){ formJob(state.jobs[ej.dataset.editJob]); return; }
+  const em=t.closest('[data-edit-meeting]'); if(em){ formMeeting(state.meetings[em.dataset.editMeeting]); return; }
+  const ee=t.closest('[data-edit-email]'); if(ee){ formEmail(state.emails[ee.dataset.editEmail]); return; }
+  const del=t.closest('[data-del]'); if(del){ const [coll,id]=del.dataset.del.split(':'); const name=(state[coll==='jobs'?'jobs':coll==='meetings'?'meetings':coll==='emails'?'emails':'show'][id]||{}); if(!confirm(`Delete "${name.name||name.title||name.subject||'this'}"?`)) return; const ok=await remove(coll,id); if(ok){ await logIt('delete',`Deleted ${coll.slice(0,-1)}: ${name.name||name.title||name.subject||id}`,null); closePanel(); toast('Deleted'); } return; }
+});
+
+
+/* ---------- static hosting shim: data.json + localStorage overlay (no artifact runtime) ---------- */
+async function localDb(){
+  const LS='missionDesk.overlay.v1';
+  let overlay={}; try{ overlay=JSON.parse(localStorage.getItem(LS)||'{}'); }catch(e){ overlay={}; }
+  const base=await (await fetch('data.json',{cache:'no-store'})).json();
+  const listeners={};
+  const docsOf=coll=>{ const m={...(base[coll]||{})}; for(const [id,v] of Object.entries(overlay[coll]||{})){ if(v===null) delete m[id]; else m[id]=v; } return m; };
+  const persist=()=>{ try{ localStorage.setItem(LS,JSON.stringify(overlay)); }catch(e){} };
+  const snap=coll=>{ const m=docsOf(coll); return {docs:Object.entries(m).map(([id,d])=>({id,data:()=>d}))}; };
+  const fire=coll=>(listeners[coll]||[]).forEach(fn=>fn(snap(coll)));
+  const setDoc=(coll,id,v)=>{ (overlay[coll]=overlay[coll]||{})[id]=v; persist(); fire(coll); };
+  const q=(coll,opts)=>({ orderBy:(f,dir)=>q(coll,{...opts,f,dir}), limit:n=>q(coll,{...opts,n}),
+    onSnapshot:(fn)=>{ const w=s=>{ let docs=s.docs; if(opts.f) docs=[...docs].sort((a,b)=>{ const x=a.data()[opts.f]||'',y=b.data()[opts.f]||''; return (x<y?-1:x>y?1:0)*(opts.dir==='desc'?-1:1); }); if(opts.n) docs=docs.slice(0,opts.n); fn({docs}); }; (listeners[coll]=listeners[coll]||[]).push(w); w(snap(coll)); return ()=>{}; } });
+  return {
+    collection:coll=>q(coll,{}),
+    doc:p=>{ const [coll,id]=p.split('/'); return {
+      set:async v=>setDoc(coll,id,v),
+      update:async v=>setDoc(coll,id,{...(docsOf(coll)[id]||{}),...v}),
+      delete:async()=>setDoc(coll,id,null) }; }
+  };
+}
+
+/* ---------- boot ---------- */
+render();
+(async()=>{
+  let db=null;
+  try{ db = window.claude && window.claude.use ? await window.claude.use('db') : await localDb(); }catch(e){ db=null; }
+  state.db=db; state.dbChecked=true;
+  if(!db){ setSync(false,'not saving'); render(); return; }
+  setSync(true, window.claude ? 'synced' : 'saved on this device');
+  const sub=(coll,into)=> db.collection(coll).onSnapshot(snap=>{ const m={}; snap.docs.forEach(d=>{ m[d.id]={id:d.id,...d.data()}; }); state[into]=m; if(state.open){ const [k,id]=state.open.split(':'); if(k==='job'&&state.jobs[id]) return openJob(id); if(k==='meeting'&&state.meetings[id]) return openMeeting(id); if(k==='email'&&state.emails[id]) return openEmail(id); } render(); }, err=>{ setSync(false,'sync lost'); });
+  sub('jobs','jobs'); sub('meetings','meetings'); sub('emails','emails'); sub('show','show');
+  db.collection('log').orderBy('when','desc').limit(300).onSnapshot(snap=>{ state.log=snap.docs.map(d=>({id:d.id,...d.data()})); render(); }, ()=>{});
+})();
+</script>
+
+</body></html>
