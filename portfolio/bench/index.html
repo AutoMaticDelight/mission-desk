@@ -148,7 +148,7 @@ img { max-width: 100%; display: block; }
   -webkit-backdrop-filter: blur(20px) saturate(140%); border-bottom:1px solid var(--rule); }
 .topbar-inner { max-width: var(--max); margin:0 auto; padding:16px var(--pad-x);
   display:flex; align-items:center; justify-content:space-between; gap:28px; }
-.brand-mark { font-size:22px; letter-spacing:-0.01em; color:var(--cream); font-weight:600; }
+.brand-mark { font-size:22px; letter-spacing:-0.01em; color:var(--cream); font-weight:600; display:inline-flex; align-items:center; gap:8px; }
 .brand-italic { font-style: italic; }
 .nav { display:flex; align-items:center; gap:26px; font-size:14px; color:var(--muted); }
 .nav-cta { color:var(--bg) !important; background:var(--coral); padding:9px 16px; border-radius:999px; font-weight:600; }
@@ -259,7 +259,7 @@ footer { border-top:1px solid var(--rule); margin-top:70px; padding:34px 0 60px;
 
 <header class="topbar">
   <div class="topbar-inner">
-    <a href="https://automaticdelight.com/" class="brand-mark"><svg class="brand-logo" viewBox="0 0 64 64" width="30" height="30" aria-hidden="true" style="vertical-align:-6px;margin-right:8px"><circle cx="32" cy="32" r="30" fill="#FF2E88"/><circle cx="23" cy="27" r="3.2" fill="#0B0B0B"/><circle cx="41" cy="27" r="3.2" fill="#0B0B0B"/><path d="M20 38 Q32 50 44 38" fill="none" stroke="#0B0B0B" stroke-width="4.2" stroke-linecap="round"/></svg><span class="brand-italic">Automatic</span>Delight</a>
+    <a href="https://automaticdelight.com/" class="brand-mark"><svg class="brand-logo" viewBox="0 0 64 64" width="30" height="30" aria-hidden="true" style="vertical-align:-6px;margin-right:8px;flex:none"><circle cx="32" cy="32" r="30" fill="#FF2E88"/><circle cx="23" cy="27" r="3.2" fill="#0B0B0B"/><circle cx="41" cy="27" r="3.2" fill="#0B0B0B"/><path d="M20 38 Q32 50 44 38" fill="none" stroke="#0B0B0B" stroke-width="4.2" stroke-linecap="round"/></svg><span class="brand-italic">Automatic</span>Delight</a>
     <nav class="nav">
       <a href="https://automaticdelight.com/#work">Work</a>
       <a href="https://automaticdelight.com/#how">How we work</a>
