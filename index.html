@@ -562,16 +562,9 @@ function renderShow(){
     <div class="kithead"><h3>${esc(j?j.name:'General')}${j&&j.company&&j.company!==j.name?` <span class="meta">· ${esc(j.company)}</span>`:''}</h3><span class="meta">${nm?`Next: ${esc(fmtWhen(nm.when))} · ${esc(nm.title)}`:j?esc(j.role||''):''}</span></div>
     ${nm&&nm.url?`<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:6px"><a class="btn p" href="${esc(nm.url)}" target="_blank" rel="noopener">Join ${isZoom(nm.url)?'Zoom':host(nm.url)}</a><button type="button" class="btn" data-open="meeting:${nm.id}">Meeting</button>${j?`<button type="button" class="btn" data-open="job:${j.id}">Client</button>`:''}</div>`:''}
     <div class="showtabs">${kit.tools.map(x=>`<button type="button" class="showtab ${x.id===state.showSel?'on':''}" data-show="${x.id}">${esc(x.title)}</button>`).join('')}</div>
-    <div class="showcard">
-      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">${t.kind?`<span class="chip">${esc(t.kind)}</span>`:''}${j?`<span class="chip src">${esc(j.name)}</span>`:''}</div>
-      <h3>${esc(t.title)}</h3>
-      ${t.url?`<div class="url">${esc(t.url)}</div>`:''}
-      ${t.talk?`<div class="talk">${esc(t.talk)}</div>`:''}
-      <div class="acts">
-        ${t.url?`<a class="btn p" href="${esc(t.url)}" target="_blank" rel="noopener">Open</a>`:''}
-        <button type="button" class="btn" data-open="show:${t.id}">Edit</button>
-      </div>
-    </div>
+    ${(()=>{ const src=pfEmbedSrc(t); return `<div class="pfhead" style="margin-top:10px"><div><h3 style="font:600 18px/1.2 var(--display)">${esc(t.title)}</h3></div><div class="acts">${t.url?`<a class="btn p" href="${esc(t.url)}" target="_blank" rel="noopener">Open ↗</a>`:''}<button type="button" class="btn" data-open="show:${t.id}">Edit</button></div></div>
+    <div class="pfframe" style="margin-top:8px">${src?`<iframe src="${esc(src)}" title="${esc(t.title)}" loading="eager" allow="clipboard-write" referrerpolicy="no-referrer"></iframe>`:`<div class="pfcard"><div class="k">${esc(t.kind||'link')}</div><h3>${esc(t.title)}</h3><p>${esc(t.url||'')}</p>${t.url?`<a class="btn p" href="${esc(t.url)}" target="_blank" rel="noopener">Open ↗</a>`:''}</div>`}</div>
+    ${t.talk?`<div class="pftalk" style="margin-top:10px">${esc(t.talk)}</div>`:''}`; })()}
     <h4 style="font:600 11px var(--body);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);margin:22px 0 8px">Everything in this kit</h4>
     ${kitList(kit.tools)}
   </section>`;
