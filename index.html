@@ -499,7 +499,7 @@ function renderInbox(){
 function kitFor(jobId){ return Object.values(state.show).filter(t=>(t.jobId||null)===jobId).sort((a,b)=>(a.order??99)-(b.order??99) || a.title.localeCompare(b.title)); }
 function kitList(tools){ if(!tools.length) return ''; return `<div class="openall">${tools.map(t=>`<a href="${esc(t.url)}" target="_blank" rel="noopener"><span><span class="t">${esc(t.title)}</span>${t.kind?` <span class="chip" style="margin-left:6px">${esc(t.kind)}</span>`:''}<div class="u">${esc(t.url)}</div></span><span class="btn sm p">Open</span></a>`).join('')}</div>`; }
 /* ---------- portfolio ---------- */
-const PF_ORDER=['baba','gfa','apex','lab37','acts'];
+const PF_ORDER=['baba','gfa','apex','lab37'];
 const PF_STATIC=!(window.claude && window.claude.use); // hosted copy (Vercel): same-origin embeds available
 function pfKey(t){ return t.project ? 'p:'+t.project : (t.jobId ? 'j:'+t.jobId : 'general'); }
 function pfLabel(key){ if(key.startsWith('j:')){ const j=state.jobs[key.slice(2)]; return j? j.name : key.slice(2); } if(key.startsWith('p:')) return key.slice(2); return 'General'; }
@@ -510,7 +510,7 @@ function pfEmbedSrc(t){
   return u;
 }
 function pfProjects(){
-  const tools=Object.values(state.show).filter(t=>!t.hidden);
+  const tools=Object.values(state.show).filter(t=>!t.hidden && !(t.jobId && state.jobs[t.jobId] && state.jobs[t.jobId].status==='client'));
   const map=new Map();
   for(const t of tools){ const k=pfKey(t); if(!map.has(k)) map.set(k,[]); map.get(k).push(t); }
   const rank=k=>{ const i=k.startsWith('j:')?PF_ORDER.indexOf(k.slice(2)):-1; return i<0? (k==='general'?99:50) : i; };
@@ -556,7 +556,7 @@ function toolViewer(tools, selId, prefix){
 }
 state.jobTool=null;
 function renderShow(){
-  const tools=Object.values(state.show);
+  const tools=Object.values(state.show).filter(t=>!t.hidden && !(t.jobId && state.jobs[t.jobId] && state.jobs[t.jobId].status==='client'));
   if(!tools.length) return `<div class="empty">Nothing to show yet. Add the links you open in interviews: demos, prototypes, case studies.</div>`;
   const jobIds=[...new Set(tools.map(t=>t.jobId||null))];
   const kits=jobIds.map(id=>({id, job:id?state.jobs[id]:null, tools:kitFor(id)})).filter(k=>k.tools.length);
