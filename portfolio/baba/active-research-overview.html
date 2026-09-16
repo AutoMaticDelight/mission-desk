@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Baba — Active Research</title>
+  <style>
+    :root { --bg:#f4f5f3; --panel:#fff; --ink:#16211c; --muted:#68736c; --line:#dce1dc; --soft:#eef1ed; --navy:#173d52; --blue:#1968a6; --green:#147a51; --amber:#a76409; --red:#b13b3b; --radius:10px; }
+    *{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--ink);font:13px/1.45 Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}.mono,.num{font-variant-numeric:tabular-nums;font-feature-settings:"tnum" 1}
+    .app{min-height:100vh}.topbar{height:52px;background:#112d3b;color:#fff;display:flex;align-items:center;padding:0 28px;gap:24px}.brand{font-size:17px;font-weight:750;letter-spacing:-.04em}.brand i{font-style:normal;color:#8ee0ba}.crumb{font-size:12px;color:#b6c6cc;border-left:1px solid #3e5965;padding-left:22px}.topspacer{flex:1}.search{color:#c2d0d5;background:#294653;border:1px solid #42606c;border-radius:6px;padding:7px 12px;width:230px}.avatar{width:28px;height:28px;border-radius:50%;background:#d8a947;color:#263039;display:grid;place-items:center;font-weight:700;font-size:11px}
+    main{max-width:1500px;margin:0 auto;padding:26px 28px 42px}.subnav{display:flex;gap:20px;align-items:center;color:var(--muted);font-size:12px;margin-bottom:20px}.subnav .active{color:var(--ink);font-weight:700;border-bottom:2px solid var(--blue);padding-bottom:7px}.subnav span:last-child{margin-left:auto}.company-head{display:flex;align-items:flex-start;gap:17px;margin-bottom:20px}.ticker{width:52px;height:52px;background:var(--navy);border-radius:11px;color:#fff;display:grid;place-items:center;font-weight:750;letter-spacing:-.05em}.company-head h1{margin:0;font-size:24px;letter-spacing:-.04em;line-height:1.05}.company-head p{margin:6px 0 0;color:var(--muted)}.head-right{margin-left:auto;display:flex;gap:9px;align-items:center}.phase{font-size:11px;font-weight:750;letter-spacing:.06em;color:#185f45;background:#e3f5ec;padding:6px 9px;border-radius:5px}.button{border:1px solid var(--line);background:#fff;border-radius:6px;padding:8px 11px;font:inherit;font-weight:650;color:#28342e;cursor:pointer}.button.primary{background:var(--navy);border-color:var(--navy);color:#fff}
+    .decision{background:#173d52;color:#fff;border-radius:var(--radius);padding:16px 18px;display:grid;grid-template-columns:1.7fr repeat(3,auto);gap:24px;align-items:center;margin-bottom:16px}.label{color:#aec4cf;text-transform:uppercase;font-size:10px;font-weight:750;letter-spacing:.08em}.thesis{font-size:14px;font-weight:590;margin-top:3px}.metric{border-left:1px solid #476473;padding-left:20px}.metric b{font-size:18px;letter-spacing:-.03em;display:block}.metric span{color:#b7c8cf;font-size:11px}.up{color:#78deb2!important}.grid{display:grid;grid-template-columns:32% 68%;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;background:var(--panel)}.cell{padding:18px;border-bottom:1px solid var(--line)}.left{border-right:1px solid var(--line)}.section-title{font-size:10px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:#516058;margin-bottom:13px}.case{padding:11px 0;border-top:1px solid var(--line)}.case:first-of-type{border-top:0;padding-top:0}.case strong{font-size:13px}.case p{color:var(--muted);margin:3px 0 0;max-width:360px}.tag{font-size:10px;border-radius:4px;padding:2px 6px;margin-right:5px;font-weight:750}.tag.green{color:#0f6b47;background:#e2f4eb}.tag.red{color:#9d3030;background:#f9e9e8}.tag.amber{color:#955600;background:#f9efdc}.mini-link{color:var(--blue);font-size:12px;font-weight:650;margin-top:10px;display:inline-block}.finance-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:9px}.finance-head .legend{color:var(--muted);font-size:11px}.table{width:100%;border-collapse:collapse}.table th{text-align:right;font-size:10px;color:var(--muted);font-weight:700;padding:5px 7px;border-bottom:1px solid var(--line)}.table th:first-child,.table td:first-child{text-align:left;padding-left:0}.table td{text-align:right;padding:7px;color:#28342e;border-bottom:1px solid #edf0ed}.table tr:last-child td{border:0}.table .rowname{font-weight:620}.table .subrow{color:var(--muted);font-size:12px}.delta{color:var(--green)!important;font-weight:700}.valuation{margin-top:13px;padding-top:13px;border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.valuation span{display:block;color:var(--muted);font-size:10px}.valuation b{font-size:14px;display:block;margin-top:2px}.changes{background:#fbfcfb}.change{padding:12px 0;border-top:1px solid var(--line)}.change:first-of-type{border-top:0;padding-top:0}.change-top{display:flex;align-items:center;gap:8px}.change strong{font-size:13px}.proposal{color:#17639d;background:#e6f1f8;font-size:10px;font-weight:750;padding:3px 6px;border-radius:4px}.change p{margin:4px 0;color:var(--muted);font-size:12px}.source{font-size:11px;color:#68736c}.actions{margin-top:8px;display:flex;gap:7px}.tiny{font:inherit;font-size:11px;border:1px solid var(--line);padding:4px 7px;border-radius:4px;background:#fff;cursor:pointer}.tiny.accept{color:#0c6c47;border-color:#a8d9c4}.coverage{grid-column:1/-1;padding:15px 18px;background:#fbfcfb;border-bottom:0}.coverage-row{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:12px}.pill{background:#edf1ed;color:#435147;border-radius:20px;padding:4px 8px}.fresh{color:var(--green);font-weight:700}
+    .drawer{position:fixed;right:20px;top:70px;width:390px;background:#fff;border:1px solid var(--line);box-shadow:0 18px 46px rgba(19,38,29,.18);border-radius:10px;padding:20px;display:none;z-index:3}.drawer.open{display:block}.drawer-head{display:flex;justify-content:space-between;align-items:start}.drawer h2{font-size:17px;letter-spacing:-.03em;margin:0}.close{border:0;background:transparent;font-size:20px;color:var(--muted);cursor:pointer}.drawer .fromto{font-size:18px;font-weight:750;margin:15px 0 5px}.drawer .why{padding:12px;background:var(--soft);border-radius:7px;margin:14px 0}.drawer .why b{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px}.drawer ul{padding-left:17px;margin:0;color:#425047;font-size:12px}.drawer li{margin:4px 0}.impact{border-top:1px solid var(--line);padding-top:12px;margin-top:14px}.impact div{display:flex;justify-content:space-between;padding:5px 0;font-size:12px}.drawer-footer{display:flex;gap:8px;margin-top:18px}.drawer-footer .button{font-size:12px}.note{margin-top:15px;color:var(--muted);font-size:11px}
+    @media(max-width:900px){.grid{grid-template-columns:1fr}.left{border-right:0}.decision{grid-template-columns:1fr 1fr}.metric{border-left:0;padding-left:0}.company-head{flex-wrap:wrap}.head-right{margin-left:0}.topbar{padding:0 14px}.crumb,.search{display:none}main{padding:20px 14px}.drawer{right:10px;left:10px;width:auto}}
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand">ba<i>ba</i></div><div class="crumb">Research / Active Research / NSCM</div><div class="topspacer"></div><div class="search">⌘ K &nbsp; Search research</div><div class="avatar">RC</div>
+    </header>
+    <main>
+      <nav class="subnav"><span class="active">Overview</span><span>Model</span><span>Research</span><span>Comps</span><span>Timeline</span><span>Settings</span><span>Last synced Sep 11, 2026 · 4:12 PM ET</span></nav>
+      <section class="company-head">
+        <div class="ticker">NS</div><div><h1>Northstar Commerce <span style="color:#68736c;font-weight:500">NSCM</span></h1><p>Consumer Internet · United States · $18.4B market cap · Last price <span class="num">$84.20</span></p></div>
+        <div class="head-right"><span class="phase">ACTIVE RESEARCH</span><button class="button">+ Add note</button><button class="button primary">Request agent update</button></div>
+      </section>
+      <section class="decision">
+        <div><div class="label">Current underwriting view</div><div class="thesis">Margin expansion is under-modeled; unit economics must validate.</div></div>
+        <div class="metric"><b class="num">$108.00</b><span>Base-case target</span></div>
+        <div class="metric"><b class="num up">+28.3%</b><span>Implied upside</span></div>
+        <div class="metric"><b class="num">2h ago</b><span>Last analyst review</span></div>
+      </section>
+      <section class="grid">
+        <div class="cell left">
+          <div class="section-title">Investment case</div>
+          <div class="case"><strong><span class="tag green">VARIANT</span>Fulfillment mix expansion</strong><p>Street assumptions understate mix shift toward higher-margin merchant services through FY27.</p></div>
+          <div class="case"><strong><span class="tag red">RISK</span>SMB churn threshold</strong><p>Base case invalidated if trailing cohort churn rises above <span class="num">3.5%</span>.</p></div>
+          <div class="case"><strong><span class="tag amber">OPEN</span>Three unresolved questions</strong><p>Capacity utilization, SMB cohort durability, and pricing realization need primary-source confirmation.</p></div>
+          <a class="mini-link" href="#">View full thesis →</a>
+        </div>
+        <div class="cell">
+          <div class="finance-head"><div class="section-title" style="margin:0">Underwriting snapshot</div><div class="legend">USD millions except per-share data</div></div>
+          <table class="table num"><thead><tr><th></th><th>FY25A</th><th>FY26E</th><th>FY27E</th><th>Δ vs consensus</th></tr></thead><tbody>
+            <tr><td class="rowname">Revenue</td><td>3,842</td><td>4,238</td><td>4,790</td><td class="delta">+2.1%</td></tr>
+            <tr><td class="subrow">Revenue growth</td><td>18.4%</td><td>10.3%</td><td>13.0%</td><td>—</td></tr>
+            <tr><td class="rowname">EBITDA</td><td>618</td><td>741</td><td>905</td><td class="delta">+4.7%</td></tr>
+            <tr><td class="subrow">EBITDA margin</td><td>16.1%</td><td>17.5%</td><td>18.9%</td><td class="delta">+80 bps</td></tr>
+            <tr><td class="rowname">Free cash flow</td><td>415</td><td>506</td><td>634</td><td class="delta">+6.2%</td></tr>
+          </tbody></table>
+          <div class="valuation num"><div><span>EV / EBITDA</span><b>21.4x → 14.6x</b></div><div><span>FY27 FCF yield</span><b>4.4%</b></div><div><span>Base target</span><b>$108.00</b></div><div><span>Upside</span><b style="color:#147a51">+28.3%</b></div></div>
+        </div>
+        <div class="cell left">
+          <div class="section-title">Catalysts & monitoring</div>
+          <div class="case"><strong>Next catalyst</strong><p><span class="num">Nov 6</span> · Q3 earnings<br>Fulfillment-margin disclosure</p></div>
+          <div class="case"><strong>Risk monitor</strong><p>SMB churn: <span class="num">3.1%</span><br>Review threshold: <span class="num">3.5%</span></p></div>
+          <div class="case"><strong>Owner</strong><p>Riley Chen · Research lead</p></div>
+          <a class="mini-link" href="#">Open catalyst calendar →</a>
+        </div>
+        <div class="cell changes">
+          <div class="finance-head"><div class="section-title" style="margin:0">Material changes</div><div class="legend">2 require review</div></div>
+          <div class="change"><div class="change-top"><strong>FY27E Revenue: <span class="num">$4,670M → $4,790M</span></strong><span class="proposal">AGENT PROPOSED</span></div><p>Yipit August order data exceeded the prior run-rate assumption; model impact is estimated at <span class="num">+$3</span> to base target.</p><div class="source">Source: Yipit · Earnings Update Agent · 4h ago</div><div class="actions"><button class="tiny accept">Accept</button><button class="tiny" onclick="openDrawer()">Review diff</button><button class="tiny">Dismiss</button></div></div>
+          <div class="change"><div class="change-top"><strong>TAM source updated</strong><span class="tag green">CONFIRMED</span></div><p>Company 10-Q replaced prior third-party market estimate.</p><div class="source">Confirmed by Riley Chen · Source filing · Yesterday, 2:18 PM</div></div>
+          <div class="change"><div class="change-top"><strong>SMB cohort churn data is stale</strong><span class="tag amber">REVIEW DUE</span></div><p>Last source refresh: 11 days ago. Monitoring threshold remains active.</p><div class="source">Source: StoreLeads · Refresh requested</div></div>
+        </div>
+        <div class="coverage"><div class="section-title">Research coverage</div><div class="coverage-row"><span class="pill">Company</span><span class="pill">Earnings</span><span class="pill">KPIs</span><span class="pill">Comps</span><span class="pill">Regulatory</span><span class="pill">Primary research</span><span style="margin-left:10px">42 artifacts · 6 active sources · 3 pending review · <span class="fresh">Latest primary source 4h ago</span></span></div></div>
+      </section>
+    </main>
+  </div>
+  <aside class="drawer" id="drawer">
+    <div class="drawer-head"><div><div class="section-title">Proposed model update</div><h2>Review agent diff</h2></div><button class="close" onclick="closeDrawer()">×</button></div>
+    <div class="fromto num">FY27E Revenue<br><span style="color:#68736c;font-size:14px;font-weight:550">$4,670M</span> → <span style="color:#147a51">$4,790M</span> <span style="font-size:13px;color:#147a51">(+2.6%)</span></div>
+    <div class="source">Proposed by Earnings Update Agent · 4h ago · Not yet canonical</div>
+    <div class="why"><b>Why the agent changed this</b><ul><li>August order data was 4.1% above the modeled run rate.</li><li>Management reaffirmed fulfillment-capacity targets.</li><li>Evidence was mapped to the Orders / Active Merchant assumption.</li></ul></div>
+    <div class="section-title">Evidence</div><p style="margin:5px 0;color:#1968a6;font-weight:650">Yipit: August merchant order data ↗</p><p style="margin:5px 0;color:#1968a6;font-weight:650">Q2 earnings transcript, p. 11 ↗</p><p style="margin:5px 0;color:#1968a6;font-weight:650">Analyst note #224: unit economics ↗</p>
+    <div class="impact"><div><span>Base-case price target</span><b class="num">$105 → $108</b></div><div><span>FY27 EBITDA margin</span><b class="num">+80 bps</b></div><div><span>Related open question</span><b>SMB cohort durability</b></div></div>
+    <div class="drawer-footer"><button class="button primary">Accept into base case</button><button class="button">Edit first</button></div><div class="note">Acceptance records the reviewer, time, previous value, new value, source evidence, and rationale in the audit trail.</div>
+  </aside>
+  <script>function openDrawer(){document.getElementById('drawer').classList.add('open')}function closeDrawer(){document.getElementById('drawer').classList.remove('open')}</script>
+</body>
+</html>

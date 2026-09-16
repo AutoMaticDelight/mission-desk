@@ -166,6 +166,31 @@ a{color:var(--accent)}
 .log .k{color:var(--ink-3);font-size:12px;margin-left:6px}
 
 /* detail view — a page inside the app, never a sheet */
+/* portfolio */
+.pf{display:flex;flex-direction:column;gap:10px;min-height:calc(100vh - 140px)}
+.pfprojects{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}
+.pfprojects::-webkit-scrollbar{display:none}
+.pfproject{border:1px solid var(--line-2);background:#fff;border-radius:99px;height:40px;padding:0 16px;font:700 15px var(--body);white-space:nowrap;cursor:pointer;display:inline-flex;align-items:center;gap:8px;color:var(--ink)}
+.pfproject .n{font:600 12px var(--mono);color:var(--ink-3)}
+.pfproject.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.pfproject.on .n{color:#fff;opacity:.7}
+.pfhead{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.pfhead h3{margin:0;font:600 22px/1.2 var(--display);letter-spacing:-.01em}
+.pfhead .meta{font-size:14px;color:var(--ink-2)}
+.pfhead .acts{display:flex;gap:8px;flex-wrap:wrap}
+.pftools{display:flex;gap:4px;overflow-x:auto;border-bottom:1px solid var(--line);scrollbar-width:none}
+.pftools::-webkit-scrollbar{display:none}
+.pftool{border:0;background:none;padding:10px 12px;font:600 14px var(--body);color:var(--ink-2);border-bottom:2px solid transparent;margin-bottom:-1px;white-space:nowrap;cursor:pointer}
+.pftool.on{color:var(--ink);border-bottom-color:var(--accent)}
+.pfframe{flex:1;min-height:560px;border:1px solid var(--line);border-radius:12px;background:#fff;overflow:hidden;display:flex}
+.pfframe iframe{width:100%;height:100%;min-height:560px;border:0;flex:1}
+.pfcard{margin:auto;max-width:520px;padding:32px;text-align:center;display:grid;gap:12px;justify-items:center}
+.pfcard .k{font:600 12px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3)}
+.pfcard h3{margin:0;font:600 24px/1.2 var(--display)}
+.pfcard p{margin:0;color:var(--ink-2);font-size:15px;line-height:1.5}
+.pftalk{color:var(--ink-2);font-size:15px;line-height:1.55;white-space:pre-wrap}
+.pfkeys{font:500 12px var(--mono);color:var(--ink-3)}
+@media (max-width:640px){.pf{min-height:0}.pfframe,.pfframe iframe{min-height:70vh}}
 .backbar{display:flex;align-items:center;gap:10px;margin:0 0 16px}
 .back{height:36px;padding:0 12px 0 8px;border-radius:8px;border:1px solid var(--line-2);background:#fff;font-weight:600;font-size:14px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;color:var(--ink)}
 .back:hover{border-color:var(--ink-3)}
@@ -246,6 +271,7 @@ const STATUSES = ['lead','applied','interviewing','offer','won','passed','lost',
 const STATUS_LABEL = {lead:'Lead',applied:'Applied',interviewing:'Interviewing',offer:'Offer',won:'Won',passed:'Passed',lost:'Lost',client:'Active client'};
 const TABS = [
   {id:'today',label:'Today'},
+  {id:'portfolio',label:'Portfolio'},
   {id:'jobs',label:'Jobs'},
   {id:'meetings',label:'Meetings'},
   {id:'inbox',label:'Inbox'},
@@ -254,6 +280,8 @@ const TABS = [
 ];
 const state = {showJob:null, tab:'today', jobs:{}, meetings:{}, emails:{}, show:{}, log:[], db:null, showSel:null, open:null, view:null, viewCrumb:''};
 try{ state.tab = localStorage.getItem('md.tab') || 'today'; }catch(e){}
+state.pf = {project:null, tool:null};
+try{ Object.assign(state.pf, JSON.parse(localStorage.getItem('md.pf')||'{}')); }catch(e){}
 
 /* ---------- helpers ---------- */
 const uid = ()=> (crypto.randomUUID ? crypto.randomUUID() : 'id'+Date.now()+Math.random().toString(36).slice(2,8)).replace(/-/g,'').slice(0,20);
@@ -292,16 +320,16 @@ function renderTabs(){
   const upcoming = Object.values(state.meetings).filter(m=>new Date(m.when)>=new Date(Date.now()-3600e3)).length;
   const counts = {jobs:Object.values(state.jobs).filter(j=>!['passed','lost'].includes(j.status)).length, meetings:upcoming, inbox:Object.keys(state.emails).length, show:Object.keys(state.show).length};
   $('#tabs').innerHTML = TABS.map(t=>`<button type="button" class="tab ${state.tab===t.id?'on':''}" data-tab="${t.id}">${t.label}${counts[t.id]?`<span class="n">${counts[t.id]}</span>`:''}</button>`).join('');
-  $('#fabLabel').textContent = {today:'Log time',jobs:'Add job',meetings:'Add meeting',inbox:'Add email',show:'Add tool',log:'Add note'}[state.tab];
+  $('#fabLabel').textContent = {portfolio:'Add tool',today:'Log time',jobs:'Add job',meetings:'Add meeting',inbox:'Add email',show:'Add tool',log:'Add note'}[state.tab];
 }
 $('#tabs').addEventListener('click',e=>{ const b=e.target.closest('[data-tab]'); if(!b) return; state.view=null; state.open=null; state.tab=b.dataset.tab; try{localStorage.setItem('md.tab',state.tab)}catch(err){} render(); });
 
 /* ---------- render ---------- */
-const TAB_LABEL={today:'Today',jobs:'Jobs',meetings:'Meetings',inbox:'Inbox',show:'Show',log:'Log'};
+const TAB_LABEL={today:'Today',portfolio:'Portfolio',jobs:'Jobs',meetings:'Meetings',inbox:'Inbox',show:'Show',log:'Log'};
 function render(){ renderTabs(); const p=$('#page'); const banner=(state.db===null && state.dbChecked ? `<div class="banner">This view can't save. Open the page signed in on claude.ai to keep changes.</div>` : '');
   if(state.view){ p.innerHTML = banner + `<div class="backbar"><button type="button" class="back" data-close>‹ ${esc(TAB_LABEL[state.tab]||'Back')}</button><span class="crumb">${esc(state.viewCrumb||'')}</span></div><div class="panel">${state.view}</div>`; $('#fab').hidden=true; return; }
   $('#fab').hidden=false;
-  const fn={today:renderToday,jobs:renderJobs,meetings:renderMeetings,inbox:renderInbox,show:renderShow,log:renderLog}[state.tab]; p.innerHTML = banner + fn(); }
+  const fn={today:renderToday,portfolio:renderPortfolio,jobs:renderJobs,meetings:renderMeetings,inbox:renderInbox,show:renderShow,log:renderLog}[state.tab]; p.innerHTML = banner + fn(); }
 
 function jobRow(j){
   const nextM = Object.values(state.meetings).filter(m=>m.jobId===j.id && new Date(m.when)>=new Date(Date.now()-3600e3)).sort((a,b)=>a.when.localeCompare(b.when))[0];
@@ -469,6 +497,54 @@ function renderInbox(){
 
 function kitFor(jobId){ return Object.values(state.show).filter(t=>(t.jobId||null)===jobId).sort((a,b)=>(a.order??99)-(b.order??99) || a.title.localeCompare(b.title)); }
 function kitList(tools){ if(!tools.length) return ''; return `<div class="openall">${tools.map(t=>`<a href="${esc(t.url)}" target="_blank" rel="noopener"><span><span class="t">${esc(t.title)}</span>${t.kind?` <span class="chip" style="margin-left:6px">${esc(t.kind)}</span>`:''}<div class="u">${esc(t.url)}</div></span><span class="btn sm p">Open</span></a>`).join('')}</div>`; }
+/* ---------- portfolio ---------- */
+const PF_ORDER=['baba','gfa','apex','lab37','acts'];
+const PF_STATIC=!(window.claude && window.claude.use); // hosted copy (Vercel): same-origin embeds available
+function pfKey(t){ return t.project ? 'p:'+t.project : (t.jobId ? 'j:'+t.jobId : 'general'); }
+function pfLabel(key){ if(key.startsWith('j:')){ const j=state.jobs[key.slice(2)]; return j? j.name : key.slice(2); } if(key.startsWith('p:')) return key.slice(2); return 'General'; }
+function pfEmbedSrc(t){
+  if(PF_STATIC && t.embed) return t.embed;
+  const u=t.url||''; if(!u) return null;
+  if(/claude\.ai\/artifact|expo\.dev|\.apk(\?|$)/i.test(u)) return null;
+  return u;
+}
+function pfProjects(){
+  const tools=Object.values(state.show).filter(t=>!t.hidden);
+  const map=new Map();
+  for(const t of tools){ const k=pfKey(t); if(!map.has(k)) map.set(k,[]); map.get(k).push(t); }
+  const rank=k=>{ const i=k.startsWith('j:')?PF_ORDER.indexOf(k.slice(2)):-1; return i<0? (k==='general'?99:50) : i; };
+  return [...map.entries()].map(([key,list])=>({key,label:pfLabel(key),tools:list.sort((a,b)=>(a.order??99)-(b.order??99)||a.title.localeCompare(b.title))}))
+    .sort((a,b)=>rank(a.key)-rank(b.key)||a.label.localeCompare(b.label));
+}
+function pfSave(){ try{ localStorage.setItem('md.pf',JSON.stringify(state.pf)); }catch(e){} }
+function renderPortfolio(){
+  const projects=pfProjects();
+  if(!projects.length) return `<div class="empty">Nothing in the portfolio yet. Add links on the Show tab.</div>`;
+  let p=projects.find(x=>x.key===state.pf.project) || projects[0];
+  let t=p.tools.find(x=>x.id===state.pf.tool) || p.tools[0];
+  state.pf.project=p.key; state.pf.tool=t.id;
+  const src=pfEmbedSrc(t); const job=t.jobId?state.jobs[t.jobId]:null; const nm=job?nextMeeting(job.id):null;
+  const idx=p.tools.indexOf(t);
+  return `<section class="section pf">
+    <div class="pfprojects">${projects.map(x=>`<button type="button" class="pfproject ${x.key===p.key?'on':''}" data-pf-project="${esc(x.key)}">${esc(x.label)}<span class="n">${x.tools.length}</span></button>`).join('')}</div>
+    <div class="pfhead">
+      <div><h3>${esc(p.label)}</h3>${job&&job.mission?`<div class="meta">${esc(job.mission)}</div>`:''}</div>
+      <div class="acts">
+        ${nm&&nm.url?`<a class="btn p" href="${esc(nm.url)}" target="_blank" rel="noopener">Join ${isZoom(nm.url)?'Zoom':host(nm.url)}</a>`:''}
+        ${t.url?`<a class="btn" href="${esc(t.url)}" target="_blank" rel="noopener">Open ↗</a>`:''}
+        ${src&&src!==t.url?`<a class="btn" href="${esc(src)}" target="_blank" rel="noopener">Full screen</a>`:''}
+        <button type="button" class="btn" data-open="show:${t.id}">Edit</button>
+        ${job?`<button type="button" class="btn" data-open="job:${job.id}">Client</button>`:''}
+      </div>
+    </div>
+    <div class="pftools">${p.tools.map(x=>`<button type="button" class="pftool ${x.id===t.id?'on':''}" data-pf-tool="${x.id}">${esc(x.title)}</button>`).join('')}</div>
+    <div class="pfframe">${src
+      ? `<iframe src="${esc(src)}" title="${esc(t.title)}" loading="eager" allow="clipboard-write" referrerpolicy="no-referrer"></iframe>`
+      : `<div class="pfcard"><div class="k">${esc(t.kind||'link')}</div><h3>${esc(t.title)}</h3><p>${esc(t.url||'')}</p><p>This one can't be embedded here. Open it in a new tab.</p>${t.url?`<a class="btn p" href="${esc(t.url)}" target="_blank" rel="noopener">Open ${esc(t.title)} ↗</a>`:''}</div>`}</div>
+    ${t.talk?`<div class="pftalk">${esc(t.talk)}</div>`:''}
+    <div class="pfkeys">${idx+1} / ${p.tools.length} · ← → switch tools · ⇧← ⇧→ switch projects</div>
+  </section>`;
+}
 function renderShow(){
   const tools=Object.values(state.show);
   if(!tools.length) return `<div class="empty">Nothing to show yet. Add the links you open in interviews: demos, prototypes, case studies.</div>`;
@@ -734,6 +810,8 @@ document.addEventListener('click', async e=>{
   const go=t.closest('[data-go]'); if(go){ state.tab=go.dataset.go; try{localStorage.setItem('md.tab',state.tab)}catch(err){} render(); return; }
   const open=t.closest('[data-open]'); if(open){ const [k,id]=open.dataset.open.split(':'); ({job:openJob,meeting:openMeeting,email:openEmail,show:x=>formShow(state.show[x])})[k](id); return; }
   const show=t.closest('[data-show]'); if(show){ state.showSel=show.dataset.show; render(); return; }
+  const pp=t.closest('[data-pf-project]'); if(pp){ state.pf.project=pp.dataset.pfProject; state.pf.tool=null; pfSave(); render(); return; }
+  const pt=t.closest('[data-pf-tool]'); if(pt){ state.pf.tool=pt.dataset.pfTool; pfSave(); render(); return; }
   const kit=t.closest('[data-kit]'); if(kit){ state.showJob=kit.dataset.kit==='none'?null:kit.dataset.kit; state.showSel=null; render(); return; }
   const gk=t.closest('[data-go-kit]'); if(gk){ state.showJob=gk.dataset.goKit||null; state.showSel=null; state.view=null; state.open=null; state.tab='show'; try{localStorage.setItem('md.tab','show')}catch(err){} render(); return; }
   const fl=t.closest('[data-filter]'); if(fl){ state.inboxFilter=fl.dataset.filter; try{localStorage.setItem('md.inboxFilter',state.inboxFilter)}catch(err){} render(); return; }
@@ -752,7 +830,15 @@ document.addEventListener('click', async e=>{
   const del=t.closest('[data-del]'); if(del){ const [coll,id]=del.dataset.del.split(':'); const name=(state[coll==='jobs'?'jobs':coll==='meetings'?'meetings':coll==='emails'?'emails':'show'][id]||{}); if(!confirm(`Delete "${name.name||name.title||name.subject||'this'}"?`)) return; const ok=await remove(coll,id); if(ok){ await logIt('delete',`Deleted ${coll.slice(0,-1)}: ${name.name||name.title||name.subject||id}`,null); closePanel(); toast('Deleted'); } return; }
 });
 
-
+document.addEventListener('keydown',e=>{
+  if(state.tab!=='portfolio' || state.view || /INPUT|TEXTAREA|SELECT/.test(document.activeElement&&document.activeElement.tagName)) return;
+  if(e.key!=='ArrowLeft' && e.key!=='ArrowRight') return;
+  const projects=pfProjects(); if(!projects.length) return;
+  const pi=Math.max(0,projects.findIndex(p=>p.key===state.pf.project)); const d=e.key==='ArrowRight'?1:-1;
+  if(e.shiftKey){ const np=projects[(pi+d+projects.length)%projects.length]; state.pf.project=np.key; state.pf.tool=null; }
+  else { const p=projects[pi]; const ti=Math.max(0,p.tools.findIndex(x=>x.id===state.pf.tool)); state.pf.tool=p.tools[(ti+d+p.tools.length)%p.tools.length].id; }
+  pfSave(); render(); e.preventDefault();
+});
 /* ---------- static hosting shim: data.json + localStorage overlay (no artifact runtime) ---------- */
 async function localDb(){
   const LS='missionDesk.overlay.v1';
@@ -774,6 +860,7 @@ async function localDb(){
       delete:async()=>setDoc(coll,id,null) }; }
   };
 }
+
 
 /* ---------- boot ---------- */
 render();

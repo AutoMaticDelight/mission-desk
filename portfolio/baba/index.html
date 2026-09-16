@@ -1,0 +1,46 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head><body><title>Baba Versions</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700&family=Public+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f6f7f9;--panel:#ffffff;--ink:#14161a;--muted:#5d6470;--line:#e2e5ea;--accent:#ec612b;--accent-ink:#ffffff;--chip:#eef0f3;--font:'Public Sans',system-ui,sans-serif;--head:'Sora',system-ui,sans-serif}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#f6f7f9;--panel:#ffffff;--ink:#14161a;--muted:#5d6470;--line:#e2e5ea;--chip:#eef0f3}}
+:root[data-theme="dark"]{--bg:#f6f7f9;--panel:#ffffff;--ink:#14161a;--muted:#5d6470;--line:#e2e5ea;--chip:#eef0f3}
+*{box-sizing:border-box}html,body{height:100%;margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--font);display:flex;flex-direction:column;min-height:100vh}
+header{padding:12px 16px 8px;background:var(--panel);border-bottom:1px solid var(--line)}
+.top{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+h1{font-family:var(--head);font-size:18px;margin:0;font-weight:700}
+.sub{color:var(--muted);font-size:14px}
+.count{margin-left:auto;font-size:13px;color:var(--muted)}
+.strip{display:flex;gap:14px;overflow-x:auto;padding:8px 16px;background:var(--panel);border-bottom:1px solid var(--line);scrollbar-width:thin}
+.grp{display:flex;align-items:center;gap:6px;flex:0 0 auto;padding-right:14px;border-right:1px solid var(--line)}
+.grp:last-child{border-right:0}
+.glabel{font-family:var(--head);font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin-right:4px;white-space:nowrap}
+.tab{flex:0 0 auto;border:1px solid var(--line);background:var(--chip);color:var(--ink);font:500 14px var(--font);padding:9px 14px;border-radius:999px;cursor:pointer;min-height:40px;white-space:nowrap}
+.tab:hover{border-color:var(--accent)}
+.tab.on{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.bar{display:flex;align-items:center;gap:10px;padding:8px 16px;font-size:14px;color:var(--muted);background:var(--bg)}
+.bar b{color:var(--ink);font-weight:600}
+.bar .nav{margin-left:auto;display:flex;gap:6px}
+.bar button,.bar a{border:1px solid var(--line);background:var(--panel);color:var(--ink);font:500 14px var(--font);padding:8px 12px;border-radius:8px;cursor:pointer;text-decoration:none;min-height:40px;display:inline-flex;align-items:center}
+main{flex:1;min-height:0;padding:0 16px 16px}
+iframe{width:100%;height:100%;min-height:70vh;border:1px solid var(--line);border-radius:12px;background:#fff}
+</style>
+<header><div class="top"><h1>Baba Versions</h1><span class="sub">Research tooling for Spruce House · every mockup version</span><span class="count">6 screens</span></div></header>
+<div class="strip"><div class="grp"><span class="glabel">Research app</span><button class="tab" data-f="research-app.html" title="research-app.html">Research app</button><button class="tab" data-f="research-apple-system.html" title="research-apple-system.html">Apple-system take</button><button class="tab" data-f="research-decision-mockup.html" title="research-decision-mockup.html">Decision mockup</button></div><div class="grp"><span class="glabel">Phases</span><button class="tab" data-f="research-phases-data-first.html" title="research-phases-data-first.html">Phases · data-first</button><button class="tab" data-f="research-phases-overviews.html" title="research-phases-overviews.html">Phase overviews</button><button class="tab" data-f="active-research-overview.html" title="active-research-overview.html">Active research overview</button></div></div>
+<div class="bar"><span>Showing</span> <b id="cur"></b><span id="pos"></span><span class="nav"><button id="prev">‹ Prev</button><button id="next">Next ›</button><a id="open" target="_blank" rel="noopener">Open full ↗</a></span></div>
+<main><iframe id="fr" title="Baba Versions"></iframe></main>
+<script>
+const ALL=[{"g":"Research app","f":"research-app.html","n":"Research app"},{"g":"Research app","f":"research-apple-system.html","n":"Apple-system take"},{"g":"Research app","f":"research-decision-mockup.html","n":"Decision mockup"},{"g":"Phases","f":"research-phases-data-first.html","n":"Phases · data-first"},{"g":"Phases","f":"research-phases-overviews.html","n":"Phase overviews"},{"g":"Phases","f":"active-research-overview.html","n":"Active research overview"}];
+const fr=document.getElementById('fr'),cur=document.getElementById('cur'),pos=document.getElementById('pos'),open=document.getElementById('open');
+let i=0;
+function go(n){i=(n+ALL.length)%ALL.length;const a=ALL[i];fr.src=a.f;open.href=a.f;cur.textContent=a.g+' · '+a.n;pos.textContent=' · '+(i+1)+' / '+ALL.length;
+document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('on',t.dataset.f===a.f));
+const on=document.querySelector('.tab.on');if(on)on.scrollIntoView({inline:'nearest',block:'nearest'});
+try{location.hash=a.f.replace('.html','')}catch(e){}}
+document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>go(ALL.findIndex(a=>a.f===t.dataset.f))));
+document.getElementById('prev').onclick=()=>go(i-1);document.getElementById('next').onclick=()=>go(i+1);
+document.addEventListener('keydown',e=>{if(e.key==='ArrowLeft')go(i-1);if(e.key==='ArrowRight')go(i+1)});
+const h=location.hash.slice(1);const start=ALL.findIndex(a=>a.f===h+'.html');go(start>=0?start:0);
+</script></body></html>

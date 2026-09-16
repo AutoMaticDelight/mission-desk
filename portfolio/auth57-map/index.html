@@ -1,0 +1,179 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1"><style>:root{color-scheme:light}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found]){display:none!important}</style></head><body>
+<title>Auth57 Reddit Map</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Source+Sans+3:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --bg:#f7f6f2; --ink:#1d2426; --ink-2:#4a5457; --ink-3:#7a8487;
+  --rule:#d9d6ce; --panel:#ffffff;
+  --accent:#0f6e6a; --accent-ink:#0b4f4c; --accent-soft:#dcecea;
+  --go:#0f6e6a; --go-bg:#dcecea; --care:#9a6200; --care-bg:#f7e8c8; --no:#a33a2c; --no-bg:#f5dcd6;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  --display:"Fraunces",Georgia,"Times New Roman",serif;
+  --body:"Source Sans 3","Helvetica Neue",Arial,sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#15191a; --ink:#e8e6df; --ink-2:#b5b3aa; --ink-3:#848b8d;
+    --rule:#2f3638; --panel:#1d2224;
+    --accent:#5cc1bb; --accent-ink:#8fd7d2; --accent-soft:#173a38;
+    --go:#5cc1bb; --go-bg:#173a38; --care:#e0a83a; --care-bg:#3d2f10; --no:#e2796a; --no-bg:#43201b;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#15191a; --ink:#e8e6df; --ink-2:#b5b3aa; --ink-3:#848b8d;
+  --rule:#2f3638; --panel:#1d2224;
+  --accent:#5cc1bb; --accent-ink:#8fd7d2; --accent-soft:#173a38;
+  --go:#5cc1bb; --go-bg:#173a38; --care:#e0a83a; --care-bg:#3d2f10; --no:#e2796a; --no-bg:#43201b;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.55}
+main{max-width:76ch;margin:0 auto;padding:48px 24px 96px}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0}
+h1{font-size:2.6rem;font-weight:700;line-height:1.05;letter-spacing:-.01em}
+h2{font-size:1.65rem;font-weight:700;line-height:1.15;margin-top:56px;padding-top:20px;border-top:2px solid var(--ink)}
+h3{font-size:1.2rem;font-weight:700;margin-top:28px}
+p{margin:12px 0;max-width:68ch}
+.eyebrow{font-family:var(--mono);font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;color:var(--accent-ink);margin-bottom:12px}
+.lede{font-size:1.15rem;color:var(--ink-2);max-width:62ch;margin-top:16px}
+.meta{font-family:var(--mono);font-size:.82rem;color:var(--ink-3);margin-top:18px}
+.verdict{display:grid;grid-template-columns:1fr;gap:14px;margin:24px 0 0}
+.verdict div{padding:14px 16px;border-left:4px solid var(--accent);background:var(--panel)}
+.verdict strong{display:block;font-family:var(--display);font-size:1.05rem;margin-bottom:4px}
+.seg{margin-top:8px}
+.who{color:var(--ink-2);font-size:1rem;margin:6px 0 14px}
+table{border-collapse:collapse;width:100%;font-size:.95rem;font-variant-numeric:tabular-nums}
+.tw{overflow-x:auto;margin:14px 0 6px}
+th{text-align:left;font-family:var(--mono);font-size:.74rem;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);font-weight:500;padding:8px 10px 8px 0;border-bottom:1px solid var(--rule)}
+td{padding:10px 10px 10px 0;border-bottom:1px solid var(--rule);vertical-align:top}
+td:first-child{white-space:nowrap;font-weight:600}
+.pill{display:inline-block;font-family:var(--mono);font-size:.72rem;letter-spacing:.04em;padding:2px 8px;border-radius:3px;white-space:nowrap}
+.go{background:var(--go-bg);color:var(--go)}
+.care{background:var(--care-bg);color:var(--care)}
+.no{background:var(--no-bg);color:var(--no)}
+.chk{font-family:var(--mono);font-size:.72rem;color:var(--ink-3)}
+ul,ol{padding-left:22px;margin:10px 0}
+li{margin:6px 0;max-width:66ch}
+.move{background:var(--panel);border:1px solid var(--rule);padding:16px 18px;margin-top:14px}
+.move .l{font-family:var(--mono);font-size:.74rem;letter-spacing:.06em;text-transform:uppercase;color:var(--accent-ink);margin-bottom:6px}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:16px}
+@media (max-width:640px){.split{grid-template-columns:1fr}}
+.split > div{background:var(--panel);border:1px solid var(--rule);padding:16px 18px}
+.split h3{margin-top:0}
+.week{display:grid;grid-template-columns:76px 1fr;gap:8px 16px;margin-top:14px}
+.week b{font-family:var(--mono);font-size:.8rem;color:var(--accent-ink);padding-top:3px}
+a{color:var(--accent-ink);text-decoration-thickness:1px;text-underline-offset:2px}
+code{font-family:var(--mono);font-size:.88em;background:var(--accent-soft);padding:1px 5px;border-radius:3px}
+.foot{margin-top:56px;padding-top:16px;border-top:1px solid var(--rule);color:var(--ink-3);font-size:.9rem}
+</style>
+<main>
+<div class="eyebrow">Auth57 · Reddit outreach · 9 Sept 2026</div>
+<h1>One segment, one room, one move at a time</h1>
+<p class="lede">Six kinds of people care about prior authorization, and they sit in different subreddits with different rules. The September 3 comment died because it went into a physicians' room with no flair. This map says where each segment actually is, what each room allows, and the first move that survives.</p>
+<p class="meta">Account: the one registered 3 Sept with bryan@auth57labs.com. Replies land in Fastmail. Rules marked <span class="chk">✓ verified</span> were read from Reddit's own rule pages today; the rest are marked <span class="chk">? verify</span> and get checked before the first post.</p>
+
+<div class="verdict">
+  <div><strong>The rooms that welcome a product post: two.</strong> r/mcp and r/ClaudeAI allow self-promotion with disclosure. Everywhere else on this map bans it outright. That makes the MCP server the first thing Auth57 announces on Reddit, not the data, not the panel.</div>
+  <div><strong>Every other room is answer-only.</strong> The play is to answer real questions with the actual payer or state rule and a link to the primary source. Auth57 gets named only when someone asks, and only where the rules permit.</div>
+  <div><strong>Three rooms explicitly ban AI-written text.</strong> r/HealthInsurance, r/CodingandBilling and r/mcp all say it in their rules, and mods there are good at spotting it. I supply facts, links, and a structure. Bryan writes the sentences.</div>
+</div>
+
+<h2>1. MCP and agent builders</h2>
+<p class="who">Developers wiring tools into Claude, Cursor, and agent frameworks. They want a server that answers a question their agent can't. This is the only segment where Auth57 is the topic, not the intruder.</p>
+<div class="tw"><table>
+<tr><th>Room</th><th>Rules that matter</th><th>Verdict</th></tr>
+<tr><td>r/mcp</td><td>Self-promotion allowed with disclosure. Must be launched, not a waitlist. Use the <code>showcase</code> tag. AI-generated posts get banned. <span class="chk">✓ verified</span></td><td><span class="pill go">post here first</span></td></tr>
+<tr><td>r/ClaudeAI</td><td>Showcase-style posts of things built with Claude are the norm. Rule text was cut off in my read; check the flair list before posting. <span class="chk">? verify</span></td><td><span class="pill go">post, week 2</span></td></tr>
+<tr><td>r/LocalLLaMA</td><td>Tolerant of tool announcements when there's a technical write-up. Large and fast. <span class="chk">? verify</span></td><td><span class="pill care">later, if the write-up is strong</span></td></tr>
+</table></div>
+<div class="move"><div class="l">First move</div>
+A showcase post in r/mcp: "An MCP server for U.S. prior-authorization rules (drug × payer × state)". Disclosure in the first line. Three example tool calls with real outputs, one honest limitation, the endpoint <code>mcp.auth57.io</code>. Reply to every comment within the hour. This is the one post that can name the product in the title.</div>
+
+<h2>2. API and health IT engineers</h2>
+<p class="who">People integrating PA into an EHR, a clearinghouse, or a payer portal. They respect sources and hate marketing. They are the people who eventually pay for the API.</p>
+<div class="tw"><table>
+<tr><th>Room</th><th>Rules that matter</th><th>Verdict</th></tr>
+<tr><td>r/healthIT</td><td>No commercial posts. Text posts stating facts must link sources. Link posts need a starter comment. <span class="chk">✓ verified</span></td><td><span class="pill care">insight posts only</span></td></tr>
+<tr><td>r/HealthInformatics</td><td>Academic and analyst crowd; same source discipline expected. <span class="chk">? verify</span></td><td><span class="pill care">insight posts only</span></td></tr>
+<tr><td>r/FHIR</td><td>Small, technical, Da Vinci PA (CRD, DTR, PAS) is on topic. <span class="chk">? verify</span></td><td><span class="pill care">comments, then one post</span></td></tr>
+</table></div>
+<div class="move"><div class="l">First move</div>
+An insight post, not a product post: "Where every state actually publishes its Medicaid PA criteria (all 51, with links)". Every line sourced, which the r/healthIT rule demands anyway. Auth57 appears only as the author's affiliation in a closing line. This post already exists as the seed thread on auth57.io/community and just needs its links checked.</div>
+
+<h2>3. Practice staff: PA coordinators, billers, practice managers</h2>
+<p class="who">The people who actually fight the denials. The panel's future SMEs. They live in billing rooms that ban any mention of your own company.</p>
+<div class="tw"><table>
+<tr><th>Room</th><th>Rules that matter</th><th>Verdict</th></tr>
+<tr><td>r/CodingandBilling</td><td>"No AI slop, no astroturfing, no promoting your own service, products, company." Be nice. <span class="chk">✓ verified</span></td><td><span class="pill care">answer only, never name Auth57</span></td></tr>
+<tr><td>r/medicalbilling</td><td>Same crowd, similar rules; read was cut off. <span class="chk">? verify</span></td><td><span class="pill care">answer only</span></td></tr>
+<tr><td>r/PracticeManagement</td><td>Small. Practice owners and managers. <span class="chk">? verify</span></td><td><span class="pill care">answer only</span></td></tr>
+</table></div>
+<div class="move"><div class="l">First move</div>
+Answer five "why did this get denied" threads with the specific payer criterion and a link to the payer's own policy PDF. No links to auth57.io. Karma from this room is what lets the account post anywhere later. Recruiting these people for the SME panel happens on LinkedIn and through NORM, not here.</div>
+
+<h2>4. Patients and families</h2>
+<p class="who">Largest volume by far. "Wegovy denied, what now." They are not customers, but their questions are the confusion feed the weekly digest is built on, and answering them is the cheapest karma on Reddit.</p>
+<div class="tw"><table>
+<tr><th>Room</th><th>Rules that matter</th><th>Verdict</th></tr>
+<tr><td>r/HealthInsurance</td><td>No advertising, "even if it is free." No LLM or GenAI in questions or answers. No market research. No DMs, ever. Explain reasoning, cite regulation. <span class="chk">✓ verified</span></td><td><span class="pill care">answer only, human-written</span></td></tr>
+<tr><td>r/Zepbound, r/Mounjaro, r/WegovyWeightLoss</td><td>Rule fetch errored today (Reddit rate limit). Drug subs usually allow coverage help, ban vendors. <span class="chk">? verify</span></td><td><span class="pill care">answer only</span></td></tr>
+<tr><td>r/CrohnsDisease, r/rheumatoid, r/migraine</td><td>Step-therapy and biologic denials are constant topics. <span class="chk">? verify</span></td><td><span class="pill care">answer only</span></td></tr>
+<tr><td>r/Medicare, r/Medicaid</td><td>Beneficiaries and navigators. CMS and state rules are welcome as citations. <span class="chk">? verify</span></td><td><span class="pill care">answer only</span></td></tr>
+</table></div>
+<div class="move"><div class="l">First move</div>
+Two answers a day in r/HealthInsurance on prior auth and appeal questions. Each one names the plan type, the rule that applies, the appeal deadline, and links the state or federal source. Bryan writes them from a fact sheet I prepare per thread. The threads themselves get logged as answer gaps for the digest.</div>
+
+<h2>5. Clinicians</h2>
+<p class="who">Physicians, NPs, PAs, pharmacists. They set the tone on PA burden but their rooms are built to keep vendors out. Listening posts, not channels.</p>
+<div class="tw"><table>
+<tr><th>Room</th><th>Rules that matter</th><th>Verdict</th></tr>
+<tr><td>r/FamilyMedicine</td><td>Flair mandatory (AutoModerator removes without it). No self-promotion or recruiting without mod approval. Laypeople asked to "mostly listen and observe." Flair for us: <code>other health professional</code>. <span class="chk">✓ verified</span></td><td><span class="pill no">listen; one sourced reply a month at most</span></td></tr>
+<tr><td>r/medicine</td><td>Verified-flair culture; page errored today. Known to remove non-clinician comments. <span class="chk">? verify</span></td><td><span class="pill no">listen only</span></td></tr>
+<tr><td>r/pharmacy</td><td>Pharmacy personnel only in practice; patient and vendor posts removed. PA for GLP-1s is a daily topic. <span class="chk">✓ verified</span></td><td><span class="pill no">listen only</span></td></tr>
+</table></div>
+<div class="move"><div class="l">First move</div>
+Set the flair in r/FamilyMedicine so the account is no longer auto-removed, then don't post. Read. The threads here are the best source of "which rule is wrong" leads for the panel's questions.</div>
+
+<h2>6. Founders, investors, policy people</h2>
+<p class="who">Small segment, occasional value: CMS-0057 interoperability rule watchers, health tech founders, people who might introduce a payer.</p>
+<div class="tw"><table>
+<tr><th>Room</th><th>Rules that matter</th><th>Verdict</th></tr>
+<tr><td>r/healthcare</td><td>Policy and news discussion; promotional posts removed. <span class="chk">? verify</span></td><td><span class="pill care">comment on 0057 news</span></td></tr>
+<tr><td>r/startups</td><td>Weekly feedback threads allow product mentions. <span class="chk">? verify</span></td><td><span class="pill care">feedback thread only</span></td></tr>
+</table></div>
+
+<h2>Sequence</h2>
+<div class="week">
+<b>Day 1</b><div>Open the AutoModerator email in Fastmail to get the account's username and the exact removal reason. Set flair in r/FamilyMedicine, r/healthIT, r/CodingandBilling, r/HealthInsurance. Subscribe to every room above so the feed is the listening post.</div>
+<b>Week 1</b><div>Answers only. Ten comments across r/HealthInsurance and r/CodingandBilling, each citing a primary source, none linking auth57.io. Goal: the account stops looking new.</div>
+<b>Week 2</b><div>r/mcp showcase post. Same week, the sourced "51 states" insight post in r/healthIT. Bryan answers every reply the same day.</div>
+<b>Week 3</b><div>r/ClaudeAI showcase. Verify the "? verify" rooms and start answering in the drug subs.</div>
+<b>Ongoing</b><div>Two answers a day, one insight post a month. Every question that stumped us becomes a row in the answer-gap queue and a line in the weekly digest on auth57.io.</div>
+</div>
+
+<h2>Who does what</h2>
+<div class="split">
+<div><h3>Claude</h3><ul>
+<li>Finds the threads worth answering each morning and writes a fact sheet per thread: plan type, the exact criterion, the source link, the appeal window.</li>
+<li>Drafts the r/mcp and r/healthIT posts in full, since those rooms allow disclosed authorship and the content is technical.</li>
+<li>Reads Fastmail through Safari for replies and reports them, without opening new windows.</li>
+<li>Keeps a tracker: room, thread, date, what was said, outcome.</li>
+</ul></div>
+<div><h3>Bryan</h3><ul>
+<li>Writes every comment in his own words from the fact sheet. Three rooms ban AI text and they check.</li>
+<li>Sets flair once per room and pastes the two big posts.</li>
+<li>Answers replies on the day they arrive. A showcase post with an absent author dies.</li>
+<li>Never DMs anyone from r/HealthInsurance. That is an instant permanent ban there.</li>
+</ul></div>
+</div>
+
+<h2>What else is possible beyond Reddit</h2>
+<ul>
+<li><strong>LinkedIn and NORM for the panel.</strong> Practice managers are on LinkedIn, not Reddit. The SME article program with a byline and a Verified SME credential is built for that channel and should carry the recruiting load.</li>
+<li><strong>The weekly digest as the authority play.</strong> The keyless confusion scanner already works when run by hand. Publishing "This Week in Prior Auth" on auth57.io turns Reddit's questions into Auth57's answers without asking Reddit's permission, and gives every comment a primary source to point at.</li>
+<li><strong>Moltbook, only at zero cost.</strong> Reinstall the heartbeat on this laptop when the API key turns up, and post into busy submolts instead of the empty one.</li>
+</ul>
+
+<p class="foot">Sources read today: the rule pages of r/FamilyMedicine, r/healthIT, r/CodingandBilling, r/HealthInsurance, r/mcp, r/pharmacy, and the r/FamilyMedicine flair list. Rooms marked "? verify" errored or were cut off and get checked before any post goes in.</p>
+</main>
+
+</body></html>

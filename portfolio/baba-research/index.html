@@ -1,0 +1,1266 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Baba Research</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Instrument+Sans:wght@400;500;600;700&display=swap">
+<style>
+:root{
+  --bg:#f6f6f4; --surface:#ffffff; --surface-2:#eeeeeb; --surface-3:#e6e6e2;
+  --ink:#15171b; --ink-2:#585f6a; --ink-3:#8a909a;
+  --line:rgba(21,23,27,.09); --line-2:rgba(21,23,27,.16);
+  --blue:#0b5fd7; --blue-2:#0a4fb3; --blue-bg:#e7effc;
+  --green:#187744; --green-bg:#e3f3e9;
+  --orange:#b2600a; --orange-bg:#fbeddb;
+  --red:#c02e3c; --red-bg:#fbe6e8;
+  --num:'Manrope',-apple-system,BlinkMacSystemFont,"SF Pro Display","Helvetica Neue",Arial,sans-serif;
+  --body:'Instrument Sans',-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Arial,sans-serif;
+  --rail:232px; --drawer:440px;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{background:var(--bg);color:var(--ink);font:15px/1.5 var(--body);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+button,input,textarea{font:inherit;color:inherit}
+a{color:inherit}
+.num{font-family:var(--num);font-feature-settings:"tnum" 1;font-variant-numeric:tabular-nums}
+b,strong{font-weight:700}
+::selection{background:var(--blue-bg)}
+button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+/* ---------- shell ---------- */
+.shell{display:grid;grid-template-columns:var(--rail) minmax(0,1fr);min-height:100%}
+.rail{position:sticky;top:0;height:100vh;height:100dvh;border-right:1px solid var(--line);background:#fbfbfa;padding:22px 14px 18px;display:flex;flex-direction:column;gap:22px;overflow:auto}
+.brand{display:flex;align-items:center;gap:10px;padding:2px 8px;font:800 18px/1 var(--num);letter-spacing:-.03em}
+.brand i{width:28px;height:28px;border-radius:8px;background:var(--blue);color:#fff;display:grid;place-items:center;font-style:normal;font-size:13px;font-weight:800}
+.brand small{display:block;font:500 11px var(--body);letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);margin-top:4px}
+.nav{display:grid;gap:2px}
+.nav a{display:grid;grid-template-columns:18px 1fr auto;gap:10px;align-items:center;padding:9px 10px;border-radius:9px;color:var(--ink-2);text-decoration:none}
+.nav a .k{font:700 12px var(--num);color:var(--ink-3)}
+.nav a .t{font-weight:600;font-size:14px;color:var(--ink);line-height:1.2}
+.nav a .s{display:block;font-size:12px;color:var(--ink-3);font-weight:400;margin-top:2px}
+.nav a .c{font:700 12px var(--num);color:var(--ink-3);background:var(--surface-2);padding:3px 8px;border-radius:99px;min-width:28px;text-align:center}
+.nav a:hover{background:#fff}
+.nav a.active{background:#fff;box-shadow:0 0 0 1px var(--line-2),0 1px 2px rgba(21,23,27,.05)}
+.nav a.active .k{color:var(--blue)}
+.nav a.attn .c{background:var(--blue-bg);color:var(--blue)}
+.rail-foot{margin-top:auto;display:grid;gap:10px;font-size:12px;color:var(--ink-3);padding:0 8px}
+.rail-foot .who{display:flex;align-items:center;gap:10px;color:var(--ink-2);font-size:13px}
+.rail-foot .who i{width:28px;height:28px;border-radius:50%;background:var(--surface-3);display:grid;place-items:center;font:700 11px var(--num);color:var(--ink-2);font-style:normal}
+.rail-foot kbd{font:600 11px var(--num);border:1px solid var(--line-2);border-radius:5px;padding:1px 5px;color:var(--ink-2);background:#fff}
+.rail-foot button{border:0;background:none;padding:0;color:var(--ink-3);text-align:left;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+
+.main{min-width:0}
+.top{height:60px;display:flex;align-items:center;gap:12px;padding:0 40px;border-bottom:1px solid var(--line);background:rgba(246,246,244,.86);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);position:sticky;top:env(safe-area-inset-top,0px);z-index:5}
+.crumb{font-size:13px;color:var(--ink-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.crumb b{color:var(--ink);font-weight:600}
+.search{margin-left:auto;display:flex;align-items:center;gap:8px;width:300px;max-width:40vw;height:36px;border:1px solid var(--line-2);border-radius:9px;padding:0 10px;background:#fff;color:var(--ink-3);font-size:13px;cursor:text}
+.search svg{flex:none} .search>span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.search kbd{margin-left:auto;font:600 11px var(--num);border:1px solid var(--line);border-radius:5px;padding:1px 5px}
+.page{padding:34px 40px 100px;max-width:1260px}
+
+/* ---------- buttons ---------- */
+.btn{font:600 14px var(--body);height:38px;padding:0 14px;border-radius:9px;border:1px solid var(--line-2);background:#fff;color:var(--ink);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px;white-space:nowrap;transition:border-color .12s,background .12s}
+.btn:hover{border-color:var(--ink-3)}
+.btn-primary{background:var(--blue);border-color:var(--blue);color:#fff}
+.btn-primary:hover{background:var(--blue-2);border-color:var(--blue-2)}
+.btn-sm{height:32px;padding:0 12px;font-size:13px;border-radius:8px}
+.btn-quiet{border-color:transparent;background:transparent;color:var(--ink-2)}
+.btn-quiet:hover{background:#fff;border-color:var(--line-2)}
+.btn.on{background:var(--blue-bg);border-color:var(--blue);color:var(--blue)}
+.btn[disabled]{opacity:.5;cursor:default}
+
+/* ---------- chips ---------- */
+.chip{display:inline-flex;align-items:center;gap:6px;height:26px;padding:0 10px;border-radius:99px;font-size:12px;font-weight:700;letter-spacing:.02em;white-space:nowrap}
+.chip-good{background:var(--green-bg);color:var(--green)}
+.chip-blue{background:var(--blue-bg);color:var(--blue)}
+.chip-warn{background:var(--orange-bg);color:var(--orange)}
+.chip-bad{background:var(--red-bg);color:var(--red)}
+.chip-neutral{background:var(--surface-2);color:var(--ink-2)}
+.dot{width:7px;height:7px;border-radius:50%;background:currentColor;display:inline-block}
+
+/* ---------- layer A: hero ---------- */
+.eyebrow{font:600 12px/1 var(--body);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);margin:0 0 14px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.eyebrow .sep{color:var(--line-2)}
+.hero{display:grid;grid-template-columns:minmax(0,1fr) 336px;gap:44px;align-items:start;padding-bottom:36px;border-bottom:1px solid var(--line)}
+.hero h1{font:700 38px/1.05 var(--num);letter-spacing:-.025em;margin:0 0 10px;text-wrap:balance}
+.hero h1 .tk{font-weight:600;color:var(--ink-3);font-size:20px;margin-left:10px;letter-spacing:0;vertical-align:middle}
+.meta{color:var(--ink-2);font-size:14px;display:flex;gap:6px 16px;flex-wrap:wrap}
+.thesis{font-size:18px;line-height:1.45;max-width:58ch;margin:18px 0 28px;color:var(--ink);font-weight:500}
+.pairs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:20px}
+.changed{margin-top:26px;padding-top:14px;border-top:1px solid var(--line);display:grid;grid-template-columns:auto minmax(0,1fr);gap:14px;align-items:baseline;font-size:14px;color:var(--ink-2)}
+.changed .k{font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3)}
+.changed b{color:var(--ink);font-weight:600}
+.changed em{font-style:normal;color:var(--ink-3);white-space:nowrap}
+.pairs.three{grid-template-columns:repeat(3,minmax(0,1fr))}
+.pair{min-width:0;overflow:hidden}
+.pair-label{font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);line-height:1.3;min-height:2.6em;display:flex;align-items:flex-end}
+.pair-vals{display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 6px;margin-top:8px}
+.pair-vals>*{white-space:nowrap}
+.pair-main{font:700 clamp(24px,2.1vw,32px)/1 var(--num);letter-spacing:-.03em;font-feature-settings:"tnum" 1}
+.pair-comp{font:500 14px var(--num);color:var(--ink-3);font-feature-settings:"tnum" 1}
+.pair-track{position:relative;height:4px;background:var(--surface-3);border-radius:2px;margin-top:12px}
+.pair-track i{position:absolute;left:0;top:0;height:100%;border-radius:2px;background:var(--ink);max-width:100%}
+.pair-track em{position:absolute;top:-4px;width:2px;height:12px;background:var(--ink-3);margin-left:-1px;border-radius:1px}
+.pair-note{font-size:13px;color:var(--ink-2);margin-top:8px;line-height:1.35;overflow-wrap:anywhere}
+.tone-good .pair-main,.tone-good .pair-note{color:var(--green)} .tone-good .pair-track i{background:var(--green)}
+.tone-warn .pair-main,.tone-warn .pair-note{color:var(--orange)} .tone-warn .pair-track i{background:var(--orange)}
+.tone-bad .pair-main,.tone-bad .pair-note{color:var(--red)} .tone-bad .pair-track i{background:var(--red)}
+.tone-blue .pair-main,.tone-blue .pair-note{color:var(--blue)} .tone-blue .pair-track i{background:var(--blue)}
+
+.decide{border-radius:16px;padding:20px 20px 18px;background:var(--blue);color:#fff;display:grid;gap:12px;box-shadow:0 12px 30px rgba(11,95,215,.18)}
+.decide.warn{background:var(--orange);box-shadow:0 12px 30px rgba(178,96,10,.18)}
+.decide.good{background:var(--green);box-shadow:0 12px 30px rgba(24,119,68,.18)}
+.decide.bad{background:var(--red);box-shadow:0 12px 30px rgba(192,46,60,.18)}
+.decide.neutral{background:#fff;color:var(--ink);border:1px solid var(--line-2);box-shadow:none}
+.decide-eyebrow{font-size:12px;letter-spacing:.08em;text-transform:uppercase;opacity:.82;font-weight:600}
+.decide-verb{font:800 42px/1 var(--num);letter-spacing:-.03em}
+.decide-sub{font-size:15px;opacity:.92;margin-top:-6px;line-height:1.4}
+.decide .btn-fill{height:48px;border-radius:11px;background:#fff;border:0;color:var(--ink);font-weight:700;font-size:15px;width:100%}
+.decide.neutral .btn-fill{background:var(--ink);color:#fff}
+.decide .btn-fill:hover{background:#f2f2ef}
+.decide.neutral .btn-fill:hover{background:#2a2d33}
+.decide-why{list-style:none;margin:2px 0 0;padding:0;display:grid;gap:8px;font-size:14px;line-height:1.35}
+.decide-why li{display:grid;grid-template-columns:16px 1fr;gap:8px;align-items:start}
+.decide-why li::before{content:"✓";font-weight:800;opacity:.9}
+.decide-why li.x::before{content:"×";opacity:.7}
+.decide-alt{display:flex;gap:8px;border-top:1px solid rgba(255,255,255,.28);padding-top:14px}
+.decide.neutral .decide-alt{border-top-color:var(--line)}
+.decide-alt button{flex:1;background:transparent;border:1px solid rgba(255,255,255,.55);color:#fff;height:36px;border-radius:9px;font-weight:600;font-size:13px;cursor:pointer}
+.decide-alt button:hover{background:rgba(255,255,255,.14)}
+.decide.neutral .decide-alt button{border-color:var(--line-2);color:var(--ink)}
+.decide.neutral .decide-alt button:hover{background:var(--surface-2)}
+
+/* ---------- layer B: scan ---------- */
+.section{margin-top:36px}
+.section-head{display:flex;align-items:baseline;justify-content:space-between;gap:16px;margin-bottom:12px;flex-wrap:wrap}
+.section-head h2{font:700 20px/1.2 var(--num);letter-spacing:-.015em;margin:0}
+.section-head span{font-size:13px;color:var(--ink-3)}
+.rows{border-top:1px solid var(--line)}
+.rowhead,.row{display:grid;gap:16px;align-items:center}
+.rowhead{padding:9px 12px 9px 14px;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);font-weight:600;border-bottom:1px solid var(--line)}
+.row{padding:14px 12px 14px 12px;border-bottom:1px solid var(--line);cursor:pointer;border-left:2px solid transparent;transition:background .12s}
+.row:hover{background:#fff}
+.row.selected{background:#fff;border-left-color:var(--blue)}
+.row.done{opacity:.55}
+.rank{font:700 18px var(--num);color:var(--ink-3);text-align:center}
+.row.selected .rank{color:var(--blue)}
+.who{min-width:0}
+.who b{display:block;font-weight:600;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.who span{display:block;font-size:13px;color:var(--ink-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mini{white-space:nowrap;min-width:0}
+.mini b{font:700 18px var(--num);letter-spacing:-.02em;font-feature-settings:"tnum" 1}
+.mini span{font:500 13px var(--num);color:var(--ink-3);margin-left:4px}
+.mini.good b{color:var(--green)} .mini.warn b{color:var(--orange)} .mini.bad b{color:var(--red)} .mini.blue b{color:var(--blue)}
+.mini .bar{position:relative;height:3px;background:var(--surface-3);border-radius:2px;margin-top:6px;width:88px}
+.mini .bar i{position:absolute;left:0;top:0;height:100%;background:var(--ink);border-radius:2px;max-width:100%}
+.mini .bar em{position:absolute;top:-3px;width:2px;height:9px;background:var(--ink-3);margin-left:-1px}
+.mini.good .bar i{background:var(--green)} .mini.warn .bar i{background:var(--orange)} .mini.bad .bar i{background:var(--red)} .mini.blue .bar i{background:var(--blue)}
+.cols-u{grid-template-columns:32px minmax(200px,1.5fr) minmax(96px,.7fr) minmax(96px,.7fr) minmax(96px,.7fr) 104px 96px}
+.cols-p{grid-template-columns:32px minmax(200px,1.5fr) minmax(96px,.7fr) minmax(96px,.7fr) minmax(96px,.7fr) 104px 96px}
+.cols-a{grid-template-columns:32px minmax(200px,1.5fr) minmax(96px,.7fr) minmax(96px,.7fr) minmax(96px,.7fr) 118px 110px}
+.cols-b{grid-template-columns:32px minmax(200px,1.5fr) minmax(96px,.7fr) minmax(96px,.7fr) minmax(96px,.7fr) 118px 96px}
+.cols-f{grid-template-columns:32px minmax(200px,1.5fr) minmax(96px,.7fr) minmax(96px,.7fr) minmax(96px,.7fr) 104px 96px}
+.rowact{text-align:right}
+
+.change{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:24px;align-items:center;padding:22px 24px;background:#fff;border:1px solid var(--line-2);border-radius:14px}
+.change.done{border-style:dashed}
+.change-top{display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:13px;color:var(--ink-2);margin-bottom:8px}
+.fromto{font:700 30px/1 var(--num);letter-spacing:-.03em;display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.fromto .from{color:var(--ink-3);font-weight:600;font-size:24px}
+.fromto .arrow{color:var(--ink-3);font-weight:500;font-size:22px}
+.fromto .delta{font-size:16px;color:var(--green);font-weight:700}
+.change p{margin:10px 0 0;color:var(--ink-2);font-size:14px;max-width:62ch}
+.change-side{display:grid;gap:10px;justify-items:end;text-align:right}
+.change-side .impact{font:700 22px/1 var(--num);letter-spacing:-.02em}
+.change-side .impact small{display:block;font:500 12px var(--body);letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);margin-bottom:6px}
+.change-side .acts{display:flex;gap:8px}
+.list{display:grid;gap:0;border-top:1px solid var(--line)}
+.li{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:16px;align-items:center;padding:13px 0;border-bottom:1px solid var(--line)}
+.li b{font-weight:600;font-size:15px;display:block}
+.li span{font-size:13px;color:var(--ink-2);display:block}
+.li .r{display:flex;align-items:center;gap:12px;white-space:nowrap}
+.li .r .v{font:700 17px var(--num);letter-spacing:-.02em}
+.li .r .v small{font:500 13px var(--num);color:var(--ink-3);margin-left:4px}
+.triggers{display:grid;gap:0;border-top:1px solid var(--line)}
+.trig{display:grid;grid-template-columns:24px minmax(0,1fr) 200px 96px;gap:16px;align-items:center;padding:14px 0;border-bottom:1px solid var(--line)}
+.trig .st{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:800}
+.trig .st.met{background:var(--green-bg);color:var(--green)} .trig .st.no{background:var(--surface-2);color:var(--ink-3)}
+.trig b{display:block;font-weight:600} .trig span{font-size:13px;color:var(--ink-2)}
+.trig .tv{font:700 18px var(--num);letter-spacing:-.02em;white-space:nowrap} .trig .tv small{font:500 13px var(--num);color:var(--ink-3);margin-left:6px}
+.trig .bar{position:relative;height:4px;background:var(--surface-3);border-radius:2px;margin-top:6px}
+.trig .bar i{position:absolute;left:0;top:0;height:100%;border-radius:2px;background:var(--ink);max-width:100%}
+.trig .bar em{position:absolute;top:-4px;width:2px;height:12px;background:var(--ink-3);margin-left:-1px}
+.trig.met .bar i{background:var(--green)}
+.trig .tag{text-align:right}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:40px}
+.checks{border-top:1px solid var(--line)}
+.check{display:grid;grid-template-columns:64px minmax(0,1fr) auto;gap:16px;align-items:center;padding:13px 0;border-bottom:1px solid var(--line)}
+.check .conf{font:700 22px/1 var(--num);letter-spacing:-.02em}
+.check .conf.good{color:var(--green)} .check .conf.warn{color:var(--orange)} .check .conf.bad{color:var(--red)}
+.check b{display:block;font-weight:600} .check span{font-size:13px;color:var(--ink-2)}
+.scen{width:100%;border-collapse:collapse;font-feature-settings:"tnum" 1;font-variant-numeric:tabular-nums}
+.scen th,.scen td{padding:11px 10px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap}
+.scen th:first-child,.scen td:first-child{text-align:left;padding-left:0}
+.scen th{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);font-weight:600}
+.scen td{font-family:var(--num);font-weight:600;font-size:15px}
+.scen td.lead{font-weight:700;font-size:17px}
+.scen td.good{color:var(--green)} .scen td.bad{color:var(--red)} .scen td.q{color:var(--ink-3);font-weight:500}
+.scen td:first-child{font-family:var(--body);font-weight:600}
+.scen .sub td:first-child{color:var(--ink-2);font-weight:400}
+
+/* ---------- layer C: detail ---------- */
+.detail{display:grid;grid-template-columns:1.15fr 1fr;gap:40px;margin-top:44px;padding-top:26px;border-top:1px solid var(--line);font-size:14px;color:var(--ink-2)}
+.detail.three{grid-template-columns:1fr 1fr 1fr}
+.detail h3{font:600 12px var(--body);letter-spacing:.07em;text-transform:uppercase;color:var(--ink-3);margin:0 0 12px}
+.detail ul{margin:0;padding:0;list-style:none;display:grid;gap:9px}
+.detail li{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:14px;align-items:baseline}
+.detail li em{font-style:normal;color:var(--ink-3);font-size:12.5px;text-align:right;white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis;font-family:var(--num);font-feature-settings:"tnum" 1}
+.detail li .src{color:var(--ink-3);display:block;font-size:13px}
+.detail p{margin:0 0 10px;line-height:1.55}
+.detail .fresh{color:var(--green)} .detail .stale{color:var(--orange)}
+.detail table{width:100%;border-collapse:collapse;font-feature-settings:"tnum" 1;font-variant-numeric:tabular-nums}
+.detail th,.detail td{padding:8px 8px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap;font-family:var(--num)}
+.detail th:first-child,.detail td:first-child{text-align:left;padding-left:0;font-family:var(--body)}
+.detail th{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);font-weight:600}
+.detail td{color:var(--ink);font-weight:500;font-size:14px}
+.detail td.lead{font-weight:700}
+.detail td.good{color:var(--green)} .detail td.bad{color:var(--red)}
+.detail .sub td{color:var(--ink-2);font-weight:400}
+.detail .sub td:first-child{padding-left:12px}
+.detail .tblwrap{overflow-x:auto}
+.detail .more{margin-top:12px}
+.hint{font-size:13px;color:var(--ink-3);margin-top:16px}
+
+/* ---------- drawer ---------- */
+.scrim{position:fixed;inset:0;background:rgba(21,23,27,.16);opacity:0;pointer-events:none;transition:opacity .2s;z-index:19}
+.scrim.show{opacity:1;pointer-events:auto}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:var(--drawer);max-width:100vw;background:#fff;border-left:1px solid var(--line);box-shadow:-24px 0 60px rgba(21,23,27,.10);transform:translateX(105%);transition:transform .22s ease;z-index:20;overflow:auto;padding:26px 28px calc(40px + env(safe-area-inset-bottom,0px));padding-top:calc(26px + env(safe-area-inset-top,0px))}
+.drawer.open{transform:none}
+.drawer-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:18px}
+.drawer h2{font:700 24px/1.15 var(--num);letter-spacing:-.02em;margin:6px 0 0}
+.drawer .close{border:1px solid var(--line-2);background:#fff;width:34px;height:34px;border-radius:9px;cursor:pointer;font-size:18px;line-height:1;color:var(--ink-2);flex:none}
+.drawer .big{font:700 34px/1.1 var(--num);letter-spacing:-.03em;margin:4px 0 6px;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.drawer .big .from{color:var(--ink-3);font-size:24px;font-weight:600}
+.drawer .big .arrow{color:var(--ink-3);font-size:20px;font-weight:500}
+.drawer .big .to{color:var(--green)}
+.drawer .srcline{font-size:13px;color:var(--ink-3);margin-bottom:18px}
+.drawer h4{font:600 12px var(--body);letter-spacing:.07em;text-transform:uppercase;color:var(--ink-3);margin:22px 0 10px}
+.drawer ul{margin:0;padding:0;list-style:none;display:grid;gap:8px;font-size:14px;color:var(--ink-2)}
+.drawer ul.why li{display:grid;grid-template-columns:14px 1fr;gap:8px}
+.drawer ul.why li::before{content:"–";color:var(--ink-3)}
+.drawer ul.ev li{display:grid;grid-template-columns:1fr auto;gap:12px}
+.drawer ul.ev a{color:var(--blue);text-decoration:none;font-weight:600}
+.drawer ul.ev em{font-style:normal;color:var(--ink-3);font-size:12.5px;white-space:nowrap}
+.drawer .imp{display:grid;gap:0;border-top:1px solid var(--line)}
+.drawer .imp div{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid var(--line);font-size:14px;color:var(--ink-2)}
+.drawer .imp b{font-family:var(--num);font-feature-settings:"tnum" 1;color:var(--ink)}
+.drawer .foot{display:grid;gap:8px;margin-top:24px}
+.drawer .foot .btn{height:44px;font-size:15px}
+.drawer .note{font-size:12.5px;color:var(--ink-3);margin-top:12px;line-height:1.5}
+.drawer textarea{width:100%;min-height:96px;border:1px solid var(--line-2);border-radius:10px;padding:10px 12px;resize:vertical;background:#fff;font-size:14px;line-height:1.5}
+.drawer .field{display:grid;gap:6px;margin-top:6px}
+.drawer .field label{font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3)}
+.drawer .sizer{display:flex;align-items:center;gap:10px}
+.drawer .sizer input{width:96px;height:40px;border:1px solid var(--line-2);border-radius:9px;padding:0 10px;font:700 18px var(--num);text-align:right}
+.drawer .sizer span{color:var(--ink-3);font-size:13px}
+.drawer .summary{display:grid;grid-template-columns:1fr 1fr;gap:14px 20px;margin:6px 0 2px}
+.drawer .summary .pair-main{font-size:26px}
+
+/* ---------- palette ---------- */
+.palette{position:fixed;inset:0;display:none;align-items:flex-start;justify-content:center;padding:12vh 16px 0;z-index:30}
+.palette.open{display:flex}
+.palette .box{width:560px;max-width:100%;background:#fff;border:1px solid var(--line-2);border-radius:14px;box-shadow:0 30px 80px rgba(21,23,27,.18);overflow:hidden}
+.palette input{width:100%;height:54px;border:0;border-bottom:1px solid var(--line);padding:0 18px;font-size:16px;outline:none;background:#fff}
+.palette .res{max-height:50vh;overflow:auto;padding:6px}
+.palette .res button{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;width:100%;text-align:left;border:0;background:none;padding:10px 12px;border-radius:9px;cursor:pointer;align-items:center}
+.palette .res button:hover,.palette .res button.hi{background:var(--surface-2)}
+.palette .res b{font-weight:600;display:block} .palette .res span{font-size:13px;color:var(--ink-2);display:block}
+.palette .res em{font-style:normal;font-size:12px;color:var(--ink-3);letter-spacing:.06em;text-transform:uppercase;font-weight:600}
+.palette .empty{padding:18px;color:var(--ink-3);font-size:14px}
+
+/* ---------- toast ---------- */
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translate(-50%,16px);background:#fff;border:1px solid var(--line-2);box-shadow:0 14px 40px rgba(21,23,27,.14);border-radius:12px;padding:12px 16px;font-size:14px;color:var(--ink);opacity:0;pointer-events:none;transition:.18s;z-index:40;display:flex;gap:10px;align-items:center;max-width:calc(100vw - 32px)}
+.toast.show{opacity:1;transform:translate(-50%,0);pointer-events:auto}
+.toast i{width:8px;height:8px;border-radius:50%;background:var(--green);flex:none;font-style:normal}
+.toast #undoBtn{margin-left:4px}
+
+/* ---------- hierarchy overlay ---------- */
+body.layers [data-layer]{outline:1.5px dashed var(--blue);outline-offset:10px;position:relative}
+body.layers [data-layer]::after{content:attr(data-layer-label);position:absolute;top:-24px;right:-8px;font:700 11px var(--num);letter-spacing:.08em;color:#fff;background:var(--blue);padding:4px 8px;border-radius:6px;z-index:2;white-space:nowrap}
+body.layers .section[data-layer]{margin-top:48px}
+
+/* ---------- responsive ---------- */
+@media (max-width:1180px){
+  .hero{grid-template-columns:minmax(0,1fr) 300px;gap:32px}
+  .pairs{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .pairs.three{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .cols-u,.cols-p,.cols-a,.cols-b,.cols-f{grid-template-columns:28px minmax(160px,1.4fr) minmax(80px,.7fr) minmax(80px,.7fr) minmax(80px,.7fr) 96px 90px;gap:12px}
+}
+@media (max-width:980px){
+  .shell{grid-template-columns:1fr}
+  .rail{position:sticky;top:0;height:auto;flex-direction:row;align-items:center;gap:10px;padding:10px 16px;border-right:0;border-bottom:1px solid var(--line);overflow-x:auto;z-index:6}
+  .brand small{display:none}
+  .brand{padding:0;white-space:nowrap}
+  .nav{display:flex;gap:4px}
+  .nav a{grid-template-columns:auto auto;padding:8px 10px;white-space:nowrap}
+  .nav a .k,.nav a .s{display:none}
+  .nav a .t{font-size:13px}
+  .rail-foot{display:none}
+  .top{padding:0 16px;height:54px;position:static}
+  .crumb,#layersBtn{display:none}
+  .search{margin-left:0;width:100%;max-width:none}
+  .page{padding:22px 16px 90px}
+  .hero{grid-template-columns:1fr;gap:26px;padding-bottom:26px}
+  .hero h1{font-size:30px}
+  .hero h1 .tk{font-size:16px;margin-left:8px}
+  .thesis{font-size:16px;margin:14px 0 22px}
+  .pairs,.pairs.three{grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+  .pair-main{font-size:26px}
+  .decide{order:-1}
+  .rowhead{display:none}
+  .row,.cols-u,.cols-p,.cols-a,.cols-b,.cols-f{grid-template-columns:28px minmax(0,1fr) auto;grid-template-areas:"rank who chip" "m1 m1 m1" "act act act";gap:10px 12px;padding:14px 12px}
+  .row .rank{grid-area:rank}
+  .row .who{grid-area:who}
+  .row .chip{grid-area:chip;justify-self:end}
+  .row .minis{grid-area:m1;display:flex;gap:18px;flex-wrap:wrap;padding-left:40px}
+  .row .rowact{grid-area:act;text-align:left;padding-left:40px}
+  .change{grid-template-columns:1fr}
+  .change-side{justify-items:start;text-align:left}
+  .split,.detail,.detail.three{grid-template-columns:1fr;gap:28px}
+  .detail li{grid-template-columns:1fr;gap:2px}
+  .detail li em{text-align:left;white-space:normal}
+  .detail div[style*="span 2"]{grid-column:auto!important}
+  .top{flex-wrap:wrap;height:auto;padding:10px 16px}
+  .search{flex:1 1 180px}
+  .top .btn{height:34px;font-size:13px;padding:0 10px}
+  .trig{grid-template-columns:24px minmax(0,1fr) auto;grid-template-areas:"st t tag" "st bar bar"}
+  .trig .st{grid-area:st} .trig .tw{grid-area:t} .trig .tvw{grid-area:bar} .trig .tag{grid-area:tag}
+  .drawer{width:100vw}
+  .fromto{font-size:26px}
+  .decide-verb{font-size:36px}
+}
+@media (min-width:981px){
+  .row .minis{display:contents}
+}
+</style>
+</head>
+<body>
+<div class="shell">
+  <aside class="rail">
+    <div class="brand"><i>B</i><div>Baba<small>Research OS</small></div></div>
+    <nav class="nav" id="nav" aria-label="Research phases"></nav>
+    <div class="rail-foot">
+      <div class="who"><i>RC</i><div>Riley Chen<br><span style="font-size:12px;color:var(--ink-3)">Research lead</span></div></div>
+      <div><kbd>⌘K</kbd> search &nbsp; <kbd>H</kbd> hierarchy &nbsp; <kbd>1–5</kbd> phases &nbsp; <kbd>⌘Z</kbd> undo</div>
+      <button type="button" data-action="reset">Reset demo data</button>
+    </div>
+  </aside>
+  <div class="main">
+    <header class="top">
+      <div class="crumb" id="crumb"></div>
+      <div class="search" id="searchBtn" role="button" tabindex="0" aria-label="Search research">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <span>Search names, questions, sources</span><kbd>⌘K</kbd>
+      </div>
+      <button type="button" class="btn btn-quiet" id="layersBtn" title="Show the A / B / C hierarchy (H)">Hierarchy</button>
+      <button type="button" class="btn" data-action="request">Request agent update</button>
+    </header>
+    <main class="page" id="page"></main>
+  </div>
+</div>
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer" role="dialog" aria-modal="true" aria-label="Review panel"></aside>
+<div class="palette" id="palette"><div class="box"><input id="palInput" placeholder="Search a name, question, KPI or source…" autocomplete="off"><div class="res" id="palRes"></div></div></div>
+<div class="toast" id="toast" role="status" aria-live="polite"><i></i><span id="toastText"></span><button type="button" class="btn btn-sm" id="undoBtn" data-action="undo" hidden>Undo</button></div>
+
+<script>
+/* =====================================================================
+   Baba Research — clickable prototype
+   One data model, five phase screens, one paired-metric component.
+   Every screen answers, in order: what to look at → what to do → why →
+   what changed → where to go deeper.
+   ===================================================================== */
+const RULES = {
+  universe:{ bar:72, covReq:85, window:30, screened:137 },
+  prospect:{ hurdle:20, budget:16, criteria:5 },
+  active:{},
+  bench:{},
+  portfolio:{}
+};
+
+function seed(){ return {
+  universe:[
+    {id:'kstl',name:'Kestral Freight',tk:'KSTL',sector:'Logistics',cap:'$6.2B',px:'$47.10',signal:'FCF reversal + insider buying',score:86,cov:91,cat:23,catName:'Q3 volumes · Oct 8',delta:['Score 81 → 86 after Yipit lane data landed','Sep 12'],
+      thesis:'Contract repricing is flowing through faster than the Street models. FY27 free cash flow looks 15% too low.',
+      why:['Two insiders bought $2.1M in August, first buys since 2023','Spot-to-contract mix flips positive in Q3 per Yipit lane data','Street FY27 FCF sits 15% below the screen model'],
+      sources:[['FactSet estimates','today'],['Form 4 filings','Aug 28'],['Yipit freight volumes','Sep 12'],['Q2 transcript','Aug 6']]},
+    {id:'vnth',name:'Vanta Health',tk:'VNTH',sector:'Healthcare services',cap:'$3.9B',px:'$62.80',signal:'Revenue acceleration',score:82,cov:89,cat:9,catName:'CMS rate notice · Sep 24',delta:['New this run · surfaced by revenue acceleration','Sep 14'],
+      thesis:'Clinic ramp is ahead of plan; same-store visits accelerated for a third quarter.',
+      why:['Same-store visits +9% vs +6% modeled','CMS rate notice lands in 9 days','Coverage 89% clears the requirement'],
+      sources:[['Definitive Healthcare','Sep 10'],['Q2 10-Q','Aug 9'],['FactSet estimates','today']]},
+    {id:'hrtw',name:'Hartwell Retail',tk:'HRTW',sector:'Consumer',cap:'$2.4B',px:'$31.55',signal:'Store-cohort inflection',score:79,cov:92,cat:28,catName:'Q3 earnings · Oct 13',delta:['Coverage 88% → 92% after Placer.ai refresh','Sep 13'],
+      thesis:'2024 store cohort is maturing faster than the 2022 class the Street anchors on.',
+      why:['2024 cohort at 84% of mature productivity in month 14','Coverage is the cleanest in the screen at 92%','Catalyst inside the window'],
+      sources:[['Placer.ai foot traffic','Sep 13'],['Q2 transcript','Aug 20'],['FactSet estimates','today']]},
+    {id:'lndc',name:'Linden Cloud',tk:'LNDC',sector:'Software',cap:'$5.1B',px:'$88.40',signal:'Revision-breadth inflection',score:76,cov:68,cat:14,catName:'Analyst day · Sep 29',delta:['Score 70 → 76, but coverage unchanged at 68%','Sep 14'],
+      thesis:'Estimate revisions have turned broad-based, but half the KPI history is missing.',
+      why:['Score clears the bar','Coverage 68% is 17 points short: no KPI history before FY24','Do not promote on signal alone'],
+      sources:[['FactSet estimates','today'],['Company KPI sheet','missing'],['Q2 transcript','Aug 12']]},
+    {id:'orsm',name:'Orion Semi',tk:'ORSM',sector:'Semiconductors',cap:'$9.8B',px:'$54.20',signal:'Inventory normalization',score:74,cov:90,cat:41,catName:'Q3 earnings · Oct 26',delta:['Catalyst moved 38d → 41d after the company shifted its print','Sep 11'],
+      thesis:'Channel inventory is back to 11 weeks; the setup is right but the catalyst is 41 days out.',
+      why:['Score and coverage both clear','Catalyst is 11 days outside the 30-day window','Re-screen on Oct 1'],
+      sources:[['Distributor checks','Sep 8'],['FactSet estimates','today']]},
+    {id:'mrdf',name:'Meridian Foods',tk:'MRDF',sector:'Staples',cap:'$4.4B',px:'$27.90',signal:'Pricing power',score:69,cov:88,cat:33,catName:'Q3 earnings · Oct 18',delta:['Score 71 → 69 on softer scanner data','Sep 9'],
+      thesis:'Price/mix is holding, but the signal is not strong enough to spend analyst hours yet.',
+      why:['Score 69 is 3 below the bar','Nothing broken; keep in the screen'],
+      sources:[['Nielsen scanner','Sep 9'],['FactSet estimates','today']]},
+    {id:'blwm',name:'Bluewater Marine',tk:'BLWM',sector:'Industrials',cap:'$1.6B',px:'$19.30',signal:'Backlog growth',score:58,cov:81,cat:60,catName:'Q3 earnings · Nov 14',delta:['No change since last run','—'],
+      thesis:'Backlog is growing, but at a 58 score with thin coverage it does not deserve time this cycle.',
+      why:['Score 58 is 14 below the bar','Coverage 81% is short','Catalyst is 60 days out'],
+      sources:[['Company backlog release','Aug 30'],['FactSet estimates','today']]},
+    {id:'tsl',name:'Tessaro Labs',tk:'TSRL',sector:'Life sciences tools',cap:'$2.1B',px:'$40.05',signal:'Margin recovery',score:52,cov:86,cat:37,catName:'Q3 earnings · Oct 22',delta:['Score 61 → 52 as the Street caught up on margin','Sep 8'],
+      thesis:'Margin recovery is real but already in the Street numbers.',
+      why:['Score 52 is 20 below the bar','Variant view not differentiated'],
+      sources:[['FactSet estimates','today'],['Q2 10-Q','Aug 8']]},
+  ],
+  prospect:[
+    {id:'sblp',name:'Sable Payments',tk:'SBLP',sector:'Fintech',cap:'$7.7B',px:'$28.60',upside:24,hours:10,met:4,started:'Sep 8',due:'Sep 19',delta:['Criteria 3/5 → 4/5 after the 10-Q confirmed net cash','Sep 12'],
+      thesis:'Merchant repricing sticks. The Street assumes 20 bps of take-rate give-back that channel checks don’t show.',
+      proof:{t:'Take rate holds through Q4 repricing',now:'2.31%',line:'2.25%',note:'Two months of data; the third lands Sep 19'},
+      checklist:[
+        {t:'Unit economics improve with mix',s:'verified',n:'Transcript and cohort read-through agree',conf:84},
+        {t:'Take rate holds through repricing',s:'open',n:'Third month of data lands Sep 19',conf:61},
+        {t:'Variant view is differentiated',s:'verified',n:'Street models a 20 bps give-back; checks show none',conf:78},
+        {t:'Balance sheet supports the buyback',s:'verified',n:'10-Q shows $410M net cash',conf:90},
+        {t:'No regulatory overhang',s:'verified',n:'Interchange rule excludes the segment',conf:72}],
+      disconfirming:[['Competitor cut pricing 8% in August','Sep 2 · Yipit'],['One large merchant flagged as “reviewing vendors”','Sep 11 · call notes']],
+      log:[['Promoted from Universe','Sep 8'],['Channel checks (3 merchants)','Sep 10 · 4h'],['Cohort pull + model bridge','Sep 12 · 4h'],['Disconfirming review','Sep 14 · 2h']]},
+    {id:'rwdx',name:'Redwood Diagnostics',tk:'RWDX',sector:'Diagnostics',cap:'$1.9B',px:'$22.10',upside:31,hours:3,met:1,started:'Sep 12',due:'Sep 26',delta:['Time box opened; first read done','Sep 13'],
+      thesis:'Reimbursement change could double test volume; too early to know if the Street sees it.',
+      proof:{t:'Reimbursement code approved in Q4',now:'Pending',line:'Approved',note:'CMS decision expected Oct 1'},
+      checklist:[
+        {t:'Unit economics work at new rate',s:'open',n:'Need cost-per-test from management',conf:40},
+        {t:'Reimbursement code approved',s:'open',n:'CMS decision Oct 1',conf:55},
+        {t:'Variant view is differentiated',s:'verified',n:'No Street model includes the code',conf:80},
+        {t:'Balance sheet supports the ramp',s:'open',n:'Cash runway 6 quarters; check dilution',conf:50},
+        {t:'No regulatory overhang',s:'open',n:'FDA pathway unclear',conf:45}],
+      disconfirming:[['Prior code request denied in 2024','Sep 12 · CMS archive']],
+      log:[['Promoted from Universe','Sep 12'],['Initial read','Sep 13 · 3h']]},
+    {id:'orbf',name:'Orbital Foods',tk:'ORBF',sector:'Consumer',cap:'$3.3B',px:'$44.70',upside:17,hours:15,met:3,started:'Sep 1',due:'Sep 16',delta:['Upside 23% → 17% after model v3; volume proof failed','Sep 14'],
+      thesis:'Pricing has held better than feared, but upside does not clear the hurdle after 15 hours of work.',
+      proof:{t:'Volume recovers in Q4',now:'−2.1%',line:'> 0%',note:'Scanner data still negative through week 36'},
+      checklist:[
+        {t:'Unit economics improve with mix',s:'verified',n:'Mix shift confirmed',conf:75},
+        {t:'Volume recovers in Q4',s:'failed',n:'Scanner volume −2.1% through week 36',conf:30},
+        {t:'Variant view is differentiated',s:'verified',n:'Street below on margin',conf:70},
+        {t:'Balance sheet supports the buyback',s:'verified',n:'Leverage 1.8x',conf:85},
+        {t:'No regulatory overhang',s:'open',n:'Labeling rule pending',conf:60}],
+      disconfirming:[['Private label share +140 bps YTD','Sep 9 · Nielsen'],['Upside 17% vs 20% hurdle after full model','Sep 14 · model v3']],
+      log:[['Promoted from Universe','Sep 1'],['Model v1–v3','Sep 3–14 · 12h'],['Scanner review','Sep 14 · 3h']]},
+  ],
+  active:[
+    {id:'nscm',name:'Northstar Commerce',tk:'NSCM',sector:'Consumer internet',cap:'$18.4B',px:84.20,target:105,street:18.1,margin:18.9,churn:3.1,churnLine:3.5,catalyst:'Investor day · Oct 8',catDays:23,openQ:3,closedQ:9,owner:'Riley Chen',reviewed:'2h ago',delta:['Agent proposed FY27E revenue +2.6% on August order data','4h ago'],
+      thesis:'Margin expansion is under-modeled. The Street misses the mix shift toward higher-margin merchant services through FY27.',
+      pending:{id:'chg1',field:'FY27E revenue',from:'$4,670M',to:'$4,790M',pct:'+2.6%',targetTo:108,marginBps:'+80 bps',agent:'Earnings Update Agent',age:'4h ago',
+        driver:'Yipit August order data ran 4.1% above the modeled run rate, and management reaffirmed fulfillment-capacity targets.',
+        why:['August order data was 4.1% above the modeled run rate','Management reaffirmed fulfillment-capacity targets on Sep 9','Evidence maps to the Orders × Active Merchants assumption, not a one-time item'],
+        evidence:[['Yipit: August merchant order data','Sep 11'],['Q2 earnings transcript, p. 11','Aug 7'],['Analyst note #224: unit economics','Sep 3']],
+        status:'proposed'},
+      changes:[
+        {t:'TAM source replaced: investor deck → 10-Q',s:'canonical',n:'Value unchanged; trust up because the source is primary',who:'Confirmed by Riley Chen',when:'Yesterday 2:18 PM'},
+        {t:'SMB cohort churn data is stale',s:'due',n:'Last refresh 11 days ago; monitoring threshold stays active',who:'StoreLeads · refresh requested',when:'Sep 4'}],
+      model:[
+        ['Revenue','3,842','4,238','4,790','+2.1%','good'],
+        ['Revenue growth','18.4%','10.3%','13.0%','+90 bps','',true],
+        ['EBITDA','618','741','905','+4.7%','good'],
+        ['EBITDA margin','16.1%','17.5%','18.9%','+80 bps','good',true],
+        ['Free cash flow','415','506','634','+6.2%','good'],
+        ['EV / EBITDA','21.4x','17.8x','14.6x','−0.8x','']],
+      questions:[['Capacity utilization through the holiday peak','Owner: Riley · due Sep 26'],['SMB cohort durability past month 18','Blocked on StoreLeads refresh'],['Pricing realization on merchant services','Call scheduled Sep 18']],
+      provenance:[['42 artifacts','6 active sources'],['Latest primary source','4h ago'],['Coverage','6 areas, all current']],
+      history:[['Screened in Universe · score 84','Aug 4'],['Promoted to Prospect','Aug 12'],['Advanced to Active Research · 14h of 16h used','Aug 19'],['Target set at $105','Aug 28']],
+      audit:[]},
+    {id:'brwt',name:'Brightline Water',tk:'BRWT',sector:'Utilities',cap:'$4.6B',px:54.30,target:62,street:31.0,margin:31.8,churn:null,churnLine:null,catalyst:'Rate case · Nov 3',catDays:49,openQ:2,closedQ:7,owner:'Dana Okafor',reviewed:'1d ago',delta:['Allowed ROE confirmed at 9.8%; no model change','Sep 12'],
+      thesis:'Rate-case outcome is better than the Street assumes; allowed ROE math points to $62.',
+      pending:null,changes:[{t:'Allowed ROE assumption confirmed at 9.8%',s:'canonical',n:'Commission staff testimony matched the model',who:'Confirmed by Dana Okafor',when:'Sep 12'}],
+      model:[['Revenue','1,210','1,290','1,388','+1.4%','good'],['EBITDA','381','412','441','+2.6%','good'],['EBITDA margin','31.5%','31.9%','31.8%','+80 bps','good',true],['Rate base ($B)','3.9','4.3','4.7','+3%','good']],
+      questions:[['Intervenor settlement scope','Due Oct 10'],['Capex slippage risk','Owner: Dana']],
+      provenance:[['18 artifacts','3 active sources'],['Latest primary source','1d ago'],['Coverage','3 areas, all current']],
+      history:[['Promoted to Prospect','Jul 30'],['Advanced to Active Research','Aug 9'],['Target set at $62','Aug 22']],audit:[]},
+    {id:'tsro',name:'Tessaro Robotics',tk:'TSRO',sector:'Industrial tech',cap:'$2.8B',px:36.75,target:44,street:14.2,margin:15.1,churn:null,churnLine:null,catalyst:'Q3 earnings · Oct 29',catDays:44,openQ:4,closedQ:5,owner:'Riley Chen',reviewed:'6d ago',delta:['Order-book source went stale; backlog view downgraded','Sep 1'],
+      thesis:'Service attach is compounding faster than modeled; needs a fresh order-book read before the Q3 print.',
+      pending:null,changes:[{t:'Order-book source is 14 days stale',s:'due',n:'Backlog view downgraded until refreshed',who:'Agent · refresh requested',when:'Sep 1'}],
+      model:[['Revenue','612','688','772','+1.1%','good'],['EBITDA','78','96','117','+3.9%','good'],['EBITDA margin','12.7%','14.0%','15.1%','+90 bps','good',true]],
+      questions:[['Service attach in the 2025 install base','Owner: Riley'],['Order-book quality','Refresh pending'],['Tariff pass-through','Open'],['Working-capital build','Open']],
+      provenance:[['22 artifacts','4 active sources'],['Latest primary source','14d ago'],['Coverage','3 areas, 1 stale']],
+      history:[['Advanced to Active Research','Jul 15'],['Target set at $44','Aug 1']],audit:[]},
+  ],
+  bench:[
+    {id:'hldn',name:'Halden Instruments',tk:'HLDN',sector:'Test & measurement',cap:'$3.2B',px:38.40,days:54,on:'Jul 22',owner:'Riley Chen',check:'6h',delta:['Price closed through the $40 re-entry; second trigger now met','Yesterday'],
+      why:'Good business, weak entry: the margin story was already priced at $48.',prior:'Pass at $48. Re-open below $40 or if the Street cuts FY27.',
+      triggers:[
+        {t:'Price below re-entry',sub:'Re-open below $40.00',now:'$38.40',line:'$40.00',met:true,pct:100},
+        {t:'Street cuts FY27 EBITDA > 5%',sub:'Estimates de-risk ahead of fundamentals',now:'−6.2%',line:'−5.0%',met:true,pct:100},
+        {t:'Attach rate reaches 26%',sub:'Confirms the recurring-mix thesis',now:'24%',line:'26%',met:false,pct:92}],
+      changed:[['Price closed at $38.40, through the $40 re-entry','Yesterday','blue'],['Street FY27 EBITDA cut to −6.2% after two downgrades','Sep 10','blue'],['Attach rate 24%, up from 22% at the pass','Sep 2','neutral']],
+      history:[['Moved to Bench: “margin story priced in”','Jul 22'],['Prospect work: 16h, 4/5 criteria met','Jul 8–21'],['Decision memo #471','Jul 22']]},
+    {id:'argm',name:'Argent Metals',tk:'ARGM',sector:'Materials',cap:'$5.5B',px:61.10,days:88,on:'Jun 19',owner:'Dana Okafor',check:'24h',delta:['Copper +3% on the week; still below the $4.60 line','Sep 12'],
+      why:'Thesis needs a copper price above $4.60; it is not there.',prior:'Pass on commodity risk. Re-open on copper > $4.60 or a cost-curve shift.',
+      triggers:[
+        {t:'Copper above $4.60/lb',sub:'Removes the commodity headwind',now:'$4.31',line:'$4.60',met:false,pct:94},
+        {t:'Cash cost falls below $2.20/lb',sub:'Cost-curve shift',now:'$2.34',line:'$2.20',met:false,pct:88},
+        {t:'Price below $55',sub:'Valuation-led re-entry',now:'$61.10',line:'$55.00',met:false,pct:90}],
+      changed:[['Copper +3% on the week','Sep 12','neutral']],history:[['Moved to Bench','Jun 19']]},
+    {id:'pncm',name:'Pinecrest Media',tk:'PNCM',sector:'Media',cap:'$1.2B',px:14.20,days:120,on:'May 18',owner:'Agent only',check:'7d',delta:['No material change in 30 days','—'],
+      why:'Ad market thesis broke; kept for the cost-cut optionality.',prior:'Pass. Re-open if cost plan exceeds $120M or a strategic bid appears.',
+      triggers:[
+        {t:'Cost plan above $120M',sub:'Announced savings',now:'$80M',line:'$120M',met:false,pct:67},
+        {t:'Strategic interest',sub:'13D or reported approach',now:'None',line:'Filed',met:false,pct:0},
+        {t:'Ad market growth positive',sub:'Industry data',now:'−1.4%',line:'> 0%',met:false,pct:60}],
+      changed:[['No material change in 30 days','—','neutral']],history:[['Moved to Bench','May 18']]},
+    {id:'slce',name:'Solace Energy',tk:'SLCE',sector:'Energy',cap:'$2.0B',px:9.85,days:210,on:'Feb 17',owner:'Agent only',check:'30d',delta:['No material change in 90 days; retire review at 240','—'],
+      why:'Thesis invalidated by the asset sale; only kept for reference.',prior:'Kill candidate. Retire at 240 days unless a trigger fires.',
+      triggers:[{t:'New asset acquisition',sub:'Rebuilds the growth case',now:'None',line:'Announced',met:false,pct:0},{t:'Price below $8',sub:'Liquidation value',now:'$9.85',line:'$8.00',met:false,pct:81}],
+      changed:[['No material change in 90 days','—','neutral']],history:[['Moved to Bench','Feb 17']]},
+  ],
+  portfolio:[
+    {id:'crvd',name:'Corvid Payments',tk:'CRVD',sector:'Fintech',px:71.20,target:77.50,cost:54.30,weight:5.4,max:5.0,up:9,down:-14,health:74,line:70,since:31,initiated:'Feb 3',review:'After Q3 print · Oct 30',delta:['Weight 4.9% → 5.4% on price; thesis health 79 → 74 on churn','Sep 12'],
+      thesis:'Take-rate expansion is largely delivered. The position ran through its cap on price, not on new conviction.',
+      watch:[['SMB churn 3.4% vs 3.5% review line','warn'],['Q3 print Oct 30: gross adds guide','neutral'],['Agent proposal on FY26 opex pending review','blue']],
+      scenarios:[['Bull','20%','$92','+29%','Cross-border launch beats'],['Base','55%','$77.50','+9%','Take rate holds; adds slow'],['Bear','25%','$61','−14%','Churn breaches 3.5%']],
+      log:[['Weight drifted to 5.4% on price','Sep 12'],['Target raised $72 → $77.50','Aug 15'],['Initiated at 3.0%','Feb 3']]},
+    {id:'nmbh',name:'Nimbus Health',tk:'NMBH',sector:'Healthcare services',px:33.10,target:42,cost:29.80,weight:1.9,max:4.0,up:27,down:-12,health:90,line:70,since:11,initiated:'Jul 28',review:'Oct 14',delta:['Same-store visits +9% confirmed; health 85 → 90','Sep 10'],
+      thesis:'Clinic density thesis is on track; the position is under-sized relative to conviction.',
+      watch:[['Labor cost inflation','neutral'],['Q3 same-store visits','blue']],
+      scenarios:[['Bull','30%','$50','+51%','Faster density'],['Base','50%','$42','+27%','Plan'],['Bear','20%','$29','−12%','Labor squeeze']],
+      log:[['Initiated at 1.9%','Jul 28']]},
+    {id:'lmng',name:'Lumen Grid',tk:'LMNG',sector:'Utilities',px:48.60,target:59,cost:41.20,weight:3.4,max:5.0,up:22,down:-9,health:88,line:70,since:18,initiated:'Apr 9',review:'Nov 6',delta:['Rate-case calendar confirmed for Nov 6','Sep 8'],
+      thesis:'Rate-base growth is under-appreciated; regulatory calendar is supportive through 2027.',
+      watch:[['Rate case filing Nov 6','blue']],
+      scenarios:[['Bull','25%','$66','+36%','Accelerated capex'],['Base','55%','$59','+22%','Plan'],['Bear','20%','$44','−9%','Adverse ruling']],
+      log:[['Added to 3.4%','Jun 20'],['Initiated at 2.5%','Apr 9']]},
+    {id:'atrl',name:'Atlas Rail',tk:'ATRL',sector:'Transport',px:118.40,target:141,cost:96.00,weight:3.8,max:5.0,up:19,down:-10,health:84,line:70,since:23,initiated:'Mar 3',review:'Oct 21',delta:['Carloads +2% w/w; nothing changes the sizing view','Sep 13'],
+      thesis:'Operating ratio improvement continues; volumes are the swing factor.',
+      watch:[['Weekly carloads','neutral'],['Labor agreement Oct','neutral']],
+      scenarios:[['Bull','25%','$158','+33%','Volume recovery'],['Base','55%','$141','+19%','OR improves 150 bps'],['Bear','20%','$107','−10%','Freight recession']],
+      log:[['Initiated at 3.8%','Mar 3']]},
+    {id:'frbk',name:'Fairbank Insurance',tk:'FRBK',sector:'Insurance',px:82.30,target:94,cost:71.40,weight:3.2,max:4.0,up:14,down:-8,health:81,line:70,since:15,initiated:'May 14',review:'Nov 12',delta:['No change since last review','—'],
+      thesis:'Pricing cycle has more room than the Street assumes; reserve releases are conservative.',
+      watch:[['Cat losses Q3','neutral']],
+      scenarios:[['Bull','20%','$104','+26%','Hard market extends'],['Base','60%','$94','+14%','Plan'],['Bear','20%','$76','−8%','Reserve charge']],
+      log:[['Initiated at 3.2%','May 14']]},
+    {id:'rdgl',name:'Ridgeline Software',tk:'RDGL',sector:'Software',px:64.90,target:67.50,cost:58.10,weight:2.6,max:4.0,up:4,down:-16,health:72,line:70,since:12,initiated:'Jun 2',review:'Sep 30',delta:['Net retention 110% → 108%; health 78 → 72, two points above the line','Sep 11'],
+      thesis:'Net retention has stabilized, but upside is thin and health sits two points above the trim line.',
+      watch:[['Thesis health 72 vs 70 trim line','warn'],['Net retention 108% vs 110% modeled','warn'],['Q3 print Sep 30','blue']],
+      scenarios:[['Bull','20%','$80','+23%','Retention rebounds'],['Base','50%','$67.50','+4%','Plan'],['Bear','30%','$54','−16%','Retention slips']],
+      log:[['Initiated at 2.6%','Jun 2']]},
+  ],
+  removed:[]
+};}
+
+const QUESTIONS=[
+  {id:'q-churn',phase:'active',cid:'nscm',t:'Does SMB cohort churn stay below the 3.5% break line?',now:'3.1%',line:'< 3.5%',tone:'warn',owner:'Riley Chen',refreshed:'11d ago',stale:true,input:'SMB churn assumption',feeds:'FY27 EBITDA margin · invalidation line',
+    evidence:[['Cohort churn 3.1% for July, flat vs June','StoreLeads cohort pull','Sep 4','for'],['Merchant-services attach rising in the 2024 cohort','Q2 transcript p.11','Aug 7','for'],['Competitor cut pricing 8% for SMB tier','Yipit pricing scan','Sep 2','against'],['One large merchant “reviewing vendors”','Channel call notes','Sep 11','against']]},
+  {id:'q-capacity',phase:'active',cid:'nscm',t:'Can fulfillment capacity absorb the holiday peak without margin give-back?',now:'82%',line:'< 90% utilization',tone:'good',owner:'Riley Chen',refreshed:'2d ago',input:'Fulfillment cost per order',feeds:'FY26–27 gross margin',
+    evidence:[['Utilization 82% in August, capacity targets reaffirmed','Q2 transcript p.14','Aug 7','for'],['Two new fulfillment nodes live in September','Company release','Sep 9','for'],['Peak-season temp labor rates +6% y/y','Industry wage survey','Sep 5','against']]},
+  {id:'q-pricing',phase:'active',cid:'nscm',t:'Is merchant-services pricing realized at the list rate?',now:'94%',line:'> 92% realization',tone:'good',owner:'Riley Chen',refreshed:'6d ago',input:'Take rate on merchant services',feeds:'FY27 revenue',
+    evidence:[['Realization 94% across sampled invoices','Primary research · 12 merchants','Sep 9','for'],['Discounting concentrated in enterprise tier, not SMB','Analyst note #224','Sep 3','for']]},
+  {id:'q-takerate',phase:'prospect',cid:'sblp',t:'Does the take rate hold through Q4 repricing?',now:'2.31%',line:'≥ 2.25%',tone:'warn',owner:'Riley Chen',refreshed:'3d ago',input:'Blended take rate',feeds:'Prospect upside · advance criterion 2 of 5',
+    evidence:[['July and August take rate 2.31% and 2.30%','Company KPI sheet','Sep 12','for'],['Channel checks: 3 of 3 merchants accepted repricing','Channel calls','Sep 10','for'],['Competitor cut pricing 8% in August','Yipit','Sep 2','against']]},
+  {id:'q-attach',phase:'bench',cid:'hldn',t:'Has service attach reached 26% of the installed base?',now:'24%',line:'≥ 26%',tone:'',owner:'Agent · weekly',refreshed:'13d ago',input:'Recurring revenue mix',feeds:'Re-open trigger 3 of 3',
+    evidence:[['Attach 24%, up from 22% at the pass','Q2 10-Q','Aug 8','for'],['Service bookings +18% y/y','Q2 transcript','Aug 8','for']]},
+  {id:'q-rdgl',phase:'portfolio',cid:'rdgl',t:'Is net retention stabilizing above 108%?',now:'108%',line:'≥ 110% modeled',tone:'warn',owner:'Dana Okafor',refreshed:'4d ago',input:'Net revenue retention',feeds:'Thesis health · trim line',
+    evidence:[['NRR 108% in Q2, 110% in Q1','Q2 10-Q','Aug 5','against'],['Logo churn flat; contraction is seat-count driven','Q2 transcript','Aug 5','for'],['Two enterprise renewals slipped to Q4','Sales-pipeline read','Sep 11','against']]},
+  {id:'q-crvd',phase:'portfolio',cid:'crvd',t:'Is SMB churn at Corvid drifting toward the 3.5% review line?',now:'3.4%',line:'< 3.5%',tone:'warn',owner:'Riley Chen',refreshed:'2d ago',input:'SMB churn',feeds:'Thesis health',
+    evidence:[['Churn 3.4% in August vs 3.2% in July','Company KPI sheet','Sep 13','against'],['Gross adds still ahead of plan','Q2 transcript','Aug 12','for']]},
+];
+const PHASES=[
+  {id:'universe',n:'Universe',q:'What deserves attention',k:'1'},
+  {id:'prospect',n:'Prospect',q:'Is there enough edge',k:'2'},
+  {id:'active',n:'Active Research',q:'Can it be underwritten',k:'3'},
+  {id:'bench',n:'Bench',q:'What would re-open it',k:'4'},
+  {id:'portfolio',n:'Portfolio',q:'Does it deserve its size',k:'5'}];
+
+let S = seed();
+let ui = { phase:'universe', sel:{}, layers:false };
+
+/* ---------- derived decisions ---------- */
+function uDecide(c){
+  const r=RULES.universe;
+  if(c.status==='promoted') return {k:'promoted',label:'Promoted',chip:'chip-blue',verb:'Promoted',sub:'now in Prospect',tone:'neutral'};
+  if(c.status==='held') return {k:'hold',label:'Hold',chip:'chip-neutral',verb:'Hold',sub:'re-screen next Monday',tone:'neutral'};
+  if(c.status==='killed') return {k:'kill',label:'Killed',chip:'chip-bad',verb:'Killed',sub:'out of this cycle',tone:'neutral'};
+  const s=c.score>=r.bar, v=c.cov>=r.covReq, t=c.cat<=r.window;
+  if(s&&v&&t) return {k:'promote',label:'Promote',chip:'chip-good',verb:'Promote',sub:'to Prospect · start the 16-hour time box',tone:'blue'};
+  if(s&&!v) return {k:'fixdata',label:'Fix data',chip:'chip-warn',verb:'Fix data',sub:'coverage is short; refresh before promoting',tone:'warn'};
+  if(s&&!t) return {k:'hold',label:'Hold',chip:'chip-neutral',verb:'Hold',sub:'catalyst outside the 30-day window',tone:'neutral'};
+  if(c.score>=r.bar-10) return {k:'hold',label:'Hold',chip:'chip-neutral',verb:'Hold',sub:'below the bar; keep in the screen',tone:'neutral'};
+  return {k:'kill',label:'Kill',chip:'chip-bad',verb:'Kill',sub:'remove from this cycle',tone:'bad'};
+}
+function pDecide(p){
+  const r=RULES.prospect, left=r.budget-p.hours;
+  if(p.status==='advanced') return {k:'advanced',label:'Advanced',chip:'chip-blue',verb:'Advanced',sub:'now in Active Research',tone:'neutral'};
+  if(p.status==='killed') return {k:'killed',label:'Killed',chip:'chip-bad',verb:'Killed',sub:'work preserved on the Bench',tone:'neutral'};
+  const failed=p.checklist.some(c=>c.s==='failed');
+  if(failed||(p.upside<r.hurdle&&left<=2)) return {k:'kill',label:'Kill',chip:'chip-bad',verb:'Kill',sub:'upside misses the hurdle with the budget spent',tone:'bad'};
+  if(p.upside>=r.hurdle&&p.met>=r.criteria-1&&left<=6) return {k:'advance',label:'Advance',chip:'chip-good',verb:'Advance',sub:'to Active Research · carry the open proof as a question',tone:'blue'};
+  return {k:'work',label:'Keep working',chip:'chip-neutral',verb:'Keep working',sub:left+'h left in the time box',tone:'neutral'};
+}
+function aDecide(a){
+  if(a.pending&&a.pending.status==='proposed') return {k:'review',label:'Review change',chip:'chip-blue',verb:'Review',sub:'agent proposal: '+a.pending.field+' '+a.pending.pct+' · target +$'+(a.pending.targetTo-a.target),tone:'blue'};
+  const stale=a.changes.some(c=>c.s==='due');
+  if(stale&&a.reviewed.includes('d')) return {k:'refresh',label:'Refresh data',chip:'chip-warn',verb:'Refresh',sub:'a core source is stale; underwriting view is downgraded',tone:'warn'};
+  return {k:'maintain',label:'Maintain',chip:'chip-good',verb:'Maintain',sub:'underwriting holds · target $'+a.target,tone:'neutral'};
+}
+function bDecide(b){
+  const met=b.triggers.filter(t=>t.met).length, n=b.triggers.length;
+  if(b.status==='reopened') return {k:'reopened',label:'Re-opened',chip:'chip-blue',verb:'Re-opened',sub:'now in Prospect',tone:'neutral'};
+  if(b.status==='retired') return {k:'retired',label:'Retired',chip:'chip-neutral',verb:'Retired',sub:'archived',tone:'neutral'};
+  if(met>=Math.ceil(n*0.6)) return {k:'reopen',label:'Re-open',chip:'chip-good',verb:'Re-open',sub:met+' of '+n+' triggers met · send back to Prospect',tone:'blue'};
+  if(b.days>=180&&met===0) return {k:'retire',label:'Retire',chip:'chip-neutral',verb:'Retire',sub:b.days+' days benched, no trigger moving',tone:'neutral'};
+  return {k:'stay',label:'Stay benched',chip:'chip-neutral',verb:'Stay benched',sub:met+' of '+n+' triggers met · agent keeps watching',tone:'neutral'};
+}
+function fDecide(f){
+  if(f.status) return {k:'recorded',label:f.status,chip:'chip-blue',verb:f.status,sub:'recorded today',tone:'neutral'};
+  if(f.weight>f.max) return {k:'trim',label:'Trim',chip:'chip-warn',verb:'Trim',sub:'to '+(f.max-0.5).toFixed(1)+'% · weight is over the '+f.max.toFixed(1)+'% cap',tone:'warn'};
+  if(f.health<f.line) return {k:'trim',label:'Trim',chip:'chip-bad',verb:'Trim',sub:'thesis health is under the '+f.line+' trim line',tone:'bad'};
+  if(f.up>=15&&f.health>=80&&f.weight<=f.max-1.5) return {k:'add',label:'Add',chip:'chip-good',verb:'Add',sub:'to '+(f.weight+1).toFixed(1)+'% · upside and health both clear',tone:'good'};
+  if(f.health-f.line<=3||f.up<8) return {k:'hold',label:'Hold · watch',chip:'chip-neutral',verb:'Hold',sub:'watch: health near the trim line, upside thin',tone:'neutral'};
+  return {k:'hold',label:'Hold',chip:'chip-neutral',verb:'Hold',sub:'inside sizing limits; nothing has changed',tone:'neutral'};
+}
+const URGENCY={review:0,refresh:1,trim:0,add:1,reopen:0,retire:2,advance:0,kill:1,promote:0,fixdata:1,work:2,hold:3,stay:3,maintain:3,promoted:9,advanced:9,killed:9,reopened:9,retired:9,recorded:9};
+
+/* ---------- components ---------- */
+function pair(o){
+  const tone=o.tone?' tone-'+o.tone:'';
+  const track=o.pct!=null?`<div class="pair-track"><i style="width:${Math.max(0,Math.min(100,o.pct))}%"></i>${o.mark!=null?`<em style="left:${Math.max(0,Math.min(100,o.mark))}%"></em>`:''}</div>`:'';
+  return `<div class="pair${tone}"><div class="pair-label">${o.label}</div><div class="pair-vals"><b class="pair-main">${o.value}</b><span class="pair-comp">${o.comp||''}</span></div>${track}<div class="pair-note">${o.note||''}</div></div>`;
+}
+function mini(v,comp,tone,pct,mark){
+  const t=tone?' '+tone:'';
+  const bar=pct!=null?`<div class="bar"><i style="width:${Math.max(0,Math.min(100,pct))}%"></i>${mark!=null?`<em style="left:${mark}%"></em>`:''}</div>`:'';
+  return `<div class="mini${t}"><b>${v}</b>${comp?`<span>${comp}</span>`:''}${bar}</div>`;
+}
+function decidePanel(o){
+  const alts=(o.alts||[]).map(a=>`<button type="button" data-action="${a.action}" data-id="${o.id}" ${a.arg?`data-arg="${a.arg}"`:''}>${a.label}</button>`).join('');
+  const why=(o.why||[]).map(w=>`<li${w.startsWith('!')?' class="x"':''}>${w.replace(/^!/,'')}</li>`).join('');
+  return `<aside class="decide ${o.tone||'blue'}" data-layer="A" data-layer-label="A · Decision">
+    <div class="decide-eyebrow">${o.eyebrow||'Decision · now'}</div>
+    <div class="decide-verb">${o.verb}</div>
+    <div class="decide-sub">${o.sub||''}</div>
+    ${o.primary?`<button type="button" class="btn-fill" data-action="${o.primary.action}" data-id="${o.id}" ${o.primary.arg?`data-arg="${o.primary.arg}"`:''}>${o.primary.label}</button>`:''}
+    ${why?`<ul class="decide-why">${why}</ul>`:''}
+    ${alts?`<div class="decide-alt">${alts}</div>`:''}
+  </aside>`;
+}
+function changed(x){return x.delta?`<div class="changed"><span class="k">Changed</span><span><b>${x.delta[0]}</b> <em>${x.delta[1]}</em></span></div>`:'';}
+function chip(d){return `<span class="chip ${d.chip}">${d.label}</span>`;}
+function pct(v,max){return Math.round(v/max*100);}
+function money(n){return '$'+n.toFixed(2).replace(/\.00$/,'');}
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function sortBy(list,dec){return [...list].sort((a,b)=>URGENCY[dec(a).k]-URGENCY[dec(b).k]);}
+function selected(phase,list,dec){
+  const id=ui.sel[phase];
+  const found=id&&list.find(x=>x.id===id);
+  return found||sortBy(list,dec)[0];
+}
+
+/* ---------- UNIVERSE ---------- */
+function renderUniverse(){
+  const r=RULES.universe, list=sortBy(S.universe,uDecide);
+  if(!list.length) return empty('Universe','Nothing left in this screen. Reset the demo to start over.');
+  const c=selected('universe',list,uDecide), d=uDecide(c);
+  const rank=list.indexOf(c)+1;
+  const counts={promote:0,fixdata:0,hold:0,kill:0};
+  S.universe.forEach(x=>{const k=uDecide(x).k; if(counts[k]!=null) counts[k]++;});
+  const killed=r.screened-S.universe.length+counts.kill;
+  const why=[
+    `${c.score>=r.bar?'':'!'}Score ${c.score} ${c.score>=r.bar?'clears':'misses'} the ${r.bar} bar by ${Math.abs(c.score-r.bar)}`,
+    `${c.cov>=r.covReq?'':'!'}Coverage ${c.cov}% ${c.cov>=r.covReq?'clears':'is short of'} the ${r.covReq}% requirement`,
+    `${c.cat<=r.window?'':'!'}Catalyst in ${c.cat} days, ${c.cat<=r.window?'inside':'outside'} the ${r.window}-day window`,
+    c.why[0]];
+  const primary = d.k==='promote'?{label:'Promote '+c.name,action:'promote'}
+    : d.k==='fixdata'?{label:'Request coverage refresh',action:'refresh'}
+    : d.k==='hold'&&!c.status?{label:'Hold '+c.name,action:'hold'}
+    : d.k==='kill'&&!c.status?{label:'Kill '+c.name,action:'kill'}:null;
+  const alts = c.status?[]:d.k==='promote'?[{label:'Hold',action:'hold'},{label:'Kill',action:'kill'}]
+    : d.k==='fixdata'?[{label:'Promote anyway',action:'promote'},{label:'Kill',action:'kill'}]
+    : d.k==='hold'?[{label:'Promote anyway',action:'promote'},{label:'Kill',action:'kill'}]
+    : [{label:'Hold instead',action:'hold'}];
+  return `
+  <div class="eyebrow">Universe <span class="sep">/</span> Monday screen · ${r.screened} names <span class="sep">/</span> Rank ${rank} of ${list.length} <span class="sep">/</span> Updated 19m ago</div>
+  <section class="hero" data-layer="A" data-layer-label="A · Discover + act">
+    <div>
+      <h1>${c.name}<span class="tk">${c.tk}</span></h1>
+      <div class="meta"><span>${c.sector}</span><span>${c.cap}</span><span>${c.px}</span><span>${c.signal}</span></div>
+      <p class="thesis">${c.thesis}</p>
+      <div class="pairs three">
+        ${pair({label:'Score vs bar',value:c.score,comp:'/ '+r.bar+' bar',tone:c.score>=r.bar?'good':'bad',pct:c.score,mark:r.bar,note:(c.score>=r.bar?'+':'')+(c.score-r.bar)+' vs bar'})}
+        ${pair({label:'Coverage vs required',value:c.cov+'%',comp:'/ '+r.covReq+'%',tone:c.cov>=r.covReq?'good':'warn',pct:c.cov,mark:r.covReq,note:c.cov>=r.covReq?'Complete enough to act':'Missing KPI history'})}
+        ${pair({label:'Catalyst vs window',value:c.cat+'d',comp:'/ '+r.window+'d',tone:c.cat<=r.window?'good':'warn',pct:Math.min(100,pct(c.cat,60)),mark:pct(r.window,60),note:c.catName})}
+      </div>
+      ${changed(c)}
+    </div>
+    ${decidePanel({id:c.id,tone:d.tone,verb:d.verb,sub:d.sub,primary,why,alts})}
+  </section>
+
+  <section class="section" data-layer="B" data-layer-label="B · Scan">
+    <div class="section-head"><h2>Ranked candidates</h2><span>${counts.promote} promote · ${counts.fixdata} fix data · ${counts.hold} hold · ${killed} filtered out</span></div>
+    <div class="rows">
+      <div class="rowhead cols-u"><div>#</div><div>Name · signal</div><div>Score / ${r.bar}</div><div>Coverage / ${r.covReq}%</div><div>Catalyst / ${r.window}d</div><div>Decision</div><div></div></div>
+      ${list.map((x,i)=>{const dx=uDecide(x);return `<div class="row cols-u${x.id===c.id?' selected':''}${x.status?' done':''}" data-select="universe:${x.id}" tabindex="0">
+        <div class="rank">${i+1}</div>
+        <div class="who"><b>${x.name} <span style="display:inline;color:var(--ink-3);font-weight:500">${x.tk}</span></b><span>${x.sector} · ${x.signal}</span></div>
+        <div class="minis">
+          ${mini(x.score,'',x.score>=r.bar?'good':'bad',x.score,r.bar)}
+          ${mini(x.cov+'%','',x.cov>=r.covReq?'':'warn',x.cov,r.covReq)}
+          ${mini(x.cat+'d','',x.cat<=r.window?'':'warn',Math.min(100,pct(x.cat,60)),pct(r.window,60))}
+        </div>
+        ${chip(dx)}
+        <div class="rowact">${x.status?'':dx.k==='promote'?`<button type="button" class="btn btn-sm btn-primary" data-action="promote" data-id="${x.id}">Promote</button>`:dx.k==='fixdata'?`<button type="button" class="btn btn-sm" data-action="refresh" data-id="${x.id}">Refresh</button>`:dx.k==='kill'?`<button type="button" class="btn btn-sm" data-action="kill" data-id="${x.id}">Kill</button>`:`<button type="button" class="btn btn-sm" data-action="hold" data-id="${x.id}">Hold</button>`}</div>
+      </div>`;}).join('')}
+    </div>
+    <div class="hint">Promote when score, coverage and catalyst all clear. Anything else is Fix data, Hold or Kill, so no name sits in limbo.</div>
+  </section>
+
+  <section class="detail" data-layer="C" data-layer-label="C · Detail">
+    <div><h3>Why ${c.name} ranks ${rank === 1 ? 'first' : '#'+rank}</h3><ul>${c.why.map(w=>`<li><span>${w}</span></li>`).join('')}</ul></div>
+    <div><h3>Screen provenance</h3><ul>${c.sources.map(s=>`<li><span>${s[0]}</span><em class="${s[1]==='missing'?'stale':''}">${s[1]}</em></li>`).join('')}<li><span>Screen run</span><em>Sep 14 · 6:00 ET</em></li><li><span>Universe</span><em>Russell 2000 + internal</em></li><li><span>Scoring model v3.2</span><em>edge × freshness × readiness</em></li></ul></div>
+  </section>`;
+}
+
+/* ---------- PROSPECT ---------- */
+function renderProspect(){
+  const r=RULES.prospect, list=sortBy(S.prospect,pDecide);
+  if(!list.length) return empty('Prospect','No names in the time box. Promote one from the Universe.');
+  const p=selected('prospect',list,pDecide), d=pDecide(p), left=r.budget-p.hours;
+  const open=p.checklist.filter(c=>c.s!=='verified');
+  const why=[
+    `${p.upside>=r.hurdle?'':'!'}Upside ${p.upside}% ${p.upside>=r.hurdle?'clears':'misses'} the ${r.hurdle}% hurdle`,
+    `${p.met>=r.criteria-1?'':'!'}${p.met} of ${r.criteria} criteria met`,
+    `${left>0?'':'!'}${left}h left of the ${r.budget}h time box`,
+    `${open.length?'!':''}${open.length?open.length+' open proof: '+open[0].t:'All proofs verified'}`];
+  const primary = p.status?null: d.k==='advance'?{label:'Advance to Active Research',action:'advance'}: d.k==='kill'?{label:'Kill and bench the work',action:'pkill'}:{label:'Log work',action:'logwork'};
+  const alts = p.status?[]: d.k==='advance'?[{label:'Kill',action:'pkill'},{label:'Extend 4h',action:'extend'}]: d.k==='kill'?[{label:'Extend 4h',action:'extend'},{label:'Advance anyway',action:'advance'}]:[{label:'Advance early',action:'advance'},{label:'Kill',action:'pkill'}];
+  const proofTone=p.checklist.find(c=>c.s==='failed')?'bad':open.length?'warn':'good';
+  return `
+  <div class="eyebrow">Prospect <span class="sep">/</span> ${list.filter(x=>!x.status).length} names in the time box <span class="sep">/</span> Started ${p.started} · decision due ${p.due}</div>
+  <section class="hero" data-layer="A" data-layer-label="A · Discover + act">
+    <div>
+      <h1>${p.name}<span class="tk">${p.tk}</span></h1>
+      <div class="meta"><span>${p.sector}</span><span>${p.cap}</span><span>${p.px}</span><span>${p.hours}h of ${r.budget}h used</span></div>
+      <p class="thesis">${p.thesis}</p>
+      <div class="pairs">
+        ${pair({label:'Upside vs hurdle',value:'+'+p.upside+'%',comp:'/ '+r.hurdle+'%',tone:p.upside>=r.hurdle?'good':'bad',pct:pct(p.upside,40),mark:pct(r.hurdle,40),note:(p.upside>=r.hurdle?'+':'')+(p.upside-r.hurdle)+' pts vs hurdle'})}
+        ${pair({label:'Time spent vs budget',value:p.hours+'h',comp:'/ '+r.budget+'h',tone:left<=2?'warn':'',pct:pct(p.hours,r.budget),mark:100,note:left+'h left'})}
+        ${pair({label:'Criteria met',value:p.met+'/'+r.criteria,comp:'need '+r.criteria,tone:p.met>=r.criteria?'good':p.met>=r.criteria-1?'':'warn',pct:pct(p.met,r.criteria),note:open.length+' open'})}
+        ${pair({label:'Open proof',value:p.proof.now,comp:'vs '+p.proof.line,tone:proofTone,note:p.proof.t})}
+      </div>
+      ${changed(p)}
+    </div>
+    ${decidePanel({id:p.id,tone:d.tone,verb:d.verb,sub:d.sub,primary,why,alts})}
+  </section>
+
+  <section class="section" data-layer="B" data-layer-label="B · Scan">
+    <div class="split">
+      <div>
+        <div class="section-head"><h2>What must be true</h2><span>confidence · status</span></div>
+        <div class="checks">${p.checklist.map(c=>`<div class="check"><div class="conf ${c.conf>=75?'good':c.conf>=55?'warn':'bad'}">${c.conf}%</div><div><b>${c.t}</b><span>${c.n}</span></div>${c.s==='verified'?'<span class="chip chip-good">Verified</span>':c.s==='failed'?'<span class="chip chip-bad">Failed</span>':'<span class="chip chip-warn">Open</span>'}</div>`).join('')}</div>
+      </div>
+      <div>
+        <div class="section-head"><h2>Disconfirming signals</h2><span>${p.disconfirming.length} open</span></div>
+        <div class="list">${p.disconfirming.map(x=>`<div class="li"><div><b>${x[0]}</b><span>${x[1]}</span></div><div class="r"><span class="chip chip-warn">Resolve</span></div></div>`).join('')}</div>
+        <div class="section-head" style="margin-top:28px"><h2>Time box</h2><span>${p.name}</span></div>
+        <div class="list">${p.log.map(x=>`<div class="li"><div><b>${x[0]}</b></div><div class="r"><span style="font-size:13px;color:var(--ink-3)">${x[1]}</span></div></div>`).join('')}</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" data-layer="B" data-layer-label="B · Scan">
+    <div class="section-head"><h2>All prospects</h2><span>hurdle ${r.hurdle}% · budget ${r.budget}h</span></div>
+    <div class="rows">
+      <div class="rowhead cols-p"><div>#</div><div>Name</div><div>Upside / ${r.hurdle}%</div><div>Hours / ${r.budget}h</div><div>Criteria</div><div>Decision</div><div></div></div>
+      ${list.map((x,i)=>{const dx=pDecide(x);const l=r.budget-x.hours;return `<div class="row cols-p${x.id===p.id?' selected':''}${x.status?' done':''}" data-select="prospect:${x.id}" tabindex="0">
+        <div class="rank">${i+1}</div>
+        <div class="who"><b>${x.name} <span style="display:inline;color:var(--ink-3);font-weight:500">${x.tk}</span></b><span>${x.sector} · due ${x.due}</span></div>
+        <div class="minis">${mini('+'+x.upside+'%','',x.upside>=r.hurdle?'good':'bad',pct(x.upside,40),pct(r.hurdle,40))}${mini(x.hours+'h',l+'h left',l<=2?'warn':'',pct(x.hours,r.budget),100)}${mini(x.met+'/'+r.criteria,'',x.met>=r.criteria-1?'':'warn',pct(x.met,r.criteria))}</div>
+        ${chip(dx)}
+        <div class="rowact">${x.status?'':dx.k==='advance'?`<button type="button" class="btn btn-sm btn-primary" data-action="advance" data-id="${x.id}">Advance</button>`:dx.k==='kill'?`<button type="button" class="btn btn-sm" data-action="pkill" data-id="${x.id}">Kill</button>`:`<button type="button" class="btn btn-sm" data-action="logwork" data-id="${x.id}">Log work</button>`}</div>
+      </div>`;}).join('')}
+    </div>
+  </section>
+
+  <section class="detail" data-layer="C" data-layer-label="C · Detail">
+    <div><h3>Open proof</h3><p><b style="color:var(--ink)">${p.proof.t}.</b>${QUESTIONS.find(x=>x.cid===p.id)?` <a href="#" data-action="openq" data-id="${QUESTIONS.find(x=>x.cid===p.id).id}" style="color:var(--blue);font-weight:600;text-decoration:none">See evidence ↗</a>`:''} Current ${p.proof.now} against a line of ${p.proof.line}. ${p.proof.note}.</p><p>Prospect stays time-boxed: at ${r.budget}h the name advances, is killed, or gets one explicit extension with a reason.</p></div>
+    <div><h3>Evidence set</h3><ul><li><span>Channel checks</span><em>3 merchants · Sep 10</em></li><li><span>Cohort pull</span><em>Sep 12</em></li><li><span>Model bridge v2</span><em>Sep 12</em></li><li><span>Street estimates</span><em>FactSet · today</em></li></ul></div>
+  </section>`;
+}
+
+/* ---------- ACTIVE RESEARCH ---------- */
+function renderActive(){
+  const list=sortBy(S.active,aDecide);
+  if(!list.length) return empty('Active Research','No names under active research.');
+  const a=selected('active',list,aDecide), d=aDecide(a);
+  const up=(a.target/a.px-1)*100, pend=a.pending;
+  const pendingUp=pend&&pend.status==='proposed'?(pend.targetTo/a.px-1)*100:null;
+  const why=[
+    `Target ${money(a.target)} vs ${money(a.px)}: +${up.toFixed(1)}% upside`,
+    `FY27 margin ${a.margin}% vs ${a.street}% Street`,
+    a.churn!=null?`${a.churn<a.churnLine?'':'!'}Churn ${a.churn}% vs ${a.churnLine}% break line`:`Catalyst in ${a.catDays} days`,
+    pend&&pend.status==='proposed'?`!Agent proposal not yet canonical: ${pend.field} ${pend.pct}`:`${a.openQ} open questions · ${a.closedQ} closed`];
+  const primary = d.k==='review'?{label:'Review proposed change',action:'openreview'}: d.k==='refresh'?{label:'Request source refresh',action:'request'}:{label:'Request agent update',action:'request'};
+  const alts = d.k==='review'?[{label:'Accept',action:'accept'},{label:'Dismiss',action:'dismiss'}]:[{label:'Add note',action:'note'},{label:'Move to Bench',action:'tobench'}];
+  return `
+  <div class="eyebrow">Active Research <span class="sep">/</span> ${list.length} names <span class="sep">/</span> Owner ${a.owner} <span class="sep">/</span> Reviewed ${a.reviewed}</div>
+  <section class="hero" data-layer="A" data-layer-label="A · Discover + act">
+    <div>
+      <h1>${a.name}<span class="tk">${a.tk}</span></h1>
+      <div class="meta"><span>${a.sector}</span><span>${a.cap}</span><span>Last ${money(a.px)}</span><span>${a.catalyst}</span></div>
+      <p class="thesis">${a.thesis}</p>
+      <div class="pairs">
+        ${pair({label:'Target vs current',value:money(a.target),comp:'/ '+money(a.px),tone:'good',pct:pct(a.px,a.target*1.1),mark:pct(a.target,a.target*1.1),note:'+'+up.toFixed(1)+'% upside'+(pendingUp?', +'+pendingUp.toFixed(1)+'% if the proposal is accepted':'')})}
+        ${pair({label:'FY27 margin vs Street',value:a.margin+'%',comp:'/ '+a.street+'%',tone:a.margin>a.street?'good':'bad',pct:pct(a.margin,a.margin+2),mark:pct(a.street,a.margin+2),note:'+'+Math.round((a.margin-a.street)*100)+' bps vs Street'})}
+        ${a.churn!=null?pair({label:'Churn vs break line',value:a.churn+'%',comp:'/ '+a.churnLine+'%',tone:a.churn<a.churnLine-0.2?'warn':'bad',pct:pct(a.churn,a.churnLine*1.2),mark:pct(a.churnLine,a.churnLine*1.2),note:((a.churnLine-a.churn)*100).toFixed(0)+' bps of buffer'}):pair({label:'Open vs closed questions',value:a.openQ,comp:'/ '+a.closedQ+' closed',pct:pct(a.closedQ,a.openQ+a.closedQ),note:'Underwriting '+Math.round(a.closedQ/(a.openQ+a.closedQ)*100)+'% resolved'})}
+        ${pair({label:'Next catalyst',value:a.catDays+'d',comp:a.catalyst.split(' · ')[1]||'',tone:'blue',pct:100-pct(a.catDays,90),note:a.catalyst.split(' · ')[0]})}
+      </div>
+      ${changed(a)}
+    </div>
+    ${decidePanel({id:a.id,tone:d.tone,verb:d.verb,sub:d.sub,primary,why,alts})}
+  </section>
+
+  <section class="section" data-layer="B" data-layer-label="B · Scan">
+    <div class="section-head"><h2>Most material change</h2><span>${pend?(pend.status==='proposed'?'needs analyst review':pend.status==='accepted'?'accepted into base case':'dismissed'):'nothing proposed'}</span></div>
+    ${pend?`<div class="change${pend.status!=='proposed'?' done':''}">
+      <div>
+        <div class="change-top">${pend.status==='proposed'?'<span class="chip chip-blue"><i class="dot"></i>Agent proposed</span>':pend.status==='accepted'?'<span class="chip chip-good">Canonical</span>':'<span class="chip chip-neutral">Dismissed</span>'}<span>${pend.agent} · ${pend.age}</span></div>
+        <div class="fromto"><span>${pend.field}</span><span class="from">${pend.from}</span><span class="arrow">→</span><span>${pend.to}</span><span class="delta">${pend.pct}</span></div>
+        <p>${pend.driver}</p>
+      </div>
+      <div class="change-side">
+        <div class="impact"><small>Target impact</small>${money(pend.status==='accepted'?a.target:a.target)} → ${money(pend.targetTo)}</div>
+        ${pend.status==='proposed'?`<div class="acts"><button type="button" class="btn btn-sm btn-primary" data-action="accept" data-id="${a.id}">Accept</button><button type="button" class="btn btn-sm" data-action="openreview" data-id="${a.id}">Review diff</button><button type="button" class="btn btn-sm btn-quiet" data-action="dismiss" data-id="${a.id}">Dismiss</button></div>`:`<div class="acts"><span style="font-size:13px;color:var(--ink-3)">${pend.status==='accepted'?'Recorded in the audit trail':'Kept in history, not applied'}</span></div>`}
+      </div>
+    </div>`:`<div class="list"><div class="li"><div><b>No agent proposals waiting</b><span>The base case is fully analyst-confirmed.</span></div><div class="r"><span class="chip chip-good">Canonical</span></div></div></div>`}
+    <div class="section-head" style="margin-top:28px"><h2>Other changes</h2><span>${a.changes.filter(c=>c.s==='due').length} need attention</span></div>
+    <div class="list">${a.changes.map(c=>`<div class="li"><div><b>${c.t}</b><span>${c.n} · ${c.who} · ${c.when}</span></div><div class="r">${c.s==='canonical'?'<span class="chip chip-good">Canonical</span>':c.s==='due'?'<span class="chip chip-warn">Refresh due</span>':'<span class="chip chip-neutral">'+c.s+'</span>'}</div></div>`).join('')}</div>
+  </section>
+
+  <section class="section" data-layer="B" data-layer-label="B · Scan">
+    <div class="section-head"><h2>All active names</h2><span>ordered by what needs a decision</span></div>
+    <div class="rows">
+      <div class="rowhead cols-a"><div>#</div><div>Name</div><div>Target / price</div><div>Margin / Street</div><div>Questions</div><div>Decision</div><div></div></div>
+      ${list.map((x,i)=>{const dx=aDecide(x);const u=(x.target/x.px-1)*100;return `<div class="row cols-a${x.id===a.id?' selected':''}" data-select="active:${x.id}" tabindex="0">
+        <div class="rank">${i+1}</div>
+        <div class="who"><b>${x.name} <span style="display:inline;color:var(--ink-3);font-weight:500">${x.tk}</span></b><span>${x.sector} · ${x.catalyst}</span></div>
+        <div class="minis">${mini(money(x.target),'+'+u.toFixed(0)+'%','good',pct(x.px,x.target*1.1),pct(x.target,x.target*1.1))}${mini(x.margin+'%','/ '+x.street,x.margin>x.street?'good':'bad')}${mini(x.openQ,'open / '+x.closedQ,'')}</div>
+        ${chip(dx)}
+        <div class="rowact">${dx.k==='review'?`<button type="button" class="btn btn-sm btn-primary" data-action="openreview" data-id="${x.id}">Review</button>`:dx.k==='refresh'?`<button type="button" class="btn btn-sm" data-action="request" data-id="${x.id}">Refresh</button>`:`<button type="button" class="btn btn-sm" data-action="note" data-id="${x.id}">Add note</button>`}</div>
+      </div>`;}).join('')}
+    </div>
+  </section>
+
+  <section class="detail three" data-layer="C" data-layer-label="C · Detail">
+    <div style="grid-column:span 2"><h3>Underwriting model · USD millions</h3><div class="tblwrap"><table><thead><tr><th></th><th>FY25A</th><th>FY26E</th><th>FY27E</th><th>vs Street</th></tr></thead><tbody>${a.model.map(m=>`<tr class="${m[6]?'sub':''}"><td>${m[0]}</td><td>${m[1]}</td><td>${m[2]}</td><td class="lead">${m[3]}</td><td class="${m[5]||''}">${m[4]}</td></tr>`).join('')}</tbody></table></div>
+      <h3 style="margin-top:22px">Open questions <span style="font-weight:400;text-transform:none;letter-spacing:0">· click one to see its evidence</span></h3><ul>${a.questions.slice(0,Math.max(a.openQ,0)).map((q,i)=>{const qq=QUESTIONS.filter(x=>x.cid===a.id&&!x.resolved)[i];return `<li><span>${qq?`<a href="#" data-action="openq" data-id="${qq.id}" style="color:var(--blue);text-decoration:none;font-weight:600">${q[0]} ↗</a>`:q[0]}</span><em>${q[1]}</em></li>`;}).join('')}</ul></div>
+    <div><h3>Provenance</h3><ul>${a.provenance.map(p=>`<li><span>${p[0]}</span><em>${p[1]}</em></li>`).join('')}</ul>
+      <h3 style="margin-top:22px">History</h3><ul>${a.history.map(h=>`<li><span>${h[0]}</span><em>${h[1]}</em></li>`).join('')}${a.audit.map(h=>`<li><span>${h[0]}</span><em>${h[1]}</em></li>`).join('')}</ul></div>
+  </section>`;
+}
+
+/* ---------- BENCH ---------- */
+function renderBench(){
+  const list=sortBy(S.bench,bDecide);
+  if(!list.length) return empty('Bench','Nothing on the bench.');
+  const b=selected('bench',list,bDecide), d=bDecide(b);
+  const met=b.triggers.filter(t=>t.met).length, n=b.triggers.length;
+  const why=b.triggers.map(t=>`${t.met?'':'!'}${t.t}: ${t.now} vs ${t.line}`);
+  const primary = b.status?null: d.k==='reopen'?{label:'Re-open in Prospect',action:'reopen'}: d.k==='retire'?{label:'Retire and archive',action:'retire'}:{label:'Keep monitoring',action:'keep'};
+  const alts = b.status?[]: d.k==='reopen'?[{label:'Keep benched',action:'keep'},{label:'Snooze 30d',action:'snooze'}]:[{label:'Re-open anyway',action:'reopen'},{label:'Edit triggers',action:'edittrig'}];
+  return `
+  <div class="eyebrow">Bench <span class="sep">/</span> ${list.filter(x=>!x.status).length} names preserved <span class="sep">/</span> Benched ${b.on} · ${b.days} days <span class="sep">/</span> Watch: ${b.owner} · every ${b.check}</div>
+  <section class="hero" data-layer="A" data-layer-label="A · Discover + act">
+    <div>
+      <h1>${b.name}<span class="tk">${b.tk}</span></h1>
+      <div class="meta"><span>${b.sector}</span><span>${b.cap}</span><span>Last ${money(b.px)}</span></div>
+      <p class="thesis"><span style="color:var(--ink-3);font-weight:600">Benched because</span> ${b.why}</p>
+      <div class="pairs">
+        ${pair({label:'Triggers met',value:met+'/'+n,comp:'need '+Math.ceil(n*0.6),tone:met>=Math.ceil(n*0.6)?'good':'',pct:pct(met,n),mark:pct(Math.ceil(n*0.6),n),note:met>=Math.ceil(n*0.6)?'Re-open threshold reached':'Below re-open threshold'})}
+        ${b.triggers.slice(0,3).map(t=>pair({label:t.t,value:t.now,comp:'vs '+t.line,tone:t.met?'good':'',pct:t.pct,mark:100,note:t.met?'Trigger met':'Not yet'})).join('')}
+      </div>
+      ${changed(b)}
+    </div>
+    ${decidePanel({id:b.id,tone:d.tone,verb:d.verb,sub:d.sub,primary,why,alts})}
+  </section>
+
+  <section class="section" data-layer="B" data-layer-label="B · Scan">
+    <div class="section-head"><h2>What would re-open it</h2><span>trigger vs current state</span></div>
+    <div class="triggers">${b.triggers.map(t=>`<div class="trig${t.met?' met':''}"><div class="st ${t.met?'met':'no'}">${t.met?'✓':'·'}</div><div class="tw"><b>${t.t}</b><span>${t.sub}</span></div><div class="tvw"><div class="tv">${t.now}<small>vs ${t.line}</small></div><div class="bar"><i style="width:${t.pct}%"></i><em style="left:100%"></em></div></div><div class="tag">${t.met?'<span class="chip chip-good">Met</span>':'<span class="chip chip-neutral">Watching</span>'}</div></div>`).join('')}</div>
+    <div class="section-head" style="margin-top:28px"><h2>What changed since the pass</h2><span>only deltas that matter</span></div>
+    <div class="list">${b.changed.map(c=>`<div class="li"><div><b>${c[0]}</b><span>${c[1]}</span></div><div class="r">${c[2]==='blue'?'<span class="chip chip-blue">Closer</span>':'<span class="chip chip-neutral">No change</span>'}</div></div>`).join('')}</div>
+  </section>
+
+  <section class="section" data-layer="B" data-layer-label="B · Scan">
+    <div class="section-head"><h2>Everything on the bench</h2><span>closest to re-opening first</span></div>
+    <div class="rows">
+      <div class="rowhead cols-b"><div>#</div><div>Name · why benched</div><div>Triggers</div><div>Nearest trigger</div><div>Days</div><div>Decision</div><div></div></div>
+      ${list.map((x,i)=>{const dx=bDecide(x);const m=x.triggers.filter(t=>t.met).length;const near=[...x.triggers].sort((p,q)=>q.pct-p.pct)[0];return `<div class="row cols-b${x.id===b.id?' selected':''}${x.status?' done':''}" data-select="bench:${x.id}" tabindex="0">
+        <div class="rank">${i+1}</div>
+        <div class="who"><b>${x.name} <span style="display:inline;color:var(--ink-3);font-weight:500">${x.tk}</span></b><span>${x.why}</span></div>
+        <div class="minis">${mini(m+'/'+x.triggers.length,'',m>=Math.ceil(x.triggers.length*0.6)?'good':'',pct(m,x.triggers.length))}${mini(near.now,'vs '+near.line,near.met?'good':'',near.pct,100)}${mini(x.days+'d','',x.days>=180?'warn':'')}</div>
+        ${chip(dx)}
+        <div class="rowact">${x.status?'':dx.k==='reopen'?`<button type="button" class="btn btn-sm btn-primary" data-action="reopen" data-id="${x.id}">Re-open</button>`:dx.k==='retire'?`<button type="button" class="btn btn-sm" data-action="retire" data-id="${x.id}">Retire</button>`:`<button type="button" class="btn btn-sm" data-action="keep" data-id="${x.id}">Keep</button>`}</div>
+      </div>`;}).join('')}
+    </div>
+  </section>
+
+  <section class="detail" data-layer="C" data-layer-label="C · Detail">
+    <div><h3>Prior conclusion</h3><p>${b.prior}</p><p>Monitoring owner: ${b.owner}. Agent checks sources every ${b.check}; nothing here costs analyst hours until a trigger fires.</p></div>
+    <div><h3>History</h3><ul>${b.history.map(h=>`<li><span>${h[0]}</span><em>${h[1]}</em></li>`).join('')}</ul></div>
+  </section>`;
+}
+
+/* ---------- PORTFOLIO ---------- */
+function renderPortfolio(){
+  const list=sortBy(S.portfolio,fDecide);
+  const f=selected('portfolio',list,fDecide), d=fDecide(f);
+  const total=S.portfolio.reduce((s,x)=>s+x.weight,0);
+  const why=[
+    `${f.weight<=f.max?'':'!'}Weight ${f.weight.toFixed(1)}% vs ${f.max.toFixed(1)}% cap`,
+    `${f.up>=Math.abs(f.down)?'':'!'}Upside +${f.up}% vs ${f.down}% downside`,
+    `${f.health>=f.line+5?'':'!'}Thesis health ${f.health} vs ${f.line} trim line`,
+    `+${f.since}% since initiation on ${f.initiated}`];
+  const primary = f.status?null: d.k==='trim'?{label:'Trim to '+(f.max-0.5).toFixed(1)+'%',action:'size',arg:'trim'}: d.k==='add'?{label:'Add to '+(f.weight+1).toFixed(1)+'%',action:'size',arg:'add'}:{label:'Record hold',action:'size',arg:'hold'};
+  const alts = f.status?[]: d.k==='trim'?[{label:'Hold',action:'size',arg:'hold'},{label:'Exit',action:'size',arg:'exit'}]: d.k==='add'?[{label:'Hold',action:'size',arg:'hold'},{label:'Trim',action:'size',arg:'trim'}]:[{label:'Add',action:'size',arg:'add'},{label:'Trim',action:'size',arg:'trim'}];
+  return `
+  <div class="eyebrow">Portfolio <span class="sep">/</span> ${S.portfolio.length} positions · ${total.toFixed(1)}% invested <span class="sep">/</span> Next review ${f.review}</div>
+  <section class="hero" data-layer="A" data-layer-label="A · Discover + act">
+    <div>
+      <h1>${f.name}<span class="tk">${f.tk}</span></h1>
+      <div class="meta"><span>${f.sector}</span><span>Last ${money(f.px)}</span><span>Cost ${money(f.cost)}</span><span>Target ${money(f.target)}</span></div>
+      <p class="thesis">${f.thesis}</p>
+      <div class="pairs">
+        ${pair({label:'Weight vs max',value:f.weight.toFixed(1)+'%',comp:'/ '+f.max.toFixed(1)+'%',tone:f.weight>f.max?'warn':'',pct:pct(f.weight,f.max*1.2),mark:pct(f.max,f.max*1.2),note:f.weight>f.max?'+'+(f.weight-f.max).toFixed(1)+' pts over the cap':(f.max-f.weight).toFixed(1)+' pts of room'})}
+        ${pair({label:'Upside vs downside',value:'+'+f.up+'%',comp:'/ '+f.down+'%',tone:f.up>=Math.abs(f.down)?'good':'bad',pct:pct(f.up,f.up+Math.abs(f.down)),mark:50,note:(f.up/Math.abs(f.down)).toFixed(1)+'× reward to risk'})}
+        ${pair({label:'Health vs trim line',value:f.health,comp:'/ '+f.line,tone:f.health>=f.line+10?'good':f.health>=f.line?'warn':'bad',pct:f.health,mark:f.line,note:(f.health-f.line)+' pts above the line'})}
+        ${pair({label:'Since initiation',value:'+'+f.since+'%',comp:'from '+money(f.cost),tone:'good',note:'Initiated '+f.initiated})}
+      </div>
+      ${changed(f)}
+    </div>
+    ${decidePanel({id:f.id,tone:d.tone,verb:d.verb,sub:d.sub,primary,why,alts})}
+  </section>
+
+  <section class="section" data-layer="B" data-layer-label="B · Scan">
+    <div class="section-head"><h2>All positions</h2><span>ordered by what needs a decision</span></div>
+    <div class="rows">
+      <div class="rowhead cols-f"><div>#</div><div>Name</div><div>Weight / max</div><div>Upside / downside</div><div>Health / line</div><div>Decision</div><div></div></div>
+      ${list.map((x,i)=>{const dx=fDecide(x);return `<div class="row cols-f${x.id===f.id?' selected':''}${x.status?' done':''}" data-select="portfolio:${x.id}" tabindex="0">
+        <div class="rank">${i+1}</div>
+        <div class="who"><b>${x.name} <span style="display:inline;color:var(--ink-3);font-weight:500">${x.tk}</span></b><span>${x.sector} · review ${x.review}</span></div>
+        <div class="minis">${mini(x.weight.toFixed(1)+'%','/ '+x.max.toFixed(1),x.weight>x.max?'warn':'',pct(x.weight,x.max*1.2),pct(x.max,x.max*1.2))}${mini('+'+x.up+'%','/ '+x.down+'%',x.up>=Math.abs(x.down)?'good':'bad',pct(x.up,x.up+Math.abs(x.down)),50)}${mini(x.health,'/ '+x.line,x.health>=x.line+10?'good':x.health>=x.line?'warn':'bad',x.health,x.line)}</div>
+        ${chip(dx)}
+        <div class="rowact">${x.status?'':dx.k==='trim'?`<button type="button" class="btn btn-sm btn-primary" data-action="size" data-arg="trim" data-id="${x.id}">Trim</button>`:dx.k==='add'?`<button type="button" class="btn btn-sm btn-primary" data-action="size" data-arg="add" data-id="${x.id}">Add</button>`:`<button type="button" class="btn btn-sm" data-action="size" data-arg="hold" data-id="${x.id}">Hold</button>`}</div>
+      </div>`;}).join('')}
+    </div>
+  </section>
+
+  <section class="section" data-layer="B" data-layer-label="B · Scan">
+    <div class="split">
+      <div>
+        <div class="section-head"><h2>Scenarios</h2><span>${f.name}</span></div>
+        <table class="scen"><thead><tr><th>Case</th><th>Prob.</th><th>Value</th><th>vs price</th><th>Driver</th></tr></thead><tbody>${f.scenarios.map(s=>`<tr><td>${s[0]}</td><td class="q">${s[1]}</td><td class="lead">${s[2]}</td><td class="${s[3].startsWith('−')?'bad':'good'}">${s[3]}</td><td class="q" style="font-family:var(--body);font-weight:400;font-size:13px">${s[4]}</td></tr>`).join('')}</tbody></table>
+      </div>
+      <div>
+        <div class="section-head"><h2>Watch items</h2><span>what could change size</span></div>
+        <div class="list">${f.watch.map(w=>`<div class="li"><div><b>${w[0]}</b></div><div class="r">${w[1]==='warn'?'<span class="chip chip-warn">Watch</span>':w[1]==='blue'?'<span class="chip chip-blue">Upcoming</span>':'<span class="chip chip-neutral">Monitor</span>'}</div></div>`).join('')}</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="detail" data-layer="C" data-layer-label="C · Detail">
+    <div><h3>Position rules</h3><p>Trim when weight breaches the cap or thesis health falls under the line. Add only when upside clears 15%, health is above 80, and there is at least 1.5 points of room. Everything else holds and says why.</p></div>
+    <div><h3>Decision log</h3><ul>${f.log.map(l=>`<li><span>${l[0]}</span><em>${l[1]}</em></li>`).join('')}</ul></div>
+  </section>`;
+}
+
+function empty(title,msg){return `<div class="eyebrow">${title}</div><section class="hero"><div><h1>Nothing to decide here.</h1><p class="thesis">${msg}</p><button type="button" class="btn" data-action="reset">Reset demo data</button></div></section>`;}
+
+/* ---------- render ---------- */
+const RENDER={universe:renderUniverse,prospect:renderProspect,active:renderActive,bench:renderBench,portfolio:renderPortfolio};
+function counts(){
+  return {
+    universe:S.universe.filter(x=>uDecide(x).k==='promote').length,
+    prospect:S.prospect.filter(x=>!x.status&&['advance','kill'].includes(pDecide(x).k)).length,
+    active:S.active.filter(x=>aDecide(x).k==='review'||aDecide(x).k==='refresh').length,
+    bench:S.bench.filter(x=>!x.status&&bDecide(x).k==='reopen').length,
+    portfolio:S.portfolio.filter(x=>!x.status&&['trim','add'].includes(fDecide(x).k)).length};
+}
+function renderNav(){
+  const c=counts();
+  document.getElementById('nav').innerHTML=PHASES.map(p=>`<a href="#${p.id}" class="${ui.phase===p.id?'active':''}${c[p.id]?' attn':''}" data-phase="${p.id}"><span class="k">${p.k}</span><span><span class="t">${p.n}</span><span class="s">${p.q}</span></span><span class="c" title="decisions waiting">${c[p.id]}</span></a>`).join('');
+}
+function render(){
+  persist();
+  renderNav();
+  const ph=PHASES.find(p=>p.id===ui.phase);
+  document.getElementById('crumb').innerHTML=`Baba <span style="color:var(--line-2)">/</span> <b>${ph.n}</b> <span style="color:var(--line-2)">/</span> ${ph.q}`;
+  document.getElementById('page').innerHTML=RENDER[ui.phase]();
+  document.title=`${ph.n} · Baba Research`;
+}
+function go(phase,id){
+  ui.phase=phase; if(id) ui.sel[phase]=id;
+  if(location.hash!=='#'+phase) history.replaceState(null,'',"#"+phase);
+  render(); window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* ---------- actions ---------- */
+let toastTimer, undoStack=[];
+function toast(msg,undoable){const t=document.getElementById('toast');document.getElementById('toastText').textContent=msg;document.getElementById('undoBtn').hidden=!undoable;t.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('show'),undoable?5200:2600);}
+function snapshot(){undoStack.push(JSON.stringify({S,sel:ui.sel,phase:ui.phase}));if(undoStack.length>20)undoStack.shift();}
+function undo(){const last=undoStack.pop();if(!last)return;const o=JSON.parse(last);S=o.S;ui.sel=o.sel;ui.phase=o.phase;closeDrawer();persist();render();toast('Undone.');}
+function persist(){try{localStorage.setItem('baba-proto',JSON.stringify({S,sel:ui.sel}));}catch(e){}}
+function restore(){try{const raw=localStorage.getItem('baba-proto');if(!raw)return;const o=JSON.parse(raw);if(o&&o.S&&o.S.universe){S=o.S;ui.sel=o.sel||{};}}catch(e){}}
+function find(phase,id){return S[phase].find(x=>x.id===id);}
+function removeFrom(phase,id){const i=S[phase].findIndex(x=>x.id===id);if(i>-1)S[phase].splice(i,1);}
+
+function promote(id){
+  const c=find('universe',id); if(!c) return;
+  snapshot();
+  c.status='promoted';
+  S.prospect.unshift({id:c.id,name:c.name,tk:c.tk,sector:c.sector,cap:c.cap,px:c.px,upside:Math.round(c.score/4),hours:0,met:0,started:'Today',due:'Sep 29',
+    thesis:c.thesis,proof:{t:'Differentiated view survives first model pass',now:'Not started',line:'Verified',note:'Time box opens today'},
+    checklist:[{t:'Unit economics improve with mix',s:'open',n:'Not yet tested',conf:50},{t:'Key KPI holds through the catalyst',s:'open',n:'Not yet tested',conf:50},{t:'Variant view is differentiated',s:'open',n:'Compare to Street model',conf:55},{t:'Balance sheet supports the case',s:'open',n:'Check latest 10-Q',conf:50},{t:'No regulatory overhang',s:'open',n:'Scan filings',conf:50}],
+    disconfirming:[],log:[['Promoted from Universe','Today']],delta:['Promoted from Universe at score '+c.score,'Today']});
+  ui.sel.universe=null; toast(c.name+' promoted to Prospect. 16-hour time box started.',true); render();
+}
+function advance(id){
+  const p=find('prospect',id); if(!p) return;
+  snapshot();
+  p.status='advanced';
+  const px=parseFloat(String(p.px).replace(/[$,]/g,''))||50;
+  S.active.unshift({id:p.id,name:p.name,tk:p.tk,sector:p.sector,cap:p.cap,px:px,target:Math.round(px*(1+p.upside/100)),street:15.0,margin:15.0+ (p.upside/20),churn:null,churnLine:null,catalyst:'Q3 earnings · Oct 30',catDays:45,openQ:p.checklist.filter(c=>c.s!=='verified').length,closedQ:p.checklist.filter(c=>c.s==='verified').length,owner:'Riley Chen',reviewed:'just now',
+    thesis:p.thesis,pending:null,changes:[{t:'Advanced from Prospect with '+p.checklist.filter(c=>c.s!=='verified').length+' open proof carried as questions',s:'canonical',n:p.hours+'h of 16h used',who:'Riley Chen',when:'Today'}],
+    model:[['Revenue','—','—','—','—',''],['EBITDA','—','—','—','—',''],['EBITDA margin','—','—','—','—','',true]],
+    questions:p.checklist.filter(c=>c.s!=='verified').map(c=>[c.t,'Carried from Prospect']),provenance:[['Artifacts','carried from Prospect'],['Latest primary source','today']],history:[['Advanced to Active Research','Today']],audit:[],delta:['Advanced from Prospect with '+p.hours+'h of 16h used','Today']});
+  ui.sel.prospect=null; toast(p.name+' advanced to Active Research.',true); render();
+}
+function pkill(id){
+  const p=find('prospect',id); if(!p) return;
+  snapshot();
+  p.status='killed';
+  S.bench.push({id:p.id,name:p.name,tk:p.tk,sector:p.sector,cap:p.cap,px:parseFloat(String(p.px).replace(/[$,]/g,''))||50,days:0,on:'Today',owner:'Agent only',check:'7d',why:'Killed in Prospect: upside missed the hurdle with the budget spent.',prior:'Re-open if upside clears 20% or the failed proof reverses.',
+    triggers:[{t:'Upside clears 20%',sub:'On Street resets or price',now:'+'+p.upside+'%',line:'20%',met:false,pct:pct(p.upside,20)},{t:'Failed proof reverses',sub:p.proof.t,now:p.proof.now,line:p.proof.line,met:false,pct:40}],changed:[['Moved to Bench','Today','neutral']],history:[['Killed in Prospect','Today']]});
+  ui.sel.prospect=null; toast(p.name+' killed. Work preserved on the Bench with two re-open triggers.',true); render();
+}
+function extend(id){const p=find('prospect',id); if(!p) return; RULES.prospect.budget; p.hours=Math.max(0,p.hours-4); p.log.push(['Extended 4h with reason','Today']); toast('Time box extended 4 hours. Reason logged.'); render();}
+function logwork(id){const p=find('prospect',id); if(!p) return; p.hours=Math.min(16,p.hours+2); p.log.push(['Work logged','Today · 2h']); toast('2 hours logged against '+p.name+'.'); render();}
+function accept(id){
+  const a=find('active',id); if(!a||!a.pending) return;
+  snapshot();
+  const p=a.pending; p.status='accepted'; const from=a.target; a.target=p.targetTo; a.reviewed='just now';
+  a.audit.unshift(['Accepted '+p.field+' '+p.from+' → '+p.to+' · target $'+from+' → $'+a.target+' · Riley Chen','Today']);
+  a.changes.unshift({t:p.field+': '+p.from+' → '+p.to,s:'canonical',n:'Target $'+from+' → $'+a.target+' · reviewer, prior value, new value, evidence and rationale recorded',who:'Accepted by Riley Chen',when:'Just now'});
+  ui.sel.active=a.id; closeDrawer(); toast('Accepted into the base case. Target is now $'+a.target+'.',true); render();
+}
+function dismiss(id){
+  const a=find('active',id); if(!a||!a.pending) return;
+  snapshot();
+  const p=a.pending; p.status='dismissed'; a.reviewed='just now';
+  a.audit.unshift(['Dismissed agent proposal '+p.field+' '+p.pct+' · Riley Chen','Today']);
+  ui.sel.active=a.id; closeDrawer(); toast('Proposal dismissed. Kept in history, not applied.',true); render();
+}
+function reopen(id){
+  const b=find('bench',id); if(!b) return;
+  snapshot();
+  b.status='reopened';
+  S.prospect.unshift({id:b.id,name:b.name,tk:b.tk,sector:b.sector,cap:b.cap,px:money(b.px),upside:22,hours:0,met:2,started:'Today',due:'Sep 29',thesis:b.prior,
+    proof:{t:b.triggers.find(t=>!t.met)?b.triggers.find(t=>!t.met).t:'Confirm prior work still holds',now:b.triggers.find(t=>!t.met)?b.triggers.find(t=>!t.met).now:'—',line:b.triggers.find(t=>!t.met)?b.triggers.find(t=>!t.met).line:'—',note:'Prior research reused; '+b.days+' days of monitoring context attached'},
+    checklist:[{t:'Prior thesis still intact',s:'verified',n:'Nothing invalidated the stored research',conf:80},{t:'Entry price now attractive',s:'verified',n:'Price trigger met',conf:85},{t:'Remaining trigger confirms',s:'open',n:'Check the unmet trigger',conf:55},{t:'Balance sheet unchanged',s:'open',n:'Refresh 10-Q',conf:60},{t:'No new regulatory overhang',s:'open',n:'Scan filings',conf:60}],
+    disconfirming:[],log:[['Re-opened from Bench with prior work attached','Today']],delta:['Re-opened from the Bench after '+b.days+' days','Today']});
+  ui.sel.bench=null; toast(b.name+' re-opened in Prospect with its prior research attached.',true); render();
+}
+function retire(id){const b=find('bench',id); if(!b) return; snapshot(); b.status='retired'; toast(b.name+' retired and archived.',true); render();}
+function keep(id){const b=find('bench',id); if(!b) return; b.history.unshift(['Reviewed: keep benched','Today']); toast('Kept on the Bench. Triggers unchanged.'); render();}
+function snooze(id){const b=find('bench',id); if(!b) return; b.history.unshift(['Snoozed 30 days','Today']); toast('Snoozed 30 days. Agent keeps checking.'); render();}
+function tobench(id){
+  const a=find('active',id); if(!a) return;
+  snapshot();
+  removeFrom('active',id);
+  S.bench.unshift({id:a.id,name:a.name,tk:a.tk,sector:a.sector,cap:a.cap,px:a.px,days:0,on:'Today',owner:a.owner,check:'24h',why:'Moved from Active Research; research preserved.',prior:'Target was $'+a.target+'. Re-open on a price or estimate trigger.',
+    triggers:[{t:'Price 15% below today',sub:'Valuation re-entry',now:money(a.px),line:money(a.px*0.85),met:false,pct:85},{t:'Street resets FY27 by 5%',sub:'Estimates de-risk',now:'0%',line:'−5%',met:false,pct:0}],changed:[['Moved to Bench','Today','neutral']],history:[['Moved to Bench from Active Research','Today']]});
+  ui.sel.active=null; toast(a.name+' moved to the Bench with two triggers.',true); render();
+}
+function recordSize(id,kind,to,why){
+  const f=find('portfolio',id); if(!f) return;
+  snapshot();
+  const label={trim:'Trimmed',add:'Added',hold:'Held',exit:'Exited'}[kind];
+  const prev=f.weight;
+  if(kind==='exit') f.weight=0; else if(kind!=='hold') f.weight=to;
+  f.status=label; f.log.unshift([label+(kind==='hold'?' at '+prev.toFixed(1)+'%':' '+prev.toFixed(1)+'% → '+f.weight.toFixed(1)+'%')+(why?' · '+why:''),'Today']);
+  ui.sel.portfolio=f.id; closeDrawer(); toast(label+' '+f.name+(kind==='hold'?'.':' to '+f.weight.toFixed(1)+'%.'),true); render();
+}
+
+/* ---------- drawer ---------- */
+const drawer=document.getElementById('drawer'), scrim=document.getElementById('scrim');
+let drawerOpener=null;
+function openDrawer(html){drawerOpener=document.activeElement;drawer.innerHTML=html;drawer.classList.add('open');scrim.classList.add('show');const first=drawer.querySelector('textarea,input,button.btn-primary');if(first)setTimeout(()=>first.focus(),220);}
+function closeDrawer(){const was=drawer.classList.contains('open');drawer.classList.remove('open');scrim.classList.remove('show');if(was&&drawerOpener&&document.contains(drawerOpener))drawerOpener.focus();}
+function reviewDrawer(id){
+  const a=find('active',id); if(!a||!a.pending) return; const p=a.pending;
+  openDrawer(`<div class="drawer-head"><div><div class="eyebrow" style="margin:0">Proposed model update</div><h2>${p.field}</h2></div><button type="button" class="close" data-action="closedrawer" aria-label="Close">×</button></div>
+    <div class="big num"><span class="from">${p.from}</span><span class="arrow">→</span><span class="to">${p.to}</span><span style="font-size:16px;color:var(--green)">${p.pct}</span></div>
+    <div class="srcline">Proposed by ${p.agent} · ${p.age} · ${p.status==='proposed'?'not yet canonical':p.status}</div>
+    <h4>Why the agent changed this</h4><ul class="why">${p.why.map(w=>`<li>${w}</li>`).join('')}</ul>
+    <h4>Evidence</h4><ul class="ev">${p.evidence.map(e=>`<li><a href="#" onclick="return false">${e[0]} ↗</a><em>${e[1]}</em></li>`).join('')}</ul>
+    <h4>Impact if accepted</h4><div class="imp"><div><span>Base-case target</span><b>${money(a.target)} → ${money(p.targetTo)}</b></div><div><span>Implied upside</span><b>+${((a.target/a.px-1)*100).toFixed(1)}% → +${((p.targetTo/a.px-1)*100).toFixed(1)}%</b></div><div><span>FY27 EBITDA margin</span><b>${p.marginBps}</b></div><div><span>Related open question</span><b>SMB cohort durability</b></div></div>
+    ${p.status==='proposed'?`<div class="foot"><button type="button" class="btn btn-primary" data-action="accept" data-id="${a.id}">Accept into base case</button><div style="display:flex;gap:8px"><button type="button" class="btn" style="flex:1" data-action="closedrawer">Edit first</button><button type="button" class="btn btn-quiet" style="flex:1" data-action="dismiss" data-id="${a.id}">Dismiss</button></div></div><div class="note">Acceptance records the reviewer, time, previous value, new value, source evidence and rationale in the audit trail. Nothing an agent proposes becomes truth without this step.</div>`:`<div class="note">This proposal is ${p.status}. See the history in the detail layer.</div>`}`);
+}
+function sizeDrawer(id,kind){
+  const f=find('portfolio',id); if(!f) return;
+  const to = kind==='trim'?(f.max-0.5):kind==='add'?(f.weight+1):kind==='exit'?0:f.weight;
+  const title={trim:'Trim position',add:'Add to position',hold:'Record hold',exit:'Exit position'}[kind];
+  openDrawer(`<div class="drawer-head"><div><div class="eyebrow" style="margin:0">Record decision</div><h2>${title} · ${f.name}</h2></div><button type="button" class="close" data-action="closedrawer" aria-label="Close">×</button></div>
+    <div class="summary">
+      ${pair({label:'Weight vs max',value:f.weight.toFixed(1)+'%',comp:'/ '+f.max.toFixed(1)+'%',tone:f.weight>f.max?'warn':''})}
+      ${pair({label:'Upside vs downside',value:'+'+f.up+'%',comp:'/ '+f.down+'%',tone:f.up>=Math.abs(f.down)?'good':'bad'})}
+      ${pair({label:'Health vs trim line',value:f.health,comp:'/ '+f.line,tone:f.health>=f.line+10?'good':f.health>=f.line?'warn':'bad'})}
+      ${pair({label:'Since initiation',value:'+'+f.since+'%',comp:money(f.cost),tone:'good'})}
+    </div>
+    ${kind!=='hold'?`<div class="field"><label for="sizeTo">New weight</label><div class="sizer"><input id="sizeTo" type="number" step="0.1" min="0" max="10" value="${to.toFixed(1)}"><span>% of portfolio · from ${f.weight.toFixed(1)}%</span></div></div>`:''}
+    <div class="field" style="margin-top:14px"><label for="sizeWhy">Rationale</label><textarea id="sizeWhy" placeholder="One line the next reviewer can act on…">${kind==='trim'&&f.weight>f.max?'Weight ran through the '+f.max.toFixed(1)+'% cap on price, not new conviction.':kind==='add'?'Upside and thesis health both clear; position is under-sized vs conviction.':''}</textarea></div>
+    <div class="foot"><button type="button" class="btn btn-primary" data-action="confirmsize" data-id="${f.id}" data-arg="${kind}">Confirm ${kind}</button><button type="button" class="btn" data-action="closedrawer">Cancel</button></div>
+    <div class="note">Every sizing action points back to a dated thesis, model version, evidence set and accountable reviewer.</div>`);
+}
+function questionDrawer(qid){
+  const q=QUESTIONS.find(x=>x.id===qid); if(!q) return;
+  const c=S[q.phase].find(x=>x.id===q.cid); const ph=PHASES.find(p=>p.id===q.phase);
+  const forN=q.evidence.filter(e=>e[3]==='for').length, agN=q.evidence.length-forN;
+  const tone=q.tone==='good'?'var(--green)':q.tone==='warn'?'var(--orange)':q.tone==='bad'?'var(--red)':'var(--ink)';
+  openDrawer(`<div class="drawer-head"><div><div class="eyebrow" style="margin:0">Question · ${c?c.name:''} · ${ph.n}</div><h2>${q.t}</h2></div><button type="button" class="close" data-action="closedrawer" aria-label="Close">×</button></div>
+    <div class="big num"><span style="color:${tone}">${q.now}</span><span class="arrow">vs</span><span class="from">${q.line}</span></div>
+    <div class="srcline">Owner ${q.owner} · refreshed ${q.refreshed}${q.stale?' · <span style="color:var(--orange);font-weight:600">stale</span>':''}${q.resolved?' · <span style="color:var(--green);font-weight:600">resolved</span>':''}</div>
+    <h4>Evidence · ${forN} for, ${agN} against</h4>
+    <ul class="ev">${q.evidence.map(e=>`<li><span><span class="chip ${e[3]==='for'?'chip-good':'chip-bad'}" style="height:20px;font-size:11px;margin-right:6px">${e[3]==='for'?'For':'Against'}</span>${e[0]}<span style="display:block;color:var(--ink-3);font-size:12.5px;margin-top:2px">${e[1]}</span></span><em>${e[2]}</em></li>`).join('')}</ul>
+    <h4>Where it lands in the model</h4>
+    <div class="imp"><div><span>Model input</span><b>${q.input}</b></div><div><span>Feeds</span><b>${q.feeds}</b></div><div><span>Current vs line</span><b>${q.now} vs ${q.line}</b></div></div>
+    <div class="foot">
+      ${q.resolved?'':`<button type="button" class="btn btn-primary" data-action="resolveq" data-id="${q.id}">Mark resolved · ${q.now} holds</button>`}
+      <div style="display:flex;gap:8px"><button type="button" class="btn" style="flex:1" data-action="refreshq" data-id="${q.id}">Request refresh</button><button type="button" class="btn" style="flex:1" data-action="noteq" data-id="${q.id}">Add evidence</button></div>
+    </div>
+    <div class="note">A question is answered by evidence, not by a number changing. Resolving it records the answer, the evidence set and the reviewer, and closes it on the ${ph.n} screen.</div>`);
+}
+function noteDrawer(id){
+  const a=find('active',id); if(!a) return;
+  openDrawer(`<div class="drawer-head"><div><div class="eyebrow" style="margin:0">Analyst note</div><h2>${a.name}</h2></div><button type="button" class="close" data-action="closedrawer" aria-label="Close">×</button></div>
+    <div class="field"><label for="noteText">Note</label><textarea id="noteText" placeholder="What did you learn, and what does it change?"></textarea></div>
+    <div class="foot"><button type="button" class="btn btn-primary" data-action="savenote" data-id="${a.id}">Save note</button><button type="button" class="btn" data-action="closedrawer">Cancel</button></div>`);
+}
+
+/* ---------- palette ---------- */
+const pal=document.getElementById('palette'), palInput=document.getElementById('palInput'), palRes=document.getElementById('palRes');
+let palHi=0;
+function allEntities(){
+  const out=[];
+  PHASES.forEach(p=>S[p.id].forEach(x=>out.push({phase:p.id,phaseName:p.n,id:x.id,name:x.name,tk:x.tk,sub:x.sector||''})));
+  QUESTIONS.forEach(q=>{const c=S[q.phase].find(x=>x.id===q.cid);const cname=c?c.name:'';
+    out.push({phase:q.phase,phaseName:'Question',id:null,q:q.id,name:q.t,tk:'',sub:cname+' · '+q.now+' vs '+q.line});
+    q.evidence.forEach(e=>out.push({phase:q.phase,phaseName:'Source',id:null,q:q.id,name:e[1],tk:'',sub:e[0]+' · '+cname+' · '+e[2]}));});
+  PHASES.forEach(p=>out.push({phase:p.id,phaseName:'Phase',id:null,name:p.n,tk:'',sub:p.q}));
+  return out;
+}
+function openPalette(){pal.classList.add('open');palInput.value='';palHi=0;renderPal();setTimeout(()=>palInput.focus(),10);}
+function closePalette(){pal.classList.remove('open');}
+function renderPal(){
+  const q=palInput.value.trim().toLowerCase();
+  const items=allEntities().filter(e=>!q||(e.name+' '+e.tk+' '+e.sub+' '+e.phaseName).toLowerCase().includes(q)).slice(0,9);
+  palRes.innerHTML=items.length?items.map((e,i)=>`<button type="button" class="${i===palHi?'hi':''}" data-jump="${e.phase}:${e.id||''}:${e.q||''}"><span><b>${e.name}${e.tk?' <span style="color:var(--ink-3);font-weight:500">'+e.tk+'</span>':''}</b><span>${e.sub}</span></span><em>${e.phaseName}</em></button>`).join(''):'<div class="empty">No matches.</div>';
+}
+palInput.addEventListener('input',()=>{palHi=0;renderPal();});
+palInput.addEventListener('keydown',e=>{
+  const btns=[...palRes.querySelectorAll('button')];
+  if(e.key==='ArrowDown'){e.preventDefault();palHi=Math.min(btns.length-1,palHi+1);renderPal();}
+  else if(e.key==='ArrowUp'){e.preventDefault();palHi=Math.max(0,palHi-1);renderPal();}
+  else if(e.key==='Enter'){const b=btns[palHi];if(b){jump(b.dataset.jump);}}
+  else if(e.key==='Escape'){closePalette();}
+});
+function jump(v){const [phase,id,q]=v.split(':');closePalette();if(q){const qq=QUESTIONS.find(x=>x.id===q);go(phase,qq?qq.cid:null);setTimeout(()=>questionDrawer(q),250);}else go(phase,id||null);}
+pal.addEventListener('click',e=>{const b=e.target.closest('[data-jump]');if(b)jump(b.dataset.jump);else if(e.target===pal)closePalette();});
+
+/* ---------- global events ---------- */
+document.addEventListener('click',e=>{
+  if(e.target.closest('a[data-action]')) e.preventDefault();
+  const sel=e.target.closest('[data-select]');
+  if(sel&&!e.target.closest('button')){const [phase,id]=sel.dataset.select.split(':');ui.sel[phase]=id;render();return;}
+  const b=e.target.closest('[data-action]'); if(!b) return;
+  const act=b.dataset.action, id=b.dataset.id, arg=b.dataset.arg;
+  switch(act){
+    case 'promote': promote(id); break;
+    case 'hold': {const c=find('universe',id); if(c){snapshot();c.status='held';toast(c.name+' held. Re-screens next Monday.',true);render();} break;}
+    case 'kill': {const c=find('universe',id); if(c){snapshot();c.status='killed';toast(c.name+' killed for this cycle.',true);render();} break;}
+    case 'refresh': {const c=find('universe',id); if(c){c.cov=Math.max(c.cov,88);c.sources=c.sources.map(s=>s[1]==='missing'?[s[0],'refreshed today']:s);toast('Coverage refresh requested for '+c.name+'. Coverage now '+c.cov+'%.');render();} break;}
+    case 'advance': advance(id); break;
+    case 'pkill': pkill(id); break;
+    case 'extend': extend(id); break;
+    case 'logwork': logwork(id); break;
+    case 'openreview': reviewDrawer(id); break;
+    case 'accept': accept(id); break;
+    case 'dismiss': dismiss(id); break;
+    case 'note': noteDrawer(id); break;
+    case 'savenote': {const a=find('active',id);const t=document.getElementById('noteText');if(a&&t&&t.value.trim()){a.audit.unshift(['Note: '+esc(t.value.trim()).slice(0,120),'Today']);}closeDrawer();toast('Note saved to '+(a?a.name:'the record')+'.');render();break;}
+    case 'tobench': tobench(id); break;
+    case 'request': toast('Agent update requested. New evidence will arrive as a proposal, never as a silent change.'); break;
+    case 'reopen': reopen(id); break;
+    case 'retire': retire(id); break;
+    case 'keep': keep(id); break;
+    case 'snooze': snooze(id); break;
+    case 'edittrig': toast('Trigger editing is out of scope for this prototype.'); break;
+    case 'size': sizeDrawer(id,arg); break;
+    case 'confirmsize': {const to=parseFloat((document.getElementById('sizeTo')||{}).value);const why=(document.getElementById('sizeWhy')||{}).value||'';recordSize(id,arg,isNaN(to)?undefined:to,esc(why.trim()));break;}
+    case 'openq': questionDrawer(id); break;
+    case 'resolveq': {const q=QUESTIONS.find(x=>x.id===id); if(!q||q.resolved) break; snapshot(); q.resolved=true; q.refreshed='just now';
+      const c=S[q.phase].find(x=>x.id===q.cid);
+      if(c&&c.openQ!=null){c.openQ=Math.max(0,c.openQ-1);c.closedQ=(c.closedQ||0)+1;c.audit=c.audit||[];c.audit.unshift(['Resolved: '+q.t+' · '+q.now+' vs '+q.line+' · '+q.evidence.length+' sources · Riley Chen','Today']);c.questions=(c.questions||[]).filter(x=>x[0]!==q.short&&!q.t.toLowerCase().includes((x[0]||'').toLowerCase().split(' ').slice(0,2).join(' ')));}
+      if(c&&c.checklist){const item=c.checklist.find(x=>x.s==='open');if(item){item.s='verified';item.conf=Math.max(item.conf,75);c.met=Math.min(5,c.met+1);}}
+      closeDrawer(); toast('Question resolved and recorded with its evidence.',true); render(); break;}
+    case 'refreshq': {const q=QUESTIONS.find(x=>x.id===id); if(q){q.stale=false;q.refreshed='requested just now';} toast('Refresh requested. New evidence arrives as a proposal.'); questionDrawer(id); break;}
+    case 'noteq': toast('Evidence capture is out of scope for this prototype.'); break;
+    case 'closedrawer': closeDrawer(); break;
+    case 'reset': S=seed(); ui.sel={}; undoStack=[]; closeDrawer(); try{localStorage.removeItem('baba-proto');}catch(e){} toast('Demo data reset.'); render(); break;
+    case 'undo': undo(); break;
+  }
+});
+document.addEventListener('keydown',e=>{
+  const typing=/INPUT|TEXTAREA/.test(document.activeElement.tagName);
+  if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='k'){e.preventDefault();pal.classList.contains('open')?closePalette():openPalette();return;}
+  if(e.key==='Escape'){closeDrawer();closePalette();return;}
+  if(typing) return;
+  if(e.key.toLowerCase()==='h'){toggleLayers();return;}
+  if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='z'){e.preventDefault();undo();return;}
+  const ph=PHASES.find(p=>p.k===e.key); if(ph){go(ph.id);}
+  if(e.key==='Enter'&&document.activeElement.dataset&&document.activeElement.dataset.select){const [phase,id]=document.activeElement.dataset.select.split(':');ui.sel[phase]=id;render();}
+});
+document.getElementById('searchBtn').addEventListener('click',openPalette);
+document.getElementById('searchBtn').addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openPalette();}});
+scrim.addEventListener('click',closeDrawer);
+function toggleLayers(){ui.layers=!ui.layers;document.body.classList.toggle('layers',ui.layers);document.getElementById('layersBtn').classList.toggle('on',ui.layers);}
+document.getElementById('layersBtn').addEventListener('click',toggleLayers);
+document.getElementById('nav').addEventListener('click',e=>{const a=e.target.closest('[data-phase]');if(a){e.preventDefault();go(a.dataset.phase);}});
+window.addEventListener('hashchange',()=>{const h=location.hash.replace('#','');if(PHASES.some(p=>p.id===h)&&h!==ui.phase){ui.phase=h;render();}});
+
+/* ---------- boot ---------- */
+(function(){
+  restore();
+  const h=location.hash.replace('#','');
+  if(PHASES.some(p=>p.id===h)) ui.phase=h;
+  render();
+})();
+</script>
+</body>
+</html>
+
+</body></html>

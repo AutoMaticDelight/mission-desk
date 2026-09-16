@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Baba research decision mockup</title>
+  <link rel="preconnect" href="https://api.fontshare.com" />
+  <link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700,900&display=swap" rel="stylesheet" />
+  <style>
+    :root, [data-theme="light"] {
+      --bg: #f5f3ee;
+      --surface: #fcfbf7;
+      --surface-2: #f1ede6;
+      --surface-3: #e8e1d7;
+      --text: #171512;
+      --muted: #6f6960;
+      --faint: #9a9388;
+      --line: rgba(23,21,18,.12);
+      --line-strong: rgba(23,21,18,.22);
+      --accent: #0c666c;
+      --accent-soft: rgba(12,102,108,.11);
+      --good: #2d6e22;
+      --good-soft: rgba(45,110,34,.12);
+      --warn: #9a5a14;
+      --warn-soft: rgba(154,90,20,.12);
+      --bad: #9a2447;
+      --bad-soft: rgba(154,36,71,.12);
+      --blue: #265ea8;
+      --blue-soft: rgba(38,94,168,.11);
+      --radius: 18px;
+      --radius-sm: 12px;
+      --shadow: 0 8px 24px rgba(32,28,22,.06);
+      --text-xs: 12px;
+      --text-sm: 14px;
+      --text-base: 16px;
+      --text-lg: 20px;
+      --text-xl: 28px;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; height: 100%; overflow: hidden; }
+    body {
+      font-family: 'Satoshi', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      font-size: var(--text-base);
+      line-height: 1.35;
+    }
+    button, input { font: inherit; }
+    .app {
+      display: grid;
+      grid-template-columns: 240px 1fr;
+      grid-template-rows: 72px 1fr;
+      height: 100dvh;
+    }
+    .sidebar {
+      grid-row: 1 / -1;
+      background: #171614;
+      color: #f3efe6;
+      padding: 22px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      overflow: auto;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 900;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      font-size: 13px;
+    }
+    .logo svg { width: 28px; height: 28px; color: #78c6cb; }
+    .nav-group { display: grid; gap: 8px; }
+    .nav-label {
+      color: rgba(243,239,230,.52);
+      font-size: 11px;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      margin-top: 10px;
+    }
+    .phase-btn {
+      border: 0;
+      background: transparent;
+      color: rgba(243,239,230,.78);
+      text-align: left;
+      padding: 12px 14px;
+      border-radius: 12px;
+      cursor: pointer;
+      display: grid;
+      gap: 4px;
+    }
+    .phase-btn:hover, .phase-btn.active {
+      background: rgba(255,255,255,.08);
+      color: #fff;
+    }
+    .phase-btn strong { font-size: 14px; }
+    .phase-btn span { font-size: 12px; color: rgba(243,239,230,.58); }
+    .topbar {
+      grid-column: 2;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 26px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(245,243,238,.86);
+      backdrop-filter: blur(12px);
+    }
+    .crumbs {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--muted);
+      font-size: 13px;
+      letter-spacing: .02em;
+    }
+    .top-actions { display: flex; align-items: center; gap: 10px; }
+    .pill-btn {
+      border: 1px solid var(--line);
+      background: var(--surface);
+      border-radius: 999px;
+      padding: 10px 14px;
+      color: var(--text);
+    }
+    .pill-btn.primary {
+      background: var(--text);
+      color: #f8f5ef;
+      border-color: var(--text);
+    }
+    .main {
+      grid-column: 2;
+      overflow: auto;
+      padding: 24px 24px 36px;
+    }
+    .screen { display: none; }
+    .screen.active { display: block; }
+    .page-head {
+      display: grid;
+      grid-template-columns: 1.4fr .95fr;
+      gap: 18px;
+      margin-bottom: 18px;
+    }
+    .hero, .decision-card, .panel, .table-panel, .feed-panel {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+    .hero {
+      padding: 22px 24px 20px;
+      display: grid;
+      gap: 18px;
+    }
+    .eyebrow {
+      font-size: 11px;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-weight: 700;
+    }
+    .title-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      align-items: start;
+    }
+    .company h1 {
+      margin: 0;
+      font-size: var(--text-xl);
+      line-height: 1.05;
+      letter-spacing: -.03em;
+    }
+    .company .meta {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 13px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .decision-chip {
+      align-self: start;
+      padding: 8px 11px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      background: var(--accent-soft);
+      color: var(--accent);
+    }
+    .metrics-row {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .metric {
+      background: var(--surface-2);
+      border: 1px solid var(--line);
+      border-radius: 15px;
+      padding: 14px 14px 12px;
+      display: grid;
+      gap: 4px;
+      min-height: 92px;
+    }
+    .metric .label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      color: var(--muted);
+      font-weight: 700;
+    }
+    .metric .value {
+      font-size: 36px;
+      line-height: .95;
+      letter-spacing: -.04em;
+      font-weight: 900;
+      font-variant-numeric: tabular-nums lining-nums;
+    }
+    .metric .sub {
+      font-size: 13px;
+      color: var(--muted);
+      font-variant-numeric: tabular-nums lining-nums;
+    }
+    .good { color: var(--good); }
+    .warn { color: var(--warn); }
+    .bad { color: var(--bad); }
+    .blue { color: var(--blue); }
+    .hero-summary {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 16px;
+      padding-top: 2px;
+    }
+    .statement {
+      display: grid;
+      gap: 8px;
+      align-content: start;
+    }
+    .statement .big-line {
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: -.02em;
+    }
+    .statement p {
+      margin: 0;
+      color: var(--muted);
+      max-width: 60ch;
+    }
+    .pairs {
+      display: grid;
+      gap: 10px;
+    }
+    .pair {
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      gap: 12px;
+      align-items: end;
+      padding: 11px 0;
+      border-bottom: 1px solid var(--line);
+    }
+    .pair:last-child { border-bottom: 0; }
+    .pair .pair-label {
+      font-size: 12px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      font-weight: 700;
+    }
+    .pair .pair-main, .pair .pair-comp {
+      font-variant-numeric: tabular-nums lining-nums;
+      font-weight: 900;
+      letter-spacing: -.03em;
+      white-space: nowrap;
+    }
+    .pair .pair-main { font-size: 28px; }
+    .pair .pair-comp { font-size: 18px; color: var(--muted); }
+    .decision-card {
+      padding: 18px;
+      display: grid;
+      gap: 14px;
+    }
+    .decision-card .decision-title {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      color: var(--muted);
+      font-weight: 700;
+    }
+    .decision-card .decision-big {
+      font-size: 34px;
+      font-weight: 900;
+      line-height: .95;
+      letter-spacing: -.04em;
+      font-variant-numeric: tabular-nums lining-nums;
+    }
+    .decision-card .decision-copy {
+      font-size: 15px;
+      color: var(--muted);
+      margin: 0;
+    }
+    .stack-metrics {
+      display: grid;
+      gap: 10px;
+    }
+    .stack-item {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+      align-items: center;
+      padding: 12px 0;
+      border-top: 1px solid var(--line);
+    }
+    .stack-item:first-child { border-top: 0; padding-top: 0; }
+    .stack-item .k {
+      font-size: 12px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      font-weight: 700;
+    }
+    .stack-item .v {
+      font-size: 22px;
+      font-weight: 900;
+      letter-spacing: -.03em;
+      font-variant-numeric: tabular-nums lining-nums;
+    }
+    .content-grid {
+      display: grid;
+      grid-template-columns: 1.08fr .92fr;
+      gap: 18px;
+    }
+    .panel {
+      padding: 18px;
+      display: grid;
+      gap: 14px;
+    }
+    .panel-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .panel-head h2 {
+      margin: 0;
+      font-size: 18px;
+      letter-spacing: -.01em;
+    }
+    .mini {
+      color: var(--muted);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      font-weight: 700;
+    }
+    .tight-list { display: grid; gap: 12px; }
+    .tight-item {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      align-items: end;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--line);
+    }
+    .tight-item:last-child { border-bottom: 0; padding-bottom: 0; }
+    .tight-item strong {
+      display: block;
+      font-size: 16px;
+      margin-bottom: 4px;
+    }
+    .tight-item p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+      max-width: 54ch;
+    }
+    .tight-item .big {
+      font-size: 24px;
+      font-weight: 900;
+      letter-spacing: -.03em;
+      font-variant-numeric: tabular-nums lining-nums;
+      white-space: nowrap;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-variant-numeric: tabular-nums lining-nums;
+    }
+    th, td {
+      padding: 12px 10px;
+      border-bottom: 1px solid var(--line);
+      text-align: right;
+      white-space: nowrap;
+    }
+    th:first-child, td:first-child { text-align: left; }
+    th {
+      color: var(--muted);
+      font-size: 11px;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+    td strong {
+      font-size: 18px;
+      letter-spacing: -.02em;
+    }
+    .feed-item {
+      padding: 14px;
+      border-radius: 14px;
+      background: var(--surface-2);
+      border: 1px solid var(--line);
+      display: grid;
+      gap: 8px;
+    }
+    .feed-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+    .status {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      font-weight: 800;
+    }
+    .status.blue { background: var(--blue-soft); color: var(--blue); }
+    .status.good { background: var(--good-soft); color: var(--good); }
+    .status.warn { background: var(--warn-soft); color: var(--warn); }
+    .status.bad { background: var(--bad-soft); color: var(--bad); }
+    .feed-metric {
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      gap: 12px;
+      align-items: end;
+    }
+    .feed-metric .name { font-size: 13px; color: var(--muted); text-transform: uppercase; letter-spacing: .1em; }
+    .feed-metric .from, .feed-metric .to {
+      font-weight: 900;
+      letter-spacing: -.03em;
+      font-size: 24px;
+    }
+    .feed-metric .from { color: var(--muted); }
+    .feed-metric .to { color: var(--text); }
+    .feed-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+    .feed-actions button {
+      border: 1px solid var(--line-strong);
+      background: transparent;
+      color: var(--text);
+      border-radius: 999px;
+      padding: 8px 11px;
+      font-size: 13px;
+    }
+    .screen-footer {
+      margin-top: 18px;
+      color: var(--muted);
+      font-size: 13px;
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+    @media (max-width: 1180px) {
+      .page-head, .content-grid, .hero-summary { grid-template-columns: 1fr; }
+      .metrics-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    @media (max-width: 840px) {
+      html, body { overflow: auto; }
+      .app { grid-template-columns: 1fr; grid-template-rows: auto auto 1fr; height: auto; }
+      .sidebar { grid-row: auto; }
+      .topbar, .main { grid-column: 1; }
+      .main { overflow: visible; }
+      .metrics-row { grid-template-columns: 1fr; }
+      .title-row { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="logo">
+        <svg viewBox="0 0 64 64" fill="none" aria-hidden="true">
+          <path d="M14 46V18h15c11 0 18 5 18 14 0 10-7 14-18 14H14Z" stroke="currentColor" stroke-width="6"/>
+          <path d="M30 18v28" stroke="currentColor" stroke-width="6"/>
+        </svg>
+        <div>Baba research</div>
+      </div>
+      <div class="nav-group">
+        <div class="nav-label">Research phases</div>
+        <button class="phase-btn active" data-screen="universe"><strong>Universe</strong><span>What is worth attention now</span></button>
+        <button class="phase-btn" data-screen="prospect"><strong>Prospect</strong><span>Is there enough edge to spend time</span></button>
+        <button class="phase-btn" data-screen="active"><strong>Active Research</strong><span>Can this be underwritten today</span></button>
+        <button class="phase-btn" data-screen="bench"><strong>Bench / Pipeline</strong><span>What would make this relevant again</span></button>
+        <button class="phase-btn" data-screen="portfolio"><strong>Portfolio</strong><span>Does the position still deserve size</span></button>
+      </div>
+      <div class="nav-group">
+        <div class="nav-label">Interface rule</div>
+        <div style="font-size:13px; line-height:1.5; color:rgba(243,239,230,.72)">Make research valuable and decisions obvious. Put paired numbers first, explanations second.</div>
+      </div>
+    </aside>
+
+    <header class="topbar">
+      <div class="crumbs">Baba <span>•</span> <span id="crumbPhase">Universe</span> <span>•</span> <span>Northstar Commerce</span></div>
+      <div class="top-actions">
+        <button class="pill-btn">Search</button>
+        <button class="pill-btn">Evidence</button>
+        <button class="pill-btn primary">Request update</button>
+      </div>
+    </header>
+
+    <main class="main">
+      <section class="screen active" id="universe">
+        <div class="page-head">
+          <div class="hero">
+            <div class="eyebrow">Universe overview</div>
+            <div class="title-row">
+              <div class="company">
+                <h1>Find the names that deserve analyst time.</h1>
+                <div class="meta"><span>Russell coverage</span><span>137 names screened</span><span>Updated 19m ago</span></div>
+              </div>
+              <div class="decision-chip">Promote the top 4</div>
+            </div>
+            <div class="metrics-row">
+              <div class="metric"><div class="label">Qualified today</div><div class="value">12</div><div class="sub">Out of 137 names screened</div></div>
+              <div class="metric"><div class="label">Highest score</div><div class="value good">86</div><div class="sub">Northstar Commerce</div></div>
+              <div class="metric"><div class="label">Coverage complete</div><div class="value">91%</div><div class="sub">Needs no data cleanup</div></div>
+              <div class="metric"><div class="label">New since Monday</div><div class="value blue">7</div><div class="sub">Fresh opportunities surfaced</div></div>
+            </div>
+            <div class="hero-summary">
+              <div class="statement">
+                <div class="big-line">Rank by edge, freshness, and readiness — not by raw noise.</div>
+                <p>Pair signal strength with data quality so the team can tell which candidates are genuinely actionable and which still need cleanup before they deserve time.</p>
+              </div>
+              <div class="pairs">
+                <div class="pair"><div class="pair-label">Northstar score vs threshold</div><div class="pair-main">86</div><div class="pair-comp">72 to promote</div></div>
+                <div class="pair"><div class="pair-label">Coverage vs required</div><div class="pair-main">91%</div><div class="pair-comp">85% required</div></div>
+                <div class="pair"><div class="pair-label">Catalyst window</div><div class="pair-main">23d</div><div class="pair-comp">within 30d</div></div>
+              </div>
+            </div>
+          </div>
+          <aside class="decision-card">
+            <div class="decision-title">Decision now</div>
+            <div class="decision-big">4 names</div>
+            <p class="decision-copy">Promote the four highest-scoring names with complete enough data to support a real first pass.</p>
+            <div class="stack-metrics">
+              <div class="stack-item"><div class="k">Promote now</div><div class="v good">Northstar, Kestral, Vanta, Hartwell</div></div>
+              <div class="stack-item"><div class="k">Hold for cleanup</div><div class="v warn">3 names</div></div>
+              <div class="stack-item"><div class="k">Kill this cycle</div><div class="v bad">121 names</div></div>
+            </div>
+          </aside>
+        </div>
+        <div class="content-grid">
+          <section class="table-panel panel">
+            <div class="panel-head"><h2>Promotion candidates</h2><div class="mini">Score paired with readiness</div></div>
+            <table>
+              <thead><tr><th>Name</th><th>Score</th><th>Coverage</th><th>Catalyst</th><th>Decision</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Northstar Commerce</strong><div class="mini">Consumer internet</div></td><td><strong class="good">86</strong></td><td><strong>91%</strong></td><td><strong>23d</strong></td><td><strong class="good">Promote</strong></td></tr>
+                <tr><td><strong>Kestral Freight</strong><div class="mini">Logistics</div></td><td><strong class="good">82</strong></td><td><strong>89%</strong></td><td><strong>17d</strong></td><td><strong class="good">Promote</strong></td></tr>
+                <tr><td><strong>Vanta Health</strong><div class="mini">Services</div></td><td><strong>79</strong></td><td><strong>87%</strong></td><td><strong>9d</strong></td><td><strong class="good">Promote</strong></td></tr>
+                <tr><td><strong>Hartwell Retail</strong><div class="mini">Consumer</div></td><td><strong>76</strong></td><td><strong>92%</strong></td><td><strong>28d</strong></td><td><strong class="good">Promote</strong></td></tr>
+                <tr><td><strong>Linden Cloud</strong><div class="mini">Software</div></td><td><strong class="warn">74</strong></td><td><strong class="warn">68%</strong></td><td><strong>14d</strong></td><td><strong class="warn">Fix data</strong></td></tr>
+              </tbody>
+            </table>
+          </section>
+          <section class="feed-panel panel">
+            <div class="panel-head"><h2>What makes a candidate valuable</h2><div class="mini">Pair signal with context</div></div>
+            <div class="tight-list">
+              <div class="tight-item"><div><strong>Signal without coverage is not ready.</strong><p>A high score needs complete enough vendor and filing coverage to support a quick first thesis.</p></div><div class="big">86 / 91%</div></div>
+              <div class="tight-item"><div><strong>Near catalysts deserve priority.</strong><p>Upcoming earnings or regulatory events can justify immediate promotion when the information set is reliable.</p></div><div class="big">23d</div></div>
+              <div class="tight-item"><div><strong>Reason for promotion must be visible.</strong><p>Each promoted name should show the one differentiated reason it deserves analyst attention right now.</p></div><div class="big blue">1 reason</div></div>
+            </div>
+          </section>
+        </div>
+        <div class="screen-footer"><span>Goal: sort the funnel by investability, not decoration.</span><span>Best scan: score + coverage + catalyst + explicit promote/hold/kill action.</span></div>
+      </section>
+
+      <section class="screen" id="prospect">
+        <div class="page-head">
+          <div class="hero">
+            <div class="eyebrow">Prospect overview</div>
+            <div class="title-row">
+              <div class="company">
+                <h1>Decide whether this name deserves active research.</h1>
+                <div class="meta"><span>Northstar Commerce</span><span>Prospect stage</span><span>Initial pass updated 3h ago</span></div>
+              </div>
+              <div class="decision-chip">Advance or kill this week</div>
+            </div>
+            <div class="metrics-row">
+              <div class="metric"><div class="label">Prelim upside</div><div class="value good">24%</div><div class="sub">Versus current price</div></div>
+              <div class="metric"><div class="label">Hours left</div><div class="value">6</div><div class="sub">Before time-box closes</div></div>
+              <div class="metric"><div class="label">Criteria met</div><div class="value">4/5</div><div class="sub">One must-prove item open</div></div>
+              <div class="metric"><div class="label">Disconfirming signals</div><div class="value warn">2</div><div class="sub">Must be resolved first</div></div>
+            </div>
+            <div class="hero-summary">
+              <div class="statement">
+                <div class="big-line">Prospect is about efficient conviction, not depth for its own sake.</div>
+                <p>Pair upside with confidence and unresolved disconfirming evidence so the team can decide whether more work is deserved.</p>
+              </div>
+              <div class="pairs">
+                <div class="pair"><div class="pair-label">Upside vs hurdle</div><div class="pair-main">24%</div><div class="pair-comp">20% required</div></div>
+                <div class="pair"><div class="pair-label">Criteria met vs required</div><div class="pair-main">4/5</div><div class="pair-comp">5/5 to advance</div></div>
+                <div class="pair"><div class="pair-label">Time spent vs budget</div><div class="pair-main">10h</div><div class="pair-comp">16h cap</div></div>
+              </div>
+            </div>
+          </div>
+          <aside class="decision-card">
+            <div class="decision-title">Decision now</div>
+            <div class="decision-big">1 open proof</div>
+            <p class="decision-copy">The case advances only if the margin-improvement claim survives one last disconfirming check.</p>
+            <div class="stack-metrics">
+              <div class="stack-item"><div class="k">What must be true</div><div class="v">SMB churn stays below 3.5%</div></div>
+              <div class="stack-item"><div class="k">What could kill it</div><div class="v bad">Fulfillment gains prove one-time</div></div>
+              <div class="stack-item"><div class="k">Next step</div><div class="v blue">Call vendor + review August cohorts</div></div>
+            </div>
+          </aside>
+        </div>
+        <div class="content-grid">
+          <section class="panel">
+            <div class="panel-head"><h2>What the analyst needs paired</h2><div class="mini">Value next to proof</div></div>
+            <div class="tight-list">
+              <div class="tight-item"><div><strong>Edge next to what makes it different.</strong><p>The candidate is interesting because fulfillment mix appears to be structurally better than consensus expects.</p></div><div class="big good">+24%</div></div>
+              <div class="tight-item"><div><strong>Risk next to its invalidation line.</strong><p>SMB churn matters only if it pushes above the level that breaks the margin thesis.</p></div><div class="big warn">3.1% / 3.5%</div></div>
+              <div class="tight-item"><div><strong>Work left next to time budget.</strong><p>Prospect should feel time-boxed and disciplined, not like undeclared active research.</p></div><div class="big">6h / 16h</div></div>
+            </div>
+          </section>
+          <section class="panel">
+            <div class="panel-head"><h2>Advance checklist</h2><div class="mini">Decision paired with evidence</div></div>
+            <div class="feed-item">
+              <div class="feed-top"><strong>Unit economics improve with mix</strong><span class="status good">Verified</span></div>
+              <div style="color:var(--muted)">Transcript commentary and order-flow readthrough support the direction.</div>
+            </div>
+            <div class="feed-item">
+              <div class="feed-top"><strong>Churn stable under threshold</strong><span class="status warn">Open</span></div>
+              <div style="color:var(--muted)">Need August cohort pull before this can move to active research.</div>
+            </div>
+            <div class="feed-item">
+              <div class="feed-top"><strong>Variant view is differentiated</strong><span class="status good">Verified</span></div>
+              <div style="color:var(--muted)">Street still models only modest fulfillment leverage in FY27.</div>
+            </div>
+          </section>
+        </div>
+        <div class="screen-footer"><span>Goal: make go / no-go obvious.</span><span>Best scan: upside + disconfirming evidence + remaining time + one explicit open proof.</span></div>
+      </section>
+
+      <section class="screen" id="active">
+        <div class="page-head">
+          <div class="hero">
+            <div class="eyebrow">Active research overview</div>
+            <div class="title-row">
+              <div class="company">
+                <h1>Underwrite the decision, then expose what can change it.</h1>
+                <div class="meta"><span>Northstar Commerce (NSCM)</span><span>Active Research</span><span>Last reviewed 2h ago</span></div>
+              </div>
+              <div class="decision-chip">Maintain active underwriting</div>
+            </div>
+            <div class="metrics-row">
+              <div class="metric"><div class="label">Target</div><div class="value">$108</div><div class="sub">Base-case fair value</div></div>
+              <div class="metric"><div class="label">Upside</div><div class="value good">+28.3%</div><div class="sub">Versus $84.20 price</div></div>
+              <div class="metric"><div class="label">Churn</div><div class="value warn">3.1%</div><div class="sub">Versus 3.5% break line</div></div>
+              <div class="metric"><div class="label">Next catalyst</div><div class="value">Nov 6</div><div class="sub">Q3 earnings</div></div>
+            </div>
+            <div class="hero-summary">
+              <div class="statement">
+                <div class="big-line">The page should answer what changed, what matters, and what still needs judgment.</div>
+                <p>Keep the investment case short, put the modeled numbers in paired rows, and make agent activity visible without letting it silently become truth.</p>
+              </div>
+              <div class="pairs">
+                <div class="pair"><div class="pair-label">FY27 EBITDA margin vs consensus</div><div class="pair-main">18.9%</div><div class="pair-comp">18.1% street</div></div>
+                <div class="pair"><div class="pair-label">Target vs current price</div><div class="pair-main">$108</div><div class="pair-comp">$84.20 now</div></div>
+                <div class="pair"><div class="pair-label">Open questions vs resolved</div><div class="pair-main">3</div><div class="pair-comp">9 closed</div></div>
+              </div>
+            </div>
+          </div>
+          <aside class="decision-card">
+            <div class="decision-title">Decision now</div>
+            <div class="decision-big">+80 bps</div>
+            <p class="decision-copy">Latest evidence suggests FY27 EBITDA margin can move 80 bps above consensus, but only after the proposed change is reviewed.</p>
+            <div class="stack-metrics">
+              <div class="stack-item"><div class="k">Latest model impact</div><div class="v good">$105 → $108</div></div>
+              <div class="stack-item"><div class="k">Agent status</div><div class="v blue">Proposed, not canonical</div></div>
+              <div class="stack-item"><div class="k">Analyst action</div><div class="v">Review source and accept or edit</div></div>
+            </div>
+          </aside>
+        </div>
+        <div class="content-grid">
+          <section class="panel">
+            <div class="panel-head"><h2>Underwriting snapshot</h2><div class="mini">Numbers first, labels quiet</div></div>
+            <table>
+              <thead><tr><th>Line item</th><th>FY25A</th><th>FY26E</th><th>FY27E</th><th>Vs street</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Revenue</strong></td><td>3,842</td><td>4,238</td><td><strong>4,790</strong></td><td class="good"><strong>+2.1%</strong></td></tr>
+                <tr><td><strong>Revenue growth</strong></td><td>18.4%</td><td>10.3%</td><td><strong>13.0%</strong></td><td><strong>+90 bps</strong></td></tr>
+                <tr><td><strong>EBITDA</strong></td><td>618</td><td>741</td><td><strong>905</strong></td><td class="good"><strong>+4.7%</strong></td></tr>
+                <tr><td><strong>EBITDA margin</strong></td><td>16.1%</td><td>17.5%</td><td><strong>18.9%</strong></td><td class="good"><strong>+80 bps</strong></td></tr>
+                <tr><td><strong>FCF</strong></td><td>415</td><td>506</td><td><strong>634</strong></td><td class="good"><strong>+6.2%</strong></td></tr>
+                <tr><td><strong>EV / EBITDA</strong></td><td>21.4x</td><td>17.8x</td><td><strong>14.6x</strong></td><td><strong>-0.8x</strong></td></tr>
+              </tbody>
+            </table>
+          </section>
+          <section class="panel">
+            <div class="panel-head"><h2>Material changes</h2><div class="mini">Provenance must stay legible</div></div>
+            <div class="feed-item">
+              <div class="feed-top"><strong>Today · agent proposed</strong><span class="status blue">Needs review</span></div>
+              <div class="feed-metric"><div class="name">FY27 revenue</div><div class="from">4,670</div><div class="to">4,790</div></div>
+              <div style="color:var(--muted)">Driver: August order data and management commentary point to stronger fulfillment leverage.</div>
+              <div class="feed-actions"><button>Review diff</button><button>Accept</button><button>Dismiss</button></div>
+            </div>
+            <div class="feed-item">
+              <div class="feed-top"><strong>Yesterday · analyst confirmed</strong><span class="status good">Canonical</span></div>
+              <div class="feed-metric"><div class="name">TAM source</div><div class="from">Investor deck</div><div class="to">10-Q</div></div>
+              <div style="color:var(--muted)">Source improved, value unchanged. Trust increased because evidence moved to a more durable primary source.</div>
+            </div>
+            <div class="feed-item">
+              <div class="feed-top"><strong>Refresh watch</strong><span class="status warn">Stale tomorrow</span></div>
+              <div class="feed-metric"><div class="name">Merchant cohort pull</div><div class="from">11d</div><div class="to">12d</div></div>
+              <div style="color:var(--muted)">Once stale, the churn view should visually downgrade until refreshed or explicitly acknowledged.</div>
+            </div>
+          </section>
+        </div>
+        <div class="screen-footer"><span>Goal: make the investment case and the change log coexist without competing.</span><span>Best scan: target + upside + invalidation threshold + estimate deltas + agent review state.</span></div>
+      </section>
+
+      <section class="screen" id="bench">
+        <div class="page-head">
+          <div class="hero">
+            <div class="eyebrow">Bench / Pipeline overview</div>
+            <div class="title-row">
+              <div class="company">
+                <h1>Preserve the work, then show what would make it worth reopening.</h1>
+                <div class="meta"><span>Northstar Commerce</span><span>Bench candidate</span><span>Last full review 41d ago</span></div>
+              </div>
+              <div class="decision-chip">Monitor, don’t re-research</div>
+            </div>
+            <div class="metrics-row">
+              <div class="metric"><div class="label">Distance to trigger</div><div class="value">2.4%</div><div class="sub">Price still above re-entry</div></div>
+              <div class="metric"><div class="label">Triggers met</div><div class="value warn">1/3</div><div class="sub">Not enough to reactivate</div></div>
+              <div class="metric"><div class="label">Days on bench</div><div class="value">41</div><div class="sub">Institutional memory preserved</div></div>
+              <div class="metric"><div class="label">Next auto check</div><div class="value blue">6h</div><div class="sub">Regulatory + KPI watch</div></div>
+            </div>
+            <div class="hero-summary">
+              <div class="statement">
+                <div class="big-line">Bench should show reactivation logic, not dead research.</div>
+                <p>Pair the prior conclusion with explicit triggers so analysts can tell, at a glance, whether this deserves renewed attention or continued passive monitoring.</p>
+              </div>
+              <div class="pairs">
+                <div class="pair"><div class="pair-label">Price vs re-entry level</div><div class="pair-main">$84.20</div><div class="pair-comp">$82 trigger</div></div>
+                <div class="pair"><div class="pair-label">Churn vs reopen line</div><div class="pair-main">3.1%</div><div class="pair-comp">below 3.0%</div></div>
+                <div class="pair"><div class="pair-label">Street reset vs required</div><div class="pair-main">-50 bps</div><div class="pair-comp">-150 bps needed</div></div>
+              </div>
+            </div>
+          </div>
+          <aside class="decision-card">
+            <div class="decision-title">Decision now</div>
+            <div class="decision-big">Stay benched</div>
+            <p class="decision-copy">The original work still matters, but the setup is not yet attractive enough to spend fresh analyst cycles.</p>
+            <div class="stack-metrics">
+              <div class="stack-item"><div class="k">Prior conclusion</div><div class="v">Good business, weak entry</div></div>
+              <div class="stack-item"><div class="k">Most likely trigger</div><div class="v blue">Street cuts FY27 by 150 bps</div></div>
+              <div class="stack-item"><div class="k">Who watches it</div><div class="v">Agent + Monday screen</div></div>
+            </div>
+          </aside>
+        </div>
+        <div class="content-grid">
+          <section class="panel">
+            <div class="panel-head"><h2>Reactivation triggers</h2><div class="mini">Current value paired with threshold</div></div>
+            <div class="tight-list">
+              <div class="tight-item"><div><strong>Valuation becomes attractive.</strong><p>Reopen when price offers enough asymmetry for the existing thesis to matter again.</p></div><div class="big">$84.20 / $82</div></div>
+              <div class="tight-item"><div><strong>Street resets too far.</strong><p>If estimates de-risk ahead of fundamentals, the variant view may reopen without new core work.</p></div><div class="big warn">-50 / -150 bps</div></div>
+              <div class="tight-item"><div><strong>Churn signal improves.</strong><p>A meaningful cohort improvement would turn a monitored question back into an actionable edge.</p></div><div class="big good">3.1% / 3.0%</div></div>
+            </div>
+          </section>
+          <section class="panel">
+            <div class="panel-head"><h2>What changed since last review</h2><div class="mini">Only deltas that matter</div></div>
+            <div class="feed-item"><div class="feed-top"><strong>Price drifted down</strong><span class="status blue">Closer</span></div><div style="color:var(--muted)">The name is 2.4% above the re-entry level, but not there yet.</div></div>
+            <div class="feed-item"><div class="feed-top"><strong>Street nudged lower</strong><span class="status warn">Not enough</span></div><div style="color:var(--muted)">Only a 50 bps reset so far; the benchmark for reactivation is a much larger downward move.</div></div>
+            <div class="feed-item"><div class="feed-top"><strong>No thesis break</strong><span class="status good">Stable</span></div><div style="color:var(--muted)">Nothing has invalidated the stored research, so the prior work remains reusable when a trigger is hit.</div></div>
+          </section>
+        </div>
+        <div class="screen-footer"><span>Goal: keep dormant work useful.</span><span>Best scan: trigger thresholds + current values + explicit reason this is still not active.</span></div>
+      </section>
+
+      <section class="screen" id="portfolio">
+        <div class="page-head">
+          <div class="hero">
+            <div class="eyebrow">Portfolio overview</div>
+            <div class="title-row">
+              <div class="company">
+                <h1>Show whether the position still deserves its weight.</h1>
+                <div class="meta"><span>Northstar Commerce</span><span>Portfolio holding</span><span>Position review updated 48m ago</span></div>
+              </div>
+              <div class="decision-chip">Hold unless thesis weakens</div>
+            </div>
+            <div class="metrics-row">
+              <div class="metric"><div class="label">Weight</div><div class="value">4.8%</div><div class="sub">Versus 5.0% max</div></div>
+              <div class="metric"><div class="label">Remaining upside</div><div class="value good">+18%</div><div class="sub">To current target</div></div>
+              <div class="metric"><div class="label">P&L</div><div class="value good">+312 bps</div><div class="sub">Contribution YTD</div></div>
+              <div class="metric"><div class="label">Expected value</div><div class="value">+9%</div><div class="sub">Probability weighted</div></div>
+            </div>
+            <div class="hero-summary">
+              <div class="statement">
+                <div class="big-line">Portfolio should show position quality, not just historical success.</div>
+                <p>Pair weight with limit, upside with downside, and thesis health with recent changes so the sizing decision is obvious.</p>
+              </div>
+              <div class="pairs">
+                <div class="pair"><div class="pair-label">Weight vs max</div><div class="pair-main">4.8%</div><div class="pair-comp">5.0% cap</div></div>
+                <div class="pair"><div class="pair-label">Base upside vs bear downside</div><div class="pair-main">+18%</div><div class="pair-comp">-11%</div></div>
+                <div class="pair"><div class="pair-label">Thesis health vs watch level</div><div class="pair-main">82</div><div class="pair-comp">70 watch line</div></div>
+              </div>
+            </div>
+          </div>
+          <aside class="decision-card">
+            <div class="decision-title">Decision now</div>
+            <div class="decision-big">Hold</div>
+            <p class="decision-copy">The position has less upside than in active research, but still clears the bar and remains within sizing constraints.</p>
+            <div class="stack-metrics">
+              <div class="stack-item"><div class="k">Add only if</div><div class="v">Price drops below $80</div></div>
+              <div class="stack-item"><div class="k">Trim if</div><div class="v bad">Thesis health falls under 70</div></div>
+              <div class="stack-item"><div class="k">Next formal review</div><div class="v blue">After Q3 print</div></div>
+            </div>
+          </aside>
+        </div>
+        <div class="content-grid">
+          <section class="panel">
+            <div class="panel-head"><h2>Position logic</h2><div class="mini">Size paired with reason</div></div>
+            <div class="tight-list">
+              <div class="tight-item"><div><strong>Weight should sit next to the limit.</strong><p>Analysts should never need to infer whether the current size is constrained or discretionary.</p></div><div class="big">4.8% / 5.0%</div></div>
+              <div class="tight-item"><div><strong>Upside should sit next to downside.</strong><p>The position is valuable because expected reward still outweighs plausible downside from here.</p></div><div class="big good">+18% / -11%</div></div>
+              <div class="tight-item"><div><strong>Health should sit next to the trim line.</strong><p>Make it obvious what condition would force a reevaluation of size.</p></div><div class="big warn">82 / 70</div></div>
+            </div>
+          </section>
+          <section class="panel">
+            <div class="panel-head"><h2>What could change the size</h2><div class="mini">Three decision levers</div></div>
+            <div class="feed-item"><div class="feed-top"><strong>Earnings miss</strong><span class="status bad">Trim risk</span></div><div style="color:var(--muted)">A material miss with weaker retention would push thesis health toward the trim threshold.</div></div>
+            <div class="feed-item"><div class="feed-top"><strong>Street reset without thesis break</strong><span class="status blue">Add watch</span></div><div style="color:var(--muted)">If price falls faster than fundamentals, remaining upside improves and position size could increase.</div></div>
+            <div class="feed-item"><div class="feed-top"><strong>Agent-proposed model change</strong><span class="status warn">Needs approval</span></div><div style="color:var(--muted)">No portfolio-facing target should change until the analyst accepts the proposed revision into the canonical record.</div></div>
+          </section>
+        </div>
+        <div class="screen-footer"><span>Goal: connect research quality directly to sizing.</span><span>Best scan: weight + limit + upside/downside + thesis health + explicit add/trim conditions.</span></div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const buttons = document.querySelectorAll('.phase-btn');
+    const screens = document.querySelectorAll('.screen');
+    const crumb = document.getElementById('crumbPhase');
+    buttons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        buttons.forEach(b => b.classList.remove('active'));
+        screens.forEach(s => s.classList.remove('active'));
+        btn.classList.add('active');
+        const id = btn.dataset.screen;
+        document.getElementById(id).classList.add('active');
+        crumb.textContent = btn.querySelector('strong').textContent;
+      });
+    });
+  </script>
+</body>
+</html>
