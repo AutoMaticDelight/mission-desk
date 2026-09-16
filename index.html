@@ -184,6 +184,7 @@ a{color:var(--accent)}
 .pftool.on{color:var(--ink);border-bottom-color:var(--accent)}
 .pfframe{flex:1;min-height:560px;border:1px solid var(--line);border-radius:12px;background:#fff;overflow:hidden;display:flex}
 .pfframe iframe{width:100%;height:100%;min-height:560px;border:0;flex:1}
+.detail .pfframe,.detail .pfframe iframe{min-height:520px}
 .pfcard{margin:auto;max-width:520px;padding:32px;text-align:center;display:grid;gap:12px;justify-items:center}
 .pfcard .k{font:600 12px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3)}
 .pfcard h3{margin:0;font:600 24px/1.2 var(--display)}
@@ -545,6 +546,15 @@ function renderPortfolio(){
     <div class="pfkeys">${idx+1} / ${p.tools.length} · ← → switch tools · ⇧← ⇧→ switch projects</div>
   </section>`;
 }
+function toolViewer(tools, selId, prefix){
+  if(!tools.length) return '';
+  const t=tools.find(x=>x.id===selId)||tools[0]; const src=pfEmbedSrc(t);
+  return `<div class="pftools">${tools.map(x=>`<button type="button" class="pftool ${x.id===t.id?'on':''}" data-${prefix}="${x.id}">${esc(x.title)}</button>`).join('')}</div>
+    <div class="pfhead" style="margin-top:8px"><div class="meta">${esc(t.kind||'')}</div><div class="acts">${t.url?`<a class="btn sm" href="${esc(t.url)}" target="_blank" rel="noopener">Open ↗</a>`:''}${src&&src!==t.url?`<a class="btn sm" href="${esc(src)}" target="_blank" rel="noopener">Full screen</a>`:''}<button type="button" class="btn sm" data-open="show:${t.id}">Edit</button></div></div>
+    <div class="pfframe" style="margin-top:8px">${src?`<iframe src="${esc(src)}" title="${esc(t.title)}" loading="eager" allow="clipboard-write" referrerpolicy="no-referrer"></iframe>`:`<div class="pfcard"><div class="k">${esc(t.kind||'link')}</div><h3>${esc(t.title)}</h3><p>${esc(t.url||'')}</p>${t.url?`<a class="btn p" href="${esc(t.url)}" target="_blank" rel="noopener">Open ↗</a>`:''}</div>`}</div>
+    ${t.talk?`<div class="pftalk" style="margin-top:10px">${esc(t.talk)}</div>`:''}`;
+}
+state.jobTool=null;
 function renderShow(){
   const tools=Object.values(state.show);
   if(!tools.length) return `<div class="empty">Nothing to show yet. Add the links you open in interviews: demos, prototypes, case studies.</div>`;
@@ -617,7 +627,7 @@ function openJob(id){
         <textarea class="notes" id="jobNotes" style="min-height:160px" placeholder="What they need, what to send next…">${esc(j.notes||'')}</textarea>
         <div style="display:flex;justify-content:flex-end;margin-top:8px;gap:8px"><button type="button" class="btn sm" data-save-notes="${id}">Save notes</button></div>
         <h4>Show them <span style="display:flex;gap:10px"><button type="button" data-go-kit="${id}">Open the kit</button><button type="button" data-add="show" data-job="${id}">+ link</button></span></h4>
-        ${tools.length?kitList(tools):`<div class="empty">Nothing linked yet.</div>`}
+        ${tools.length?toolViewer(tools,state.jobTool,'job-tool'):`<div class="empty">Nothing linked yet.</div>`}
         <h4>Time <button type="button" data-add="time" data-job="${id}">+ minutes</button></h4>
         <div class="timer">
           <div><div class="big">${hm(jobMinutes(j) + (mine?(Date.now()-running.startedAt)/60e3:0))}${mine?`<small>running</small>`:''}</div>${mine?`<div class="run">started ${esc(fmtShort(new Date(running.startedAt).toISOString()))}</div>`:''}</div>
@@ -647,7 +657,7 @@ function openMeeting(id){
         <div style="display:flex;justify-content:space-between;margin-top:8px;gap:8px"><button type="button" class="btn q danger sm" data-del="meetings:${id}">Delete</button><button type="button" class="btn sm p" data-save-outcome="${id}">Save outcome</button></div>
       </div>
       <div>
-        ${j?`<h4>Show them <button type="button" data-go-kit="${j.id}">Open the kit</button></h4>${kitList(kitFor(j.id))||'<div class="empty">Nothing in the kit yet. Add links on the client page.</div>'}`:''}
+        ${j?`<h4>Show them <button type="button" data-go-kit="${j.id}">Open the kit</button></h4>${toolViewer(kitFor(j.id),state.jobTool,'job-tool')||'<div class="empty">Nothing in the kit yet. Add links on the client page.</div>'}`:''}
         ${j?`<h4>Who</h4>${contactsKv(j)||'<div class="empty">No contacts on this client yet.</div>'}`:''}
         <h4>Mail around this meeting <span>${related.length}</span></h4>
         ${related.length?`<div class="rows threadwrap">${threadRows(buildThreads(related))}</div>`:'<div class="empty">No mail within a week of it.</div>'}
@@ -803,6 +813,7 @@ document.addEventListener('click', async e=>{
   const go=t.closest('[data-go]'); if(go){ state.tab=go.dataset.go; try{localStorage.setItem('md.tab',state.tab)}catch(err){} render(); return; }
   const open=t.closest('[data-open]'); if(open){ const [k,id]=open.dataset.open.split(':'); ({job:openJob,meeting:openMeeting,email:openEmail,show:x=>formShow(state.show[x])})[k](id); return; }
   const show=t.closest('[data-show]'); if(show){ state.showSel=show.dataset.show; render(); return; }
+  const jt=t.closest('[data-job-tool]'); if(jt){ state.jobTool=jt.dataset.jobTool; const [k,id]=(state.open||'').split(':'); if(k==='job') openJob(id); else if(k==='meeting') openMeeting(id); return; }
   const pp=t.closest('[data-pf-project]'); if(pp){ state.pf.project=pp.dataset.pfProject; state.pf.tool=null; pfSave(); render(); return; }
   const pt=t.closest('[data-pf-tool]'); if(pt){ state.pf.tool=pt.dataset.pfTool; pfSave(); render(); return; }
   const kit=t.closest('[data-kit]'); if(kit){ state.showJob=kit.dataset.kit==='none'?null:kit.dataset.kit; state.showSel=null; render(); return; }
