@@ -1,0 +1,69 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow">
+<title>Bryan S. Holland · Work</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f6f7f9;--panel:#fff;--ink:#14161a;--muted:#5d6470;--line:#e2e5ea;--accent:#FF2E88;--font:'Inter',system-ui,sans-serif}
+*{box-sizing:border-box}html,body{height:100%;margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--font);display:flex;flex-direction:column;min-height:100vh}
+header{padding:14px 20px 10px;background:var(--panel);border-bottom:1px solid var(--line);display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+h1{font-size:18px;margin:0;font-weight:800;letter-spacing:-.01em}
+.sub{color:var(--muted);font-size:14px}
+.links{margin-left:auto;display:flex;gap:14px;font-size:14px}
+.links a{color:var(--ink);text-decoration:none;font-weight:600}
+.projects{display:flex;gap:8px;overflow-x:auto;padding:12px 20px;background:var(--panel);border-bottom:1px solid var(--line);scrollbar-width:none}
+.projects::-webkit-scrollbar{display:none}
+.proj{flex:0 0 auto;border:1px solid var(--line);background:#fff;color:var(--ink);font:700 15px var(--font);padding:0 18px;height:42px;border-radius:999px;cursor:pointer;display:inline-flex;align-items:center;gap:8px}
+.proj .n{font-weight:500;font-size:12px;color:var(--muted)}
+.proj.on{background:var(--ink);color:#fff;border-color:var(--ink)}.proj.on .n{color:#fff;opacity:.7}
+.tools{display:flex;gap:4px;overflow-x:auto;padding:8px 20px 0;border-bottom:1px solid var(--line);background:var(--bg);scrollbar-width:none}
+.tool{flex:0 0 auto;border:0;background:none;padding:10px 12px;font:600 14px var(--font);color:var(--muted);border-bottom:2px solid transparent;margin-bottom:-1px;cursor:pointer}
+.tool.on{color:var(--ink);border-bottom-color:var(--accent)}
+.bar{display:flex;align-items:center;gap:10px;padding:8px 20px;font-size:14px;color:var(--muted)}
+.bar b{color:var(--ink)}.bar .r{margin-left:auto;display:flex;gap:6px}
+.bar a,.bar button{border:1px solid var(--line);background:#fff;color:var(--ink);font:500 14px var(--font);padding:8px 12px;border-radius:8px;text-decoration:none;cursor:pointer;min-height:38px;display:inline-flex;align-items:center}
+main{flex:1;min-height:0;padding:0 20px 12px}
+iframe{width:100%;height:100%;min-height:72vh;border:1px solid var(--line);border-radius:12px;background:#fff}
+.talk{padding:0 20px 16px;color:var(--muted);font-size:14px;line-height:1.5;max-width:900px}
+@media (max-width:640px){header{padding:12px 16px 8px}.projects,.tools,.bar,main,.talk{padding-left:16px;padding-right:16px}iframe{min-height:70vh}}
+</style></head><body>
+<header><h1>Bryan S. Holland</h1><span class="sub">Principal product designer · selected work, running</span>
+<nav class="links"><a href="https://automaticdelight.com" target="_blank" rel="noopener">automaticdelight.com</a><a href="https://portfolio.automaticdelight.com" target="_blank" rel="noopener">Portfolio</a><a href="mailto:bryan@automaticdelight.com">Email</a></nav></header>
+<div class="projects" id="projects"></div>
+<div class="tools" id="tools"></div>
+<div class="bar"><span>Showing</span><b id="cur"></b><span class="r"><button id="prev">‹ Prev</button><button id="next">Next ›</button><a id="open" target="_blank" rel="noopener">Open full ↗</a></span></div>
+<main><iframe id="fr" title="Work"></iframe></main>
+<div class="talk" id="talk"></div>
+<script>
+const P=[
+ {id:'lab37',name:'Lab37 · food robot',tools:[
+   {t:'Bowl Builder & lunch-rush screens',src:'/portfolio/lab37/',talk:'21 screens. Bowl Builder at a glance and the system map, then the lunch-rush service line: what the crew sees, what the robot needs, what to do when the peak hits. Arrow keys inside the frame step through.'}]},
+ {id:'bench',name:'Bench · spacecraft floor',tools:[
+   {t:'Case study',src:'/portfolio/bench/',talk:'Build execution for spacecraft manufacturing. Six decisions and the reasoning. A working prototype, not a deck.'},
+   {t:'Technician view (live)',src:'https://bench-seven.vercel.app/floor',talk:'The running prototype. The step completes when the part is in your hand.'},
+   {t:'Planner board (live)',src:'https://bench-seven.vercel.app/plan',talk:'The planner side of the same system.'}]},
+ {id:'gfa',name:'GFA · AI governance',tools:[
+   {t:'Interactive demo',src:'/portfolio/gfa/',talk:'Analyst → policy engine → approver → examiner, end to end. Pick the industry pill that matches who is on the call: Finance, Healthcare, Insurance, DevOps, Pharma.'}]},
+ {id:'baba',name:'Baba · research OS',tools:[
+   {t:'Research app',src:'/portfolio/baba-research/',talk:'Five research phases, one paired-metric component. Every screen answers: what to look at, what to do, why, what changed, where to go deeper.'},
+   {t:'All 6 versions',src:'/portfolio/baba/',talk:'How it evolved. Lead with the decision mockup, fall back to the others when asked.'}]},
+ {id:'auth57',name:'Auth57 · founder',tools:[
+   {t:'auth57.io (live)',src:'https://auth57.io',talk:'Prior-authorization rules for U.S. payers: the data, the MCP server, the community. The product, running.'}]},
+ {id:'acts',name:'Acts · live product',tools:[
+   {t:'Join flow (live)',src:'https://acts-ten.vercel.app/join',talk:'Two-sided marketplace for acts of faith and mercy. Phase 2 web prototype on Vercel + Supabase, live with testers now.'}]}
+];
+let pi=0,ti=0; const $=s=>document.querySelector(s);
+function render(){
+  $('#projects').innerHTML=P.map((p,i)=>`<button class="proj ${i===pi?'on':''}" data-p="${i}">${p.name}<span class="n">${p.tools.length}</span></button>`).join('');
+  const p=P[pi]; const t=p.tools[ti]||p.tools[0];
+  $('#tools').innerHTML=p.tools.map((x,i)=>`<button class="tool ${i===ti?'on':''}" data-t="${i}">${x.t}</button>`).join('');
+  $('#cur').textContent=p.name+' · '+t.t; $('#open').href=t.src; $('#talk').textContent=t.talk||'';
+  if($('#fr').getAttribute('src')!==t.src) $('#fr').src=t.src;
+  try{ history.replaceState(null,'','#'+p.id+(ti?'/'+ti:'')); }catch(e){}
+}
+document.addEventListener('click',e=>{ const b=e.target.closest('[data-p]'); if(b){pi=+b.dataset.p;ti=0;render();return;} const t=e.target.closest('[data-t]'); if(t){ti=+t.dataset.t;render();} });
+$('#prev').onclick=()=>{ if(ti>0)ti--; else {pi=(pi-1+P.length)%P.length; ti=P[pi].tools.length-1;} render(); };
+$('#next').onclick=()=>{ if(ti<P[pi].tools.length-1)ti++; else {pi=(pi+1)%P.length; ti=0;} render(); };
+document.addEventListener('keydown',e=>{ if(e.key==='ArrowLeft')$('#prev').click(); if(e.key==='ArrowRight')$('#next').click(); });
+const h=location.hash.slice(1); if(h){ const [id,n]=h.split('/'); const i=P.findIndex(p=>p.id===id); if(i>=0){pi=i;ti=+(n||0)||0;} }
+render();
+</script></body></html>

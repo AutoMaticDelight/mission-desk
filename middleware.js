@@ -4,6 +4,9 @@
 export const config = { matcher: '/(.*)' };
 
 export default function middleware(request) {
+  // Public, share-safe pages: the /show page and the hosted work under /portfolio. No client data lives there.
+  const path = new URL(request.url).pathname;
+  if (path === '/show' || path.startsWith('/show/') || path.startsWith('/portfolio/')) return;
   const user = process.env.DESK_USER;
   const pass = process.env.DESK_PASS;
   if (!user || !pass) {
