@@ -123,6 +123,13 @@ blockquote mark{background:var(--today-bg);color:var(--today);padding:0 3px;bord
 .story .line::before{content:'SAY';font:600 11px var(--mono);letter-spacing:.06em;color:var(--accent);margin-right:8px}
 .fill{background:var(--today-bg);color:var(--today);border-radius:6px;padding:1px 6px;font-weight:600}
 
+.names{display:grid;gap:8px}
+@media (min-width:720px){.names{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.name{border:1px solid var(--line);border-radius:10px;padding:10px 14px;background:#fff;display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 12px;align-items:baseline}
+.name .q{font:600 17px/1.2 var(--display);letter-spacing:-.01em;color:var(--accent);white-space:nowrap}
+.name .who{font:500 12px var(--mono);color:var(--ink-3);grid-column:2}
+.name .so{font-size:14px;color:var(--ink-2);grid-column:1/-1}
+
 .foot{max-width:960px;margin:40px auto 0;padding:16px;color:var(--ink-3);font-size:13px;border-top:1px solid var(--line)}
 .foot a{color:var(--ink-2)}
 @media (max-width:480px){.brand{font-size:18px}.count{margin-left:0}}
@@ -151,6 +158,14 @@ blockquote mark{background:var(--today-bg);color:var(--today);padding:0 3px;bord
     <p>I own the design system and I close the loop in code, Figma to React, so engineers get working states, not comps. I'm in Burbank, I want to be onsite five days, and I'd like to see the Bowl Builder in person.</p>
   </div>
 
+  <h3>What they called me · use one when she asks "how would a past team describe you?"</h3>
+  <div class="names">
+    <div class="name"><span class="q">"The ace in the hole"</span><span class="who">Marin catering company · 8 years</span><span class="so">They could put me in any position. Any. Line, bar, expo, front of house, loading the truck, running the event. Say it, then: "that's still how I work. Robot screen, ops tool, customer app, brand: put me anywhere on the line and it holds."</span></div>
+    <div class="name"><span class="q">"Hawkeye"</span><span class="who">Apple · Premium Partners design system</span><span class="so">Caught what shipped versus what was drawn, across Magento templates and the Figma system, before Apple did. Maps to their "clear specs for engineering" and design QA.</span></div>
+    <div class="name"><span class="q">"The developer whisperer"</span><span class="who">said by more than one engineering team</span><span class="so">Engineers get working states, not comps, and a designer who reads their constraints back to them. Maps to "partner closely with engineers throughout the design lifecycle."</span></div>
+    <div class="name"><span class="q">"Stakeholder liaison"</span><span class="who">Hyundai · 80 people, 5 companies</span><span class="so">Onshore client, offshore teams, data science, regulatory. No direct authority, one roadmap. Maps to "influence without authority."</span></div>
+  </div>
+
   <h3>How you fit, by their three surfaces</h3>
   <div class="fit">
     <div class="fitcol"><div class="k">Their words</div><div class="t">On-robot displays · robot UIs · embedded</div>
@@ -163,7 +178,7 @@ blockquote mark{background:var(--today-bg);color:var(--today);padding:0 3px;bord
 
   <h3>Stories to have ready if she pulls a thread</h3>
   <div class="stories">
-    <div class="story"><h4>Ten years behind the line</h4><div class="why"><b>Why it matters here:</b> every internal tool in their posting (inventory, recipes, scheduling, manager metrics, task lists) is something you did by hand before you ever designed a screen for it. Nobody else on her call list will say this.</div><div class="line">My first job in college was cooking in the on-campus restaurants. Then ten years bartending and catering while I learned my craft. I've taken the order, made the edit, run out of stock mid-rush, called the vendor, and built the schedule. When I look at a Bowl Builder screen I'm not guessing what the operator needs at 12:18. I've been the operator.</div></div>
+    <div class="story"><h4>Ten years behind the line</h4><div class="why"><b>Why it matters here:</b> every internal tool in their posting (inventory, recipes, scheduling, manager metrics, task lists) is something you did by hand before you ever designed a screen for it. Nobody else on her call list will say this.</div><div class="line">My first job in college was cooking in the on-campus restaurants. Then ten years bartending and catering while I learned my craft. I've taken the order, made the edit, run out of stock mid-rush, called the vendor, and built the schedule. The catering company I worked with for eight years called me the ace in the hole: they could put me in any position, any, and it held. When I look at a Bowl Builder screen I'm not guessing what the operator needs at 12:18. I've been the operator.</div></div>
     <div class="story"><h4>Target · The Living Catalog</h4><div class="why"><b>Why it matters here:</b> a real-time operator tool for a live event, with a human in the middle. That is their inventory and menu-availability problem exactly: something sells out mid-rush and the screen has to say so now, without stopping the show.</div><div class="line">Target ran a live online weekend party for back to school: a three-day Living Catalog, a video event with shoppable products. I designed the management tools from scratch for the person running it live: add a product, edit it, move its hotspot on screen, and mark it sold out in real time, with live-state indicators and a change log, so a lamp that sold out could be swapped mid-show and nobody watching saw a seam.</div></div>
     <div class="story"><h4>Vehicle Spy · bus and sensor research</h4><div class="why"><b>Why it matters here:</b> the closest thing you have to their "mechanics, electronics, firmware" line. You went and learned how automotive engineers read live bus traffic and SPI sensor data, which is the same shape as a robot telemetry screen: raw signals in, an operator decision out.</div><div class="line">I researched Vehicle Spy, the tool automotive engineers use to watch the vehicle bus in real time, and dug into SPI sensor data to understand what an engineer actually looks at. That's how I design for a machine: learn what the signal means before I draw the screen. <span class="fill">add: which project this fed, one detail you remember</span></div></div>
     <div class="story"><h4>Toyota Entune · Survive the Drive</h4><div class="why"><b>Why it matters here:</b> a screen inside a machine, on someone else's hardware and rules. Proximity-based playlists, to-dos, and reminders on the infotainment map, designed at Rapp for a commuter's real morning.</div><div class="line">Music for the kids on the way to school, a reminder for the dry cleaning, the parent's music after drop-off, all on the map screen, without taking eyes off the road. Same constraint as a kitchen: hands and eyes are busy.</div></div>
