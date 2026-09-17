@@ -102,7 +102,7 @@ b,strong{font-weight:950}
 .task span{font-size:clamp(17px,2.2vh,20px);text-transform:uppercase;letter-spacing:.3px;color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .task.now b{color:#ff8d6a}.task.now span{color:#fff}
 .task.low b{color:var(--low)}
-@media(orientation:landscape){.tops{grid-template-columns:repeat(4,minmax(0,1fr))}.band .when span{display:none}}
+@media(orientation:landscape){.tops{grid-template-columns:repeat(4,minmax(0,1fr))}.band .when .peak{display:none}}
 @media(orientation:portrait){.next{grid-template-columns:1fr 1fr;row-gap:10px}.next .lbl{grid-column:1/-1;border-right:0;padding:0}}
 
 /* MACHINES AT A GLANCE: one tile per machine. Color is the state. One number each. */
@@ -191,12 +191,23 @@ b,strong{font-weight:950}
   .nums{padding:8px 14px}.num{flex-direction:row;align-items:baseline}.num b{font-size:clamp(26px,3.4vh,36px)}.num span{white-space:nowrap}
   .alert .more{flex-wrap:wrap}.alert .more button{flex:1 1 30%}
 }
+
+/* toppings: name on top, number under it */
+.tops .bar{flex-direction:column;align-items:flex-start;justify-content:center;gap:2px;padding:6px 14px;min-height:56px}
+.tops .bar .n{font-size:clamp(19px,2.6vh,24px);letter-spacing:-.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.tops .bar .v{font-size:clamp(18px,2.4vh,22px);color:rgba(255,255,255,.9)}
+/* refill moment: a worker just filled it */
+.bar.just{outline:4px solid var(--lime);outline-offset:-4px}
+.bar.just .v,.bar.just .m span{color:var(--lime)}
+.bar{cursor:pointer}
+@media(orientation:portrait){.tops .bar{min-height:52px;padding:4px 12px}.tops .bar .n{font-size:19px}.tops .bar .v{font-size:18px}}
+@media(orientation:landscape){.tops .bar{min-height:54px}}
 </style>
 <link rel="stylesheet" href="glove.css"></head>
 <body>
   <header class="band">
     <div class="where">UPTOWN BOWL <span>LUNCH RUSH</span></div>
-    <div class="when">THU 12:18 <span>PEAK 12:30–12:50</span></div>
+    <div class="when">THU <span id="clock">12:18</span> <span class="peak">PEAK 12:30–12:50</span></div>
     <div class="stat"><b id="speedv">38</b><span>BOWLS / 10 MIN</span><i>▲</i></div>
     <div class="stat"><b id="expv">214</b><span>TO GO</span></div>
   </header>
@@ -229,33 +240,46 @@ b,strong{font-weight:950}
 <div class="toast" id="toast"><b id="toastTitle"></b><span id="toastText"></span></div>
 <script>
 /* hoppers: level % and burn %/min at this pace. Forecast walks the Thursday lunch curve (peak 12:30-12:50) to the 15% refill mark. */
-const NOW=12*60+18, PEAK=[12*60+30,12*60+50];
+/* Simulated clock: 1 real second = 6 seconds on the line, so a minute passes every 10 seconds and the numbers visibly click down. */
+let NOW=12*60+18, SEC=0;
+const PEAK=[12*60+30,12*60+50];
 const H=[{n:'Chicken',l:64,b:2.1,src:'reach-in 1'},{n:'Rice',l:41,b:2.9,src:'cooker 2'},{n:'Beef',l:17,b:2.8,src:'walk-in'}];
 const C=[{n:'Quinoa',held:1},{n:'Beans',l:70,b:1.5},{n:'Corn',l:35,b:1.6},{n:'Pico',l:22,b:1.9},{n:'Guac',l:15,b:1.7},{n:'Cheese',l:80,b:1.4},{n:'Crema',l:66,b:1},{n:'Lettuce',l:48,b:1.3},{n:'Verde',l:73,b:.9},{n:'Chipotle',l:30,b:1.1},{n:'Cilantro',l:52,b:.8},{n:'Lime',l:90,b:.5}];
+const ALL=[...H,...C];
 const pace=t=> t<PEAK[0]?1.0 : t<PEAK[1]?1.35 : t<13*60+10?1.0 : 0.6;
-function refillClock(x){ if(x.held) return null; let lvl=x.l, t=NOW; while(lvl>15 && t<NOW+240){ lvl-=x.b*pace(t); t++; } if(lvl>15) return 'AFTER 4 PM'; const h=Math.floor(t/60), m=t%60; return (h>12?h-12:h)+':'+String(m).padStart(2,'0'); }
-const mn=x=>Math.max(0,Math.round(x.l/x.b)), st=x=>x.held?'held':mn(x)<8?'now':mn(x)<20?'low':'ok';
+const clock=t=>{const h=Math.floor(t/60),m=t%60;return (h>12?h-12:h)+':'+String(m).padStart(2,'0');};
 function refillMin(x){ let lvl=x.l, t=NOW; while(lvl>15 && t<NOW+240){ lvl-=x.b*pace(t); t++; } return t-NOW; }
-function nextUp(){const all=[...H,...C].filter(x=>!x.held).map(x=>({x,t:refillClock(x),z:st(x),m:refillMin(x)})).sort((a,b)=>a.m-b.m).slice(0,4);document.getElementById('next').innerHTML='<div class="lbl">Next up</div>'+all.map(a=>`<div class="task ${a.z}"><b>${a.t}</b><span>${a.x.n}${a.x.src?' · '+a.x.src:''}</span></div>`).join('');}
+function refillClock(x){ if(x.held) return null; const m=refillMin(x); return m>=240?'AFTER 4 PM':clock(NOW+m); }
+const mn=x=>Math.max(0,Math.round(x.l/x.b)), st=x=>x.held?'held':mn(x)<8?'now':mn(x)<20?'low':'ok';
+function nextUp(){const all=ALL.filter(x=>!x.held).map(x=>({x,t:refillClock(x),z:st(x),m:refillMin(x)})).sort((a,b)=>a.m-b.m).slice(0,4);document.getElementById('next').innerHTML='<div class="lbl">Next up</div>'+all.map(a=>`<div class="task ${a.z}"><b>${a.t}</b><span>${a.x.n}${a.x.src?' · '+a.x.src:''}</span></div>`).join('');}
 const M=[{n:'Bowl 01',s:'run',st:'Running',k:'14',l:'in queue',sub:'all recipes'},{n:'Bowl 02',s:'held',st:'Held',k:'7',l:'rerouting',sub:'HELD · quinoa path'},{n:'Chicken 2',s:'run',st:'Running',k:'12',l:'slots open',sub:'taking the reroute'}];
 function machines(){document.getElementById('machines').innerHTML=M.map(m=>`<div class="mach ${m.s}"><div class="st">${m.st}</div><div class="nm">${m.n}<small>${m.sub}</small></div><div class="k"><b>${m.k}</b><span>${m.l}</span></div></div>`).join('');}
 machines();
-function render(){nextUp();
-  document.getElementById('big').innerHTML=H.map(x=>`<div class="bar ${st(x)}"><i style="width:${x.l}%"></i><div class="n">${x.n}</div><div class="m"><b>${mn(x)}</b><span>MIN · REFILL ${refillClock(x)}</span></div></div>`).join('');
-  document.getElementById('tops').innerHTML=C.map(x=>{const z=st(x);return `<div class="bar ${z}"><i style="width:${x.held?0:x.l}%"></i><div class="n">${x.n}</div><div class="v">${x.held?'HELD':z==='ok'?Math.round(x.l)+'%':refillClock(x)}</div></div>`;}).join('');
+function render(){
+  nextUp();
+  document.getElementById('big').innerHTML=H.map(x=>`<div class="bar ${st(x)} ${x.just?'just':''}" onclick="openSheet('refill:${x.n}')"><i style="width:${x.l}%"></i><div class="n">${x.n}</div><div class="m"><b>${Math.round(x.l)}%</b><span>${x.just?'REFILLED · '+x.just:mn(x)+' MIN · REFILL '+refillClock(x)}</span></div></div>`).join('');
+  document.getElementById('tops').innerHTML=C.map(x=>{const z=st(x);return `<div class="bar ${z} ${x.just?'just':''}" ${x.held?'':`onclick="openSheet('refill:${x.n}')"`}><i style="width:${x.held?0:x.l}%"></i><div class="n">${x.n}</div><div class="v">${x.held?'HELD':x.just?'REFILLED · '+x.just:Math.round(x.l)+'% · '+refillClock(x)}</div></div>`;}).join('');
+  document.getElementById('clock').textContent=clock(NOW);
 }
 render();
-let tick=0;setInterval(()=>{tick++;[...H,...C].forEach(x=>{if(!x.held)x.l=Math.max(0,x.l-x.b/6)});render();
-  const sp=38+Math.round(Math.sin(tick/3)*2);document.getElementById('speedv').textContent=sp;document.getElementById('expv').textContent=Math.max(0,214-Math.floor(tick*sp/60));},10000);
+function refill(x,who){ x.l=100; x.just=who; render(); setTimeout(()=>{x.just=null;render();},6000); toastTitle.textContent=`${x.n} refilled by ${who} · ${clock(NOW)}`; toastText.textContent='Marked full at the hopper. Next up is updated.'; toast.classList.add('show'); setTimeout(()=>toast.classList.remove('show'),3500); }
+/* the worker on hoppers refills whatever hits the mark, about a minute after it does */
+const CREW=['Maya','Maya','Jordan'];
+setInterval(()=>{
+  SEC+=6; if(SEC>=60){SEC-=60; NOW+=1;}
+  ALL.forEach(x=>{ if(!x.held && !x.just){ x.l=Math.max(0,+(x.l-x.b*pace(NOW)/10).toFixed(2)); if(x.l<=12 && !x.due){ x.due=NOW+1; } if(x.due && NOW>=x.due){ x.due=null; refill(x,CREW[Math.floor(Math.random()*CREW.length)]); } } });
+  render();
+  const sp=Math.round(38*pace(NOW))+Math.round(Math.sin(SEC/9)*2);document.getElementById('speedv').textContent=sp;document.getElementById('expv').textContent=Math.max(0,214-Math.floor((NOW-(12*60+18))*sp/10));
+},1000);
 /* sheets */
 let selected='';const data={
  reroute:{label:'Reroute',title:'Move 7 orders to Chicken Bowl 2?',text:'Chicken Bowl 2 has 12 open slots. Every affected order lands in the same service window.',effects:[['Guests','All 7 orders stay on time'],['Bowl 02','Quinoa stays held. Other recipes keep running'],['Next','Tech gets the recalibration task automatically']],button:'START REROUTE',done:'Reroute started',sub:'7 orders are moving to Chicken Bowl 2. Tech has the quinoa task.'},
  tech:{label:'Service task',title:'Send tech to Bowl 02?',text:'The task carries the machine state, recipe, and evidence automatically.',effects:[['Task','Recalibrate quinoa dispenser'],['Timing','Before the next lunch rush']],button:'SEND TECH',done:'Tech dispatched',sub:'The calibration task is ready with the right context.'},
  fix:{label:'Quick fix',title:'Start the quick fix?',text:'The machine is safe. You get two on-screen steps at Bowl 02.',effects:[['Step 1','Open the yellow quinoa panel'],['Step 2','Loosen quinoa, then run a test']],button:'START QUICK FIX',done:'Quick fix started',sub:'Bowl 02 is ready for the first check.'},
  engineering:{label:'Fleet learning',title:'Log it and alert Engineering?',text:'This event joins the quinoa low-fill pattern without slowing service.',effects:[['Pattern','14 similar incidents across 4 sites'],['Context','Today’s event is attached automatically']],button:'LOG + ALERT',done:'Logged. Engineering alerted',sub:'This incident is now part of the fleet reliability signal.'}};
-function openSheet(k){selected=k;const x=data[k];sheetLabel.textContent=x.label;sheetTitle.textContent=x.title;sheetText.textContent=x.text;effects.innerHTML=x.effects.map(a=>'<div class="effect"><b>'+a[0]+'</b><span>'+a[1]+'</span></div>').join('');document.getElementById('confirm').textContent=x.button;overlay.classList.add('show')}
+function openSheet(k){selected=k;if(k.startsWith('refill:')){const x=ALL.find(a=>a.n===k.slice(7));sheetLabel.textContent='Refill';sheetTitle.textContent=`Mark ${x.n} refilled?`;sheetText.textContent=`${Math.round(x.l)}% now. Hold to confirm at the hopper. Next up updates on its own.`;effects.innerHTML='<div class="effect"><b>Hopper</b><span>'+x.n+' back to 100%</span></div><div class="effect"><b>Service</b><span>Dispensing keeps running during the swap</span></div>';document.getElementById('confirm').textContent='REFILLED';overlay.classList.add('show');return;}const x=data[k];sheetLabel.textContent=x.label;sheetTitle.textContent=x.title;sheetText.textContent=x.text;effects.innerHTML=x.effects.map(a=>'<div class="effect"><b>'+a[0]+'</b><span>'+a[1]+'</span></div>').join('');document.getElementById('confirm').textContent=x.button;overlay.classList.add('show')}
 function closeSheet(){overlay.classList.remove('show')}
-function commit(){const x=data[selected];closeSheet();toastTitle.textContent=x.done;toastText.textContent=x.sub;toast.classList.add('show');setTimeout(()=>toast.classList.remove('show'),4300)}
+function commit(){if(selected.startsWith('refill:')){closeSheet();refill(ALL.find(a=>a.n===selected.slice(7)),'you');return;}const x=data[selected];closeSheet();toastTitle.textContent=x.done;toastText.textContent=x.sub;toast.classList.add('show');setTimeout(()=>toast.classList.remove('show'),4300)}
 </script>
 <script src="glove.js"></script></body>
 </html>

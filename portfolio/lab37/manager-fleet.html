@@ -16,7 +16,7 @@ b{font-weight:950}
 h2{margin:0;font-size:16px;letter-spacing:1px;text-transform:uppercase;color:var(--dim);display:block;line-height:1.3}
 h2 b{font-size:16px;color:#fff}
 h2 i{width:12px;height:12px;border-radius:50%;background:var(--now);display:inline-block;margin-right:10px;vertical-align:middle}
-h2.h-watch i{background:#f0a000}h2.h-fine i{background:#2fbf7f}
+h2.h-watch i{background:#f0a000}h2.h-fine i{background:#1a7a4f}
 /* top band */
 .band{display:grid;grid-template-columns:auto minmax(0,1fr) auto auto auto auto;gap:14px;align-items:center;background:var(--panel);border-radius:18px;padding:10px 22px;min-height:64px;min-width:0;overflow:hidden}
 .band>*{min-width:0}
@@ -29,10 +29,10 @@ h2.h-watch i{background:#f0a000}h2.h-fine i{background:#2fbf7f}
 /* sections */
 section{display:grid;grid-template-rows:auto minmax(0,1fr);gap:10px;min-height:0}
 .now{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
-.card{border:0;border-radius:16px;padding:14px 18px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 16px;align-items:center;text-align:left;color:#fff;font:inherit;cursor:pointer;min-width:0;background:var(--bad)}
+.card{border:0;border-radius:16px;padding:14px 20px;display:grid;grid-template-columns:minmax(0,1fr) max-content;gap:4px 20px;align-items:center;justify-items:start;text-align:left;color:#fff;font:inherit;cursor:pointer;min-width:0;background:var(--bad)}
 .card .nm{grid-column:1;grid-row:1;font-size:clamp(22px,3vh,28px);letter-spacing:-.02em;line-height:1}
-.card .what{grid-column:1;grid-row:2;font-size:clamp(17px,2.2vh,20px);line-height:1.25;color:rgba(255,255,255,.92);font-weight:800}
-.card .k{grid-column:2;grid-row:1/3;text-align:right;white-space:nowrap}
+.card .what{grid-column:1;grid-row:2;font-size:clamp(17px,2.2vh,20px);line-height:1.25;color:rgba(255,255,255,.92);font-weight:800;justify-self:stretch}
+.card .k{grid-column:2;grid-row:1/3;text-align:right;white-space:nowrap;justify-self:end}
 .card .k b{display:block;font-size:clamp(40px,6vh,64px);letter-spacing:-.06em;line-height:.9}
 .card .k span{font-size:16px;text-transform:uppercase;letter-spacing:.5px;opacity:.9}
 .card .go{grid-column:1/-1;grid-row:3;margin-top:6px;font-size:16px;letter-spacing:.6px;text-transform:uppercase;color:var(--lime)}
@@ -41,18 +41,18 @@ section{display:grid;grid-template-rows:auto minmax(0,1fr);gap:10px;min-height:0
 .card.watch .nm{font-size:clamp(20px,2.6vh,24px)}
 .card.watch .k b{font-size:clamp(30px,4.2vh,42px)}.card.watch .what{font-size:17px}
 /* the fine field: same because it is the same */
-.fine{background:var(--ok);border-radius:16px;padding:12px 14px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));grid-auto-rows:minmax(0,1fr);gap:8px;min-height:0;border:1px solid var(--okline)}
-.chip{display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-rows:auto auto;align-items:baseline;column-gap:10px;row-gap:2px;background:rgba(0,0,0,.22);border-radius:12px;padding:8px 14px;min-width:0;min-height:0}
+.fine{background:none;border-radius:0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));grid-auto-rows:minmax(0,1fr);gap:12px;min-height:0}
+.chip{display:grid;grid-template-columns:minmax(0,1fr) max-content;grid-template-rows:auto auto;align-items:baseline;column-gap:10px;row-gap:2px;background:var(--ok);border-radius:16px;padding:10px 18px;min-width:0;min-height:0}
 .chip .nm{font-size:clamp(20px,2.8vh,24px);letter-spacing:-.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.1}
 .chip .info{grid-column:1/-1;font-size:16px;color:rgba(255,255,255,.85);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.chip .p{font-size:clamp(24px,3.4vh,30px);letter-spacing:-.04em;white-space:nowrap;color:#a6f5c8}
+.chip .p{font-size:clamp(24px,3.4vh,30px);letter-spacing:-.04em;white-space:nowrap;color:#fff}
 .chip .p.down{color:#ffd9cc}
 @media(orientation:portrait){
   .band{grid-template-columns:1fr 1fr;grid-template-rows:auto auto auto auto;row-gap:6px}
   .when{grid-column:1/-1}.stat{border-left:0;padding-left:0}
   .now{grid-template-columns:1fr}
   .watch{grid-template-columns:1fr}
-  .card.watch{grid-template-columns:minmax(0,1fr) auto}.card.watch .go{display:none}
+  .card.watch .go{display:none}
   .fine{grid-template-columns:repeat(3,minmax(0,1fr))}.chip{padding:6px 10px}.chip .nm{font-size:19px}.chip .p{font-size:24px}.chip .info{font-size:15px}
 }
 @media(max-width:600px){body{height:auto;overflow:auto}.fine{grid-template-columns:1fr 1fr}.chip{min-height:48px}}
@@ -86,9 +86,9 @@ section{display:grid;grid-template-rows:auto minmax(0,1fr);gap:10px;min-height:0
 const S=[
  {n:'Uptown',c:'Bowls',s:'now',what:'Quinoa under-dispensing · line held 12:16',k:7,l:'orders rerouting',go:'Reroute is ready on the store panel',href:'lunch-rush-hoppers.html',p:0,e:30},
  {n:'Airport T2',c:'Tacos',s:'now',what:'Door interlock open · line stopped',k:3,l:'orders waiting',go:'Crew has been paged · 2 min',p:0,e:52},
- {n:'Midtown',c:'Bowls',s:'watch',what:'Cleaning cycle · back 12:24',k:6,l:'min left',p:0,e:30},
- {n:'Stadium',c:'Burgers',s:'watch',what:'Patties low · refill by 12:33',k:-20,l:'% vs plan',p:44,e:55},
- {n:'Campus North',c:'Salads',s:'watch',what:'Greens low · refill by 12:29',k:-17,l:'% vs plan',p:20,e:24},
+ {n:'Midtown',c:'Bowls',s:'watch',what:'Cleaning · back 12:24',k:6,l:'min left',p:0,e:30},
+ {n:'Stadium',c:'Burgers',s:'watch',what:'Patties low · refill 12:33',k:-20,l:'% vs plan',p:44,e:55},
+ {n:'Campus North',c:'Salads',s:'watch',what:'Greens low · refill 12:29',k:-17,l:'% vs plan',p:20,e:24},
  {n:'Harbor',i:'Refill 12:41',c:'Bowls',p:36,e:30},{n:'Old Town',i:'12 in queue',c:'Tacos',p:58,e:52},{n:'Riverside',i:'Greens 12:38',c:'Salads',p:27,e:24},{n:'Tech Park',i:'9 in queue',c:'Bowls',p:33,e:30},{n:'Westgate',i:'Peak in 12 min',c:'Burgers',p:59,e:55},
  {n:'Union Sq',i:'Refill 12:44',c:'Bowls',p:32,e:30},{n:'Lakeside',i:'6 in queue',c:'Salads',p:25,e:24},{n:'Eastside',i:'11 in queue',c:'Tacos',p:54,e:52},{n:'Civic',i:'On plan all day',c:'Bowls',p:30,e:30},{n:'Southpoint',i:'Cleaning 1:10',c:'Burgers',p:55,e:55},
  {n:'Hillcrest',i:'Dressing 12:35',c:'Salads',p:23,e:24},{n:'Marina',i:'Rice 12:36',c:'Bowls',p:29,e:30},{n:'Downtown',i:'Catching up',c:'Tacos',p:49,e:52},{n:'Parkway',i:'8 in queue',c:'Bowls',p:31,e:30},{n:'Northgate',i:'Patties 12:30',c:'Burgers',p:50,e:55},
