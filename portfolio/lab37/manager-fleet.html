@@ -90,7 +90,7 @@ b,.stat b,.card .k b,.chip .p,.thr b{font-variant-numeric:tabular-nums}
 
 /* band fits every width: peak note only in portrait, to-go drops below 1250px */
 @media(orientation:landscape){.peak{display:none}}
-@media(orientation:landscape) and (max-width:1250px){.band{grid-template-columns:minmax(0,1fr) auto auto auto auto}.when,.stat.togo{display:none}.stat b{font-size:30px}.stat span{font-size:15px}.band{gap:12px;padding:10px 18px}.stat{padding-left:12px}}
+@media(orientation:landscape) and (max-width:1250px){.band{grid-template-columns:auto minmax(0,1fr) auto auto auto auto}.stat.togo{display:none}.stat b{font-size:30px}.stat span{font-size:15px}.band{gap:12px;padding:10px 18px}.stat{padding-left:12px}}
 /* watch cards: reason gets the width, throughput sits under the number, right-justified */
 .card{grid-template-columns:minmax(0,1.7fr) max-content}
 .card .thrrow{justify-self:end;grid-column:2;grid-row:3}
@@ -114,11 +114,25 @@ b,.stat b,.card .k b,.chip .p,.thr b{font-variant-numeric:tabular-nums}
 .chip .nm{line-height:1.05}
 .card .nm small{display:block;font-size:14px;font-weight:500;color:rgba(255,255,255,.75);margin-top:2px}
 @media(orientation:portrait){.chip .nm small{font-size:13px}}
+
+/* band: clock always visible; short landscape screens: concept inline so three rows of boxes fit */
+@media(orientation:landscape){
+  .band{grid-template-columns:auto auto auto auto auto auto auto;justify-content:start}
+  .when{margin-right:auto;overflow:visible;text-overflow:clip}
+}
+@media(orientation:landscape) and (max-height:820px){
+  .chip .nm{padding:8px 0 5px 16px}
+  .chip .p{padding:8px 16px 5px 0}
+  .chip .nm small{display:inline;margin:0 0 0 8px}
+  .chip .thr{padding:5px 16px 6px}
+  .card{padding:10px 16px 10px}
+  .card.watch .nm small,.card .nm small{display:inline;margin-left:8px}
+}
 </style></head>
 <body>
   <header class="band">
     <div class="where">LAB37 <span>ALL STORES</span></div>
-    <div class="when">THU 12:18<span class="peak"> · PEAK 12:30–12:50</span></div>
+    <div class="when">THU <span id="clock">12:18</span><span class="peak"> · PEAK 12:30–12:50</span></div>
     <div class="stat"><b id="fleetPace">3,930</b><span>ORDERS / HR</span></div>
     <div class="stat up"><b id="fleetPct">+3%</b><span>VS PLAN</span></div>
     <div class="stat togo"><b id="toGo">3,180</b><span>TO GO</span></div>
@@ -143,7 +157,7 @@ b,.stat b,.card .k b,.chip .p,.thr b{font-variant-numeric:tabular-nums}
 <script>
 /* 20 machines, one per store. p = bowls per 10 min now. e = plan for this store at this hour. */
 const S=[
- {n:'Uptown',c:'Bowls',s:'now',what:'Quinoa under-dispensing · line held 12:16',k:7,l:'orders rerouting',go:'Reroute is ready on the store panel',href:'lunch-rush-hoppers.html',p:0,e:30},
+ {n:'Uptown',c:'Bowls',s:'now',what:'Quinoa under-dispensing · line held 12:16',k:7,l:'orders rerouting',go:'Tap to open the Uptown panel',href:'lunch-rush-hoppers.html',p:0,e:30},
  {n:'Airport T2',c:'Tacos',s:'now',what:'Door interlock open · line stopped',k:3,l:'orders waiting',go:'Crew has been paged · 2 min',p:0,e:52},
  {n:'Midtown',c:'Bowls',s:'watch',what:'Cleaning · back 12:24',k:6,l:'min left',p:0,e:30},
  {n:'Stadium',c:'Burgers',s:'watch',what:'Patties low · refill 12:33',k:-20,l:'% vs plan',p:44,e:55},
@@ -169,5 +183,20 @@ function render(){
   const run=S.filter(x=>x.p>0);const P=run.reduce((a,x)=>a+x.p,0),E=run.reduce((a,x)=>a+x.e,0);document.getElementById('fleetPace').textContent=(P*6).toLocaleString();const fp=Math.round((P-E)/E*100);const el=document.getElementById('fleetPct');el.textContent=(fp>0?'+':'')+fp+'%';el.parentElement.className='stat '+(fp>=0?'up':'bad');
 }
 render();
+/* LIVE: 1 real second = 6 seconds on the floor. Paces drift, to-go counts down, cleaning counts down, percents recompute. */
+let NOW=12*60+18, SEC=0, TOGO=3180;
+const clock=t=>{const h=Math.floor(t/60),m=t%60;return (h>12?h-12:h)+':'+String(m).padStart(2,'0');};
+setInterval(()=>{
+  SEC+=6;
+  if(SEC>=60){ SEC-=60; NOW+=1;
+    S.forEach(x=>{ if(x.p>0){ x.p=Math.max(1, x.p+(Math.random()<0.5?-1:1)*(Math.random()<0.45?1:0)); } });
+    const mid=S.find(x=>x.n==='Midtown'); if(mid.s==='watch'&&mid.l==='min left'){ mid.k=Math.max(0,mid.k-1); if(mid.k===0){ mid.s=undefined; mid.p=30; mid.i='Back from cleaning'; } else mid.what='Cleaning · back '+clock(NOW+mid.k); }
+    S.filter(x=>x.s==='watch'&&x.l.includes('vs plan')).forEach(x=>{ x.k=pct(x); });
+    document.getElementById('clock').textContent=clock(NOW);
+    render();
+  }
+  TOGO=Math.max(0,TOGO-Math.round(S.reduce((a,x)=>a+x.p,0)/10/10));
+  document.getElementById('toGo').textContent=TOGO.toLocaleString();
+},1000);
 </script>
 </body></html>
