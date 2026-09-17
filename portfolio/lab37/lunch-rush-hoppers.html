@@ -320,6 +320,24 @@ body{grid-template-rows:auto minmax(0,1fr) auto auto auto}
   .big .bar .m{text-align:left}.big .bar .m b{font-size:clamp(40px,5vh,52px)}.big .bar .m span{white-space:normal;font-size:15px}
   .tops .bar{max-height:none;min-height:0}
 }
+
+/* alert: thirds. words | numbers | button (one main-bar wide). Bright edge on the left to catch the eye. */
+.alert{border-left:12px solid var(--now);border-radius:18px;padding:14px 16px 14px 18px}
+@media(orientation:landscape){
+  .alert{grid-template-columns:repeat(3,minmax(0,1fr));gap:0 20px}
+  .aleft{border-right:0;padding-right:0}
+  .nums{justify-self:stretch;justify-content:center;border-left:2px solid var(--line);border-right:2px solid var(--line);padding:4px 20px;column-gap:14px}
+  .go{justify-self:stretch}
+  .go .t{font-size:clamp(26px,3.4vh,34px)}
+}
+@media(orientation:portrait){.alert{border-left-width:10px}}
+
+/* alert: headline never wraps; button text left-aligned with the arrow at the edge */
+.ahead span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
+@media(orientation:landscape){
+  .go{justify-items:start;text-align:left;padding:12px 52px 12px 20px}
+  .go .t{font-size:clamp(24px,3.2vh,32px)}
+}
 </style>
 <link rel="stylesheet" href="glove.css"></head>
 <body>
@@ -337,7 +355,7 @@ body{grid-template-rows:auto minmax(0,1fr) auto auto auto}
 
   <section class="alert">
     <div class="aleft">
-      <div class="ahead"><i></i><span>Quinoa under-dispensing at Bowl 02</span><small>Held since 12:16 · everything else is running</small></div>
+      <div class="ahead"><i></i><span>Quinoa under-dispensing</span><small>Bowl 02 · held since 12:16 · rest is running</small></div>
       <div class="more">
         <button onclick="openSheet('tech')">Send tech</button>
         <button onclick="openSheet('fix')">Quick fix</button>
