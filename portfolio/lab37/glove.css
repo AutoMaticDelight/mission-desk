@@ -35,10 +35,10 @@
 .sheet .back, .sheet .cancel { background: #ffffff !important; color: #132018 !important; border: 6px solid #132018 !important; box-shadow: 0 10px 0 #132018; }
 .sheet .back:active, .sheet .cancel:active { transform: translateY(8px); box-shadow: 0 2px 0 #132018; }
 .sheet .confirm { background: #c8ff3d !important; color: #132018 !important; border: 6px solid #132018 !important; box-shadow: 0 10px 0 #132018; }
-.sheet .confirm::before { content: "HOLD"; display: block; font-size: clamp(18px, 2vw, 24px); letter-spacing: .22em; margin-bottom: 14px; opacity: .8; }
+.sheet .confirm::before { content: "HOLD FOR 2 SECONDS"; display: block; font-size: clamp(26px, 3vw, 38px); letter-spacing: .12em; margin-bottom: 16px; opacity: 1; }
 .sheet .confirm::after { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 0; background: rgba(19,32,24,.32); pointer-events: none; }
 .sheet .confirm.holding { transform: translateY(8px); box-shadow: 0 2px 0 #132018; }
-.sheet .confirm.holding::after { width: 100%; transition: width .75s linear; }
+.sheet .confirm.holding::after { width: 100%; transition: width 2s linear; }
 .sheet .confirm.fired { background: #132018 !important; color: #c8ff3d !important; }
 .sheet .confirm.fired::before { content: "DONE"; opacity: 1; }
 .sheet button:focus-visible { outline: 8px solid #ff5a2e !important; outline-offset: 4px; }

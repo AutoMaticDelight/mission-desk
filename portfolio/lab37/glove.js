@@ -14,7 +14,7 @@
     var fire = new Function(orig), timer = null, busy = false;
     function start(e){ if (busy) return; if (e.pointerType==='mouse' && e.button!==0) return; btn.classList.add('holding');
       timer = setTimeout(function(){ timer=null; busy=true; btn.classList.remove('holding'); btn.classList.add('fired'); fire.call(btn);
-        setTimeout(function(){ busy=false; btn.classList.remove('fired'); }, 1400); }, 750); }
+        setTimeout(function(){ busy=false; btn.classList.remove('fired'); }, 1400); }, 2000); }
     function cancel(){ if (timer){ clearTimeout(timer); timer=null; } btn.classList.remove('holding'); }
     btn.addEventListener('pointerdown', start);
     ['pointerup','pointerleave','pointercancel'].forEach(function(ev){ btn.addEventListener(ev, cancel); });
