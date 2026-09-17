@@ -265,6 +265,61 @@ b,strong{font-weight:950}
   .go{height:auto;min-height:clamp(84px,9vh,100px);display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:auto auto;justify-items:start;text-align:left;padding:12px 60px 12px 18px}
   .go .t{font-size:clamp(26px,3.6vh,34px)}
 }
+
+/* alert: three real columns. Numbers sit in the middle of the box, not against the button. */
+@media(orientation:landscape){
+  .alert{grid-template-columns:minmax(0,1fr) minmax(0,1fr) clamp(220px,24%,300px);gap:0 24px}
+  .nums{justify-self:center;border-left:0;padding:0;column-gap:12px}
+  .aleft{border-right:2px solid var(--line);padding-right:16px}
+}
+
+/* HIERARCHY: mains tallest, toppings small and fixed, leftover height goes to the alert row */
+body{grid-template-rows:auto auto minmax(0,1fr) auto auto}
+.hoppers{grid-template-rows:auto auto;gap:10px;min-height:0}
+.big .bar{min-height:clamp(88px,12vh,120px);max-height:120px;padding:0 22px}
+.big .bar .n{font-size:clamp(22px,3vh,30px)}
+.big .bar .m b{font-size:clamp(40px,6vh,56px)}
+.big .bar .m span{font-size:17px}
+.tops{grid-auto-rows:auto}
+.tops .bar{min-height:50px;max-height:56px;padding:4px 14px}
+.tops .bar .n{font-size:18px}.tops .bar .v{font-size:17px}
+.alert{min-height:0;align-content:center}
+.aleft,.nums{align-self:center}
+.go{align-self:stretch}
+@media(orientation:portrait){
+  .big .bar{min-height:clamp(80px,9vh,104px);flex-direction:row}
+  .tops .bar{min-height:48px;max-height:54px}
+}
+
+/* leftover height goes to the mains (capped), never to the alert */
+body{grid-template-rows:auto minmax(0,1fr) auto auto auto}
+.hoppers{grid-template-rows:minmax(0,1fr) auto}
+.big .bar{max-height:150px;min-height:88px}
+.alert{align-content:center}
+@media(orientation:portrait){
+  .hoppers{grid-template-rows:minmax(0,1fr) auto}
+  .big .bar{max-height:132px;min-height:84px;padding:0 16px}
+  .big .bar .n{font-size:22px;flex:0 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis}
+  .big .bar .m{flex:0 0 auto}.big .bar .m b{font-size:40px}.big .bar .m span{font-size:15px}
+  .tops .bar{max-height:66px;min-height:48px}
+  .tops{grid-auto-rows:minmax(0,1fr)}
+}
+
+/* RATIO, NOT CAPS: mains row = 1.5 topping rows. Together they take the leftover. No voids, hierarchy holds. */
+.hoppers{grid-template-rows:minmax(0,1.5fr) minmax(0,2fr);gap:10px}
+.big .bar{max-height:none;min-height:0}
+.tops{grid-auto-rows:minmax(0,1fr)}
+.tops .bar{max-height:none;min-height:0}
+.big .bar .n{font-size:clamp(22px,3.2vh,32px)}
+.big .bar .m b{font-size:clamp(40px,7vh,64px)}
+.tops .bar .n{font-size:clamp(18px,2.6vh,22px)}.tops .bar .v{font-size:clamp(17px,2.4vh,20px)}
+@media(orientation:portrait){
+  .hoppers{grid-template-rows:minmax(0,1.5fr) minmax(0,4fr)}
+  .big .bar{flex-direction:column;align-items:flex-start;justify-content:center;gap:2px;padding:10px 16px;max-height:none;min-height:0}
+  .big .bar .n{font-size:24px;overflow:visible;flex:0 0 auto}
+  .big .bar .m{text-align:left}.big .bar .m b{font-size:clamp(40px,5vh,52px)}.big .bar .m span{white-space:normal;font-size:15px}
+  .tops .bar{max-height:none;min-height:0}
+}
 </style>
 <link rel="stylesheet" href="glove.css"></head>
 <body>
