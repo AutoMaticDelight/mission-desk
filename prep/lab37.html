@@ -1,0 +1,297 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="robots" content="noindex,nofollow">
+<title>Lab37 Prep</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700&family=Public+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap">
+<style>
+:root{
+  --bg:#ffffff;--panel:#f4f6f8;--panel-2:#e9edf1;--ink:#1b1f27;--ink-2:#555d6b;--ink-3:#6b7380;
+  --line:#e1e5ea;--line-2:#c9cfd7;
+  --accent:#0e6f6c;--accent-ink:#ffffff;--accent-bg:#e2f2f1;
+  --today:#a85b00;--today-bg:#fff1dc;
+  --good:#1f7a3f;--good-bg:#e4f4ea;--bad:#b3313d;--bad-bg:#fbe7e9;
+  --display:'Sora',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;
+  --body:'Public Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#ffffff;--panel:#f4f6f8;--panel-2:#e9edf1;--ink:#1b1f27;--ink-2:#555d6b;--ink-3:#6b7380;--line:#e1e5ea;--line-2:#c9cfd7}}
+:root[data-theme="dark"]{--bg:#ffffff;--panel:#f4f6f8;--panel-2:#e9edf1;--ink:#1b1f27;--ink-2:#555d6b;--ink-3:#6b7380;--line:#e1e5ea;--line-2:#c9cfd7}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg)}
+body{color:var(--ink);font:16px/1.55 var(--body);-webkit-font-smoothing:antialiased;padding-bottom:calc(40px + env(safe-area-inset-bottom,0px))}
+a{color:var(--accent)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+
+.top{position:sticky;top:0;z-index:8;background:var(--bg);border-bottom:1px solid var(--line)}
+.top-in{max-width:960px;margin:0 auto;padding:12px 16px 10px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.brand{font:700 20px/1 var(--display);letter-spacing:-.02em;display:flex;align-items:baseline;gap:8px}
+.brand small{font:500 12px var(--body);color:var(--ink-3);letter-spacing:.06em;text-transform:uppercase}
+.brand a{color:inherit;text-decoration:none}
+.count{margin-left:auto;display:flex;align-items:center;gap:8px;font:600 13px var(--mono);color:var(--today);background:var(--today-bg);border-radius:99px;padding:6px 12px;white-space:nowrap}
+.count.past{color:var(--ink-2);background:var(--panel-2)}
+.nav{max-width:960px;margin:0 auto;padding:0 8px 8px;display:flex;gap:4px;overflow-x:auto;scrollbar-width:none}
+.nav::-webkit-scrollbar{display:none}
+.nav a{border:1px solid var(--line-2);background:#fff;border-radius:99px;height:36px;padding:0 13px;font:600 14px var(--body);color:var(--ink-2);text-decoration:none;white-space:nowrap;display:inline-flex;align-items:center;flex:0 0 auto}
+.nav a.on{background:var(--ink);border-color:var(--ink);color:#fff}
+
+.page{max-width:960px;margin:0 auto;padding:22px 16px 0}
+section{margin-top:34px;scroll-margin-top:110px}
+.page>section:first-child{margin-top:0}
+h2{font:600 22px/1.2 var(--display);letter-spacing:-.015em;margin:0 0 4px}
+.lede{color:var(--ink-2);font-size:15px;margin:0 0 14px}
+h3{font:600 12px var(--body);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);margin:22px 0 8px}
+p{margin:0 0 10px}
+ul,ol{margin:0;padding-left:22px}
+li{margin:0 0 8px}
+li b,p b{font-weight:700}
+
+.next{border:1px solid var(--line);border-left:4px solid var(--today);border-radius:10px;padding:14px 16px;display:grid;gap:8px;background:#fff}
+.next .when{font:600 13px var(--mono);color:var(--today)}
+.next h1{margin:0;font:600 24px/1.2 var(--display);letter-spacing:-.015em}
+.next .sub{color:var(--ink-2);font-size:15px}
+.acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px}
+.btn{height:44px;padding:0 16px;border-radius:9px;border:1px solid var(--line-2);background:#fff;font:600 15px var(--body);color:var(--ink);text-decoration:none;display:inline-flex;align-items:center;gap:8px;white-space:nowrap;cursor:pointer}
+.btn.p{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn:hover{border-color:var(--ink-3)}
+
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin:14px 0}
+.stat{background:var(--panel);border-radius:10px;padding:12px 14px}
+.stat .k{font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-3);font-weight:600}
+.stat .v{font:700 22px/1.15 var(--display);letter-spacing:-.02em;margin-top:4px}
+.stat .v small{font:500 13px var(--body);color:var(--ink-3);margin-left:4px}
+
+.plan{border-top:1px solid var(--line)}
+.plan div{display:grid;grid-template-columns:64px minmax(0,1fr);gap:12px;padding:10px 4px;border-bottom:1px solid var(--line);font-size:15px}
+.plan .w{font:600 14px var(--mono);color:var(--today);padding-top:2px}
+
+.yes{background:var(--good-bg);color:var(--good);border-radius:10px;padding:12px 14px;font-weight:600;font-size:16px}
+blockquote{margin:10px 0;padding:10px 14px;border-left:3px solid var(--line-2);background:var(--panel);border-radius:0 8px 8px 0;color:var(--ink);font-size:15px}
+blockquote mark{background:var(--today-bg);color:var(--today);padding:0 3px;border-radius:3px}
+
+.map{border-top:1px solid var(--line)}
+.map>div{display:grid;grid-template-columns:minmax(0,1fr);gap:4px;padding:12px 4px;border-bottom:1px solid var(--line)}
+.map .k{font:600 15px var(--body)}
+.map .k::before{content:'THEIR WORDS';display:block;font:600 11px var(--mono);letter-spacing:.06em;color:var(--ink-3);margin-bottom:2px}
+.map .v{font-size:15px;color:var(--ink-2)}
+.map .v::before{content:'YOUR PROOF';display:block;font:600 11px var(--mono);letter-spacing:.06em;color:var(--accent);margin:4px 0 2px}
+@media (min-width:720px){
+  .map>div{grid-template-columns:minmax(0,1fr) minmax(0,2fr);gap:18px;align-items:start}
+  .map .k::before,.map .v::before{display:none}
+  .map .v{margin:0}
+}
+
+.script{background:var(--panel);border-radius:12px;padding:16px 18px;font-size:16px;line-height:1.6}
+.script .lbl{font:600 11px var(--mono);letter-spacing:.06em;color:var(--accent);margin-bottom:6px}
+.boxes{counter-reset:b;list-style:none;padding:0;border-top:1px solid var(--line)}
+.boxes li{display:grid;grid-template-columns:36px minmax(0,1fr);gap:10px;padding:12px 4px;border-bottom:1px solid var(--line);margin:0}
+.boxes li::before{counter-increment:b;content:counter(b);font:700 18px var(--display);color:var(--accent);padding-top:1px}
+.boxes b{display:block;margin-bottom:2px}
+
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{display:inline-flex;align-items:center;height:32px;padding:0 11px;border-radius:99px;font-size:14px;font-weight:600;background:var(--panel-2);color:var(--ink-2);white-space:nowrap}
+.chip.t{background:var(--accent-bg);color:var(--accent)}
+
+.gap{border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin-bottom:10px;background:#fff}
+.gap b{display:block;margin-bottom:4px}
+.gap .say{margin-top:6px;padding:8px 12px;background:var(--panel);border-radius:8px;font-size:15px;color:var(--ink)}
+.gap .say::before{content:'SAY';font:600 11px var(--mono);letter-spacing:.06em;color:var(--accent);margin-right:8px}
+
+.proof{border-top:1px solid var(--line)}
+.proof div{display:grid;grid-template-columns:110px minmax(0,1fr);gap:12px;padding:10px 4px;border-bottom:1px solid var(--line);font-size:15px}
+.proof .w{font:600 14px var(--mono);color:var(--ink-2)}
+
+.foot{max-width:960px;margin:40px auto 0;padding:16px;color:var(--ink-3);font-size:13px;border-top:1px solid var(--line)}
+.foot a{color:var(--ink-2)}
+@media (max-width:480px){.brand{font-size:18px}.count{margin-left:0}}
+</style></head><body>
+
+<header class="top">
+  <div class="top-in">
+    <div class="brand"><a href="/">Mission Desk</a> <small>Lab37 · prep</small></div>
+    <div class="count" id="count"><span>Call</span><b id="countv">—</b></div>
+  </div>
+  <nav class="nav" id="nav" aria-label="Sections">
+    <a href="#call">Call plan</a><a href="#posting">Posting</a><a href="#embedded">Embedded?</a><a href="#map">Keywords</a><a href="#say">Say this</a><a href="#vocab">Vocabulary</a><a href="#gaps">Gaps</a><a href="#proof">Proof</a><a href="#ask">Ask her</a>
+  </nav>
+</header>
+
+<main class="page">
+
+<section id="call">
+  <div class="next">
+    <div class="when">TODAY · WED SEP 17 · 1:00 PM PT · 30 MIN</div>
+    <h1>Initial call · Kristin Gonzales</h1>
+    <div class="sub">Sr. Technical Recruiter, Atoms (Lab37's parent). Video link is in the GoodTime confirmation email. Share link to paste at the start: <span class="mono">mission-desk-smoky.vercel.app/show#lab37</span></div>
+    <div class="acts">
+      <a class="btn p" href="/show#lab37" target="_blank" rel="noopener">Open the show page</a>
+      <a class="btn" href="/portfolio/lab37/" target="_blank" rel="noopener">21 screens</a>
+      <a class="btn" href="https://job-boards.greenhouse.io/lab37/jobs/8614557002" target="_blank" rel="noopener">Posting ↗</a>
+    </div>
+  </div>
+  <h3>Before</h3>
+  <p>Zoom share tested at zoom.us/test. One tab open (the show page). Water. Paper notes. Every answer under 60 seconds.</p>
+  <h3>Run of show</h3>
+  <div class="plan">
+    <div><span class="w">0:00</span><span>One line on you (the 45-second intro below, cut to one breath).</span></div>
+    <div><span class="w">0:03</span><span>Why Lab37: the posting asks for robot screens, internal ops tools, and food ordering at once. You have done all three.</span></div>
+    <div><span class="w">0:05</span><span>Three minutes of screens: Bowl Builder at a glance, then the lunch-rush service command. Stop at three.</span></div>
+    <div><span class="w">0:10</span><span>Her questions. Three sentences each. Tick the five boxes as they come up.</span></div>
+    <div><span class="w">0:20</span><span>Your three questions (bottom of this page).</span></div>
+    <div><span class="w">0:27</span><span>Next steps and when. Ask who the hiring manager is and what the loop looks like.</span></div>
+  </div>
+</section>
+
+<section id="posting">
+  <h2>The posting, reconstructed</h2>
+  <p class="lede">The uploaded copy never synced from the old laptop. Rebuilt from the live Greenhouse listing and the Sep 8 cover letter.</p>
+  <div class="stats">
+    <div class="stat"><div class="k">Title (LA)</div><div class="v" style="font-size:17px">UI/UX Designer</div></div>
+    <div class="stat"><div class="k">Title (PA)</div><div class="v" style="font-size:17px">UX/UI Product Designer</div></div>
+    <div class="stat"><div class="k">Base (LA)</div><div class="v">$170–215K<small>+ equity, bonus</small></div></div>
+    <div class="stat"><div class="k">Onsite</div><div class="v">5 days<small>633 W. Fifth St</small></div></div>
+  </div>
+  <p>Same bullets under both titles, so treat "Product Designer" and "UI/UX Designer" as one role family. Lab37 Robotics is a subsidiary of City Storage Systems / CloudKitchens (Travis Kalanick), now under the Atoms umbrella. First product: Bowl Builder, a conveyor line with 18 dispenser modules, NSF-certified, hundreds of bowls a day.</p>
+  <h3>Responsibilities</h3>
+  <ul>
+    <li>Own the UX and visual-design vision across one or more robotic systems and internal tools.</li>
+    <li>Design UI for <b>on-robot displays</b>, <b>customer-facing applications</b>, <b>culinary brands</b>, and <b>internal operational tools</b>.</li>
+    <li>Internal tools named: <b>inventory tracking, recipe development, learning management systems, manager dashboards, performance metrics, robot user interfaces, task scheduling</b>.</li>
+    <li>Translate user needs, business goals, and technical constraints into scalable design; drive concept through launch.</li>
+    <li>Plan and run qualitative and quantitative <b>user research</b>: interviews, usability testing.</li>
+    <li>Develop, document, and maintain the <b>Lab37 design system, visual identity, and brand guidelines</b>.</li>
+    <li>High-fidelity mockups, prototypes, user flows with clear specs for engineering.</li>
+    <li>Cross-functional with PMs and engineers through the whole lifecycle.</li>
+  </ul>
+  <h3>Qualifications</h3>
+  <ul>
+    <li><b>7–10 years</b> of product design for complex hardware/software systems or enterprise tools.</li>
+    <li>Shipped and iterated end-to-end experiences with <b>measurable results</b>.</li>
+    <li>Portfolio across the full process: research, ideation, prototyping, final visual design.</li>
+    <li>Expert with <b>Figma and generative AI design tools</b>.</li>
+    <li><b>Systems thinking across mechanics, electronics, firmware, cloud services, and UX.</b></li>
+    <li>Exceptional written and verbal communication; <b>influence without authority</b>.</li>
+    <li>Preferred: <b>physical products, embedded systems, or robot user interfaces</b>.</li>
+  </ul>
+</section>
+
+<section id="embedded">
+  <h2>Does it mention embedded systems?</h2>
+  <div class="yes">Yes. Twice, in two different senses. Neither asks you to write firmware.</div>
+  <blockquote>Preferred: "Experience designing for physical products, <mark>embedded systems</mark>, or robot user interfaces is preferred."</blockquote>
+  <blockquote>Required: "Strong systems-thinking ability across mechanics, electronics, <mark>firmware</mark>, cloud services, and UX."</blockquote>
+  <p>The "on-robot displays" bullet is the embedded surface in practice. They want a designer who knows the screen on the machine is constrained by the hardware and control layer behind it: latency, limited input, no hover, gloves, noise.</p>
+</section>
+
+<section id="map">
+  <h2>Keyword map</h2>
+  <p class="lede">Their words on the left. Say the proof on the right in their words.</p>
+  <div class="map">
+    <div><span class="k">On-robot displays / robot user interfaces</span><span class="v">iRobot telepresence remote-drive controller; Bench gloved tablet for technicians; the 21 Bowl Builder concept screens (service command, ops orbit, peak-hour recovery).</span></div>
+    <div><span class="k">Embedded systems / physical products</span><span class="v">iRobot (tablet on a mobile base); Belkin USB-C configurator; Honda/Acura 0 Series in-vehicle display; Toyota Entune in-vehicle; Samsung Smart TV app; SFMOMA kiosk.</span></div>
+    <div><span class="k">Systems thinking: mechanics → firmware → cloud → UX</span><span class="v">Bench: real-time hardware verification on the floor plus the planner desk board from one token set. AUTH57: pipeline → extraction → human review → API/MCP. Hyundai SODAS: 40+ data sources → analyst triage.</span></div>
+    <div><span class="k">Internal operational tools</span><span class="v">Hyundai recall ops (14M records), AllRegs compliance (440K docs), GenOn worker portal, Bench.</span></div>
+    <div><span class="k">Inventory tracking</span><span class="v">Bench shortage and supply alerts; the SpaceX fastener-in-hand pitch; Istation 1,000-lesson catalog IA.</span></div>
+    <div><span class="k">Recipe development</span><span class="v">Feed.me / FlavorHawk; NoshR; InstaOvers (menu, modifiers, ordering IA).</span></div>
+    <div><span class="k">Learning management systems</span><span class="v">Istation / Amira (8 products, 4M students, 90K teachers); GenOn training and compliance LMS.</span></div>
+    <div><span class="k">Manager dashboards / performance metrics</span><span class="v">GFA four-role dashboards; Hyundai fleet → region → defect drill-down; link.me agency analytics.</span></div>
+    <div><span class="k">Task scheduling</span><span class="v">Bench step-by-step execution plus planner scheduling, throughput, and exception views.</span></div>
+    <div><span class="k">Customer-facing applications</span><span class="v">Four food apps; Acts (mobile-first, in-app-browser first tap); link.me (100M weekly users).</span></div>
+    <div><span class="k">Culinary brands / brand guidelines</span><span class="v">40+ brand identities; Apple HIG partner storefronts; the 75-page Lexus mobile guide; Quiznos ordering.</span></div>
+    <div><span class="k">Design system, visual identity</span><span class="v">AUTH57 Figma → Tailwind v4 → published React library; Acts precommit token guard; Apple atomic template; AllRegs master system.</span></div>
+    <div><span class="k">User research: interviews, usability testing</span><span class="v">Hyundai three-week embedded sprint, prototyping daily with analysts; VW 30-day war room under daily exec review.</span></div>
+    <div><span class="k">Figma expert</span><span class="v">Variables and modes, atomic libraries, variants and interactive states, dev mode, redlines.</span></div>
+    <div><span class="k">Generative AI design tools</span><span class="v">Claude Code daily, Cursor, Figma to React in Claude Code; Midjourney; AI-in-the-loop products (AUTH57, GFA, Feed.me).</span></div>
+    <div><span class="k">Measurable results</span><span class="v">Hyundai analyst throughput lift; AllRegs 22 server calls → 1; Bench instruments its own tap count and task time; Acts: five approved iterations, then TestFlight in a day.</span></div>
+    <div><span class="k">Specs for engineering</span><span class="v">GFA: token system, component library, five production screens shipped from Claude Code, then design QA on every built screen.</span></div>
+    <div><span class="k">Influence without authority</span><span class="v">Hyundai: aligned 80 people across five companies on a two-year roadmap with no direct authority.</span></div>
+    <div><span class="k">7–10 years complex HW/SW or enterprise</span><span class="v">20+ years, 100+ shipped products; hardware surfaces since iRobot and Belkin.</span></div>
+  </div>
+</section>
+
+<section id="say">
+  <h2>Say this</h2>
+  <div class="script"><div class="lbl">45-SECOND INTRO · MEMORIZE THE SHAPE, NOT THE WORDS</div>
+  Twenty years designing tools for people doing real work under pressure. Three things line up with your posting. Robot and hardware-adjacent screens: iRobot's telepresence controller, an in-vehicle surface for Honda, and this year a gloved-tablet build-execution system for a manufacturing floor. Internal ops tools: recall analysts at Hyundai, compliance at Ellie Mae, an LMS for power-station workers. And four food-ordering apps. I own the design system and I close the loop in code, so engineers get working states, not comps. I'm in Burbank and want to be onsite five days.</div>
+  <h3>Five boxes to tick out loud, in order</h3>
+  <ol class="boxes">
+    <li><span><b>Years and domain.</b> 20+ years, complex hardware/software and enterprise tools.</span></li>
+    <li><span><b>Robot, embedded, physical product.</b> iRobot, Honda in-vehicle, Bench gloved tablet, Belkin. Then: "I've already mocked 21 Bowl Builder operator screens to think through the problem."</span></li>
+    <li><span><b>The seven internal-tool categories.</b> Name all seven from the posting and attach one project to each. The most keyword-dense answer you can give.</span></li>
+    <li><span><b>Figma expert plus generative AI tools.</b> "Figma variables, modes, atomic libraries. Claude Code daily, Figma to React, so the prototype is the product."</span></li>
+    <li><span><b>Research.</b> Hyundai: embedded three weeks, prototyped daily, throughput lift.</span></li>
+  </ol>
+  <h3>Logistics, without being asked</h3>
+  <p>Burbank. Onsite five days. Available now. Comp: the posting says $170K to $215K. Anchor at the top of the band on 20 years and the code-shipping skill. Flexible on the equity and bonus mix.</p>
+</section>
+
+<section id="vocab">
+  <h2>Vocabulary</h2>
+  <p class="lede">Say these naturally. They are the words in the posting and in their kitchen.</p>
+  <div class="chips">
+    <span class="chip t">HMI</span><span class="chip t">on-robot display</span><span class="chip t">operator surface</span><span class="chip t">glove-first</span><span class="chip t">exception / recovery state</span><span class="chip t">degraded vs paused vs e-stop</span><span class="chip t">telemetry</span><span class="chip t">firmware constraints</span><span class="chip t">order state vs machine state</span><span class="chip t">inventory reconciliation</span><span class="chip t">recipe / modifier compatibility</span><span class="chip t">task scheduling</span><span class="chip t">throughput</span><span class="chip t">audit trail</span><span class="chip t">kiosk session timeout</span><span class="chip t">WCAG 2.2 AA</span><span class="chip t">design tokens</span><span class="chip t">variables and modes</span><span class="chip t">component variants</span><span class="chip t">dev mode</span><span class="chip t">Figma to code</span>
+  </div>
+  <h3>Tools</h3>
+  <div class="chips">
+    <span class="chip">Figma (expert)</span><span class="chip">FigJam</span><span class="chip">Claude Code</span><span class="chip">Cursor</span><span class="chip">Midjourney</span><span class="chip">React</span><span class="chip">React Native / Expo</span><span class="chip">Next.js</span><span class="chip">TypeScript</span><span class="chip">Tailwind v4</span><span class="chip">Supabase / Postgres</span><span class="chip">Vercel</span><span class="chip">Git / GitHub</span>
+  </div>
+  <h3>Their world</h3>
+  <div class="chips">
+    <span class="chip">Bowl Builder</span><span class="chip">18 dispenser modules</span><span class="chip">NSF-certified</span><span class="chip">CloudKitchens</span><span class="chip">City Storage Systems</span><span class="chip">Otter</span><span class="chip">Atoms</span><span class="chip">virtual brands</span><span class="chip">Hungry Cowgirl Cocina</span><span class="chip">Travis Kalanick</span>
+  </div>
+</section>
+
+<section id="gaps">
+  <h2>Gaps, handled honestly</h2>
+  <div class="gap"><b>"Embedded systems" literally.</b> You have not designed firmware-level UIs.<div class="say">I haven't written firmware, but I've designed the screens that sit on top of it: iRobot's drive controller, in-vehicle surfaces for Honda and Toyota, and a tablet that verifies hardware in real time. I design to the constraint: latency, limited input, no hover, gloves, noise.</div></div>
+  <div class="gap"><b>Team leadership.</b> The posting is IC-level. Don't oversell management.<div class="say">Influence without authority: at Hyundai I aligned 80 people across five companies on a two-year roadmap with no direct reports.</div></div>
+  <div class="gap"><b>Title.</b> LA says UI/UX Designer, PA says UX/UI Product Designer. Same bullets.<div class="say">I applied to the LA UI/UX Designer role. I'd fit either title.</div></div>
+  <div class="gap"><b>Food robot specifically.</b> None in production.<div class="say">I've already built 21 Bowl Builder operator screens and a full interface handoff spec to think through your problem. Want to see three of them?</div></div>
+</section>
+
+<section id="proof">
+  <h2>Proof points in your pocket</h2>
+  <div class="proof">
+    <div><span class="w">Career</span><span>100+ shipped products; 40+ native app designs across iOS, Android, tablet, TV, in-vehicle, visionOS; 40+ brand identities.</span></div>
+    <div><span class="w">Hyundai</span><span>14M service records, 20M warranty claims, 40+ sources, a 40–80 person analyst team under regulatory scrutiny.</span></div>
+    <div><span class="w">AllRegs</span><span>440K documents, 40+ page types redesigned, 22 server calls per click → 1.</span></div>
+    <div><span class="w">Istation</span><span>8 products, 4M students, 90K teachers, 1,000-lesson library.</span></div>
+    <div><span class="w">AUTH57</span><span>11,000 rules, 51 states, live in market, MCP server with citations on every response.</span></div>
+    <div><span class="w">Acts</span><span>Five approved iterations on the web, then React Native and TestFlight in one day.</span></div>
+    <div><span class="w">Bench</span><span>Two surfaces from one token set; instruments its own tap count and task time; public on GitHub.</span></div>
+    <div><span class="w">MW3</span><span>$1B in 36 hours; the comment stream that followed video across Facebook, YouTube, and COD.com.</span></div>
+  </div>
+</section>
+
+<section id="ask">
+  <h2>Ask her (pick three)</h2>
+  <ul>
+    <li>Is this the first designer hire, or is there a design team in LA and Pittsburgh?</li>
+    <li>Which surface is most urgent right now: the on-robot display, the operator tools, or the customer ordering app?</li>
+    <li>Who is the hiring manager, and what does the loop look like: portfolio review, design exercise, onsite?</li>
+    <li>How does the LA team relate to the Warrendale engineering group?</li>
+    <li>Is the design system greenfield, or inherited from CloudKitchens / Otter?</li>
+    <li>What does a good lunch rush look like in numbers?</li>
+  </ul>
+</section>
+
+</main>
+<footer class="foot">Sources: <a href="https://job-boards.greenhouse.io/lab37/jobs/8614557002" target="_blank" rel="noopener">Greenhouse posting</a> · <a href="https://www.glassdoor.com/job-listing/ux-ui-product-designer-lab37-JV_IC1153057_KO0,22_KE23,28.htm?jl=1009996827378" target="_blank" rel="noopener">PA Product Designer posting</a> · Dropbox /lab37/LAB37_recruiter_screen_prep.md · resume and cover letter sent Sep 9.</footer>
+
+<script>
+(function(){
+  const CALL = new Date('2026-09-17T20:00:00Z');
+  const el=document.getElementById('countv'), wrap=document.getElementById('count');
+  function tick(){
+    const ms=CALL-Date.now();
+    if(ms<=0){ wrap.classList.add('past'); el.textContent = ms>-1800e3 ? 'now' : 'done'; return; }
+    const m=Math.floor(ms/60e3), h=Math.floor(m/60), d=Math.floor(h/24);
+    el.textContent = d>0 ? `in ${d}d ${h%24}h` : h>0 ? `in ${h}h ${m%60}m` : `in ${m}m`;
+  }
+  tick(); setInterval(tick,30e3);
+  const links=[...document.querySelectorAll('.nav a')], secs=links.map(a=>document.querySelector(a.getAttribute('href')));
+  const io=new IntersectionObserver(es=>{ es.forEach(e=>{ if(e.isIntersecting){ links.forEach(a=>a.classList.toggle('on',a.getAttribute('href')==='#'+e.target.id)); const on=document.querySelector('.nav a.on'); if(on) on.scrollIntoView({inline:'nearest',block:'nearest'}); } }); },{rootMargin:'-120px 0px -70% 0px'});
+  secs.forEach(s=>s&&io.observe(s));
+})();
+</script>
+</body></html>
