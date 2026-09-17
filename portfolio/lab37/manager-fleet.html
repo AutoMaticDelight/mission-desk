@@ -3,95 +3,111 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Lab37 - Manager · Fleet</title>
+<title>Lab37 - Manager · All Stores</title>
 <style>
-/* MANAGER PANEL. 20 machines, one iPad, no scroll. Problems sort to the top-left. Color is the state, one number per machine. Tap a machine to open its panel. */
-:root{--bg:#0b120e;--panel:#17231c;--track:#3d4a42;--line:#2c3a31;--ink:#fff;--dim:#c7d1ca;--ok:#1fa36a;--low:#f0a000;--now:#e5401a;--held:#6b7a70;--lime:#cfff3e}
+/* MANAGER PANEL. 20 machines, one iPad, no scroll.
+   Three questions, in order: Who needs me now? What should I watch? Is everything else on plan?
+   Machines are named by store, because that is what a manager says out loud. */
+:root{--bg:#0b120e;--panel:#141d18;--line:#2c3a31;--ink:#fff;--dim:#c7d1ca;--ok:#0f5a3a;--okline:#1a7a4f;--warn:#7a5200;--bad:#8a2410;--now:#e5401a;--lime:#cfff3e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{height:100%;margin:0}
-body{background:var(--bg);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-weight:800;display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:auto minmax(0,1fr);gap:14px;padding:16px;height:100vh;overflow:hidden;padding-top:max(16px,env(safe-area-inset-top));padding-bottom:max(16px,env(safe-area-inset-bottom))}
+body{background:var(--bg);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-weight:800;display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:auto auto auto minmax(0,1fr);gap:14px;padding:16px;height:100vh;overflow:hidden;padding-top:max(16px,env(safe-area-inset-top));padding-bottom:max(16px,env(safe-area-inset-bottom))}
 b{font-weight:950}
-.band{display:grid;grid-template-columns:auto minmax(0,1fr) auto auto auto auto;gap:18px;align-items:center;background:var(--panel);border-radius:18px;padding:10px 22px;min-height:64px;min-width:0;overflow:hidden}
+h2{margin:0;font-size:16px;letter-spacing:1px;text-transform:uppercase;color:var(--dim);display:block;line-height:1.3}
+h2 b{font-size:16px;color:#fff}
+h2 i{width:12px;height:12px;border-radius:50%;background:var(--now);display:inline-block;margin-right:10px;vertical-align:middle}
+h2.h-watch i{background:#f0a000}h2.h-fine i{background:#2fbf7f}
+/* top band */
+.band{display:grid;grid-template-columns:auto minmax(0,1fr) auto auto auto auto;gap:14px;align-items:center;background:var(--panel);border-radius:18px;padding:10px 22px;min-height:64px;min-width:0;overflow:hidden}
 .band>*{min-width:0}
-.where{font-size:clamp(20px,2.4vw,26px);letter-spacing:-.02em;white-space:nowrap}.where span{color:var(--lime);margin-left:10px}
+.where{font-size:22px;letter-spacing:-.02em;white-space:nowrap}.where span{color:var(--lime);margin-left:10px}
 .when{font-size:18px;color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.stat{display:flex;align-items:baseline;gap:8px;white-space:nowrap;border-left:2px solid var(--line);padding-left:18px}
-.stat b{font-size:clamp(30px,3.2vw,42px);letter-spacing:-.06em;line-height:.9}
-.stat span{font-size:17px;letter-spacing:.5px;color:var(--dim)}
-.stat.bad b{color:#ff8d6a}.stat.warn b{color:var(--low)}
-.grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));grid-template-rows:repeat(4,minmax(0,1fr));gap:12px;min-height:0}
-/* Tile ground is the state. Running = green. Held = red. Cleaning = amber. Nothing else on the tile carries color except the delta. */
-.m{position:relative;overflow:hidden;border-radius:16px;padding:12px 14px;display:grid;grid-template-rows:auto minmax(0,1fr) auto;gap:6px;min-height:0;border:0;color:#fff;font:inherit;text-align:left;cursor:pointer;background:#0f5a3a}
-.m.held{background:#8a2410;animation:pulse 1.6s ease-in-out infinite}
-.m.clean{background:#7a5200}
-.m.off{background:#2c3a31;color:var(--dim)}
-@keyframes pulse{50%{box-shadow:0 0 0 5px rgba(229,64,26,.35)}}
-.m .top{display:grid;grid-template-columns:minmax(0,1fr);gap:2px;min-width:0}
-.m .nm{font-size:clamp(19px,2.6vh,24px);letter-spacing:-.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.m .st{font-size:15px;letter-spacing:.8px;text-transform:uppercase;white-space:nowrap;line-height:1;opacity:.9}
-.m.run .st{display:none}
-.m .k{display:flex;align-items:baseline;gap:8px;align-self:center;flex-wrap:wrap;min-width:0}
-.m .k b{font-size:clamp(34px,5.2vh,56px);letter-spacing:-.06em;line-height:.9}
-.m .k span{font-size:16px;letter-spacing:.4px;text-transform:uppercase;opacity:.85}
-.m .d{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:4px 10px;font-size:17px;letter-spacing:.2px;background:rgba(0,0,0,.28);color:#fff;white-space:nowrap;justify-self:start}
-.m .d.up{color:var(--lime)}.m .d.down{color:#ffb39e}
-.m .why{font-size:16px;line-height:1.2;opacity:.85;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
-.m .foot{display:grid;gap:6px}
+.stat{display:flex;align-items:baseline;gap:7px;white-space:nowrap;border-left:2px solid var(--line);padding-left:14px}
+.stat b{font-size:clamp(28px,2.9vw,36px);letter-spacing:-.06em;line-height:.9}
+.stat span{font-size:16px;letter-spacing:.4px;color:var(--dim)}
+.stat.up b{color:#5bd39a}.stat.bad b{color:#ff8d6a}
+/* sections */
+section{display:grid;grid-template-rows:auto minmax(0,1fr);gap:10px;min-height:0}
+.now{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.card{border:0;border-radius:16px;padding:14px 18px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 16px;align-items:center;text-align:left;color:#fff;font:inherit;cursor:pointer;min-width:0;background:var(--bad)}
+.card .nm{grid-column:1;grid-row:1;font-size:clamp(22px,3vh,28px);letter-spacing:-.02em;line-height:1}
+.card .what{grid-column:1;grid-row:2;font-size:clamp(17px,2.2vh,20px);line-height:1.25;color:rgba(255,255,255,.92);font-weight:800}
+.card .k{grid-column:2;grid-row:1/3;text-align:right;white-space:nowrap}
+.card .k b{display:block;font-size:clamp(40px,6vh,64px);letter-spacing:-.06em;line-height:.9}
+.card .k span{font-size:16px;text-transform:uppercase;letter-spacing:.5px;opacity:.9}
+.card .go{grid-column:1/-1;grid-row:3;margin-top:6px;font-size:16px;letter-spacing:.6px;text-transform:uppercase;color:var(--lime)}
+.watch{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.card.watch{background:var(--warn)}
+.card.watch .nm{font-size:clamp(20px,2.6vh,24px)}
+.card.watch .k b{font-size:clamp(30px,4.2vh,42px)}.card.watch .what{font-size:17px}
+/* the fine field: same because it is the same */
+.fine{background:var(--ok);border-radius:16px;padding:12px 14px;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));grid-auto-rows:minmax(0,1fr);gap:8px;min-height:0;border:1px solid var(--okline)}
+.chip{display:flex;align-items:center;justify-content:space-between;gap:8px;background:rgba(0,0,0,.22);border-radius:10px;padding:4px 12px;min-width:0;min-height:48px}
+.chip .nm{font-size:17px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.1}
+.chip .nm small{display:block;font-size:14px;color:rgba(255,255,255,.7);font-weight:800}
+.chip .p{font-size:22px;letter-spacing:-.04em;white-space:nowrap}
+.chip .p.down{color:#ffd9cc}
 @media(orientation:portrait){
-  .band{grid-template-columns:1fr 1fr;grid-template-rows:auto auto auto;row-gap:6px}
+  .band{grid-template-columns:1fr 1fr;grid-template-rows:auto auto auto auto;row-gap:6px}
   .when{grid-column:1/-1}.stat{border-left:0;padding-left:0}
-  .grid{grid-template-columns:repeat(4,minmax(0,1fr));grid-template-rows:repeat(5,minmax(0,1fr))}
-  .m{padding:10px 12px;gap:4px}.m .k b{font-size:clamp(30px,4vh,44px)}.m .d{font-size:15px;padding:3px 8px}
+  .now{grid-template-columns:1fr}
+  .watch{grid-template-columns:1fr}
+  .card.watch{grid-template-columns:minmax(0,1fr) auto}.card.watch .go{display:none}
+  .fine{grid-template-columns:repeat(3,minmax(0,1fr))}
 }
-@media(max-width:600px){body{height:auto;overflow:auto}.grid{grid-template-columns:1fr 1fr;grid-template-rows:auto}.m{min-height:120px}}
+@media(max-width:600px){body{height:auto;overflow:auto}.fine{grid-template-columns:1fr 1fr}.chip{min-height:48px}}
 </style></head>
 <body>
   <header class="band">
-    <div class="where">UPTOWN <span>ALL MACHINES</span></div>
+    <div class="where">LAB37 <span>ALL STORES</span></div>
     <div class="when">THU 12:18 · PEAK 12:30–12:50</div>
-    <div class="stat" id="sRun"><b>17</b><span>RUNNING</span></div>
-    <div class="stat bad" id="sHeld"><b>2</b><span>HELD</span></div>
-    <div class="stat warn" id="sClean"><b>1</b><span>CLEANING</span></div>
-    <div class="stat"><b id="sBowls">612</b><span>BOWLS / 10 MIN</span></div>
+    <div class="stat"><b id="fleetPace">525</b><span>ORDERS / 10 MIN</span></div>
+    <div class="stat up"><b id="fleetPct">+3%</b><span>VS PLAN</span></div>
+    <div class="stat"><b id="toGo">3,180</b><span>TO GO</span></div>
+    <div class="stat bad"><b id="needCount">2</b><span>NEED YOU</span></div>
   </header>
-  <main class="grid" id="grid"></main>
+
+  <section>
+    <h2><i></i>Needs you now</h2>
+    <div class="now" id="now"></div>
+  </section>
+
+  <section>
+    <h2 class="h-watch"><i></i>Watch · <b id="watchCount"></b> stores</h2>
+    <div class="watch" id="watch"></div>
+  </section>
+
+  <section>
+    <h2 class="h-fine"><i></i><b id="fineCount"></b> stores on plan · each number is that store <b>vs its own plan</b> for this hour</h2>
+    <div class="fine" id="fine"></div>
+  </section>
 <script>
-/* 20 machines. s: run | held | clean | off. k: the one number. h: hopper health (chicken, rice, beef) as % */
-const M=[
- {n:'Bowl 02',s:'held',k:7,l:'rerouting',why:'Quinoa under-dispensing · held 12:16',p:0,e:30,href:'lunch-rush-hoppers.html'},
- {n:'Bowl 11',s:'held',k:3,l:'waiting',why:'Door interlock open · needs a hand',p:0,e:30},
- {n:'Bowl 07',s:'clean',k:6,l:'min left',why:'Sanitation cycle · back 12:24',p:0,e:30},
- {n:'Bowl 01',s:'run',q:14,why:'',p:34,e:30},
- {n:'Chicken 2',s:'run',q:8,why:'Taking the Bowl 02 reroute · 12 slots open',p:38,e:34},
- {n:'Bowl 03',s:'run',q:9,why:'',p:31,e:30},
- {n:'Bowl 04',s:'run',q:11,why:'Beef low · refill 12:31',p:27,e:30},
- {n:'Bowl 05',s:'run',q:8,why:'',p:33,e:30},
- {n:'Bowl 06',s:'run',q:13,why:'',p:29,e:30},
- {n:'Bowl 08',s:'run',q:10,why:'Rice low · refill 12:29',p:25,e:30},
- {n:'Bowl 09',s:'run',q:7,why:'',p:32,e:30},
- {n:'Bowl 10',s:'run',q:15,why:'',p:36,e:30},
- {n:'Bowl 12',s:'run',q:6,why:'',p:30,e:30},
- {n:'Bowl 13',s:'run',q:12,why:'',p:28,e:30},
- {n:'Bowl 14',s:'run',q:9,why:'',p:31,e:30},
- {n:'Bowl 15',s:'run',q:11,why:'',p:30,e:30},
- {n:'Bowl 16',s:'run',q:8,why:'Chicken low · refill 12:33',p:24,e:30},
- {n:'Bowl 17',s:'run',q:10,why:'',p:35,e:30},
- {n:'Bowl 18',s:'run',q:13,why:'',p:29,e:30},
- {n:'Bowl 19',s:'run',q:5,why:'',p:33,e:30},
+/* 20 machines, one per store. p = bowls per 10 min now. e = plan for this store at this hour. */
+const S=[
+ {n:'Uptown',c:'Bowls',s:'now',what:'Quinoa under-dispensing · line held 12:16',k:7,l:'orders rerouting',go:'Reroute is ready on the store panel',href:'lunch-rush-hoppers.html',p:0,e:30},
+ {n:'Airport T2',c:'Tacos',s:'now',what:'Door interlock open · line stopped',k:3,l:'orders waiting',go:'Crew has been paged · 2 min',p:0,e:52},
+ {n:'Midtown',c:'Bowls',s:'watch',what:'Cleaning cycle · back 12:24',k:6,l:'min left',p:0,e:30},
+ {n:'Stadium',c:'Burgers',s:'watch',what:'Patties low · refill by 12:33',k:-20,l:'% vs plan',p:44,e:55},
+ {n:'Campus North',c:'Salads',s:'watch',what:'Greens low · refill by 12:29',k:-17,l:'% vs plan',p:20,e:24},
+ {n:'Harbor',c:'Bowls',p:36,e:30},{n:'Old Town',c:'Tacos',p:58,e:52},{n:'Riverside',c:'Salads',p:27,e:24},{n:'Tech Park',c:'Bowls',p:33,e:30},{n:'Westgate',c:'Burgers',p:59,e:55},
+ {n:'Union Sq',c:'Bowls',p:32,e:30},{n:'Lakeside',c:'Salads',p:25,e:24},{n:'Eastside',c:'Tacos',p:54,e:52},{n:'Civic',c:'Bowls',p:30,e:30},{n:'Southpoint',c:'Burgers',p:55,e:55},
+ {n:'Hillcrest',c:'Salads',p:23,e:24},{n:'Marina',c:'Bowls',p:29,e:30},{n:'Downtown',c:'Tacos',p:49,e:52},{n:'Parkway',c:'Bowls',p:31,e:30},{n:'Northgate',c:'Burgers',p:50,e:55},
 ];
-const ST={run:'Running',held:'Held',clean:'Cleaning',off:'Off'};
-const order={held:0,clean:1,run:2,off:3};
-function delta(m){const d=m.p-m.e;const c=d>0?'up':d<0?'down':'';const t=(d>0?'+':'')+d+' vs expected';return `<span class="d ${c}">${d>0?'▲':d<0?'▼':'●'} ${t}</span>`;}
+const pct=x=>Math.round((x.p-x.e)/x.e*100);
 function render(){
-  const list=[...M].sort((a,b)=>order[a.s]-order[b.s]||(a.s==='run'?(b.p-b.e)-(a.p-a.e):0));
-  document.getElementById('grid').innerHTML=list.map(m=>`<button class="m ${m.s}" ${m.href?`onclick="location.href='${m.href}'"`:''}>
-    <div class="top"><span class="nm">${m.n}</span><span class="st">${ST[m.s]}</span></div>
-    ${m.s==='run'?`<div class="k"><b>${m.p}</b><span>/ 10 min</span></div>`:`<div class="k"><b>${m.k}</b><span>${m.l}</span></div>`}
-    <div class="foot">${m.s==='run'?delta(m):''}<div class="why">${m.s==='run'?[m.q+' in queue',m.why].filter(Boolean).join(' · '):m.why}</div></div>
-  </button>`).join('');
-  const c=s=>M.filter(m=>m.s===s).length;
-  sRun.querySelector('b').textContent=c('run');sHeld.querySelector('b').textContent=c('held');sClean.querySelector('b').textContent=c('clean');
-  const tot=M.reduce((a,m)=>a+m.p,0);document.getElementById('sBowls').textContent=tot;
+  const now=S.filter(x=>x.s==='now'), watch=S.filter(x=>x.s==='watch'), fine=S.filter(x=>!x.s).sort((a,b)=>pct(a)-pct(b));
+  document.getElementById('now').innerHTML=now.map(x=>`<button class="card" ${x.href?`onclick="location.href='${x.href}'"`:''}>
+    <div class="nm">${x.n}</div><div class="what">${x.what}</div>
+    <div class="k"><b>${x.k}</b><span>${x.l}</span></div>
+    <div class="go">${x.go} →</div></button>`).join('');
+  document.getElementById('watch').innerHTML=watch.map(x=>`<button class="card watch">
+    <div class="nm">${x.n}</div><div class="what">${x.what}</div>
+    <div class="k"><b>${x.l.includes('vs plan')?(x.k>0?'+':'')+x.k+'%':x.k}</b><span>${x.l.replace('% ','')}</span></div></button>`).join('');
+  document.getElementById('fine').innerHTML=fine.map(x=>{const d=pct(x);return `<div class="chip"><span class="nm">${x.n}<small>${x.c}</small></span><span class="p ${d<0?'down':''}">${d>0?'+':''}${d}%</span></div>`;}).join('');
+  document.getElementById('needCount').textContent=now.length;
+  document.getElementById('watchCount').textContent=watch.length;
+  document.getElementById('fineCount').textContent=fine.length;
+  const run=S.filter(x=>x.p>0);const P=run.reduce((a,x)=>a+x.p,0),E=run.reduce((a,x)=>a+x.e,0);document.getElementById('fleetPace').textContent=P;const fp=Math.round((P-E)/E*100);const el=document.getElementById('fleetPct');el.textContent=(fp>0?'+':'')+fp+'%';el.parentElement.className='stat '+(fp>=0?'up':'bad');
 }
 render();
 </script>
