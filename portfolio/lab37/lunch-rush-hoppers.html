@@ -15,9 +15,9 @@
 .h.now{animation:pulse 1.6s ease-in-out infinite}
 @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(216,58,18,0)}50%{box-shadow:0 0 0 8px rgba(216,58,18,.3)}}
 .h .n,.h .m{position:relative;z-index:1}
-.h .n{font-size:22px;font-weight:950;letter-spacing:-.03em;text-transform:uppercase;line-height:1}
-.h .m{font-size:46px;font-weight:950;letter-spacing:-.07em;line-height:.85;text-align:right}
-.h .m small{display:block;font-size:11px;letter-spacing:1.6px;font-weight:900;margin-top:4px;opacity:.9}
+.h .n{font-size:clamp(15px,1.7vw,21px);font-weight:950;letter-spacing:-.03em;text-transform:uppercase;line-height:1;min-width:0;flex:0 1 auto}
+.h .m{font-size:clamp(30px,3.4vw,42px);font-weight:950;letter-spacing:-.07em;line-height:.85;text-align:right;flex:0 0 auto}
+.h .m small{display:block;font-size:10px;letter-spacing:.9px;font-weight:900;margin-top:4px;opacity:.95;white-space:nowrap}
 .c{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));grid-auto-rows:1fr;gap:4px;align-content:stretch}
 .sq{position:relative;overflow:hidden;border-radius:6px;display:flex;align-items:center;justify-content:space-between;padding:0 6px;font-size:11px;font-weight:950;letter-spacing:.3px;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.5);background:#aab6ad;min-height:18px}
 .sq i{position:absolute;left:0;top:0;bottom:0;background:#1a8a5c;transition:width .6s}
@@ -31,7 +31,7 @@
 <div class="app">
   <aside class="rail"><div class="logo">L37</div><button class="active">⌁</button><button>◌</button><button>⇄</button><button>◫</button><div><button>?</button></div></aside>
   <main class="main">
-    <header class="top"><div class="location"><b>lab37</b><span>/ Uptown Bowl</span><span class="tag">LUNCH RUSH</span></div><div class="live"><i></i>LIVE</div></header>
+    <header class="top"><div class="location"><b>lab37</b><span>/ Uptown Bowl</span><span class="tag">LUNCH RUSH</span><span class="tag" id="fc">THU 12:18 · PEAK 12:30–12:50</span></div><div class="live"><i></i>LIVE</div></header>
     <section class="hop" id="hop"></section>
     <section class="hero">
       <div class="status"><i></i>Action needed now</div>
@@ -54,11 +54,17 @@
 let selected='';const data={reroute:{label:'Protect service',title:'Move 7 orders to Chicken Bowl 2?',text:'Chicken Bowl 2 has enough capacity to take every affected order now.',effects:[['Guests','All 7 orders stay in the service window'],['Bowl Builder 02','Quinoa is held. Other recipes keep running']],button:'MOVE 7 ORDERS',done:'Orders moving now',sub:'Chicken Bowl 2 is taking the work. Guests stay on track.'},tech:{label:'Service task',title:'Send tech to recalibrate?',text:'The task includes the machine state, recipe, and evidence automatically.',effects:[['Task','Recalibrate quinoa dispenser'],['Timing','Before the next lunch rush']],button:'SEND TECH',done:'Tech dispatched',sub:'The calibration task is ready with the right context.'},fix:{label:'Safe quick fix',title:'Start the quick fix?',text:'The machine is safe. You will get two simple, on-screen steps.',effects:[['Step 1','Open the yellow quinoa panel'],['Step 2','Loosen quinoa, then run a test']],button:'START QUICK FIX',done:'Quick fix started',sub:'Bowl Builder 02 is ready for the first check.'},engineering:{label:'Fleet learning',title:'Alert Engineering?',text:'This event will be linked to the quinoa low-fill pattern without slowing service.',effects:[['Pattern','14 similar incidents across 4 sites'],['Context','Today’s event is attached automatically']],button:'ALERT ENGINEERING',done:'Engineering alerted',sub:'This incident is now part of the fleet reliability signal.'}};
 function openSheet(key){selected=key;const x=data[key];sheetLabel.textContent=x.label;sheetTitle.textContent=x.title;sheetText.textContent=x.text;effects.innerHTML=x.effects.map(a=>'<div class="effect"><b>'+a[0]+'</b><span>'+a[1]+'</span></div>').join('');document.getElementById('confirm').textContent=x.button;overlay.classList.add('show')}function closeSheet(){overlay.classList.remove('show')}function commit(){const x=data[selected];closeSheet();toastTitle.textContent=x.done;toastText.textContent=x.sub;toast.classList.add('show');setTimeout(()=>toast.classList.remove('show'),4300)}
 
-/* hoppers quick view: level % and burn %/min at this pace. Color is the signal; the number is the detail. */
+/* hoppers quick view. Level % and burn %/min at the pace right now. The forecast knows the day: Thursday lunch peaks 12:30-12:50. */
+const NOW=12*60+18; // 12:18
+const PEAK=[12*60+30,12*60+50];
 const H=[{n:'Chicken',l:64,b:2.1},{n:'Rice',l:41,b:2.9},{n:'Beef',l:17,b:2.8}];
 const C=[{n:'Quinoa',k:'QUI',held:1},{n:'Black beans',k:'BEAN',l:70,b:1.5},{n:'Corn',k:'CORN',l:35,b:1.6},{n:'Pico',k:'PICO',l:22,b:1.9},{n:'Guac',k:'GUAC',l:15,b:1.7},{n:'Cheese',k:'CHZ',l:80,b:1.4},{n:'Crema',k:'CRMA',l:66,b:1},{n:'Lettuce',k:'LETT',l:48,b:1.3},{n:'Salsa verde',k:'VERD',l:73,b:.9},{n:'Chipotle',k:'CHIP',l:30,b:1.1},{n:'Cilantro',k:'CIL',l:52,b:.8},{n:'Lime',k:'LIME',l:90,b:.5}];
+/* Thursday curve: pace multiplier by clock minute. Ramps into the peak, tapers after 13:10. */
+const pace=t=> t<PEAK[0]?1.0 : t<PEAK[1]?1.35 : t<13*60+10?1.0 : 0.6;
+const REFILL_AT=15; // swap before the hopper is dry
+function refillClock(x){ if(x.held) return null; let lvl=x.l, t=NOW; while(lvl>REFILL_AT && t<NOW+240){ lvl-=x.b*pace(t); t++; } if(lvl>REFILL_AT) return 'after 4pm'; const h=Math.floor(t/60), m=t%60; return (h>12?h-12:h)+':'+String(m).padStart(2,'0'); }
 const mn=x=>Math.max(0,Math.round(x.l/x.b)), st=x=>x.held?'held':mn(x)<8?'now':mn(x)<20?'low':'ok';
-function hop(){document.getElementById('hop').innerHTML=H.map(x=>`<div class="h ${st(x)}" title="${x.n}: ${mn(x)} min at this pace"><i class="f" style="width:${x.l}%"></i><div class="n">${x.n}</div><div class="m">${mn(x)}<small>MIN</small></div></div>`).join('')+'<div class="c">'+C.map(x=>`<span class="sq ${st(x)}" title="${x.n}${x.held?': held':': '+mn(x)+' min'}"><i style="width:${x.held?0:x.l}%"></i><b>${x.k}</b><em>${x.held?'HELD':Math.round(x.l)+'%'}</em></span>`).join('')+'</div>';}
+function hop(){document.getElementById('hop').innerHTML=H.map(x=>`<div class="h ${st(x)}" title="${x.n}: ${mn(x)} min at this pace; refill by ${refillClock(x)} on the Thursday curve"><i class="f" style="width:${x.l}%"></i><div class="n">${x.n}</div><div class="m">${mn(x)}<small>REFILL BY ${refillClock(x)}</small></div></div>`).join('')+'<div class="c">'+C.map(x=>{const r=refillClock(x),z=st(x);return `<span class="sq ${z}" title="${x.n}${x.held?': held':': '+mn(x)+' min · refill by '+r}"><i style="width:${x.held?0:x.l}%"></i><b>${x.k}</b><em>${x.held?'HELD':z==='ok'?Math.round(x.l)+'%':r}</em></span>`;}).join('')+'</div>';}
 hop();setInterval(()=>{[...H,...C].forEach(x=>{if(!x.held)x.l=Math.max(0,x.l-x.b/6)});hop()},10000);
 </script>
 <script src="glove.js"></script></body>
