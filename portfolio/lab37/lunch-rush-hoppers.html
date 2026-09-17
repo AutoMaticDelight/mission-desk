@@ -338,6 +338,16 @@ body{grid-template-rows:auto minmax(0,1fr) auto auto auto}
   .go{justify-items:start;text-align:left;padding:12px 52px 12px 20px}
   .go .t{font-size:clamp(24px,3.2vh,32px)}
 }
+
+/* SCENE: the alert box changes with the shift. red = needs you now, task = next step, clear = all good */
+.alert.task{border-left-color:var(--low)}
+.alert.task .ahead i{background:var(--low);box-shadow:0 0 0 5px rgba(240,160,0,.22)}
+.alert.clear{border-left-color:#2fbf7f}
+.alert.clear .ahead i{background:#2fbf7f;box-shadow:0 0 0 5px rgba(47,191,127,.22)}
+.alert.clear .go{background:#1fa36a;color:#fff;box-shadow:0 5px 0 #0f5a3a}
+.alert.clear .go .s{color:rgba(255,255,255,.85)}
+.alert.pop{animation:pop .5s ease-out}
+@keyframes pop{0%{transform:translateY(8px);opacity:.4}100%{transform:none;opacity:1}}
 </style>
 <link rel="stylesheet" href="glove.css"></head>
 <body>
@@ -353,22 +363,7 @@ body{grid-template-rows:auto minmax(0,1fr) auto auto auto}
     <div class="tops" id="tops"></div>
   </section>
 
-  <section class="alert">
-    <div class="aleft">
-      <div class="ahead"><i></i><span>Quinoa under-dispensing</span><small>Bowl 02 · held 12:16 · rest running</small></div>
-      <div class="more">
-        <button onclick="openSheet('tech')">Send tech</button>
-        <button onclick="openSheet('fix')">Quick fix</button>
-        <button onclick="openSheet('engineering')">Log + alert Eng.</button>
-      </div>
-    </div>
-    <div class="nums">
-      <div class="num"><b>7</b><span>orders waiting</span></div>
-      <div class="num"><b>4 MIN</b><span>until late</span></div>
-      <div class="num"><b>12</b><span>slots open at Bowl 2</span></div>
-    </div>
-    <button class="go" onclick="openSheet('reroute')"><div class="t">TAP TO START <br>REROUTE</div><div class="s">7 orders → Chicken 2</div><div class="a">→</div></button>
-  </section>
+  <section class="alert" id="alert"></section>
 
   <section class="next" id="next"></section>
 
@@ -406,18 +401,67 @@ const CREW=['Maya','Maya','Jordan'];
 setInterval(()=>{
   SEC+=6; if(SEC>=60){SEC-=60; NOW+=1;}
   ALL.forEach(x=>{ if(!x.held && !x.just){ x.l=Math.max(0,+(x.l-x.b*pace(NOW)/10).toFixed(2)); if(x.l<=12 && !x.due){ x.due=NOW+1; } if(x.due && NOW>=x.due){ x.due=null; refill(x,CREW[Math.floor(Math.random()*CREW.length)]); } } });
-  render();
+  render(); popCheck(); if(cleanUntil&&NOW>=cleanUntil){cleanUntil=null;M[0].s='run';M[0].st='Running';M[0].k='9';M[0].l='in queue';M[0].hr=134;M[0].sub=null;machines();note('Bowl 01 back from cleaning');} if(SEC<6&&STEP==='clear') renderAlert(false);
   const sp=Math.round(38*pace(NOW))+Math.round(Math.sin(SEC/9)*2);document.getElementById('speedv').textContent=sp;document.getElementById('expv').textContent=Math.max(0,214-Math.floor((NOW-(12*60+18))*sp/10));
 },1000);
+/* ---------- SCENE: the shift, one step at a time ---------- */
+const Q=()=>C.find(x=>x.n==='Quinoa');
+const SCENE={
+ reroute:{kind:'',head:'Quinoa under-dispensing',sub:'Bowl 02 · held 12:16 · rest running',nums:[['7','orders waiting'],['4 MIN','until late'],['12','slots open at Bowl 2']],btn:'TAP TO START REROUTE',bs:'7 orders → Chicken 2',verbs:[['tech','Send tech'],['engineering','Log + alert Eng.']],
+   sheet:{label:'Reroute',title:'Move 7 orders to Chicken Bowl 2?',text:'Chicken Bowl 2 has 12 open slots. Every affected order lands in the same service window.',effects:[['Guests','All 7 orders stay on time'],['Bowl 02','Quinoa stays held. Other recipes keep running']],button:'START REROUTE'},
+   done:()=>{ M[1].k='0';M[1].l='waiting';M[1].sub='HELD · rerouted';M[2].k='19';M[2].l='in queue';machines(); note('Reroute started · 7 orders moving to Chicken 2'); go('quickfix'); }},
+ quickfix:{kind:'task',head:'Next: quick fix at Bowl 02',sub:'Two steps · about 2 min · orders are safe',nums:[['2','steps'],['2 MIN','at the machine'],['0','orders waiting']],btn:'TAP TO START QUICK FIX',bs:'Open the yellow quinoa panel',verbs:[['tech','Send tech instead']],
+   sheet:{label:'Quick fix',title:'Start the quick fix?',text:'The machine is safe. Two on-screen steps at Bowl 02.',effects:[['Step 1','Open the yellow quinoa panel'],['Step 2','Loosen quinoa, then run a test portion']],button:'START QUICK FIX'},
+   done:()=>{ note('Quick fix done · test portion on target'); go('release'); }},
+ release:{kind:'clear',head:'Quinoa test passed',sub:'Bowl 02 · ready to release the hold',nums:[['3','test portions OK'],['0','late orders'],['12','slots at Bowl 2']],btn:'TAP TO RELEASE QUINOA',bs:'Bowl 02 back to all recipes',verbs:[['engineering','Log for Engineering']],
+   sheet:{label:'Release hold',title:'Release quinoa at Bowl 02?',text:'Three test portions hit target. The path reopens and Bowl 02 takes orders again.',effects:[['Bowl 02','All recipes running'],['Guests','Nothing rerouted from here on']],button:'RELEASE QUINOA'},
+   done:()=>{ const q=Q(); q.held=0; q.l=100; q.b=1.2; q.just='MAYA'; setTimeout(()=>{q.just=null;render();},6000); M[1].s='run';M[1].st='Running';M[1].k='11';M[1].l='in queue';M[1].hr=128;M[1].sec=28;M[1].sub=null;machines(); note('Quinoa released · Bowl 02 running · Maya'); go('clear'); }},
+ clear:{kind:'clear',head:'All clear',sub:'Everything running',nums:()=>{const n=ALL.filter(x=>!x.held).map(x=>({x,m:refillMin(x)})).sort((a,b)=>a.m-b.m)[0];return [[n?refillClock(n.x):'—',n?'next refill · '+n.x.n:'next refill'],[String(Math.max(0,214-Math.floor((NOW-(12*60+18))*38/10))),'orders to go'],['0','alerts']];},btn:()=>{const n=ALL.filter(x=>!x.held).map(x=>({x,m:refillMin(x)})).sort((a,b)=>a.m-b.m)[0];return n?'TAP WHEN '+n.x.n.toUpperCase()+' IS REFILLED':'ALL CLEAR';},bs:()=>{const n=ALL.filter(x=>!x.held).map(x=>({x,m:refillMin(x)})).sort((a,b)=>a.m-b.m)[0];return n?n.x.n+' · from '+(n.x.src||'the reach-in'):'';},verbs:[['engineering','Log a note']],
+   sheet:{label:'Refill',title:'Mark the next refill done?',text:'Confirm at the hopper. Next up updates on its own.',effects:[['Hopper','Back to 100%'],['Service','Keeps dispensing during the swap']],button:'REFILLED'},
+   done:()=>{ const n=ALL.filter(x=>!x.held).map(x=>({x,m:refillMin(x)})).sort((a,b)=>a.m-b.m)[0]; if(n) refill(n.x,'you'); }},
+ door:{kind:'',head:'Door open at Chicken 2',sub:'Safety interlock · line paused',nums:[['5','orders waiting'],['1 MIN','until late'],['2','slots open']],btn:'TAP WHEN DOOR IS CLOSED',bs:'Chicken 2 resumes on its own',verbs:[['tech','Send tech']],
+   sheet:{label:'Door',title:'Door is closed and latched?',text:'The interlock releases and Chicken 2 picks up its queue.',effects:[['Chicken 2','Resumes in 10 seconds'],['Guests','5 orders back on time']],button:'DOOR IS CLOSED'},
+   done:()=>{ M[2].s='run';M[2].sub=null;M[2].k='12';M[2].l='in queue';machines(); note('Chicken 2 running again'); go('clear'); }},
+ clean:{kind:'task',head:'Cleaning due at Bowl 01',sub:'Sanitation cycle · 6 min · start before 12:40',nums:[['6 MIN','cycle'],['14','in queue · moves to Bowl 02'],['12:40','deadline']],btn:'TAP TO START CLEANING',bs:'Bowl 01 pauses · Bowl 02 takes the queue',verbs:[['engineering','Log a note']],
+   sheet:{label:'Cleaning',title:'Start the sanitation cycle at Bowl 01?',text:'Bowl 01 pauses for 6 minutes. Its queue moves to Bowl 02 automatically.',effects:[['Bowl 01','Cleaning · back in 6 min'],['Bowl 02','Takes 14 more orders']],button:'START CLEANING'},
+   done:()=>{ M[0].s='clean';M[0].st='Cleaning';M[0].k='6';M[0].l='min left';M[0].hr=0;M[0].sub='CLEANING · back '+clock(NOW+6);M[1].k='25';machines(); cleanUntil=NOW+6; note('Bowl 01 cleaning · queue moved to Bowl 02'); go('clear'); }},
+ chicken:{kind:'',head:'Chicken runs out in 4 min',sub:'Reach-in 1 · 2 hotel pans ready',nums:()=>[[String(mn(H[0])),'min at this pace'],[Math.round(H[0].l)+'%','in the hopper'],['2','pans in reach-in']],btn:'TAP TO START CHICKEN REFILL',bs:'Hopper keeps dispensing during the swap',verbs:[['engineering','Log a note']],
+   sheet:{label:'Refill',title:'Refill chicken now?',text:'Two pans in reach-in 1. Confirm at the hopper when the swap is done.',effects:[['Chicken','Back to 100%'],['Service','Keeps dispensing during the swap']],button:'REFILLED'},
+   done:()=>{ refill(H[0],'you'); go('clear'); }},
+};
+let STEP='reroute', cleanUntil=null, fired={};
+function go(k){ STEP=k; renderAlert(true); }
+function note(t){ toastTitle.textContent=t; toastText.textContent=clock(NOW); toast.classList.add('show'); setTimeout(()=>toast.classList.remove('show'),3500); }
+function renderAlert(popIn){
+  const st=SCENE[STEP]; const nums=typeof st.nums==='function'?st.nums():st.nums; const bs=typeof st.bs==='function'?st.bs():st.bs; const btn=typeof st.btn==='function'?st.btn():st.btn;
+  const el=document.getElementById('alert'); el.className='alert '+st.kind+(popIn?' pop':'');
+  el.innerHTML=`<div class="aleft"><div class="ahead"><i></i><span>${st.head}</span><small>${st.sub}</small></div><div class="more">${st.verbs.map(v=>`<button onclick="openSheet('${v[0]}')">${v[1]}</button>`).join('')}</div></div>
+  <div class="nums">${nums.map(n=>`<div class="num"><b>${n[0]}</b><span>${n[1]}</span></div>`).join('')}</div>
+  <button class="go" onclick="openSheet('scene')"><div class="t">${btn}</div><div class="s">${bs}</div><div class="a">→</div></button>`;
+  if(window.gloveBind) gloveBind();
+}
+renderAlert(false);
+/* ?autoplay: the shift runs itself, a step every 8 s. For a kiosk loop or a demo with no hands. */
+if(location.search.includes('autoplay')) setInterval(()=>{ if(STEP!=='clear') SCENE[STEP].done(); },8000);
+/* pops on the clock, only when the board is clear */
+function popCheck(){
+  if(STEP!=='clear') return;
+  if(!fired.door && NOW>=12*60+22){ fired.door=1; M[2].s='held';M[2].st='Held';M[2].sub='DOOR OPEN';M[2].k='5';M[2].l='waiting';machines(); go('door'); return; }
+  if(!fired.clean && NOW>=12*60+26){ fired.clean=1; go('clean'); return; }
+  if(!fired.chicken && H[0].l<22){ fired.chicken=1; go('chicken'); return; }
+}
 /* sheets */
 let selected='';const data={
- reroute:{label:'Reroute',title:'Move 7 orders to Chicken Bowl 2?',text:'Chicken Bowl 2 has 12 open slots. Every affected order lands in the same service window.',effects:[['Guests','All 7 orders stay on time'],['Bowl 02','Quinoa stays held. Other recipes keep running'],['Next','Tech gets the recalibration task automatically']],button:'START REROUTE',done:'Reroute started',sub:'7 orders are moving to Chicken Bowl 2. Tech has the quinoa task.'},
  tech:{label:'Service task',title:'Send tech to Bowl 02?',text:'The task carries the machine state, recipe, and evidence automatically.',effects:[['Task','Recalibrate quinoa dispenser'],['Timing','Before the next lunch rush']],button:'SEND TECH',done:'Tech dispatched',sub:'The calibration task is ready with the right context.'},
- fix:{label:'Quick fix',title:'Start the quick fix?',text:'The machine is safe. You get two on-screen steps at Bowl 02.',effects:[['Step 1','Open the yellow quinoa panel'],['Step 2','Loosen quinoa, then run a test']],button:'START QUICK FIX',done:'Quick fix started',sub:'Bowl 02 is ready for the first check.'},
- engineering:{label:'Fleet learning',title:'Log it and alert Engineering?',text:'This event joins the quinoa low-fill pattern without slowing service.',effects:[['Pattern','14 similar incidents across 4 sites'],['Context','Today’s event is attached automatically']],button:'LOG + ALERT',done:'Logged. Engineering alerted',sub:'This incident is now part of the fleet reliability signal.'}};
-function openSheet(k){selected=k;if(k.startsWith('refill:')){const x=ALL.find(a=>a.n===k.slice(7));sheetLabel.textContent='Refill';sheetTitle.textContent=`Mark ${x.n} refilled?`;sheetText.textContent=`${Math.round(x.l)}% now. Hold to confirm at the hopper. Next up updates on its own.`;effects.innerHTML='<div class="effect"><b>Hopper</b><span>'+x.n+' back to 100%</span></div><div class="effect"><b>Service</b><span>Dispensing keeps running during the swap</span></div>';document.getElementById('confirm').textContent='REFILLED';overlay.classList.add('show');return;}const x=data[k];sheetLabel.textContent=x.label;sheetTitle.textContent=x.title;sheetText.textContent=x.text;effects.innerHTML=x.effects.map(a=>'<div class="effect"><b>'+a[0]+'</b><span>'+a[1]+'</span></div>').join('');document.getElementById('confirm').textContent=x.button;overlay.classList.add('show')}
+ engineering:{label:'Fleet learning',title:'Log it and alert Engineering?',text:'This event joins the fleet pattern without slowing service.',effects:[['Pattern','14 similar incidents across 4 sites'],['Context','Today’s event is attached automatically']],button:'LOG + ALERT',done:'Logged. Engineering alerted',sub:'This incident is now part of the fleet reliability signal.'}};
+function openSheet(k){selected=k;
+  if(k.startsWith('refill:')){const x=ALL.find(a=>a.n===k.slice(7));sheetLabel.textContent='Refill';sheetTitle.textContent=`Mark ${x.n} refilled?`;sheetText.textContent=`${Math.round(x.l)}% now. Hold to confirm at the hopper. Next up updates on its own.`;effects.innerHTML='<div class="effect"><b>Hopper</b><span>'+x.n+' back to 100%</span></div><div class="effect"><b>Service</b><span>Dispensing keeps running during the swap</span></div>';document.getElementById('confirm').textContent='REFILLED';overlay.classList.add('show');return;}
+  const x=k==='scene'?SCENE[STEP].sheet:data[k];sheetLabel.textContent=x.label;sheetTitle.textContent=x.title;sheetText.textContent=x.text;effects.innerHTML=x.effects.map(a=>'<div class="effect"><b>'+a[0]+'</b><span>'+a[1]+'</span></div>').join('');document.getElementById('confirm').textContent=x.button;overlay.classList.add('show')}
 function closeSheet(){overlay.classList.remove('show')}
-function commit(){if(selected.startsWith('refill:')){closeSheet();refill(ALL.find(a=>a.n===selected.slice(7)),'you');return;}const x=data[selected];closeSheet();toastTitle.textContent=x.done;toastText.textContent=x.sub;toast.classList.add('show');setTimeout(()=>toast.classList.remove('show'),4300)}
+function commit(){
+  if(selected.startsWith('refill:')){closeSheet();refill(ALL.find(a=>a.n===selected.slice(7)),'you');return;}
+  if(selected==='scene'){closeSheet();SCENE[STEP].done();return;}
+  const x=data[selected];closeSheet();toastTitle.textContent=x.done;toastText.textContent=x.sub;toast.classList.add('show');setTimeout(()=>toast.classList.remove('show'),4300)}
 </script>
 <script src="glove.js"></script></body>
 </html>

@@ -139,13 +139,20 @@ b,.stat b,.card .k b,.chip .p,.thr b{font-variant-numeric:tabular-nums}
 @media(orientation:landscape) and (max-height:820px){
   .chip .nm small{display:none}
 }
+
+/* green boxes: only the name and the percent are bold. The rate is information, not a headline. */
+.chip .thr b{font-weight:500;letter-spacing:0}
+.chip .thr em{font-weight:400;color:rgba(255,255,255,.65)}
+.chip .nm small{font-weight:400}
+.card .thrrow b{font-weight:500}.card .thrrow em{font-weight:400}
+.card .what{font-weight:500}
 </style></head>
 <body>
   <header class="band">
     <div class="where">LAB37 <span>ALL STORES</span></div>
     <div class="when">THU <span id="clock">12:18</span><span class="peak"> · PEAK 12:30–12:50</span></div>
     <div class="stat"><b id="fleetPace">3,930</b><span>ORDERS / HR</span></div>
-    <div class="stat up"><b id="fleetPct">+3%</b><span>VS PLAN</span></div>
+    <div class="stat up"><b id="fleetPct">101%</b><span>OF PLAN</span></div>
     <div class="stat togo"><b id="toGo">3,180</b><span>TO GO</span></div>
     <div class="stat"><b id="active">17<small>/20</small></b><span>ACTIVE</span></div>
     <div class="stat bad"><b id="needCount">2</b><span>NEED YOU</span></div>
@@ -162,7 +169,7 @@ b,.stat b,.card .k b,.chip .p,.thr b{font-variant-numeric:tabular-nums}
   </section>
 
   <section>
-    <h2 class="h-fine"><i></i><b id="fineCount"></b> stores on plan · <b>% vs plan</b></h2>
+    <h2 class="h-fine"><i></i><b id="fineCount"></b> stores on plan · <b>100% = on plan</b></h2>
     <div class="fine" id="fine"></div>
   </section>
 <script>
@@ -178,6 +185,7 @@ const S=[
  {n:'Hillcrest',i:'Dressing 12:35',c:'Salads',p:23,e:24},{n:'Marina',i:'Rice 12:36',c:'Bowls',p:29,e:30},{n:'Downtown',i:'Catching up',c:'Tacos',p:49,e:52},{n:'Parkway',i:'8 in queue',c:'Bowls',p:31,e:30},{n:'Northgate',i:'Patties 12:30',c:'Burgers',p:50,e:55},
 ];
 const pct=x=>Math.round((x.p-x.e)/x.e*100);
+const ofp=x=>100+pct(x);
 function render(){
   const now=S.filter(x=>x.s==='now'), watch=S.filter(x=>x.s==='watch'), fine=S.filter(x=>!x.s).sort((a,b)=>pct(a)-pct(b));
   document.getElementById('now').innerHTML=now.map(x=>`<button class="card" ${x.href?`onclick="location.href='${x.href}'"`:''}>
@@ -186,12 +194,12 @@ function render(){
     <div class="go">${x.go} →</div></button>`).join('');
   document.getElementById('watch').innerHTML=watch.map(x=>`<button class="card watch">
     <div class="nm">${x.n}<small>${x.c}</small></div><div class="what">${x.what}</div>${x.p?`<div class="thrrow"><span><b>${x.p*6}</b><em>/hr</em></span><span><b>:${Math.round(600/x.p)}</b><em>ea</em></span></div>`:''}
-    <div class="k"><b>${x.l.includes('vs plan')?(x.k>0?'+':'')+x.k+'%':x.k}</b><span>${x.l.replace('% ','')}</span></div></button>`).join('');
-  document.getElementById('fine').innerHTML=fine.map(x=>{const d=pct(x);const hr=x.p*6, sec=Math.round(3600/hr);return `<div class="chip" title="${x.i}"><span class="nm">${x.n}<small>${x.c}</small></span><span class="p ${d<0?'down':''}">${d>0?'+':''}${d}%</span><span class="thr"><span><b>${hr}</b><em>/hr</em></span><span><b>:${sec}</b><em>ea</em></span></span></div>`;}).join('');
+    <div class="k"><b>${x.l.includes('vs plan')?(100+x.k)+'%':x.k}</b><span>${x.l.includes('vs plan')?'of plan':x.l}</span></div></button>`).join('');
+  document.getElementById('fine').innerHTML=fine.map(x=>{const d=pct(x);const hr=x.p*6, sec=Math.round(3600/hr);return `<div class="chip" title="${x.i}"><span class="nm">${x.n}<small>${x.c}</small></span><span class="p ${d<0?'down':''}">${100+d}%</span><span class="thr"><span><b>${hr}</b><em>/hr</em></span><span><b>:${sec}</b><em>ea</em></span></span></div>`;}).join('');
   document.getElementById('needCount').textContent=now.length;document.getElementById('active').innerHTML=S.filter(x=>x.p>0).length+'<small>/'+S.length+'</small>';
   document.getElementById('watchCount').textContent=watch.length;
   document.getElementById('fineCount').textContent=fine.length;
-  const run=S.filter(x=>x.p>0);const P=run.reduce((a,x)=>a+x.p,0),E=run.reduce((a,x)=>a+x.e,0);document.getElementById('fleetPace').textContent=(P*6).toLocaleString();const fp=Math.round((P-E)/E*100);const el=document.getElementById('fleetPct');el.textContent=(fp>0?'+':'')+fp+'%';el.parentElement.className='stat '+(fp>=0?'up':'bad');
+  const run=S.filter(x=>x.p>0);const P=run.reduce((a,x)=>a+x.p,0),E=run.reduce((a,x)=>a+x.e,0);document.getElementById('fleetPace').textContent=(P*6).toLocaleString();const fp=Math.round((P-E)/E*100);const el=document.getElementById('fleetPct');el.textContent=(100+fp)+'%';el.parentElement.className='stat '+(fp>=0?'up':'bad');
 }
 render();
 /* LIVE: 1 real second = 6 seconds on the floor. Paces drift, to-go counts down, cleaning counts down, percents recompute. */
