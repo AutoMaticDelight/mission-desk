@@ -112,7 +112,7 @@ b,strong{font-weight:950}
 .mach.held .st{background:var(--now)}.mach.clean .st{background:var(--low);color:#1a1200}
 .mach .nm{font-size:clamp(19px,2.6vh,24px);letter-spacing:-.02em;text-transform:uppercase;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .mach .nm small{display:block;font-size:17px;color:var(--dim);letter-spacing:.3px;font-weight:800;text-transform:none}
-@media(orientation:landscape){.mach .nm small{display:none}.mach .nm{font-size:20px}.mach .st{padding:0 10px;font-size:15px}.mach{gap:10px;padding:10px 14px 10px 10px}.mach .k b{font-size:clamp(28px,4vh,40px)}}
+@media(orientation:landscape){.mach .nm{font-size:20px}.mach{gap:10px;padding:10px 16px}.mach .k b{font-size:clamp(28px,4vh,40px)}}
 .mach .k{text-align:right;white-space:nowrap}
 .mach .k b{font-size:clamp(30px,4.2vh,44px);letter-spacing:-.06em;line-height:.9}
 .mach .k span{display:block;font-size:16px;color:var(--dim);letter-spacing:.4px;text-transform:uppercase;margin-top:2px}
@@ -157,10 +157,10 @@ b,strong{font-weight:950}
 .mach.held{background:#8a2410}.mach.clean{background:#7a5200}
 .mach .st{display:none}
 .mach .nm{font-size:clamp(20px,2.8vh,26px)}
-.mach .nm small{color:rgba(255,255,255,.8)}
+.mach .nm small{color:rgba(255,255,255,.85)}.mach .nm small b{color:#fff;font-size:1.15em}
 .mach .k span{color:rgba(255,255,255,.85)}
-@media(orientation:landscape){.mach{grid-template-columns:minmax(0,1fr) auto;padding:10px 16px}.mach .nm small{display:block;font-size:16px}}
-@media(orientation:portrait){.mach{grid-template-columns:minmax(0,1fr) auto;grid-template-rows:auto;padding:10px 12px}.mach .nm{font-size:18px}.mach .nm small{display:none}}
+@media(orientation:landscape){.mach{grid-template-columns:minmax(0,1fr) auto;padding:10px 16px}.mach .nm small{display:block;font-size:17px}}
+@media(orientation:portrait){.mach{grid-template-columns:minmax(0,1fr) auto;grid-template-rows:auto;padding:8px 12px}.mach .nm{font-size:18px}.mach .nm small{display:block;font-size:15px;white-space:nowrap}.mach .k b{font-size:28px}.mach .k span{font-size:13px}}
 
 /* CALMER: top three at half height; alert box is quiet, one action */
 .hoppers{grid-template-rows:auto minmax(0,1fr)}
@@ -252,8 +252,8 @@ function refillMin(x){ let lvl=x.l, t=NOW; while(lvl>15 && t<NOW+240){ lvl-=x.b*
 function refillClock(x){ if(x.held) return null; const m=refillMin(x); return m>=240?'AFTER 4 PM':clock(NOW+m); }
 const mn=x=>Math.max(0,Math.round(x.l/x.b)), st=x=>x.held?'held':mn(x)<8?'now':mn(x)<20?'low':'ok';
 function nextUp(){const all=ALL.filter(x=>!x.held).map(x=>({x,t:refillClock(x),z:st(x),m:refillMin(x)})).sort((a,b)=>a.m-b.m).slice(0,4);document.getElementById('next').innerHTML='<div class="lbl">Next up</div>'+all.map(a=>`<div class="task ${a.z}"><b>${a.t}</b><span>${a.x.n}${a.x.src?' · '+a.x.src:''}</span></div>`).join('');}
-const M=[{n:'Bowl 01',s:'run',st:'Running',k:'14',l:'in queue',sub:'all recipes'},{n:'Bowl 02',s:'held',st:'Held',k:'7',l:'rerouting',sub:'HELD · quinoa path'},{n:'Chicken 2',s:'run',st:'Running',k:'12',l:'slots open',sub:'taking the reroute'}];
-function machines(){document.getElementById('machines').innerHTML=M.map(m=>`<div class="mach ${m.s}"><div class="st">${m.st}</div><div class="nm">${m.n}<small>${m.sub}</small></div><div class="k"><b>${m.k}</b><span>${m.l}</span></div></div>`).join('');}
+const M=[{n:'Bowl 01',s:'run',st:'Running',k:'14',l:'in queue',hr:134,sec:27},{n:'Bowl 02',s:'held',st:'Held',k:'7',l:'rerouting',hr:0,sec:0,sub:'HELD · quinoa'},{n:'Chicken 2',s:'run',st:'Running',k:'12',l:'slots open',hr:150,sec:24}];
+function machines(){document.getElementById('machines').innerHTML=M.map(m=>`<div class="mach ${m.s}"><div class="st">${m.st}</div><div class="nm">${m.n}<small>${m.hr?`<b>${m.hr}</b>/hr · <b>:${m.sec}</b> ea`:m.sub}</small></div><div class="k"><b>${m.k}</b><span>${m.l}</span></div></div>`).join('');}
 machines();
 function render(){
   nextUp();
