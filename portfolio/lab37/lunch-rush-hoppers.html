@@ -225,6 +225,46 @@ b,strong{font-weight:950}
   .go .t br{display:none}
   .nums{gap:16px}.num b{font-size:clamp(24px,3vh,30px)}.num span{white-space:nowrap}
 }
+
+/* alert: words | numbers | button */
+.alert{grid-template-columns:minmax(0,1.2fr) max-content clamp(260px,30%,380px);gap:0 28px}
+.nums{display:grid;grid-template-columns:max-content minmax(0,1fr);column-gap:12px;row-gap:4px;align-content:center;align-items:baseline;justify-self:start;padding:0 0 0 28px;border-left:2px solid var(--line);align-self:stretch}
+.num{display:contents}
+.num b{font-size:clamp(26px,3.4vh,34px);text-align:right;font-variant-numeric:tabular-nums}
+.num span{font-size:16px;white-space:nowrap}
+@media(orientation:portrait){
+  .alert{grid-template-columns:minmax(0,1fr);gap:12px}
+  .nums{display:flex;gap:16px;padding:0;border-left:0;justify-self:stretch}
+  .num{display:flex;align-items:baseline;gap:8px}
+}
+
+/* alert: give the words the width */
+.alert{grid-template-columns:minmax(0,1fr) max-content clamp(240px,26%,320px);gap:0 22px;padding:12px 14px 12px 20px}
+.ahead{font-size:clamp(22px,2.8vh,26px)}
+.ahead small{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.aleft{gap:8px}
+.alert .more{flex-wrap:nowrap}
+.alert .more button{white-space:nowrap}
+.nums{padding:0 0 0 22px;column-gap:10px}
+.go{padding:12px 44px 12px 14px}
+.go .a{right:12px}
+@media(orientation:portrait){
+  .aleft{display:contents}
+  .ahead{order:1}.nums{order:2}.alert .more{order:3}.go{order:4}
+  .alert .more{flex-wrap:wrap}
+}
+
+/* final alert sizing; portrait declared last so it wins */
+.alert{grid-template-columns:minmax(0,1fr) max-content clamp(220px,24%,300px)}
+.ahead{font-size:clamp(21px,2.6vh,24px)}
+@media(orientation:portrait){
+  .alert{grid-template-columns:minmax(0,1fr);grid-template-rows:auto auto auto auto;gap:10px;padding:14px 16px}
+  .ahead,.nums,.alert .more,.go{grid-column:1}
+  .nums{display:flex;gap:16px;padding:0;border-left:0;justify-self:stretch;align-self:auto}
+  .num{display:flex;align-items:baseline;gap:8px}
+  .go{height:auto;min-height:clamp(84px,9vh,100px);display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:auto auto;justify-items:start;text-align:left;padding:12px 60px 12px 18px}
+  .go .t{font-size:clamp(26px,3.6vh,34px)}
+}
 </style>
 <link rel="stylesheet" href="glove.css"></head>
 <body>
@@ -243,18 +283,18 @@ b,strong{font-weight:950}
   <section class="alert">
     <div class="aleft">
       <div class="ahead"><i></i><span>Quinoa under-dispensing at Bowl 02</span><small>Held since 12:16 · everything else is running</small></div>
-      <div class="nums">
-        <div class="num"><b>7</b><span>orders waiting</span></div>
-        <div class="num"><b>4 MIN</b><span>until late</span></div>
-        <div class="num"><b>12</b><span>slots open at Bowl 2</span></div>
-      </div>
       <div class="more">
-        <button onclick="openSheet('tech')">Send tech to Bowl 02</button>
-        <button onclick="openSheet('fix')">Quick fix at the machine</button>
-        <button onclick="openSheet('engineering')">Log + alert Engineering</button>
+        <button onclick="openSheet('tech')">Send tech</button>
+        <button onclick="openSheet('fix')">Quick fix</button>
+        <button onclick="openSheet('engineering')">Log + alert Eng.</button>
       </div>
     </div>
-    <button class="go" onclick="openSheet('reroute')"><div class="t">TAP TO START <br>REROUTE</div><div class="s">7 orders → Chicken Bowl 2</div><div class="a">→</div></button>
+    <div class="nums">
+      <div class="num"><b>7</b><span>orders waiting</span></div>
+      <div class="num"><b>4 MIN</b><span>until late</span></div>
+      <div class="num"><b>12</b><span>slots open at Bowl 2</span></div>
+    </div>
+    <button class="go" onclick="openSheet('reroute')"><div class="t">TAP TO START <br>REROUTE</div><div class="s">7 orders → Chicken 2</div><div class="a">→</div></button>
   </section>
 
   <section class="next" id="next"></section>
