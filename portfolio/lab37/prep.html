@@ -101,6 +101,28 @@ blockquote mark{background:var(--today-bg);color:var(--today);padding:0 3px;bord
 .proof div{display:grid;grid-template-columns:110px minmax(0,1fr);gap:12px;padding:10px 4px;border-bottom:1px solid var(--line);font-size:15px}
 .proof .w{font:600 14px var(--mono);color:var(--ink-2)}
 
+/* about */
+.answer{border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:10px;padding:16px 18px;background:#fff;font-size:17px;line-height:1.6}
+.answer .lbl{font:600 11px var(--mono);letter-spacing:.06em;color:var(--accent);margin-bottom:8px}
+.answer p{margin:0 0 10px}.answer p:last-child{margin:0}
+.answer b{font-weight:700}
+.fit{display:grid;gap:10px;margin-top:6px}
+@media (min-width:720px){.fit{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.fitcol{background:var(--panel);border-radius:10px;padding:12px 14px}
+.fitcol .k{font:600 11px var(--mono);letter-spacing:.06em;color:var(--ink-3);text-transform:uppercase}
+.fitcol .t{font:600 16px/1.25 var(--display);margin:4px 0 8px}
+.fitcol ul{padding-left:18px;font-size:14px}
+.fitcol li{margin:0 0 5px}
+.stories{display:grid;gap:10px}
+@media (min-width:720px){.stories{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.story{border:1px solid var(--line);border-radius:10px;padding:12px 14px;background:#fff;display:grid;gap:6px}
+.story h4{margin:0;font:600 16px/1.25 var(--display);letter-spacing:-.01em}
+.story .why{font-size:14px;color:var(--ink-2)}
+.story .why b{color:var(--ink)}
+.story .line{padding:8px 12px;background:var(--panel);border-radius:8px;font-size:15px}
+.story .line::before{content:'SAY';font:600 11px var(--mono);letter-spacing:.06em;color:var(--accent);margin-right:8px}
+.fill{background:var(--today-bg);color:var(--today);border-radius:6px;padding:1px 6px;font-weight:600}
+
 .foot{max-width:960px;margin:40px auto 0;padding:16px;color:var(--ink-3);font-size:13px;border-top:1px solid var(--line)}
 .foot a{color:var(--ink-2)}
 @media (max-width:480px){.brand{font-size:18px}.count{margin-left:0}}
@@ -112,11 +134,45 @@ blockquote mark{background:var(--today-bg);color:var(--today);padding:0 3px;bord
     <div class="count" id="count"><span>Call</span><b id="countv">—</b></div>
   </div>
   <nav class="nav" id="nav" aria-label="Sections">
-    <a href="#call">Call plan</a><a href="#posting">Posting</a><a href="#embedded">Embedded?</a><a href="#map">Keywords</a><a href="#say">Say this</a><a href="#vocab">Vocabulary</a><a href="#gaps">Gaps</a><a href="#proof">Proof</a><a href="#ask">Ask her</a>
+    <a href="#about">About you</a><a href="#call">Call plan</a><a href="#posting">Posting</a><a href="#embedded">Embedded?</a><a href="#map">Keywords</a><a href="#say">Say this</a><a href="#vocab">Vocabulary</a><a href="#gaps">Gaps</a><a href="#proof">Proof</a><a href="#ask">Ask her</a>
   </nav>
 </header>
 
 <main class="page">
+
+<section id="about">
+  <h2>"Tell me about yourself, and how do you fit this role?"</h2>
+  <p class="lede">Sixty to seventy seconds. One opener, three threads that match their three surfaces, one close. Then stop and let her steer.</p>
+  <div class="answer"><div class="lbl">THE ANSWER · SAY IT IN YOUR OWN WORDS</div>
+    <p>I've spent twenty-plus years designing tools for people doing real work under pressure: analysts, technicians, teachers, line workers. A hundred-plus shipped products. Your posting asks for three things at once, and I've done all three.</p>
+    <p><b>Screens on machines.</b> At iRobot I designed the remote-drive controller for a telepresence robot, a tablet on a mobile base. For Toyota I designed Survive the Drive, a commuter app on the Entune in-vehicle screen. This year I built Bench, a glove-first tablet for technicians on a spacecraft floor that verifies hardware in real time, and I've already mocked up 21 Bowl Builder operator screens to think through your lunch rush.</p>
+    <p><b>Internal operational tools.</b> At Istation I built the teacher's learning-management surface from zero, on iPad, for four million students and ninety thousand teachers: a thousand-lesson library, dense lists, standards filtering, one component system across eight products. At Hyundai I sat with recall analysts for three weeks and replaced a rejected dashboard with the workflow they actually ran. At ItsOn I designed a whole phone-service ecosystem, including an intent builder that turns plans and devices into plain conditions an operator drags together. And at AUTH57, my own company, I turned eleven thousand rules into one answer with its citation, with a human in the middle confirming everything the AI proposes.</p>
+    <p><b>Food and customers.</b> Four food-ordering apps, including Feed.me, which turns a twenty-tap order into a one-tap yes.</p>
+    <p>I own the design system and I close the loop in code, Figma to React, so engineers get working states, not comps. I'm in Burbank, I want to be onsite five days, and I'd like to see the Bowl Builder in person.</p>
+  </div>
+
+  <h3>How you fit, by their three surfaces</h3>
+  <div class="fit">
+    <div class="fitcol"><div class="k">Their words</div><div class="t">On-robot displays · robot UIs · embedded</div>
+      <ul><li>iRobot / Cisco telepresence controller</li><li>Toyota Entune · Survive the Drive (in-vehicle)</li><li>Honda / Acura 0 Series in-vehicle loyalty</li><li>Bench gloved tablet · hardware verification</li><li>Vehicle Spy · bus and SPI sensor research (automotive engineering)</li><li>Belkin USB-C configurator · physical product</li><li>21 Bowl Builder operator screens</li></ul></div>
+    <div class="fitcol"><div class="k">Their words</div><div class="t">Internal ops · LMS · dashboards · scheduling</div>
+      <ul><li>Istation · LMS built from zero on iPad, 4M students</li><li>GenOn · worker training and compliance LMS</li><li>Hyundai SODAS · alert feed, triage, case builder</li><li>AllRegs · 440K docs, 40+ page types</li><li>AUTH57 · human in the middle, every AI field shows what changed</li><li>ItsOn · intent builder, operator conditions</li><li>Bench planner board · scheduling, throughput, exceptions</li></ul></div>
+    <div class="fitcol"><div class="k">Their words</div><div class="t">Customer apps · culinary brands · design system</div>
+      <ul><li>Feed.me, InstaOvers, NoshR, meal-ordering startup</li><li>ItsOn · consumer sign-up, family sharing, parental controls</li><li>link.me · 100M+ weekly users</li><li>Apple HIG partner storefronts · Lexus 75-page mobile guide</li><li>40+ brand identities</li><li>AUTH57 · Figma → Tailwind → shipped React library</li></ul></div>
+  </div>
+
+  <h3>Stories to have ready if she pulls a thread</h3>
+  <div class="stories">
+    <div class="story"><h4>Vehicle Spy · bus and sensor research</h4><div class="why"><b>Why it matters here:</b> the closest thing you have to their "mechanics, electronics, firmware" line. You went and learned how automotive engineers read live bus traffic and SPI sensor data, which is the same shape as a robot telemetry screen: raw signals in, an operator decision out.</div><div class="line">I researched Vehicle Spy, the tool automotive engineers use to watch the vehicle bus in real time, and dug into SPI sensor data to understand what an engineer actually looks at. That's how I design for a machine: learn what the signal means before I draw the screen. <span class="fill">add: which project this fed, one detail you remember</span></div></div>
+    <div class="story"><h4>Toyota Entune · Survive the Drive</h4><div class="why"><b>Why it matters here:</b> a screen inside a machine, on someone else's hardware and rules. Proximity-based playlists, to-dos, and reminders on the infotainment map, designed at Rapp for a commuter's real morning.</div><div class="line">Music for the kids on the way to school, a reminder for the dry cleaning, the parent's music after drop-off, all on the map screen, without taking eyes off the road. Same constraint as a kitchen: hands and eyes are busy.</div></div>
+    <div class="story"><h4>Belkin · skunkworks ring with Apple</h4><div class="why"><b>Why it matters here:</b> physical-product research inside a hardware company, under two partners' brand rules at once. Pairs with the USB-C configurator, voted best in category at launch, and the Belkin.com Hybris rollout.</div><div class="line">Inside Belkin I was part of a skunkworks team exploring a ring, with Apple as the partner. I did the research and ideation: what people would trust on their finger, what it could control, how it would sit inside both brands' rules. Physical products change how you think about a screen: the object is the interface first. <span class="fill">add: one finding you can share without breaking NDA</span></div></div>
+    <div class="story"><h4>Amazon Key · studied for a 20-hour Amazon loop</h4><div class="why"><b>Why it matters here:</b> a physical access product where trust, verification, and the failure state are the whole design. Their pickup compartment and door interlocks are the same problem. Say it as study, not client work.</div><div class="line">I went through about twenty hours of Amazon interviews and studied Amazon Key deeply for them: how you earn someone's trust at their own front door, what the driver sees, what happens when the lock fails or the camera is offline. Every one of those questions comes up again at a pickup compartment.</div></div>
+    <div class="story"><h4>Istation · LMS from zero, on iPad</h4><div class="why"><b>Why it matters here:</b> "learning management systems" is in their internal-tools list verbatim. Two engagements, 2020 to 2023, eight products, 4M students, 90K teachers.</div><div class="line">I built the teacher's content and learning-management surface from nothing: a thousand-lesson library with standards-based filtering, dense list and table views, and one component system that held across eight products. Then set the North Star and a three-year roadmap.</div></div>
+    <div class="story"><h4>ItsOn / Zact · phone ecosystem</h4><div class="why"><b>Why it matters here:</b> an operator-facing rules tool and a consumer app from one system. The intent builder turns plans, devices, and limits into plain conditions an operator drags together.</div><div class="line">A whole cell-phone ecosystem: sign-up and account management on web and Android, sharing across a family's phones, curfews, parental controls, minutes. And the operator side: an intent builder that makes a data plan a sentence a person can read.</div></div>
+    <div class="story"><h4>AUTH57 · human in the middle</h4><div class="why"><b>Why it matters here:</b> their robot will propose actions. Someone has to confirm. This is the pattern: what the model proposed, what a person changed, when it was last verified.</div><div class="line">A pipeline ingests source bulletins, Claude extracts the rule, a reviewer confirms or overrides, and every field shows the three things: proposed, changed, verified. Same pattern as "reroute 7 orders to Chicken Bowl 2": the system prepares, the human decides.</div></div>
+    <div class="story"><h4>iRobot · telepresence controller</h4><div class="why"><b>Why it matters here:</b> the literal "robot user interface" line. A remote person drives a tablet on a mobile base into a meeting.</div><div class="line">I designed the remote-drive controller for an early iRobot / Cisco telepresence unit. Latency, a camera view, and a person who has never driven a robot: the controls had to be obvious in the first five seconds.</div></div>
+  </div>
+</section>
 
 <section id="call">
   <div class="next">
@@ -188,7 +244,7 @@ blockquote mark{background:var(--today-bg);color:var(--today);padding:0 3px;bord
   <p class="lede">Their words on the left. Say the proof on the right in their words.</p>
   <div class="map">
     <div><span class="k">On-robot displays / robot user interfaces</span><span class="v">iRobot telepresence remote-drive controller; Bench gloved tablet for technicians; the 21 Bowl Builder concept screens (service command, ops orbit, peak-hour recovery).</span></div>
-    <div><span class="k">Embedded systems / physical products</span><span class="v">iRobot (tablet on a mobile base); Belkin USB-C configurator; Honda/Acura 0 Series in-vehicle display; Toyota Entune in-vehicle; Samsung Smart TV app; SFMOMA kiosk.</span></div>
+    <div><span class="k">Embedded systems / physical products</span><span class="v">iRobot (tablet on a mobile base); Belkin USB-C configurator; Honda/Acura 0 Series in-vehicle display; Toyota Entune in-vehicle; Samsung Smart TV app; SFMOMA kiosk; Vehicle Spy CAN-bus monitoring for automotive engineers.</span></div>
     <div><span class="k">Systems thinking: mechanics → firmware → cloud → UX</span><span class="v">Bench: real-time hardware verification on the floor plus the planner desk board from one token set. AUTH57: pipeline → extraction → human review → API/MCP. Hyundai SODAS: 40+ data sources → analyst triage.</span></div>
     <div><span class="k">Internal operational tools</span><span class="v">Hyundai recall ops (14M records), AllRegs compliance (440K docs), GenOn worker portal, Bench.</span></div>
     <div><span class="k">Inventory tracking</span><span class="v">Bench shortage and supply alerts; the SpaceX fastener-in-hand pitch; Istation 1,000-lesson catalog IA.</span></div>
