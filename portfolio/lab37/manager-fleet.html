@@ -45,6 +45,7 @@ section{display:grid;grid-template-rows:auto minmax(0,1fr);gap:10px;min-height:0
 .chip{display:grid;grid-template-columns:minmax(0,1fr) max-content;grid-template-rows:auto auto;align-items:baseline;column-gap:10px;row-gap:2px;background:var(--ok);border-radius:16px;padding:10px 18px;min-width:0;min-height:0}
 .chip .nm{font-size:clamp(20px,2.8vh,24px);letter-spacing:-.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.1}
 .chip .info{grid-column:1/-1;font-size:16px;color:rgba(255,255,255,.85);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chip .info b{color:#fff;font-size:18px}
 .chip .p{font-size:clamp(24px,3.4vh,30px);letter-spacing:-.04em;white-space:nowrap;color:#fff}
 .chip .p.down{color:#ffd9cc}
 @media(orientation:portrait){
@@ -61,7 +62,7 @@ section{display:grid;grid-template-rows:auto minmax(0,1fr);gap:10px;min-height:0
   <header class="band">
     <div class="where">LAB37 <span>ALL STORES</span></div>
     <div class="when">THU 12:18 · PEAK 12:30–12:50</div>
-    <div class="stat"><b id="fleetPace">525</b><span>ORDERS / 10 MIN</span></div>
+    <div class="stat"><b id="fleetPace">3,930</b><span>ORDERS / HR</span></div>
     <div class="stat up"><b id="fleetPct">+3%</b><span>VS PLAN</span></div>
     <div class="stat"><b id="toGo">3,180</b><span>TO GO</span></div>
     <div class="stat bad"><b id="needCount">2</b><span>NEED YOU</span></div>
@@ -101,13 +102,13 @@ function render(){
     <div class="k"><b>${x.k}</b><span>${x.l}</span></div>
     <div class="go">${x.go} →</div></button>`).join('');
   document.getElementById('watch').innerHTML=watch.map(x=>`<button class="card watch">
-    <div class="nm">${x.n}</div><div class="what">${x.what}</div>
+    <div class="nm">${x.n}</div><div class="what">${x.what}${x.p?` · <b>${x.p*6}</b>/hr`:''}</div>
     <div class="k"><b>${x.l.includes('vs plan')?(x.k>0?'+':'')+x.k+'%':x.k}</b><span>${x.l.replace('% ','')}</span></div></button>`).join('');
-  document.getElementById('fine').innerHTML=fine.map(x=>{const d=pct(x);return `<div class="chip"><span class="nm">${x.n}</span><span class="p ${d<0?'down':''}">${d>0?'+':''}${d}%</span><span class="info">${x.c} · ${x.i}</span></div>`;}).join('');
+  document.getElementById('fine').innerHTML=fine.map(x=>{const d=pct(x);const hr=x.p*6, sec=Math.round(3600/hr);return `<div class="chip" title="${x.i}"><span class="nm">${x.n}</span><span class="p ${d<0?'down':''}">${d>0?'+':''}${d}%</span><span class="info">${x.c} · <b>${hr}</b>/hr · <b>:${sec}</b> ea</span></div>`;}).join('');
   document.getElementById('needCount').textContent=now.length;
   document.getElementById('watchCount').textContent=watch.length;
   document.getElementById('fineCount').textContent=fine.length;
-  const run=S.filter(x=>x.p>0);const P=run.reduce((a,x)=>a+x.p,0),E=run.reduce((a,x)=>a+x.e,0);document.getElementById('fleetPace').textContent=P;const fp=Math.round((P-E)/E*100);const el=document.getElementById('fleetPct');el.textContent=(fp>0?'+':'')+fp+'%';el.parentElement.className='stat '+(fp>=0?'up':'bad');
+  const run=S.filter(x=>x.p>0);const P=run.reduce((a,x)=>a+x.p,0),E=run.reduce((a,x)=>a+x.e,0);document.getElementById('fleetPace').textContent=(P*6).toLocaleString();const fp=Math.round((P-E)/E*100);const el=document.getElementById('fleetPct');el.textContent=(fp>0?'+':'')+fp+'%';el.parentElement.className='stat '+(fp>=0?'up':'bad');
 }
 render();
 </script>
