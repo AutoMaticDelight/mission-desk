@@ -1,0 +1,40 @@
+/* Operator decision sheet. Life-or-death rules: nothing happens on a tap; you hold.
+   Two targets only, both glove-sized. Consequences read as a checklist, not a card. */
+.modal .sheet, .overlay .sheet { padding: 22px 24px 24px !important; border-top: 8px solid #132018 !important; border-radius: 22px !important; }
+.sheet .handle { display: none !important; }
+.sheet .glove-kicker { display:flex; align-items:center; gap:10px; font: 900 13px/1 system-ui, sans-serif; letter-spacing:.14em; text-transform:uppercase; color:#132018; margin-bottom:14px; }
+.sheet .glove-kicker i { width:14px; height:14px; border-radius:50%; background:#e8542a; box-shadow:0 0 0 4px rgba(232,84,42,.22); }
+.sheet h3, .sheet h2 { font-size: clamp(30px, 4.4vw, 42px) !important; line-height: 1 !important; letter-spacing: -.04em !important; margin: 0 0 10px !important; }
+.sheet p { font-size: 18px !important; line-height: 1.4 !important; color: #2b3a31 !important; margin: 0 0 16px !important; }
+/* impact rows: what this does, as a checklist */
+.sheet .effects, .sheet .facts { display: grid !important; grid-template-columns: 1fr !important; gap: 0 !important; border-top: 2px solid #132018; margin: 0 0 6px !important; }
+.sheet .effect, .sheet .fact { display: grid !important; grid-template-columns: minmax(150px, 34%) 1fr; gap: 14px; align-items: baseline;
+  background: transparent !important; border: 0 !important; border-bottom: 1px solid #c9d3cc !important; border-radius: 0 !important; padding: 12px 2px !important; }
+.sheet .effect b, .sheet .fact b { font-size: 15px !important; font-weight: 900 !important; text-transform: uppercase; letter-spacing: .06em; color: #132018 !important; margin: 0 !important; }
+.sheet .effect span, .sheet .fact span { font-size: 17px !important; color: #132018 !important; margin: 0 !important; display: block !important; }
+.sheet .note { font-size: 15px !important; border-radius: 10px !important; padding: 12px 14px !important; margin: 12px 0 0 !important; }
+.sheet .glove-hint { margin: 16px 0 10px; font: 600 15px/1.35 system-ui, sans-serif; color: #2b3a31; }
+.sheet .glove-hint b { color: #132018; }
+/* the two targets */
+.sheet .sheet-actions, .sheet .actionsheet { display: grid !important; grid-template-columns: minmax(0,1fr) minmax(0,2fr); gap: 14px !important; margin-top: 8px !important; justify-content: stretch !important; }
+.sheet .sheet-actions button, .sheet .actionsheet button, .sheet .confirm, .sheet .back, .sheet .cancel {
+  min-height: 96px !important; width: 100% !important; position: relative; overflow: hidden; flex: 1 1 auto;
+  font-size: 23px !important; font-weight: 900 !important; letter-spacing: -.01em; text-transform: uppercase; line-height: 1.05;
+  border-radius: 18px !important; padding: 16px 22px !important; touch-action: manipulation; -webkit-tap-highlight-color: transparent; cursor: pointer; user-select: none; -webkit-user-select: none;
+}
+.sheet .back, .sheet .cancel { background: #fff !important; color: #132018 !important; border: 3px solid #7f8f84 !important; box-shadow: 0 6px 0 #7f8f84; }
+.sheet .back:active, .sheet .cancel:active { transform: translateY(5px); box-shadow: 0 1px 0 #7f8f84; }
+.sheet .confirm { background: var(--lime, #c8ff3d) !important; color: #132018 !important; border: 3px solid #132018 !important; box-shadow: 0 6px 0 #132018; }
+.sheet .confirm::before { content: "HOLD TO"; display: block; font-size: 12px; letter-spacing: .16em; opacity: .75; margin-bottom: 6px; }
+.sheet .confirm::after { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 0; background: rgba(19,32,24,.28); pointer-events: none; }
+.sheet .confirm.holding { transform: translateY(5px); box-shadow: 0 1px 0 #132018; }
+.sheet .confirm.holding::after { width: 100%; transition: width .75s linear; }
+.sheet .confirm.fired { background: #132018 !important; color: #c8ff3d !important; }
+.sheet .confirm.fired::before { content: "DONE ✓"; opacity: 1; }
+.sheet button:focus-visible { outline: 5px solid #132018 !important; outline-offset: 3px; }
+.sheet .close { display: none !important; }
+@media (max-width: 640px) {
+  .sheet .sheet-actions, .sheet .actionsheet { grid-template-columns: 1fr; }
+  .sheet .sheet-actions button, .sheet .actionsheet button { min-height: 84px !important; }
+  .sheet .effect, .sheet .fact { grid-template-columns: 1fr; gap: 4px; }
+}
