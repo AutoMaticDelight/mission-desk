@@ -2,15 +2,10 @@
 (function(){
   document.querySelectorAll('.sheet').forEach(function(sheet){
     var title = sheet.querySelector('h3,h2');
+    if (title && !title.closest('.sheet-top,.sheethead,.glove-head')) { var head=document.createElement('div'); head.className='glove-head'; var eb=sheet.querySelector('.eyebrow,.label,.section-label'); title.parentNode.insertBefore(head, eb && eb.parentNode===title.parentNode ? eb : title); if (eb && eb.parentNode!==head) head.appendChild(eb); head.appendChild(title); }
     if (title && !sheet.querySelector('.glove-kicker')) {
-      var k = document.createElement('div'); k.className='glove-kicker'; k.innerHTML='<i></i>Operator decision · this changes what the machine does';
+      var k = document.createElement('div'); k.className='glove-kicker'; k.innerHTML='<i></i>Machine action';
       title.parentNode.insertBefore(k, title);
-    }
-    var actions = sheet.querySelector('.sheet-actions,.actionsheet');
-    if (actions && !sheet.querySelector('.glove-hint')) {
-      var h = document.createElement('div'); h.className='glove-hint';
-      h.innerHTML='<b>Nothing happens until you hold the green button.</b> Let go early to cancel. BACK changes nothing.';
-      actions.parentNode.insertBefore(h, actions);
     }
   });
   document.querySelectorAll('.sheet .confirm').forEach(function(btn){
