@@ -4,6 +4,9 @@
 export const config = { matcher: '/(.*)' };
 
 export default function middleware(request) {
+  // AUTH OFF (2026-09-17): the whole desk is open during interviews. Too much friction on a call.
+  // To lock it again, delete the next line. DESK_USER / DESK_PASS in Vercel are untouched.
+  return;
   // Public, share-safe pages: the /show page and the hosted work under /portfolio. No client data lives there.
   const path = new URL(request.url).pathname;
   if (path === '/show' || path.startsWith('/show/') || path.startsWith('/portfolio/')) return;
