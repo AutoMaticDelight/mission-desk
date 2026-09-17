@@ -161,6 +161,36 @@ b,strong{font-weight:950}
 .mach .k span{color:rgba(255,255,255,.85)}
 @media(orientation:landscape){.mach{grid-template-columns:minmax(0,1fr) auto;padding:10px 16px}.mach .nm small{display:block;font-size:16px}}
 @media(orientation:portrait){.mach{grid-template-columns:minmax(0,1fr) auto;grid-template-rows:auto;padding:10px 12px}.mach .nm{font-size:18px}.mach .nm small{display:none}}
+
+/* CALMER: top three at half height; alert box is quiet, one action */
+.hoppers{grid-template-rows:auto minmax(0,1fr)}
+.big{min-height:0}.big .bar{min-height:clamp(64px,9vh,88px);max-height:96px;padding:0 20px}
+.big .bar .n{font-size:clamp(18px,2.4vh,24px)}
+.big .bar .m b{font-size:clamp(34px,5vh,48px)}
+.big .bar .m span{font-size:16px;margin-top:4px}
+.tops .bar{min-height:34px}
+.alert{border:1px solid var(--line);background:#141d18;gap:12px}
+.ahead{font-size:clamp(24px,3.2vh,34px);letter-spacing:-.02em}
+.ahead em{color:#fff}
+.ahead i{width:14px;height:14px;box-shadow:0 0 0 5px rgba(229,64,26,.22)}
+.ahead small{color:var(--dim)}
+.nums{display:flex;gap:0;background:var(--bg);border-radius:14px;padding:10px 18px;align-items:baseline;flex-wrap:wrap}
+.num{background:none;padding:0;border-radius:0;gap:8px;flex:1 1 auto;justify-content:flex-start}
+.num b{font-size:clamp(28px,3.8vh,40px)}
+.num span{font-size:16px;text-transform:none;letter-spacing:0;color:var(--dim)}
+.go{box-shadow:0 5px 0 #8caf20;min-height:clamp(72px,9.5vh,92px)}
+.go .t{font-size:clamp(24px,3.6vh,36px)}.go .s{font-size:17px;color:#2d3d10}
+.alert .more{gap:0;display:flex;justify-content:space-between}
+.alert .more button{background:none;border:0;min-height:44px;font-size:17px;color:var(--dim);text-transform:none;letter-spacing:0;font-weight:800;padding:6px 8px;text-align:center}
+.alert .more button:active{color:#fff}
+@media(orientation:portrait){
+  .hoppers{min-height:0;grid-template-rows:auto minmax(0,1fr)}
+  .big .bar{flex-direction:row;align-items:center;justify-content:space-between;padding:0 16px;min-height:clamp(64px,7vh,80px)}
+  .big .bar .m{text-align:right}.big .bar .m b{font-size:clamp(34px,4.6vh,44px)}.big .bar .m span{white-space:nowrap;margin-top:2px}
+  .tops .bar{min-height:40px}
+  .nums{padding:8px 14px}.num{flex-direction:row;align-items:baseline}.num b{font-size:clamp(26px,3.4vh,36px)}.num span{white-space:nowrap}
+  .alert .more{flex-wrap:wrap}.alert .more button{flex:1 1 30%}
+}
 </style>
 <link rel="stylesheet" href="glove.css"></head>
 <body>
@@ -177,7 +207,7 @@ b,strong{font-weight:950}
   </section>
 
   <section class="alert">
-    <div class="ahead"><i></i><span>QUINOA <em>UNDER-DISPENSING</em></span><small>Bowl 02 · held since 12:16 · everything else is running</small></div>
+    <div class="ahead"><i></i><span>Quinoa under-dispensing at Bowl 02</span><small>Held since 12:16 · everything else is running</small></div>
     <div class="nums">
       <div class="num"><b>7</b><span>orders waiting</span></div>
       <div class="num"><b>4 MIN</b><span>until late</span></div>
@@ -185,9 +215,9 @@ b,strong{font-weight:950}
     </div>
     <button class="go" onclick="openSheet('reroute')"><div><div class="t">TAP TO START REROUTE</div><div class="s">7 orders → Chicken Bowl 2 · everything else keeps running</div></div><div class="a">→</div></button>
     <div class="more">
-      <button onclick="openSheet('tech')">SEND TECH TO BOWL 02</button>
-      <button onclick="openSheet('fix')">QUICK FIX AT THE MACHINE</button>
-      <button onclick="openSheet('engineering')">LOG + ALERT ENGINEERING</button>
+      <button onclick="openSheet('tech')">Send tech to Bowl 02</button>
+      <button onclick="openSheet('fix')">Quick fix at the machine</button>
+      <button onclick="openSheet('engineering')">Log + alert Engineering</button>
     </div>
   </section>
 
