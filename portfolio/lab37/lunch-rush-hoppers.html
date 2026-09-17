@@ -146,6 +146,21 @@ b,strong{font-weight:950}
   .big .bar .m b{font-size:clamp(48px,6.5vh,72px)}
   .next{padding:10px 18px}
 }
+
+/* CALM: dark green = running / fine. Dark red = issue. The bright alert red is only for what needs attention NOW. */
+.bar i{background:#0f5a3a}
+.bar.low i{background:#b87a00}
+.bar.now i{background:var(--now)}
+.bar.now{outline:none;animation:none}
+.stat i{color:#5bd39a}
+.mach{background:#0f5a3a;grid-template-columns:minmax(0,1fr) auto;gap:6px 10px}
+.mach.held{background:#8a2410}.mach.clean{background:#7a5200}
+.mach .st{display:none}
+.mach .nm{font-size:clamp(20px,2.8vh,26px)}
+.mach .nm small{color:rgba(255,255,255,.8)}
+.mach .k span{color:rgba(255,255,255,.85)}
+@media(orientation:landscape){.mach{grid-template-columns:minmax(0,1fr) auto;padding:10px 16px}.mach .nm small{display:block;font-size:16px}}
+@media(orientation:portrait){.mach{grid-template-columns:minmax(0,1fr) auto;grid-template-rows:auto;padding:10px 12px}.mach .nm{font-size:18px}.mach .nm small{display:none}}
 </style>
 <link rel="stylesheet" href="glove.css"></head>
 <body>
@@ -192,7 +207,7 @@ function refillClock(x){ if(x.held) return null; let lvl=x.l, t=NOW; while(lvl>1
 const mn=x=>Math.max(0,Math.round(x.l/x.b)), st=x=>x.held?'held':mn(x)<8?'now':mn(x)<20?'low':'ok';
 function refillMin(x){ let lvl=x.l, t=NOW; while(lvl>15 && t<NOW+240){ lvl-=x.b*pace(t); t++; } return t-NOW; }
 function nextUp(){const all=[...H,...C].filter(x=>!x.held).map(x=>({x,t:refillClock(x),z:st(x),m:refillMin(x)})).sort((a,b)=>a.m-b.m).slice(0,4);document.getElementById('next').innerHTML='<div class="lbl">Next up</div>'+all.map(a=>`<div class="task ${a.z}"><b>${a.t}</b><span>${a.x.n}${a.x.src?' · '+a.x.src:''}</span></div>`).join('');}
-const M=[{n:'Bowl 01',s:'run',st:'Running',k:'14',l:'in queue',sub:'all recipes'},{n:'Bowl 02',s:'held',st:'Held',k:'7',l:'rerouting',sub:'quinoa path held'},{n:'Chicken 2',s:'run',st:'Running',k:'12',l:'slots open',sub:'taking the reroute'}];
+const M=[{n:'Bowl 01',s:'run',st:'Running',k:'14',l:'in queue',sub:'all recipes'},{n:'Bowl 02',s:'held',st:'Held',k:'7',l:'rerouting',sub:'HELD · quinoa path'},{n:'Chicken 2',s:'run',st:'Running',k:'12',l:'slots open',sub:'taking the reroute'}];
 function machines(){document.getElementById('machines').innerHTML=M.map(m=>`<div class="mach ${m.s}"><div class="st">${m.st}</div><div class="nm">${m.n}<small>${m.sub}</small></div><div class="k"><b>${m.k}</b><span>${m.l}</span></div></div>`).join('');}
 machines();
 function render(){nextUp();
