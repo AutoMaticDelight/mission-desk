@@ -192,6 +192,13 @@ a{color:var(--accent)}
 .pftalk{color:var(--ink-2);font-size:15px;line-height:1.55;white-space:pre-wrap}
 .pfkeys{font:500 12px var(--mono);color:var(--ink-3)}
 @media (max-width:640px){.pf{min-height:0}.pfframe,.pfframe iframe{min-height:70vh}}
+/* prep: keywords + point by point */
+.prep{margin-top:14px;display:grid;gap:12px}
+.kws{display:flex;flex-wrap:wrap;gap:8px}
+.kw{display:inline-flex;align-items:center;min-height:40px;padding:0 14px;border-radius:999px;background:var(--accent-bg);color:var(--accent);font:700 15px var(--body)}
+.points{margin:0;padding:0;list-style:none;display:grid;gap:8px;counter-reset:pt}
+.points li{display:grid;grid-template-columns:36px minmax(0,1fr);gap:10px;align-items:start;font-size:16px;line-height:1.45;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:#fff}
+.points li::before{counter-increment:pt;content:counter(pt);font:800 16px var(--display);color:#fff;background:var(--ink);border-radius:8px;width:32px;height:32px;display:inline-flex;align-items:center;justify-content:center}
 .backbar{display:flex;align-items:center;gap:10px;margin:0 0 16px}
 .back{height:36px;padding:0 12px 0 8px;border-radius:8px;border:1px solid var(--line-2);background:#fff;font-weight:600;font-size:14px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;color:var(--ink)}
 .back:hover{border-color:var(--ink-3)}
@@ -382,6 +389,7 @@ function renderToday(){
         ${nextJob?`<button type="button" class="btn" data-open="job:${nextJob.id}">Open ${esc(nextJob.name)}</button>`:''}
         <button type="button" class="btn" data-go-kit="${nextJob?nextJob.id:''}">Interview kit${nextJob?' · '+esc(nextJob.name):''}</button>
       </div>
+      ${prepBlock(next)}
     </div>`:`<div class="empty">Nothing on the calendar. Add a meeting from the Meetings tab.</div>`}
   </section>
   <section class="section">
@@ -470,6 +478,7 @@ function threadRows(threads){
   }).join('');
 }
 function contactsKv(j){ if(!j||!(j.ateamContact||j.clientContact||j.mission)) return ''; return `<div class="kv">${j.mission?`<div><span>${esc(j.mission)}</span><em>mission</em></div>`:''}${j.ateamContact?`<div><span>${esc(j.ateamContact)}</span><em>a.team</em></div>`:''}${j.clientContact?`<div><span>${esc(j.clientContact)}</span><em>client</em></div>`:''}</div>`; }
+function prepBlock(m){ if(!m || (!(m.keywords||[]).length && !(m.points||[]).length)) return ''; return `<div class="prep">${(m.keywords||[]).length?`<div class="kws">${m.keywords.map(k=>`<span class="kw">${esc(k)}</span>`).join('')}</div>`:''}${(m.points||[]).length?`<ol class="points">${m.points.map(p=>`<li><span>${esc(p)}</span></li>`).join('')}</ol>`:''}</div>`; }
 function linkBox(m){ if(!m.url) return '<div class="empty">No link yet. Edit the meeting and paste it.</div>'; return `<div class="linkbox">
   <div class="big">${esc(m.url)}</div>
   ${m.linkFrom?`<div class="linkfrom">from ${esc(m.linkFrom)}</div>`:''}
@@ -651,7 +660,7 @@ function openMeeting(id){
       <div>
         <h4>The link</h4>
         ${linkBox(m)}
-        <h4>Prep / agenda</h4><div style="white-space:pre-wrap;color:var(--ink-2)">${esc(m.notes||'—')}</div>
+        <h4>Prep / agenda</h4>${prepBlock(m)}<div style="white-space:pre-wrap;color:var(--ink-2);margin-top:12px">${esc(m.notes||'—')}</div>
         <h4>Outcome</h4>
         <textarea class="notes" id="meetOutcome" placeholder="What happened, what's next…">${esc(m.outcome||'')}</textarea>
         <div style="display:flex;justify-content:space-between;margin-top:8px;gap:8px"><button type="button" class="btn q danger sm" data-del="meetings:${id}">Delete</button><button type="button" class="btn sm p" data-save-outcome="${id}">Save outcome</button></div>
@@ -771,7 +780,7 @@ document.addEventListener('submit', async e=>{
   } else if(kind==='meeting'){
     const when=new Date(`${v.date}T${v.time}`).toISOString();
     const prevM=state.meetings[id]||{}; const newUrl=v.url.trim(); const linkChanged = prevM.url && newUrl && prevM.url!==newUrl ? `${prevM.url} (until ${fmtShort(nowISO())})` : (prevM.linkChanged||'');
-    ok=await write('meetings',id,{id,title:v.title.trim(),jobId:v.jobId||null,when,url:newUrl,linkFrom:(v.linkFrom||'').trim(),linkChanged,notes:v.notes,outcome:prevM.outcome||'',createdAt:prevM.createdAt||nowISO()});
+    ok=await write('meetings',id,{...prevM,id,title:v.title.trim(),jobId:v.jobId||null,when,url:newUrl,linkFrom:(v.linkFrom||'').trim(),linkChanged,notes:v.notes,outcome:prevM.outcome||'',createdAt:prevM.createdAt||nowISO()});
     if(ok) await logIt('meeting', `${isNew?'Meeting set':'Meeting edited'}: ${v.title.trim()} · ${fmtWhen(when)}`, v.jobId||null);
     if(ok) closePanel();
   } else if(kind==='email'){
