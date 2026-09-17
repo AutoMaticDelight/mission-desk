@@ -20,29 +20,28 @@ b{font-weight:950}
 .stat span{font-size:17px;letter-spacing:.5px;color:var(--dim)}
 .stat.bad b{color:#ff8d6a}.stat.warn b{color:var(--low)}
 .grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));grid-template-rows:repeat(4,minmax(0,1fr));gap:12px;min-height:0}
-.m{position:relative;overflow:hidden;background:var(--panel);border-radius:16px;padding:12px 14px;display:grid;grid-template-rows:auto minmax(0,1fr) auto;gap:6px;min-height:0;border:0;color:#fff;font:inherit;text-align:left;cursor:pointer;border-left:10px solid var(--ok)}
-.m.held{border-left-color:var(--now);background:#2a1a14}.m.clean{border-left-color:var(--low)}.m.off{border-left-color:var(--held);color:var(--dim)}
+/* Tile ground is the state. Running = green. Held = red. Cleaning = amber. Nothing else on the tile carries color except the delta. */
+.m{position:relative;overflow:hidden;border-radius:16px;padding:12px 14px;display:grid;grid-template-rows:auto minmax(0,1fr) auto;gap:6px;min-height:0;border:0;color:#fff;font:inherit;text-align:left;cursor:pointer;background:#0f5a3a}
+.m.held{background:#8a2410;animation:pulse 1.6s ease-in-out infinite}
+.m.clean{background:#7a5200}
+.m.off{background:#2c3a31;color:var(--dim)}
+@keyframes pulse{50%{box-shadow:0 0 0 5px rgba(229,64,26,.35)}}
 .m .top{display:grid;grid-template-columns:minmax(0,1fr);gap:2px;min-width:0}
 .m .nm{font-size:clamp(19px,2.6vh,24px);letter-spacing:-.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.m .st{font-size:15px;letter-spacing:.8px;text-transform:uppercase;color:var(--ok);white-space:nowrap;line-height:1}
-.m.held .st{color:#ff8d6a}.m.clean .st{color:var(--low)}.m.off .st{color:var(--dim)}
-.m .k{display:flex;align-items:baseline;gap:8px;align-self:center}
-.m .k b{font-size:clamp(34px,5.2vh,56px);letter-spacing:-.06em;line-height:.9}
-.m .k span{font-size:16px;color:var(--dim);letter-spacing:.4px;text-transform:uppercase}
-.m .why{font-size:16px;line-height:1.2;color:var(--dim);min-height:1.2em;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.m .st{font-size:15px;letter-spacing:.8px;text-transform:uppercase;white-space:nowrap;line-height:1;opacity:.9}
 .m.run .st{display:none}
-.m.held .why{color:#fff}
-.m .bars{display:grid;grid-template-columns:repeat(3,1fr);gap:4px}
-.m .bars i{display:block;height:8px;border-radius:4px;background:var(--track);position:relative;overflow:hidden}
-.m .bars i:after{content:"";position:absolute;left:0;top:0;bottom:0;width:var(--w);background:var(--ok)}
-.m .bars i.low:after{background:var(--low)}.m .bars i.now:after{background:var(--now)}
-.m.held{animation:pulse 1.6s ease-in-out infinite}
-@keyframes pulse{50%{box-shadow:0 0 0 5px rgba(229,64,26,.28)}}
+.m .k{display:flex;align-items:baseline;gap:8px;align-self:center;flex-wrap:wrap;min-width:0}
+.m .k b{font-size:clamp(34px,5.2vh,56px);letter-spacing:-.06em;line-height:.9}
+.m .k span{font-size:16px;letter-spacing:.4px;text-transform:uppercase;opacity:.85}
+.m .d{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:4px 10px;font-size:17px;letter-spacing:.2px;background:rgba(0,0,0,.28);color:#fff;white-space:nowrap;justify-self:start}
+.m .d.up{color:var(--lime)}.m .d.down{color:#ffb39e}
+.m .why{font-size:16px;line-height:1.2;opacity:.85;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.m .foot{display:grid;gap:6px}
 @media(orientation:portrait){
   .band{grid-template-columns:1fr 1fr;grid-template-rows:auto auto auto;row-gap:6px}
   .when{grid-column:1/-1}.stat{border-left:0;padding-left:0}
   .grid{grid-template-columns:repeat(4,minmax(0,1fr));grid-template-rows:repeat(5,minmax(0,1fr))}
-  .m{padding:10px 12px;gap:4px}.m .k b{font-size:clamp(30px,4vh,44px)}
+  .m{padding:10px 12px;gap:4px}.m .k b{font-size:clamp(30px,4vh,44px)}.m .d{font-size:15px;padding:3px 8px}
 }
 @media(max-width:600px){body{height:auto;overflow:auto}.grid{grid-template-columns:1fr 1fr;grid-template-rows:auto}.m{min-height:120px}}
 </style></head>
@@ -59,40 +58,40 @@ b{font-weight:950}
 <script>
 /* 20 machines. s: run | held | clean | off. k: the one number. h: hopper health (chicken, rice, beef) as % */
 const M=[
- {n:'Bowl 02',s:'held',k:7,l:'rerouting',why:'Quinoa under-dispensing · held 12:16',h:[64,41,17],href:'lunch-rush-hoppers.html'},
- {n:'Bowl 11',s:'held',k:3,l:'waiting',why:'Door interlock open · needs a hand',h:[70,55,60]},
- {n:'Bowl 07',s:'clean',k:6,l:'min left',why:'Sanitation cycle · back 12:24',h:[100,100,100]},
- {n:'Bowl 01',s:'run',k:14,l:'in queue',why:'',h:[80,62,58]},
- {n:'Chicken 2',s:'run',k:12,l:'slots open',why:'Taking the Bowl 02 reroute',h:[88,70,0]},
- {n:'Bowl 03',s:'run',k:9,l:'in queue',why:'',h:[55,48,66]},
- {n:'Bowl 04',s:'run',k:11,l:'in queue',why:'Beef low · refill 12:31',h:[72,60,19]},
- {n:'Bowl 05',s:'run',k:8,l:'in queue',why:'',h:[91,84,77]},
- {n:'Bowl 06',s:'run',k:13,l:'in queue',why:'',h:[60,52,49]},
- {n:'Bowl 08',s:'run',k:10,l:'in queue',why:'Rice low · refill 12:29',h:[66,16,70]},
- {n:'Bowl 09',s:'run',k:7,l:'in queue',why:'',h:[77,71,64]},
- {n:'Bowl 10',s:'run',k:15,l:'in queue',why:'',h:[58,63,52]},
- {n:'Bowl 12',s:'run',k:6,l:'in queue',why:'',h:[83,79,90]},
- {n:'Bowl 13',s:'run',k:12,l:'in queue',why:'',h:[49,57,61]},
- {n:'Bowl 14',s:'run',k:9,l:'in queue',why:'',h:[73,68,66]},
- {n:'Bowl 15',s:'run',k:11,l:'in queue',why:'',h:[65,44,71]},
- {n:'Bowl 16',s:'run',k:8,l:'in queue',why:'Chicken low · refill 12:33',h:[18,66,58]},
- {n:'Bowl 17',s:'run',k:10,l:'in queue',why:'',h:[86,80,74]},
- {n:'Bowl 18',s:'run',k:13,l:'in queue',why:'',h:[62,59,53]},
- {n:'Bowl 19',s:'run',k:5,l:'in queue',why:'',h:[94,88,81]},
+ {n:'Bowl 02',s:'held',k:7,l:'rerouting',why:'Quinoa under-dispensing · held 12:16',p:0,e:30,href:'lunch-rush-hoppers.html'},
+ {n:'Bowl 11',s:'held',k:3,l:'waiting',why:'Door interlock open · needs a hand',p:0,e:30},
+ {n:'Bowl 07',s:'clean',k:6,l:'min left',why:'Sanitation cycle · back 12:24',p:0,e:30},
+ {n:'Bowl 01',s:'run',q:14,why:'',p:34,e:30},
+ {n:'Chicken 2',s:'run',q:8,why:'Taking the Bowl 02 reroute · 12 slots open',p:38,e:34},
+ {n:'Bowl 03',s:'run',q:9,why:'',p:31,e:30},
+ {n:'Bowl 04',s:'run',q:11,why:'Beef low · refill 12:31',p:27,e:30},
+ {n:'Bowl 05',s:'run',q:8,why:'',p:33,e:30},
+ {n:'Bowl 06',s:'run',q:13,why:'',p:29,e:30},
+ {n:'Bowl 08',s:'run',q:10,why:'Rice low · refill 12:29',p:25,e:30},
+ {n:'Bowl 09',s:'run',q:7,why:'',p:32,e:30},
+ {n:'Bowl 10',s:'run',q:15,why:'',p:36,e:30},
+ {n:'Bowl 12',s:'run',q:6,why:'',p:30,e:30},
+ {n:'Bowl 13',s:'run',q:12,why:'',p:28,e:30},
+ {n:'Bowl 14',s:'run',q:9,why:'',p:31,e:30},
+ {n:'Bowl 15',s:'run',q:11,why:'',p:30,e:30},
+ {n:'Bowl 16',s:'run',q:8,why:'Chicken low · refill 12:33',p:24,e:30},
+ {n:'Bowl 17',s:'run',q:10,why:'',p:35,e:30},
+ {n:'Bowl 18',s:'run',q:13,why:'',p:29,e:30},
+ {n:'Bowl 19',s:'run',q:5,why:'',p:33,e:30},
 ];
 const ST={run:'Running',held:'Held',clean:'Cleaning',off:'Off'};
 const order={held:0,clean:1,run:2,off:3};
-const cls=v=> v<20?'now':v<40?'low':'';
+function delta(m){const d=m.p-m.e;const c=d>0?'up':d<0?'down':'';const t=(d>0?'+':'')+d+' vs expected';return `<span class="d ${c}">${d>0?'▲':d<0?'▼':'●'} ${t}</span>`;}
 function render(){
-  const list=[...M].sort((a,b)=>order[a.s]-order[b.s]||(a.s==='run'?b.k-a.k:0));
+  const list=[...M].sort((a,b)=>order[a.s]-order[b.s]||(a.s==='run'?(b.p-b.e)-(a.p-a.e):0));
   document.getElementById('grid').innerHTML=list.map(m=>`<button class="m ${m.s}" ${m.href?`onclick="location.href='${m.href}'"`:''}>
     <div class="top"><span class="nm">${m.n}</span><span class="st">${ST[m.s]}</span></div>
-    <div class="k"><b>${m.k}</b><span>${m.l}</span></div>
-    <div class="why">${m.why||'&nbsp;'}</div>
-    <div class="bars">${m.h.map(v=>`<i class="${cls(v)}" style="--w:${v}%"></i>`).join('')}</div>
+    ${m.s==='run'?`<div class="k"><b>${m.p}</b><span>/ 10 min</span></div>`:`<div class="k"><b>${m.k}</b><span>${m.l}</span></div>`}
+    <div class="foot">${m.s==='run'?delta(m):''}<div class="why">${m.s==='run'?[m.q+' in queue',m.why].filter(Boolean).join(' · '):m.why}</div></div>
   </button>`).join('');
   const c=s=>M.filter(m=>m.s===s).length;
   sRun.querySelector('b').textContent=c('run');sHeld.querySelector('b').textContent=c('held');sClean.querySelector('b').textContent=c('clean');
+  const tot=M.reduce((a,m)=>a+m.p,0);document.getElementById('sBowls').textContent=tot;
 }
 render();
 </script>
