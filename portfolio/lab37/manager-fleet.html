@@ -101,6 +101,13 @@ b,.stat b,.card .k b,.chip .p,.thr b{font-variant-numeric:tabular-nums}
   .chip .nm{font-size:16px}.chip .p{font-size:20px}.chip{padding:8px 12px 8px;row-gap:5px}
   .card .thrrow{grid-column:2;grid-row:3;justify-self:end}
 }
+
+/* green boxes: top half name and percent, bottom half a darker band edge to edge with the rate */
+.chip{padding:0;row-gap:0;overflow:hidden}
+.chip .nm{padding:12px 0 10px 18px}
+.chip .p{padding:12px 18px 10px 0}
+.chip .thr{grid-column:1/-1;justify-self:stretch;margin:0;border-radius:0;background:rgba(0,0,0,.38);padding:9px 18px 11px;justify-content:end}
+@media(orientation:portrait){.chip .nm{padding:9px 0 7px 12px}.chip .p{padding:9px 12px 7px 0}.chip .thr{padding:6px 12px 8px}}
 </style></head>
 <body>
   <header class="band">
