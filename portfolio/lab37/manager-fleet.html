@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Lab37 - Manager · Fleet</title>
+<style>
+/* MANAGER PANEL. 20 machines, one iPad, no scroll. Problems sort to the top-left. Color is the state, one number per machine. Tap a machine to open its panel. */
+:root{--bg:#0b120e;--panel:#17231c;--track:#3d4a42;--line:#2c3a31;--ink:#fff;--dim:#c7d1ca;--ok:#1fa36a;--low:#f0a000;--now:#e5401a;--held:#6b7a70;--lime:#cfff3e}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;margin:0}
+body{background:var(--bg);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-weight:800;display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:auto minmax(0,1fr);gap:14px;padding:16px;height:100vh;overflow:hidden;padding-top:max(16px,env(safe-area-inset-top));padding-bottom:max(16px,env(safe-area-inset-bottom))}
+b{font-weight:950}
+.band{display:grid;grid-template-columns:auto minmax(0,1fr) auto auto auto auto;gap:18px;align-items:center;background:var(--panel);border-radius:18px;padding:10px 22px;min-height:64px;min-width:0;overflow:hidden}
+.band>*{min-width:0}
+.where{font-size:clamp(20px,2.4vw,26px);letter-spacing:-.02em;white-space:nowrap}.where span{color:var(--lime);margin-left:10px}
+.when{font-size:18px;color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.stat{display:flex;align-items:baseline;gap:8px;white-space:nowrap;border-left:2px solid var(--line);padding-left:18px}
+.stat b{font-size:clamp(30px,3.2vw,42px);letter-spacing:-.06em;line-height:.9}
+.stat span{font-size:17px;letter-spacing:.5px;color:var(--dim)}
+.stat.bad b{color:#ff8d6a}.stat.warn b{color:var(--low)}
+.grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));grid-template-rows:repeat(4,minmax(0,1fr));gap:12px;min-height:0}
+.m{position:relative;overflow:hidden;background:var(--panel);border-radius:16px;padding:12px 14px;display:grid;grid-template-rows:auto minmax(0,1fr) auto;gap:6px;min-height:0;border:0;color:#fff;font:inherit;text-align:left;cursor:pointer;border-left:10px solid var(--ok)}
+.m.held{border-left-color:var(--now);background:#2a1a14}.m.clean{border-left-color:var(--low)}.m.off{border-left-color:var(--held);color:var(--dim)}
+.m .top{display:grid;grid-template-columns:minmax(0,1fr);gap:2px;min-width:0}
+.m .nm{font-size:clamp(19px,2.6vh,24px);letter-spacing:-.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.m .st{font-size:15px;letter-spacing:.8px;text-transform:uppercase;color:var(--ok);white-space:nowrap;line-height:1}
+.m.held .st{color:#ff8d6a}.m.clean .st{color:var(--low)}.m.off .st{color:var(--dim)}
+.m .k{display:flex;align-items:baseline;gap:8px;align-self:center}
+.m .k b{font-size:clamp(34px,5.2vh,56px);letter-spacing:-.06em;line-height:.9}
+.m .k span{font-size:16px;color:var(--dim);letter-spacing:.4px;text-transform:uppercase}
+.m .why{font-size:16px;line-height:1.2;color:var(--dim);min-height:1.2em;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.m.run .st{display:none}
+.m.held .why{color:#fff}
+.m .bars{display:grid;grid-template-columns:repeat(3,1fr);gap:4px}
+.m .bars i{display:block;height:8px;border-radius:4px;background:var(--track);position:relative;overflow:hidden}
+.m .bars i:after{content:"";position:absolute;left:0;top:0;bottom:0;width:var(--w);background:var(--ok)}
+.m .bars i.low:after{background:var(--low)}.m .bars i.now:after{background:var(--now)}
+.m.held{animation:pulse 1.6s ease-in-out infinite}
+@keyframes pulse{50%{box-shadow:0 0 0 5px rgba(229,64,26,.28)}}
+@media(orientation:portrait){
+  .band{grid-template-columns:1fr 1fr;grid-template-rows:auto auto auto;row-gap:6px}
+  .when{grid-column:1/-1}.stat{border-left:0;padding-left:0}
+  .grid{grid-template-columns:repeat(4,minmax(0,1fr));grid-template-rows:repeat(5,minmax(0,1fr))}
+  .m{padding:10px 12px;gap:4px}.m .k b{font-size:clamp(30px,4vh,44px)}
+}
+@media(max-width:600px){body{height:auto;overflow:auto}.grid{grid-template-columns:1fr 1fr;grid-template-rows:auto}.m{min-height:120px}}
+</style></head>
+<body>
+  <header class="band">
+    <div class="where">UPTOWN <span>ALL MACHINES</span></div>
+    <div class="when">THU 12:18 · PEAK 12:30–12:50</div>
+    <div class="stat" id="sRun"><b>17</b><span>RUNNING</span></div>
+    <div class="stat bad" id="sHeld"><b>2</b><span>HELD</span></div>
+    <div class="stat warn" id="sClean"><b>1</b><span>CLEANING</span></div>
+    <div class="stat"><b id="sBowls">612</b><span>BOWLS / 10 MIN</span></div>
+  </header>
+  <main class="grid" id="grid"></main>
+<script>
+/* 20 machines. s: run | held | clean | off. k: the one number. h: hopper health (chicken, rice, beef) as % */
+const M=[
+ {n:'Bowl 02',s:'held',k:7,l:'rerouting',why:'Quinoa under-dispensing · held 12:16',h:[64,41,17],href:'lunch-rush-hoppers.html'},
+ {n:'Bowl 11',s:'held',k:3,l:'waiting',why:'Door interlock open · needs a hand',h:[70,55,60]},
+ {n:'Bowl 07',s:'clean',k:6,l:'min left',why:'Sanitation cycle · back 12:24',h:[100,100,100]},
+ {n:'Bowl 01',s:'run',k:14,l:'in queue',why:'',h:[80,62,58]},
+ {n:'Chicken 2',s:'run',k:12,l:'slots open',why:'Taking the Bowl 02 reroute',h:[88,70,0]},
+ {n:'Bowl 03',s:'run',k:9,l:'in queue',why:'',h:[55,48,66]},
+ {n:'Bowl 04',s:'run',k:11,l:'in queue',why:'Beef low · refill 12:31',h:[72,60,19]},
+ {n:'Bowl 05',s:'run',k:8,l:'in queue',why:'',h:[91,84,77]},
+ {n:'Bowl 06',s:'run',k:13,l:'in queue',why:'',h:[60,52,49]},
+ {n:'Bowl 08',s:'run',k:10,l:'in queue',why:'Rice low · refill 12:29',h:[66,16,70]},
+ {n:'Bowl 09',s:'run',k:7,l:'in queue',why:'',h:[77,71,64]},
+ {n:'Bowl 10',s:'run',k:15,l:'in queue',why:'',h:[58,63,52]},
+ {n:'Bowl 12',s:'run',k:6,l:'in queue',why:'',h:[83,79,90]},
+ {n:'Bowl 13',s:'run',k:12,l:'in queue',why:'',h:[49,57,61]},
+ {n:'Bowl 14',s:'run',k:9,l:'in queue',why:'',h:[73,68,66]},
+ {n:'Bowl 15',s:'run',k:11,l:'in queue',why:'',h:[65,44,71]},
+ {n:'Bowl 16',s:'run',k:8,l:'in queue',why:'Chicken low · refill 12:33',h:[18,66,58]},
+ {n:'Bowl 17',s:'run',k:10,l:'in queue',why:'',h:[86,80,74]},
+ {n:'Bowl 18',s:'run',k:13,l:'in queue',why:'',h:[62,59,53]},
+ {n:'Bowl 19',s:'run',k:5,l:'in queue',why:'',h:[94,88,81]},
+];
+const ST={run:'Running',held:'Held',clean:'Cleaning',off:'Off'};
+const order={held:0,clean:1,run:2,off:3};
+const cls=v=> v<20?'now':v<40?'low':'';
+function render(){
+  const list=[...M].sort((a,b)=>order[a.s]-order[b.s]||(a.s==='run'?b.k-a.k:0));
+  document.getElementById('grid').innerHTML=list.map(m=>`<button class="m ${m.s}" ${m.href?`onclick="location.href='${m.href}'"`:''}>
+    <div class="top"><span class="nm">${m.n}</span><span class="st">${ST[m.s]}</span></div>
+    <div class="k"><b>${m.k}</b><span>${m.l}</span></div>
+    <div class="why">${m.why||'&nbsp;'}</div>
+    <div class="bars">${m.h.map(v=>`<i class="${cls(v)}" style="--w:${v}%"></i>`).join('')}</div>
+  </button>`).join('');
+  const c=s=>M.filter(m=>m.s===s).length;
+  sRun.querySelector('b').textContent=c('run');sHeld.querySelector('b').textContent=c('held');sClean.querySelector('b').textContent=c('clean');
+}
+render();
+</script>
+</body></html>

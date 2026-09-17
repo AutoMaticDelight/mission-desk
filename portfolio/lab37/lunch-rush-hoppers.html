@@ -2,106 +2,215 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Lab37 - Lunch Rush + Hoppers</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Lab37 - Lunch Rush Panel</title>
 <style>
-:root{--ink:#f5f8f4;--muted:#a8b7ad;--black:#101914;--black2:#17231c;--lime:#cfff3e;--lime2:#e1ff82;--orange:#ff7a1a;--line:#34483b;--panel:#ecf0eb;--green:#155e43;--shadow:0 26px 70px rgba(7,12,9,.35)}*{box-sizing:border-box}body{margin:0;background:#dfe5de;color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}.app{min-height:100vh;padding:18px;display:grid;grid-template-columns:68px 1fr;gap:18px}.rail{border-radius:19px;background:var(--black);padding:13px 10px;display:flex;align-items:center;flex-direction:column;gap:13px}.logo{width:39px;height:39px;border-radius:12px;background:var(--lime);color:#102016;font-weight:950;font-size:12px;display:grid;place-items:center;margin-bottom:18px}.rail button{height:40px;width:40px;border:0;border-radius:11px;color:#93a59a;background:transparent;font-size:16px}.rail button.active{background:#294738;color:var(--lime)}.rail div:last-child{margin-top:auto}.main{width:100%;max-width:1480px;margin:auto}.top{height:52px;display:flex;align-items:center;justify-content:space-between;color:#26382d}.location{display:flex;align-items:center;gap:10px;font-size:13px;font-weight:750}.location b{font-size:16px;letter-spacing:-.5px}.tag{font-size:10px;letter-spacing:1px;font-weight:900;color:#496050;background:#cfd9d0;padding:6px 9px;border-radius:20px}.live{font-size:12px;font-weight:750;color:#3a7252;display:flex;align-items:center;gap:8px}.live i{height:8px;width:8px;border-radius:50%;background:#12b56b;box-shadow:0 0 0 4px #c9efda}.hero{min-height:630px;border-radius:25px;background:var(--black);position:relative;overflow:hidden;padding:42px clamp(28px,5vw,76px);box-shadow:var(--shadow);display:flex;flex-direction:column}.hero:before{content:"";position:absolute;right:-120px;top:-210px;width:570px;height:570px;border:75px solid rgba(207,255,62,.12);border-radius:50%}.hero:after{content:"";position:absolute;left:0;right:0;bottom:0;height:190px;background:linear-gradient(transparent,#0b120e)}.hero>*{position:relative;z-index:1}.status{color:#ffc08d;font-weight:900;text-transform:uppercase;letter-spacing:1.4px;font-size:12px;display:flex;gap:9px;align-items:center}.status i{height:10px;width:10px;border-radius:50%;background:var(--orange);box-shadow:0 0 0 6px rgba(255,122,26,.14)}h1{max-width:920px;font-size:clamp(44px,6.7vw,94px);line-height:.9;letter-spacing:-.07em;margin:30px 0 17px}h1 span{color:var(--lime)}.one-line{font-size:clamp(17px,2vw,25px);line-height:1.25;color:#c7d1ca;max-width:780px;margin:0}.numbers{display:flex;gap:50px;margin:38px 0 31px}.number{min-width:152px}.number b{font-size:clamp(43px,5.2vw,71px);line-height:.8;letter-spacing:-.07em;display:block;color:#fff}.number:first-child b{color:var(--lime)}.number span{display:block;font-size:12px;font-weight:850;text-transform:uppercase;letter-spacing:1.1px;color:#94a59a;margin-top:12px}.primary{border:0;background:var(--lime);color:#112116;border-radius:15px;min-height:106px;width:min(100%,850px);padding:20px 27px;display:flex;align-items:center;justify-content:space-between;text-align:left;font-weight:950;box-shadow:0 9px 0 #8caf20,0 15px 35px rgba(186,248,40,.23);transition:.14s}.primary:hover{transform:translateY(-3px);background:var(--lime2);box-shadow:0 12px 0 #8caf20,0 22px 42px rgba(186,248,40,.28)}.primary .action{font-size:clamp(22px,3vw,35px);letter-spacing:-.05em;line-height:1}.primary .hint{font-size:13px;margin-top:7px;font-weight:750;color:#3d5b25}.primary .arrow{font-size:44px;font-weight:400;line-height:1}.safe{margin-top:26px;display:flex;align-items:center;gap:9px;color:#b5c5ba;font-size:13px;font-weight:650}.safe i{height:22px;width:22px;border-radius:50%;display:grid;place-items:center;background:#204c36;color:var(--lime);font-style:normal;font-size:13px}.bottom{margin-top:18px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:13px}.action-card{min-height:120px;background:var(--panel);color:#19251e;border:0;border-radius:16px;padding:18px;text-align:left;position:relative;transition:.15s}.action-card:hover{transform:translateY(-2px);box-shadow:0 12px 23px rgba(18,34,23,.16)}.action-card .small{font-size:10px;font-weight:900;letter-spacing:1px;text-transform:uppercase;color:#6b7c71}.action-card b{font-size:19px;line-height:1.04;letter-spacing:-.04em;display:block;margin-top:8px;max-width:190px}.action-card span{position:absolute;right:16px;bottom:13px;font-size:21px;color:var(--green)}.action-card.dim{background:#ced6cf;color:#344238}.action-card.dim b{font-size:16px}.overlay{position:fixed;inset:0;background:rgba(6,12,8,.63);display:none;align-items:flex-end;justify-content:center;padding:20px;z-index:10}.overlay.show{display:flex}.sheet{background:#f8faf7;color:#18231c;width:min(800px,100%);border-radius:21px;padding:25px;box-shadow:var(--shadow);animation:slide .18s ease-out}@keyframes slide{from{opacity:.2;transform:translateY(25px)}to{opacity:1;transform:none}}.handle{height:5px;width:52px;border-radius:5px;background:#d5ded6;margin:-5px auto 22px}.sheet .eyebrow{font-size:11px;font-weight:900;letter-spacing:1.2px;text-transform:uppercase;color:#6b7b70}.sheet h2{font-size:clamp(28px,4vw,42px);line-height:.98;letter-spacing:-.06em;margin:8px 0 11px}.sheet p{margin:0;color:#617067;font-size:15px;line-height:1.4}.effects{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:18px 0}.effect{border:1px solid #d5ddd5;background:#fff;border-radius:11px;padding:13px}.effect b{font-size:13px;display:block}.effect span{display:block;color:#68756c;font-size:12px;margin-top:3px}.sheet-actions{display:flex;gap:10px;justify-content:flex-end}.sheet button{border-radius:11px;padding:15px 18px;font-weight:900;font-size:14px}.back{background:#fff;border:1px solid #cbd5cd;color:#324239}.confirm{background:var(--lime);border:0;color:#142217}.toast{position:fixed;right:23px;bottom:23px;z-index:20;background:#143727;color:#fff;border-radius:14px;padding:17px 19px;box-shadow:var(--shadow);display:none;max-width:360px}.toast.show{display:block}.toast b{display:block;font-size:16px}.toast span{font-size:12px;color:#c6daca;display:block;margin-top:3px}@media(max-width:820px){.app{padding:10px;display:block}.rail{display:none}.top{padding:0 5px}.hero{min-height:590px;padding:31px 23px}.numbers{gap:23px;margin:34px 0}.number{min-width:0}.number:nth-child(3){display:none}.primary{min-height:118px;padding:20px}.bottom{grid-template-columns:1fr 1fr}.action-card:last-child{grid-column:span 2}.effects{grid-template-columns:1fr}.sheet-actions{margin-top:4px}.sheet-actions button{flex:1}}
+/* USER PANEL. Not a web page. One iPad screen, portrait or landscape, no scroll.
+   High contrast, readable from across the room, no training to operate: color is the state, the number is the detail, buttons are verbs. */
+:root{--bg:#0b120e;--panel:#17231c;--track:#3d4a42;--line:#2c3a31;--ink:#ffffff;--dim:#c7d1ca;
+  --ok:#1fa36a;--low:#f0a000;--now:#e5401a;--held:#6b7a70;--lime:#cfff3e;--orange:#ff7a1a}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;margin:0}
+body{background:var(--bg);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-weight:800;
+  display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:auto minmax(0,1fr) auto auto auto;gap:16px;padding:20px;height:100vh;overflow:hidden;
+  padding-top:max(12px,env(safe-area-inset-top));padding-bottom:max(12px,env(safe-area-inset-bottom))}
+b,strong{font-weight:950}
 
-/* quick view: hoppers. The bar IS the message: the fill is what's left, the grey track is what's gone. Name and number ride on top. */
-.hop{display:grid;grid-template-columns:repeat(3,minmax(0,1fr)) minmax(0,1.9fr);gap:8px;margin:0 0 12px}
-.h{position:relative;overflow:hidden;border-radius:12px;padding:8px 14px;display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:72px;background:#aab6ad;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.45)}
-.h .f{position:absolute;inset:0;right:auto;background:#1a8a5c;transition:width .6s}
-.h.low .f{background:#e08a00}.h.now .f{background:#d83a12}
-.h.now{animation:pulse 1.6s ease-in-out infinite}
-@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(216,58,18,0)}50%{box-shadow:0 0 0 8px rgba(216,58,18,.3)}}
-.h .n,.h .m{position:relative;z-index:1}
-.h .n{font-size:clamp(15px,1.7vw,21px);font-weight:950;letter-spacing:-.03em;text-transform:uppercase;line-height:1;min-width:0;flex:0 1 auto}
-.h .m{font-size:clamp(30px,3.4vw,42px);font-weight:950;letter-spacing:-.07em;line-height:.85;text-align:right;flex:0 0 auto}
-.h .m small{display:block;font-size:10px;letter-spacing:.9px;font-weight:900;margin-top:4px;opacity:.95;white-space:nowrap}
-.c{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));grid-auto-rows:1fr;gap:4px;align-content:stretch}
-.sq{position:relative;overflow:hidden;border-radius:6px;display:flex;align-items:center;justify-content:space-between;padding:0 6px;font-size:11px;font-weight:950;letter-spacing:.3px;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.5);background:#aab6ad;min-height:18px}
-.sq i{position:absolute;left:0;top:0;bottom:0;background:#1a8a5c;transition:width .6s}
-.sq.low i{background:#e08a00}.sq.now i{background:#d83a12}.sq.held{background:#4b5a51}.sq.held i{display:none}
-.sq b,.sq em{position:relative;z-index:1;font-style:normal;font-weight:inherit}
-.sq em{font-size:10px;opacity:.95}
-@media(max-width:820px){.hop{grid-template-columns:1fr 1fr 1fr}.c{grid-column:1/-1}.h{min-height:64px;padding:8px 10px}.h .n{font-size:16px}.h .m{font-size:36px}}
+/* TOP BAND: where, when, speed, to go */
+.band{display:grid;grid-template-columns:auto minmax(0,1fr) auto auto;gap:20px;align-items:center;background:var(--panel);border-radius:18px;padding:14px 24px;min-height:72px;min-width:0;overflow:hidden}
+.band>*{min-width:0}
+.band .where{font-size:clamp(20px,2.4vw,26px);letter-spacing:-.02em;white-space:nowrap}
+.band .where span{color:var(--lime);margin-left:10px}
+.band .when{font-size:18px;color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.band .when span{margin-left:12px;color:var(--ink)}
+.stat{display:flex;align-items:baseline;gap:8px;white-space:nowrap;border-left:2px solid var(--line);padding-left:20px}
+.stat b{font-size:clamp(32px,3.4vw,44px);letter-spacing:-.06em;line-height:.9}
+.stat span{font-size:17px;letter-spacing:.6px;color:var(--dim)}
+.stat i{font-style:normal;color:var(--ok);font-size:clamp(18px,2.2vh,22px)}
 
-/* hero: alert, simple info, easy fix, tap to start */
-.hero{justify-content:flex-start}
-.status{color:#ff9e6a}.status i{background:#ff5a2e;box-shadow:0 0 0 6px rgba(255,90,46,.18)}
-h1{font-size:clamp(30px,4.4vw,54px);margin:10px 0 6px}
-h1 span{color:#ff9e6a}
-.one-line{font-size:clamp(14px,1.5vw,18px);max-width:720px}
-.numbers{margin:14px 0 12px}
-.number:first-child b{color:#fff}
-.fix{margin-top:auto;background:rgba(207,255,62,.08);border:2px solid rgba(207,255,62,.35);border-radius:16px;padding:12px 14px 14px;display:grid;gap:10px}
-.fixhead{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
-.fixlabel{font-size:11px;font-weight:900;letter-spacing:1.4px;text-transform:uppercase;color:var(--lime);background:rgba(207,255,62,.14);border:1px solid rgba(207,255,62,.4);border-radius:20px;padding:4px 9px;white-space:nowrap}
-.fixwhat{font-size:clamp(14px,1.5vw,18px);color:#e6efe8;font-weight:650;line-height:1.3}
-.fix .primary{width:100%;min-height:72px}
-@media(max-width:820px){.fixhead{flex-direction:column;gap:6px}}
+/* HOPPERS: the bar is the message */
+.hoppers{display:grid;grid-template-rows:minmax(0,1.15fr) minmax(0,1fr);gap:14px;min-height:0}
+.big{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;min-height:0}
+.tops{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));grid-auto-rows:minmax(0,1fr);gap:10px;min-height:0}
+.bar{position:relative;overflow:hidden;border-radius:18px;background:var(--track);display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 24px;min-height:0;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.55)}
+.bar i{position:absolute;left:0;top:0;bottom:0;background:var(--ok);transition:width .6s}
+.bar.low i{background:var(--low)}.bar.now i{background:var(--now)}.bar.held{background:var(--held)}.bar.held i{display:none}
+.bar.now{outline:4px solid var(--now);outline-offset:-4px;animation:pulse 1.4s ease-in-out infinite}
+@keyframes pulse{50%{outline-color:#ffb39e}}
+.bar>*{position:relative;z-index:1}
+.big .bar .n{font-size:clamp(22px,3.2vh,34px);letter-spacing:-.02em;text-transform:uppercase;flex:0 1 auto;min-width:0}
+.big .bar .m{text-align:right;line-height:.85;flex:0 0 auto}
+.big .bar .m b{display:block;font-size:clamp(52px,9vh,96px);letter-spacing:-.07em}
+.big .bar .m span{display:block;font-size:clamp(17px,2.2vh,20px);letter-spacing:.4px;margin-top:8px;white-space:nowrap}
+.tops .bar{padding:0 16px;border-radius:12px}
+.tops .bar .n{font-size:clamp(18px,2.4vh,22px);text-transform:uppercase;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tops .bar .v{font-size:clamp(18px,2.4vh,24px);letter-spacing:-.02em;flex:0 0 auto}
 
-/* fit one iPad screen (landscape 1180x820, also 1024x768): no scrolling */
-html,body{height:100%}
-.app{height:100vh;min-height:0;padding:14px;gap:14px;overflow:hidden;grid-template-rows:minmax(0,1fr)}
-.main{display:flex;flex-direction:column;height:100%;min-height:0}
-.top{height:40px;flex:0 0 auto}
-.hop{flex:0 0 auto;margin:0 0 10px}
-.h{min-height:60px;padding:6px 10px}
-.sq{min-height:18px}
-.hero{flex:1 1 auto;min-height:0;overflow:hidden;padding:18px clamp(22px,3.5vw,44px);border-radius:20px;justify-content:flex-start}
-.hero:before{width:440px;height:440px;border-width:60px;right:-100px;top:-170px}
-h1{font-size:clamp(30px,4.4vw,54px);margin:10px 0 6px}
-.one-line{font-size:clamp(14px,1.5vw,18px)}
-.numbers{margin:14px 0 12px;gap:36px}
-.number b{font-size:clamp(30px,3.8vw,48px)}.number span{font-size:11px;margin-top:8px}
-.primary{min-height:72px;padding:14px 22px}.primary .action{font-size:clamp(20px,2.6vw,30px)}.primary .hint{font-size:12px;margin-top:5px}.primary .arrow{font-size:34px}
-.bottom{flex:0 0 auto;margin-top:10px;gap:10px}
-.action-card{min-height:82px;padding:12px 14px}.action-card b{font-size:16px;margin-top:5px}.action-card span{right:12px;bottom:9px;font-size:18px}
-@media(max-width:820px){.app{height:auto;overflow:visible;display:block}.hero{min-height:0}}
+/* ALERT: what, numbers, one button */
+.alert{background:var(--panel);border:2px solid rgba(255,122,26,.55);border-radius:18px;padding:18px 24px 20px;display:grid;gap:14px}
+.ahead{display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;column-gap:14px;row-gap:4px;font-size:clamp(26px,3.8vh,42px);letter-spacing:-.03em;line-height:1.05}
+.ahead small{grid-column:2;font-size:clamp(17px,2.2vh,20px);color:var(--dim);letter-spacing:.3px;font-weight:800}
+.ahead i{flex:none;width:18px;height:18px;border-radius:50%;background:var(--now);box-shadow:0 0 0 7px rgba(229,64,26,.28)}
+.ahead em{font-style:normal;color:var(--orange)}
+.nums{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.num{background:var(--bg);border-radius:14px;padding:12px 18px;display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;min-width:0}
+.num b{font-size:clamp(40px,6.5vh,72px);letter-spacing:-.06em;line-height:.9}
+.num span{font-size:17px;letter-spacing:.5px;color:var(--dim);text-transform:uppercase;white-space:nowrap}
+.go{border:0;border-radius:18px;background:var(--lime);color:#0b120e;min-height:clamp(84px,12vh,120px);padding:12px 22px;display:flex;align-items:center;justify-content:space-between;gap:16px;text-align:left;cursor:pointer;box-shadow:0 8px 0 #8caf20;font:inherit}
+.go:active{transform:translateY(6px);box-shadow:0 2px 0 #8caf20}
+.go .t{font-size:clamp(28px,4.4vh,44px);letter-spacing:-.04em;line-height:1;font-weight:950}
+.go .s{font-size:clamp(18px,2.4vh,22px);margin-top:6px;font-weight:800}
+.go .a{font-size:clamp(40px,6vh,64px);line-height:1}
+
+/* MORE: three verbs */
+.more{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.more button{border:2px solid var(--track);background:var(--panel);color:#fff;border-radius:14px;min-height:clamp(64px,9vh,84px);font:inherit;font-size:clamp(19px,2.6vh,24px);font-weight:900;letter-spacing:-.01em;cursor:pointer;padding:8px 14px;text-align:center}
+.more button:active{background:var(--track)}
+
+/* orientation */
+@media(orientation:portrait){
+  .band{grid-template-columns:1fr 1fr;grid-template-rows:auto auto;row-gap:6px;min-height:0}
+  .band .when{grid-column:1/-1;font-size:18px}
+  .stat{border-left:0;padding-left:0}.stat:last-child{justify-content:flex-end}
+  .hoppers{grid-template-rows:minmax(0,1fr) minmax(0,1.1fr)}
+  .big .bar{flex-direction:column;align-items:flex-start;justify-content:center;gap:6px;padding:16px 20px}
+  .big .bar .m{text-align:left}.big .bar .m b{font-size:clamp(56px,8vh,84px)}.big .bar .m span{white-space:normal;margin-top:4px}
+  .tops{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .num{flex-direction:column;align-items:flex-start;gap:2px;padding:12px 16px}.num b{font-size:clamp(40px,5vh,60px)}.num span{white-space:normal}
+  .band .where{font-size:24px}
+}
+@media(max-width:600px){body{height:auto;overflow:auto}.big{grid-template-columns:1fr}.big .bar{min-height:84px}.tops{grid-template-columns:1fr 1fr}.tops .bar{min-height:48px}.more{grid-template-columns:1fr}}
+
+/* sheet base (glove.css turns it into the full-screen hold-to-confirm panel) */
+.overlay{position:fixed;inset:0;background:rgba(6,12,8,.63);display:none;align-items:flex-end;justify-content:center;padding:20px;z-index:10}
+.overlay.show{display:flex}
+.sheet{background:#f8faf7;color:#18231c;width:min(800px,100%);border-radius:21px;padding:25px}
+.handle{display:none}.sheet .eyebrow{font-size:16px;font-weight:900;letter-spacing:1.2px;text-transform:uppercase;color:#6b7b70}
+.sheet h2{font-size:42px;line-height:.98;letter-spacing:-.06em;margin:8px 0 11px}.sheet p{margin:0;color:#617067;font-size:18px;line-height:1.4}
+.effects{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:18px 0}.effect{border:1px solid #d5ddd5;background:#fff;border-radius:11px;padding:13px}
+.effect b{font-size:16px;display:block}.effect span{display:block;color:#68756c;font-size:16px;margin-top:3px}
+.sheet-actions{display:flex;gap:10px;justify-content:flex-end}.sheet button{border-radius:11px;padding:15px 18px;font-weight:900;font-size:16px}
+.back{background:#fff;border:1px solid #cbd5cd;color:#324239}.confirm{background:var(--lime);border:0;color:#142217}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:20;background:var(--ok);color:#fff;border-radius:14px;padding:18px 24px;display:none;max-width:min(720px,calc(100vw - 32px));text-align:center}
+.toast.show{display:block}.toast b{display:block;font-size:24px}.toast span{font-size:18px;display:block;margin-top:4px}
+
+/* NEXT UP: what is coming for the worker, from the same forecast. First one is live. */
+.next{display:grid;grid-template-columns:auto repeat(4,minmax(0,1fr));gap:16px;align-items:center;background:var(--panel);border-radius:18px;padding:12px 24px;min-width:0}
+.next .lbl{font-size:17px;letter-spacing:.8px;color:var(--dim);text-transform:uppercase;white-space:nowrap;padding-right:8px;border-right:2px solid var(--line)}
+.task{display:flex;align-items:baseline;gap:10px;min-width:0}
+.task b{font-size:clamp(24px,3.2vh,32px);letter-spacing:-.04em;line-height:1;flex:0 0 auto}
+.task span{font-size:clamp(17px,2.2vh,20px);text-transform:uppercase;letter-spacing:.3px;color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.task.now b{color:#ff8d6a}.task.now span{color:#fff}
+.task.low b{color:var(--low)}
+@media(orientation:landscape){.tops{grid-template-columns:repeat(4,minmax(0,1fr))}.band .when span{display:none}}
+@media(orientation:portrait){.next{grid-template-columns:1fr 1fr;row-gap:10px}.next .lbl{grid-column:1/-1;border-right:0;padding:0}}
+
+/* MACHINES AT A GLANCE: one tile per machine. Color is the state. One number each. */
+.machines{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.mach{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:14px;background:var(--panel);border-radius:18px;padding:10px 18px 10px 12px;min-height:clamp(68px,9vh,84px);min-width:0}
+.mach .st{align-self:stretch;display:grid;place-items:center;border-radius:12px;padding:0 14px;font-size:clamp(15px,2vh,18px);letter-spacing:.8px;text-transform:uppercase;background:var(--ok);color:#fff;white-space:nowrap}
+.mach.held .st{background:var(--now)}.mach.clean .st{background:var(--low);color:#1a1200}
+.mach .nm{font-size:clamp(19px,2.6vh,24px);letter-spacing:-.02em;text-transform:uppercase;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mach .nm small{display:block;font-size:17px;color:var(--dim);letter-spacing:.3px;font-weight:800;text-transform:none}
+@media(orientation:landscape){.mach .nm small{display:none}.mach .nm{font-size:20px}.mach .st{padding:0 10px;font-size:15px}.mach{gap:10px;padding:10px 14px 10px 10px}.mach .k b{font-size:clamp(28px,4vh,40px)}}
+.mach .k{text-align:right;white-space:nowrap}
+.mach .k b{font-size:clamp(30px,4.2vh,44px);letter-spacing:-.06em;line-height:.9}
+.mach .k span{display:block;font-size:16px;color:var(--dim);letter-spacing:.4px;text-transform:uppercase;margin-top:2px}
+/* verbs inside the alert: smaller, one row */
+.alert .more{margin-top:2px}
+.alert .more button{min-height:clamp(52px,7vh,64px);font-size:clamp(17px,2.3vh,20px);border-radius:12px;background:var(--bg)}
+/* tighter vertical budget in landscape */
+@media(orientation:landscape){
+  body{gap:12px;padding:16px}
+  .band{min-height:64px;padding:10px 22px}
+  .tops{grid-template-columns:repeat(6,minmax(0,1fr))}.tops .bar{padding:0 12px}.tops .bar .n,.tops .bar .v{font-size:17px}
+  .alert{padding:14px 20px 16px;gap:10px}.num{padding:8px 16px}.num b{font-size:clamp(36px,5.5vh,56px)}
+  .go{min-height:clamp(72px,10vh,92px)}
+  .next{padding:10px 20px;grid-template-columns:auto repeat(3,minmax(0,1fr))}.next .task:nth-child(5){display:none}
+}
+@media(orientation:portrait){
+  body{gap:12px}
+  .band{padding:10px 20px;min-height:0}
+  .hoppers{min-height:30vh;overflow:hidden}
+  .hoppers{grid-template-rows:minmax(0,1fr) minmax(0,1fr)}
+  .machines{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+  .mach{grid-template-columns:1fr auto;grid-template-rows:auto auto;padding:8px 12px 10px;min-height:0;gap:6px 10px}
+  .mach .st{grid-column:1/-1;align-self:auto;padding:6px 10px;font-size:15px}
+  .mach .nm{font-size:19px}.mach .nm small{display:none}
+  .mach .k b{font-size:30px}.mach .k span{font-size:14px}
+  .alert{padding:12px 16px 14px;gap:10px}.ahead{font-size:clamp(26px,3.4vh,36px)}.num{padding:8px 14px;flex-direction:row;align-items:baseline;gap:8px}.num b{font-size:clamp(32px,4vh,44px)}.num span{white-space:nowrap;font-size:15px}
+  .nums{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .go{min-height:clamp(72px,8.5vh,88px)}.go .t{font-size:clamp(26px,3.8vh,36px)}
+  .alert .more button{min-height:50px;font-size:16px}
+  .next{padding:8px 16px}.task b{font-size:26px}
+  .big .bar .m b{font-size:clamp(48px,6.5vh,72px)}
+  .next{padding:10px 18px}
+}
 </style>
 <link rel="stylesheet" href="glove.css"></head>
 <body>
-<div class="app">
-  <aside class="rail"><div class="logo">L37</div><button class="active">⌁</button><button>◌</button><button>⇄</button><button>◫</button><div><button>?</button></div></aside>
-  <main class="main">
-    <header class="top"><div class="location"><b>lab37</b><span>/ Uptown Bowl</span><span class="tag">LUNCH RUSH</span><span class="tag" id="fc">THU 12:18 · PEAK 12:30–12:50</span></div><div class="live"><i></i>LIVE</div></header>
-    <section class="hop" id="hop"></section>
-    <section class="hero">
-      <div class="status"><i></i>Alert · Bowl Builder 02 · 12:16</div>
-      <h1>Quinoa is <span>under-dispensing.</span></h1>
-      <p class="one-line">Three portions in a row came in under target. The quinoa path is held. Everything else is still running.</p>
-      <div class="numbers"><div class="number"><b>7</b><span>Orders affected</span></div><div class="number"><b>4 MIN</b><span>Until guests wait</span></div><div class="number"><b>12</b><span>Open slots · Chicken Bowl 2</span></div></div>
-      <div class="fix">
-        <div class="fixhead"><span class="fixlabel">Easy fix</span><span class="fixwhat">Move the 7 orders to Chicken Bowl 2. Same bowls, same time, other side of the line.</span></div>
-        <button class="primary" onclick="openSheet('reroute')"><div><div class="action">TAP TO START THE FIX</div><div class="hint">Reroute 7 orders · Hold to confirm on the next screen</div></div><div class="arrow">→</div></button>
-      </div>
-    </section>
-    <section class="bottom">
-      <button class="action-card" onclick="openSheet('tech')"><div class="small">Next best action</div><b>Send tech<br>to recalibrate</b><span>→</span></button>
-      <button class="action-card" onclick="openSheet('fix')"><div class="small">At the machine</div><b>Quick<br>fix now</b><span>→</span></button>
-      <button class="action-card dim" onclick="openSheet('engineering')"><div class="small">Background</div><b>Alert Engineering<br>and log event</b><span>→</span></button>
-    </section>
-  </main>
-</div>
+  <header class="band">
+    <div class="where">UPTOWN BOWL <span>LUNCH RUSH</span></div>
+    <div class="when">THU 12:18 <span>PEAK 12:30–12:50</span></div>
+    <div class="stat"><b id="speedv">38</b><span>BOWLS / 10 MIN</span><i>▲</i></div>
+    <div class="stat"><b id="expv">214</b><span>TO GO</span></div>
+  </header>
+
+  <section class="hoppers">
+    <div class="big" id="big"></div>
+    <div class="tops" id="tops"></div>
+  </section>
+
+  <section class="alert">
+    <div class="ahead"><i></i><span>QUINOA <em>UNDER-DISPENSING</em></span><small>Bowl 02 · held since 12:16 · everything else is running</small></div>
+    <div class="nums">
+      <div class="num"><b>7</b><span>orders waiting</span></div>
+      <div class="num"><b>4 MIN</b><span>until late</span></div>
+      <div class="num"><b>12</b><span>slots open at Bowl 2</span></div>
+    </div>
+    <button class="go" onclick="openSheet('reroute')"><div><div class="t">TAP TO START REROUTE</div><div class="s">7 orders → Chicken Bowl 2 · everything else keeps running</div></div><div class="a">→</div></button>
+    <div class="more">
+      <button onclick="openSheet('tech')">SEND TECH TO BOWL 02</button>
+      <button onclick="openSheet('fix')">QUICK FIX AT THE MACHINE</button>
+      <button onclick="openSheet('engineering')">LOG + ALERT ENGINEERING</button>
+    </div>
+  </section>
+
+  <section class="next" id="next"></section>
+
+  <section class="machines" id="machines"></section>
+
 <div class="overlay" id="overlay"><div class="sheet"><div class="handle"></div><div class="eyebrow" id="sheetLabel"></div><h2 id="sheetTitle"></h2><p id="sheetText"></p><div class="effects" id="effects"></div><div class="sheet-actions"><button class="back" onclick="closeSheet()">BACK</button><button class="confirm" id="confirm" onclick="commit()"></button></div></div></div>
 <div class="toast" id="toast"><b id="toastTitle"></b><span id="toastText"></span></div>
 <script>
-let selected='';const data={reroute:{label:'Start the fix',title:'Move 7 orders to Chicken Bowl 2?',text:'Chicken Bowl 2 has 12 open slots. Every affected order lands in the same service window.',effects:[['Guests','All 7 orders stay on time'],['Bowl Builder 02','Quinoa stays held. Other recipes keep running'],['Next','Tech gets the recalibration task automatically']],button:'START THE FIX',done:'Fix started',sub:'7 orders are moving to Chicken Bowl 2. Tech has the quinoa task.'},tech:{label:'Service task',title:'Send tech to recalibrate?',text:'The task includes the machine state, recipe, and evidence automatically.',effects:[['Task','Recalibrate quinoa dispenser'],['Timing','Before the next lunch rush']],button:'SEND TECH',done:'Tech dispatched',sub:'The calibration task is ready with the right context.'},fix:{label:'Safe quick fix',title:'Start the quick fix?',text:'The machine is safe. You will get two simple, on-screen steps.',effects:[['Step 1','Open the yellow quinoa panel'],['Step 2','Loosen quinoa, then run a test']],button:'START QUICK FIX',done:'Quick fix started',sub:'Bowl Builder 02 is ready for the first check.'},engineering:{label:'Fleet learning',title:'Alert Engineering?',text:'This event will be linked to the quinoa low-fill pattern without slowing service.',effects:[['Pattern','14 similar incidents across 4 sites'],['Context','Today’s event is attached automatically']],button:'ALERT ENGINEERING',done:'Engineering alerted',sub:'This incident is now part of the fleet reliability signal.'}};
-function openSheet(key){selected=key;const x=data[key];sheetLabel.textContent=x.label;sheetTitle.textContent=x.title;sheetText.textContent=x.text;effects.innerHTML=x.effects.map(a=>'<div class="effect"><b>'+a[0]+'</b><span>'+a[1]+'</span></div>').join('');document.getElementById('confirm').textContent=x.button;overlay.classList.add('show')}function closeSheet(){overlay.classList.remove('show')}function commit(){const x=data[selected];closeSheet();toastTitle.textContent=x.done;toastText.textContent=x.sub;toast.classList.add('show');setTimeout(()=>toast.classList.remove('show'),4300)}
-
-/* hoppers quick view. Level % and burn %/min at the pace right now. The forecast knows the day: Thursday lunch peaks 12:30-12:50. */
-const NOW=12*60+18; // 12:18
-const PEAK=[12*60+30,12*60+50];
-const H=[{n:'Chicken',l:64,b:2.1},{n:'Rice',l:41,b:2.9},{n:'Beef',l:17,b:2.8}];
-const C=[{n:'Quinoa',k:'QUI',held:1},{n:'Black beans',k:'BEAN',l:70,b:1.5},{n:'Corn',k:'CORN',l:35,b:1.6},{n:'Pico',k:'PICO',l:22,b:1.9},{n:'Guac',k:'GUAC',l:15,b:1.7},{n:'Cheese',k:'CHZ',l:80,b:1.4},{n:'Crema',k:'CRMA',l:66,b:1},{n:'Lettuce',k:'LETT',l:48,b:1.3},{n:'Salsa verde',k:'VERD',l:73,b:.9},{n:'Chipotle',k:'CHIP',l:30,b:1.1},{n:'Cilantro',k:'CIL',l:52,b:.8},{n:'Lime',k:'LIME',l:90,b:.5}];
-/* Thursday curve: pace multiplier by clock minute. Ramps into the peak, tapers after 13:10. */
+/* hoppers: level % and burn %/min at this pace. Forecast walks the Thursday lunch curve (peak 12:30-12:50) to the 15% refill mark. */
+const NOW=12*60+18, PEAK=[12*60+30,12*60+50];
+const H=[{n:'Chicken',l:64,b:2.1,src:'reach-in 1'},{n:'Rice',l:41,b:2.9,src:'cooker 2'},{n:'Beef',l:17,b:2.8,src:'walk-in'}];
+const C=[{n:'Quinoa',held:1},{n:'Beans',l:70,b:1.5},{n:'Corn',l:35,b:1.6},{n:'Pico',l:22,b:1.9},{n:'Guac',l:15,b:1.7},{n:'Cheese',l:80,b:1.4},{n:'Crema',l:66,b:1},{n:'Lettuce',l:48,b:1.3},{n:'Verde',l:73,b:.9},{n:'Chipotle',l:30,b:1.1},{n:'Cilantro',l:52,b:.8},{n:'Lime',l:90,b:.5}];
 const pace=t=> t<PEAK[0]?1.0 : t<PEAK[1]?1.35 : t<13*60+10?1.0 : 0.6;
-const REFILL_AT=15; // swap before the hopper is dry
-function refillClock(x){ if(x.held) return null; let lvl=x.l, t=NOW; while(lvl>REFILL_AT && t<NOW+240){ lvl-=x.b*pace(t); t++; } if(lvl>REFILL_AT) return 'after 4pm'; const h=Math.floor(t/60), m=t%60; return (h>12?h-12:h)+':'+String(m).padStart(2,'0'); }
+function refillClock(x){ if(x.held) return null; let lvl=x.l, t=NOW; while(lvl>15 && t<NOW+240){ lvl-=x.b*pace(t); t++; } if(lvl>15) return 'AFTER 4 PM'; const h=Math.floor(t/60), m=t%60; return (h>12?h-12:h)+':'+String(m).padStart(2,'0'); }
 const mn=x=>Math.max(0,Math.round(x.l/x.b)), st=x=>x.held?'held':mn(x)<8?'now':mn(x)<20?'low':'ok';
-function hop(){document.getElementById('hop').innerHTML=H.map(x=>`<div class="h ${st(x)}" title="${x.n}: ${mn(x)} min at this pace; refill by ${refillClock(x)} on the Thursday curve"><i class="f" style="width:${x.l}%"></i><div class="n">${x.n}</div><div class="m">${mn(x)}<small>REFILL BY ${refillClock(x)}</small></div></div>`).join('')+'<div class="c">'+C.map(x=>{const r=refillClock(x),z=st(x);return `<span class="sq ${z}" title="${x.n}${x.held?': held':': '+mn(x)+' min · refill by '+r}"><i style="width:${x.held?0:x.l}%"></i><b>${x.k}</b><em>${x.held?'HELD':z==='ok'?Math.round(x.l)+'%':r}</em></span>`;}).join('')+'</div>';}
-hop();setInterval(()=>{[...H,...C].forEach(x=>{if(!x.held)x.l=Math.max(0,x.l-x.b/6)});hop()},10000);
+function refillMin(x){ let lvl=x.l, t=NOW; while(lvl>15 && t<NOW+240){ lvl-=x.b*pace(t); t++; } return t-NOW; }
+function nextUp(){const all=[...H,...C].filter(x=>!x.held).map(x=>({x,t:refillClock(x),z:st(x),m:refillMin(x)})).sort((a,b)=>a.m-b.m).slice(0,4);document.getElementById('next').innerHTML='<div class="lbl">Next up</div>'+all.map(a=>`<div class="task ${a.z}"><b>${a.t}</b><span>${a.x.n}${a.x.src?' · '+a.x.src:''}</span></div>`).join('');}
+const M=[{n:'Bowl 01',s:'run',st:'Running',k:'14',l:'in queue',sub:'all recipes'},{n:'Bowl 02',s:'held',st:'Held',k:'7',l:'rerouting',sub:'quinoa path held'},{n:'Chicken 2',s:'run',st:'Running',k:'12',l:'slots open',sub:'taking the reroute'}];
+function machines(){document.getElementById('machines').innerHTML=M.map(m=>`<div class="mach ${m.s}"><div class="st">${m.st}</div><div class="nm">${m.n}<small>${m.sub}</small></div><div class="k"><b>${m.k}</b><span>${m.l}</span></div></div>`).join('');}
+machines();
+function render(){nextUp();
+  document.getElementById('big').innerHTML=H.map(x=>`<div class="bar ${st(x)}"><i style="width:${x.l}%"></i><div class="n">${x.n}</div><div class="m"><b>${mn(x)}</b><span>MIN · REFILL ${refillClock(x)}</span></div></div>`).join('');
+  document.getElementById('tops').innerHTML=C.map(x=>{const z=st(x);return `<div class="bar ${z}"><i style="width:${x.held?0:x.l}%"></i><div class="n">${x.n}</div><div class="v">${x.held?'HELD':z==='ok'?Math.round(x.l)+'%':refillClock(x)}</div></div>`;}).join('');
+}
+render();
+let tick=0;setInterval(()=>{tick++;[...H,...C].forEach(x=>{if(!x.held)x.l=Math.max(0,x.l-x.b/6)});render();
+  const sp=38+Math.round(Math.sin(tick/3)*2);document.getElementById('speedv').textContent=sp;document.getElementById('expv').textContent=Math.max(0,214-Math.floor(tick*sp/60));},10000);
+/* sheets */
+let selected='';const data={
+ reroute:{label:'Reroute',title:'Move 7 orders to Chicken Bowl 2?',text:'Chicken Bowl 2 has 12 open slots. Every affected order lands in the same service window.',effects:[['Guests','All 7 orders stay on time'],['Bowl 02','Quinoa stays held. Other recipes keep running'],['Next','Tech gets the recalibration task automatically']],button:'START REROUTE',done:'Reroute started',sub:'7 orders are moving to Chicken Bowl 2. Tech has the quinoa task.'},
+ tech:{label:'Service task',title:'Send tech to Bowl 02?',text:'The task carries the machine state, recipe, and evidence automatically.',effects:[['Task','Recalibrate quinoa dispenser'],['Timing','Before the next lunch rush']],button:'SEND TECH',done:'Tech dispatched',sub:'The calibration task is ready with the right context.'},
+ fix:{label:'Quick fix',title:'Start the quick fix?',text:'The machine is safe. You get two on-screen steps at Bowl 02.',effects:[['Step 1','Open the yellow quinoa panel'],['Step 2','Loosen quinoa, then run a test']],button:'START QUICK FIX',done:'Quick fix started',sub:'Bowl 02 is ready for the first check.'},
+ engineering:{label:'Fleet learning',title:'Log it and alert Engineering?',text:'This event joins the quinoa low-fill pattern without slowing service.',effects:[['Pattern','14 similar incidents across 4 sites'],['Context','Today’s event is attached automatically']],button:'LOG + ALERT',done:'Logged. Engineering alerted',sub:'This incident is now part of the fleet reliability signal.'}};
+function openSheet(k){selected=k;const x=data[k];sheetLabel.textContent=x.label;sheetTitle.textContent=x.title;sheetText.textContent=x.text;effects.innerHTML=x.effects.map(a=>'<div class="effect"><b>'+a[0]+'</b><span>'+a[1]+'</span></div>').join('');document.getElementById('confirm').textContent=x.button;overlay.classList.add('show')}
+function closeSheet(){overlay.classList.remove('show')}
+function commit(){const x=data[selected];closeSheet();toastTitle.textContent=x.done;toastText.textContent=x.sub;toast.classList.add('show');setTimeout(()=>toast.classList.remove('show'),4300)}
 </script>
 <script src="glove.js"></script></body>
 </html>
