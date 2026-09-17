@@ -18,7 +18,7 @@ h2 b{font-size:16px;color:#fff}
 h2 i{width:12px;height:12px;border-radius:50%;background:var(--now);display:inline-block;margin-right:10px;vertical-align:middle}
 h2.h-watch i{background:#f0a000}h2.h-fine i{background:#1a7a4f}
 /* top band */
-.band{display:grid;grid-template-columns:auto minmax(0,1fr) auto auto auto auto;gap:14px;align-items:center;background:var(--panel);border-radius:18px;padding:10px 22px;min-height:64px;min-width:0;overflow:hidden}
+.band{display:grid;grid-template-columns:auto minmax(0,1fr) auto auto auto auto auto;gap:14px;align-items:center;background:var(--panel);border-radius:18px;padding:10px 22px;min-height:64px;min-width:0;overflow:hidden}
 .band>*{min-width:0}
 .where{font-size:22px;letter-spacing:-.02em;white-space:nowrap}.where span{color:var(--lime);margin-left:10px}
 .when{font-size:18px;color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -26,6 +26,7 @@ h2.h-watch i{background:#f0a000}h2.h-fine i{background:#1a7a4f}
 .stat b{font-size:clamp(28px,2.9vw,36px);letter-spacing:-.06em;line-height:.9}
 .stat span{font-size:16px;letter-spacing:.4px;color:var(--dim)}
 .stat.up b{color:#5bd39a}.stat.bad b{color:#ff8d6a}
+.stat b small{font-size:.55em;color:var(--dim);letter-spacing:0;font-weight:800}
 /* sections */
 section{display:grid;grid-template-rows:auto minmax(0,1fr);gap:10px;min-height:0}
 .now{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
@@ -52,7 +53,8 @@ section{display:grid;grid-template-rows:auto minmax(0,1fr);gap:10px;min-height:0
 .chip .p{font-size:clamp(21px,2.8vh,24px);letter-spacing:-.04em;white-space:nowrap;color:#fff}
 .chip .p.down{color:#ffd9cc}
 @media(orientation:portrait){
-  .band{grid-template-columns:1fr 1fr;grid-template-rows:auto auto auto auto;row-gap:6px}
+  .band{grid-template-columns:1fr 1fr 1fr;grid-template-rows:auto auto auto;row-gap:6px}
+  .band .where{grid-column:1/-1}
   .when{grid-column:1/-1}.stat{border-left:0;padding-left:0}
   .now{grid-template-columns:1fr}
   .watch{grid-template-columns:1fr}
@@ -62,14 +64,52 @@ section{display:grid;grid-template-rows:auto minmax(0,1fr);gap:10px;min-height:0
   .card.watch{padding:8px 16px}.card.watch .nm{font-size:22px}.card.watch .k b{font-size:34px}.card .what .thr{margin-top:2px}
 }
 @media(max-width:600px){body{height:auto;overflow:auto}.fine{grid-template-columns:1fr 1fr}.chip{min-height:48px}}
+
+/* DESIGN PASS: content-height boxes, right-justified tabular throughput, consistent rhythm */
+body{grid-template-rows:auto auto auto minmax(0,1fr);gap:18px;padding:18px}
+section{gap:10px;align-content:start}
+h2{padding-left:4px}
+b,.stat b,.card .k b,.chip .p,.thr b{font-variant-numeric:tabular-nums}
+/* on-plan boxes */
+.fine{align-content:start;grid-auto-rows:auto;gap:12px}
+.chip{display:grid;grid-template-columns:minmax(0,1fr) max-content;grid-template-rows:auto auto;align-items:baseline;column-gap:12px;row-gap:8px;padding:14px 18px 12px;border-radius:16px;overflow:hidden;align-content:start}
+.chip .nm{font-size:clamp(19px,1.5vw,22px)}
+.chip .p{font-size:clamp(22px,1.8vw,26px)}
+.thr{grid-column:1/-1;display:grid;grid-template-columns:max-content max-content;justify-content:end;column-gap:22px;align-items:baseline;background:rgba(0,0,0,.35);border-radius:10px;padding:6px 12px;margin:0;white-space:nowrap}
+.thr b{font-size:clamp(20px,1.6vw,24px);color:#fff;letter-spacing:-.02em}
+.thr em{font-style:normal;font-size:14px;color:rgba(255,255,255,.7);margin:0 0 0 4px;letter-spacing:.3px}
+/* watch cards: name/what left, number right, throughput row under, right-justified */
+.card{grid-template-rows:auto auto auto;row-gap:6px;padding:14px 18px 12px;align-content:start}
+.card .k{align-self:start}
+.card .what .thr{display:grid;grid-column:auto;margin:0}
+.card .thrrow{grid-column:1/-1;grid-row:3;display:grid;grid-template-columns:max-content max-content;justify-content:end;column-gap:22px;align-items:baseline;background:rgba(0,0,0,.35);border-radius:10px;padding:6px 12px;white-space:nowrap}
+.card .thrrow b{font-size:clamp(20px,1.6vw,24px);color:#fff}
+.card .thrrow em{font-style:normal;font-size:14px;color:rgba(255,255,255,.7);margin-left:4px}
+.card .go{grid-row:3}
+@media(orientation:portrait){.fine{gap:10px}.chip{padding:10px 14px 10px;row-gap:6px}.thr{column-gap:14px;padding:4px 10px}.thr b{font-size:18px}.thr em{font-size:13px}.card{padding:10px 16px 10px}}
+
+/* band fits every width: peak note only in portrait, to-go drops below 1250px */
+@media(orientation:landscape){.peak{display:none}}
+@media(orientation:landscape) and (max-width:1250px){.band{grid-template-columns:minmax(0,1fr) auto auto auto auto}.when,.stat.togo{display:none}.stat b{font-size:30px}.stat span{font-size:15px}.band{gap:12px;padding:10px 18px}.stat{padding-left:12px}}
+/* watch cards: reason gets the width, throughput sits under the number, right-justified */
+.card{grid-template-columns:minmax(0,1.7fr) max-content}
+.card .thrrow{justify-self:end;grid-column:2;grid-row:3}
+.card.watch{grid-template-rows:auto auto auto}
+.card.watch .what{grid-row:2/4;align-self:start}
+.chip .thr{justify-self:stretch}
+@media(orientation:portrait){
+  .chip .nm{font-size:16px}.chip .p{font-size:20px}.chip{padding:8px 12px 8px;row-gap:5px}
+  .card .thrrow{grid-column:2;grid-row:3;justify-self:end}
+}
 </style></head>
 <body>
   <header class="band">
     <div class="where">LAB37 <span>ALL STORES</span></div>
-    <div class="when">THU 12:18 · PEAK 12:30–12:50</div>
+    <div class="when">THU 12:18<span class="peak"> · PEAK 12:30–12:50</span></div>
     <div class="stat"><b id="fleetPace">3,930</b><span>ORDERS / HR</span></div>
     <div class="stat up"><b id="fleetPct">+3%</b><span>VS PLAN</span></div>
-    <div class="stat"><b id="toGo">3,180</b><span>TO GO</span></div>
+    <div class="stat togo"><b id="toGo">3,180</b><span>TO GO</span></div>
+    <div class="stat"><b id="active">17<small>/20</small></b><span>ACTIVE</span></div>
     <div class="stat bad"><b id="needCount">2</b><span>NEED YOU</span></div>
   </header>
 
@@ -107,10 +147,10 @@ function render(){
     <div class="k"><b>${x.k}</b><span>${x.l}</span></div>
     <div class="go">${x.go} →</div></button>`).join('');
   document.getElementById('watch').innerHTML=watch.map(x=>`<button class="card watch">
-    <div class="nm">${x.n}</div><div class="what">${x.what}${x.p?`<span class="thr"><b>${x.p*6}</b><em>/hr</em><b>:${Math.round(600/x.p)}</b><em>ea</em></span>`:''}</div>
+    <div class="nm">${x.n}</div><div class="what">${x.what}</div>${x.p?`<div class="thrrow"><span><b>${x.p*6}</b><em>/hr</em></span><span><b>:${Math.round(600/x.p)}</b><em>ea</em></span></div>`:''}
     <div class="k"><b>${x.l.includes('vs plan')?(x.k>0?'+':'')+x.k+'%':x.k}</b><span>${x.l.replace('% ','')}</span></div></button>`).join('');
-  document.getElementById('fine').innerHTML=fine.map(x=>{const d=pct(x);const hr=x.p*6, sec=Math.round(3600/hr);return `<div class="chip" title="${x.i}"><span class="nm">${x.n} <small>${x.c}</small></span><span class="p ${d<0?'down':''}">${d>0?'+':''}${d}%</span><span class="thr"><b>${hr}</b><em>/hr</em><b>:${sec}</b><em>ea</em></span></div>`;}).join('');
-  document.getElementById('needCount').textContent=now.length;
+  document.getElementById('fine').innerHTML=fine.map(x=>{const d=pct(x);const hr=x.p*6, sec=Math.round(3600/hr);return `<div class="chip" title="${x.i}"><span class="nm">${x.n} <small>${x.c}</small></span><span class="p ${d<0?'down':''}">${d>0?'+':''}${d}%</span><span class="thr"><span><b>${hr}</b><em>/hr</em></span><span><b>:${sec}</b><em>ea</em></span></span></div>`;}).join('');
+  document.getElementById('needCount').textContent=now.length;document.getElementById('active').innerHTML=S.filter(x=>x.p>0).length+'<small>/'+S.length+'</small>';
   document.getElementById('watchCount').textContent=watch.length;
   document.getElementById('fineCount').textContent=fine.length;
   const run=S.filter(x=>x.p>0);const P=run.reduce((a,x)=>a+x.p,0),E=run.reduce((a,x)=>a+x.e,0);document.getElementById('fleetPace').textContent=(P*6).toLocaleString();const fp=Math.round((P-E)/E*100);const el=document.getElementById('fleetPct');el.textContent=(fp>0?'+':'')+fp+'%';el.parentElement.className='stat '+(fp>=0?'up':'bad');
