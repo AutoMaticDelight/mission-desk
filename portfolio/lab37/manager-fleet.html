@@ -108,6 +108,12 @@ b,.stat b,.card .k b,.chip .p,.thr b{font-variant-numeric:tabular-nums}
 .chip .p{padding:12px 18px 10px 0}
 .chip .thr{grid-column:1/-1;justify-self:stretch;margin:0;border-radius:0;background:rgba(0,0,0,.38);padding:9px 18px 11px;justify-content:end}
 @media(orientation:portrait){.chip .nm{padding:9px 0 7px 12px}.chip .p{padding:9px 12px 7px 0}.chip .thr{padding:6px 12px 8px}}
+
+/* concept under the store name: small, not bold */
+.chip .nm small{display:block;font-size:14px;font-weight:500;color:rgba(255,255,255,.72);letter-spacing:.2px;margin-top:2px;text-transform:none}
+.chip .nm{line-height:1.05}
+.card .nm small{display:block;font-size:14px;font-weight:500;color:rgba(255,255,255,.75);margin-top:2px}
+@media(orientation:portrait){.chip .nm small{font-size:13px}}
 </style></head>
 <body>
   <header class="band">
@@ -150,13 +156,13 @@ const pct=x=>Math.round((x.p-x.e)/x.e*100);
 function render(){
   const now=S.filter(x=>x.s==='now'), watch=S.filter(x=>x.s==='watch'), fine=S.filter(x=>!x.s).sort((a,b)=>pct(a)-pct(b));
   document.getElementById('now').innerHTML=now.map(x=>`<button class="card" ${x.href?`onclick="location.href='${x.href}'"`:''}>
-    <div class="nm">${x.n}</div><div class="what">${x.what}</div>
+    <div class="nm">${x.n}<small>${x.c}</small></div><div class="what">${x.what}</div>
     <div class="k"><b>${x.k}</b><span>${x.l}</span></div>
     <div class="go">${x.go} →</div></button>`).join('');
   document.getElementById('watch').innerHTML=watch.map(x=>`<button class="card watch">
-    <div class="nm">${x.n}</div><div class="what">${x.what}</div>${x.p?`<div class="thrrow"><span><b>${x.p*6}</b><em>/hr</em></span><span><b>:${Math.round(600/x.p)}</b><em>ea</em></span></div>`:''}
+    <div class="nm">${x.n}<small>${x.c}</small></div><div class="what">${x.what}</div>${x.p?`<div class="thrrow"><span><b>${x.p*6}</b><em>/hr</em></span><span><b>:${Math.round(600/x.p)}</b><em>ea</em></span></div>`:''}
     <div class="k"><b>${x.l.includes('vs plan')?(x.k>0?'+':'')+x.k+'%':x.k}</b><span>${x.l.replace('% ','')}</span></div></button>`).join('');
-  document.getElementById('fine').innerHTML=fine.map(x=>{const d=pct(x);const hr=x.p*6, sec=Math.round(3600/hr);return `<div class="chip" title="${x.i}"><span class="nm">${x.n} <small>${x.c}</small></span><span class="p ${d<0?'down':''}">${d>0?'+':''}${d}%</span><span class="thr"><span><b>${hr}</b><em>/hr</em></span><span><b>:${sec}</b><em>ea</em></span></span></div>`;}).join('');
+  document.getElementById('fine').innerHTML=fine.map(x=>{const d=pct(x);const hr=x.p*6, sec=Math.round(3600/hr);return `<div class="chip" title="${x.i}"><span class="nm">${x.n}<small>${x.c}</small></span><span class="p ${d<0?'down':''}">${d>0?'+':''}${d}%</span><span class="thr"><span><b>${hr}</b><em>/hr</em></span><span><b>:${sec}</b><em>ea</em></span></span></div>`;}).join('');
   document.getElementById('needCount').textContent=now.length;document.getElementById('active').innerHTML=S.filter(x=>x.p>0).length+'<small>/'+S.length+'</small>';
   document.getElementById('watchCount').textContent=watch.length;
   document.getElementById('fineCount').textContent=fine.length;
