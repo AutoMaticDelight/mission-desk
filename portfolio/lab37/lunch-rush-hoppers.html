@@ -3,191 +3,62 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Lab37 - Lunch Rush · Hoppers</title>
+<title>Lab37 - Lunch Rush + Hoppers</title>
 <style>
-:root{--ink:#19251e;--muted:#5f7066;--black:#101914;--lime:#cfff3e;--line:#c9d3cb;--panel:#f4f7f3;--page:#dfe5de;--ok:#155e43;--ok-bg:#d9f0e2;--low:#b86a00;--low-bg:#ffe7bf;--now:#c8320f;--now-bg:#ffd9cc;--held:#4b5a51;--held-bg:#d7ded8;--shadow:0 18px 50px rgba(7,12,9,.18)}
-*{box-sizing:border-box}
-body{margin:0;background:var(--page);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
-.app{min-height:100vh;padding:18px;display:grid;grid-template-columns:68px 1fr;gap:18px}
-.rail{border-radius:19px;background:var(--black);padding:13px 10px;display:flex;align-items:center;flex-direction:column;gap:13px}
-.logo{width:39px;height:39px;border-radius:12px;background:var(--lime);color:#102016;font-weight:950;font-size:12px;display:grid;place-items:center;margin-bottom:18px}
-.rail button{height:40px;width:40px;border:0;border-radius:11px;color:#93a59a;background:transparent;font-size:16px}
-.rail button.active{background:#294738;color:var(--lime)}
-.rail div:last-child{margin-top:auto}
-.main{width:100%;max-width:1600px;margin:auto;display:flex;flex-direction:column;gap:14px;min-height:calc(100vh - 36px)}
-.top{height:52px;display:flex;align-items:center;justify-content:space-between;color:#26382d}
-.location{display:flex;align-items:center;gap:10px;font-size:13px;font-weight:750}
-.location b{font-size:16px;letter-spacing:-.5px}
-.tag{font-size:10px;letter-spacing:1px;font-weight:900;color:#496050;background:#cfd9d0;padding:6px 9px;border-radius:20px}
-.live{font-size:12px;font-weight:750;color:#3a7252;display:flex;align-items:center;gap:8px}
-.live i{height:8px;width:8px;border-radius:50%;background:#12b56b;box-shadow:0 0 0 4px #c9efda}
-/* headline strip */
-.head{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;flex-wrap:wrap}
-.head h1{margin:0;font-size:clamp(30px,3.6vw,52px);line-height:.95;letter-spacing:-.05em}
-.head h1 span{color:var(--now)}
-.head .clock{font-size:clamp(16px,1.6vw,22px);font-weight:800;color:var(--muted);text-align:right}
-.head .clock b{display:block;color:var(--ink);font-size:clamp(22px,2.4vw,34px);letter-spacing:-.04em}
-/* big hoppers */
-.big{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;flex:1 1 auto}
-.hopper{background:var(--panel);border-radius:22px;padding:22px 24px;display:grid;grid-template-columns:minmax(0,1fr) 64px;grid-template-rows:auto 1fr auto;gap:10px 18px;min-height:min(40vh,440px);box-shadow:var(--shadow);border:4px solid transparent;text-align:left;color:inherit;font:inherit;cursor:pointer;transition:transform .12s}
-.hopper:hover{transform:translateY(-2px)}
-.hopper.now{border-color:var(--now);background:#fff3ee}
-.hopper.low{border-color:var(--low);background:#fff8ea}
-.hopper.held{background:var(--held-bg)}
-.hopper .name{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;gap:12px}
-.hopper .name b{font-size:clamp(30px,3.4vw,54px);letter-spacing:-.05em;line-height:.95}
-.pill{display:inline-flex;align-items:center;gap:8px;border-radius:999px;padding:8px 14px;font-weight:950;font-size:clamp(14px,1.3vw,20px);letter-spacing:.06em;text-transform:uppercase;white-space:nowrap}
-.pill i{font-style:normal;font-size:1.1em;line-height:1}
-.pill.ok{background:var(--ok);color:#fff}
-.pill.low{background:var(--low-bg);color:var(--low)}
-.pill.now{background:var(--now);color:#fff}
-.pill.held{background:var(--held);color:#fff}
-.hopper .min{align-self:end}
-.hopper .min b{display:block;font-size:clamp(72px,8vw,128px);line-height:.82;letter-spacing:-.08em}
-.hopper .min span{display:block;margin-top:10px;font-size:clamp(13px,1.2vw,18px);font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
-.hopper.now .min b{color:var(--now)}
-.hopper.low .min b{color:var(--low)}
-.hopper.held .min b{color:var(--held);font-size:clamp(44px,5vw,80px);line-height:1}
-.gauge{grid-row:2/4;grid-column:2;display:flex;flex-direction:column;align-items:center;gap:8px}
-.gauge .bar{flex:1;width:100%;min-height:160px;border-radius:14px;background:#cfd8d0;position:relative;overflow:hidden;border:3px solid #b7c2b9}
-.gauge .fill{position:absolute;left:0;right:0;bottom:0;background:var(--ok);transition:height .6s}
-.hopper.low .gauge .fill{background:var(--low)}
-.hopper.now .gauge .fill{background:var(--now)}
-.hopper.held .gauge .fill{background:var(--held)}
-.gauge .pct{font-size:clamp(16px,1.5vw,22px);font-weight:950;letter-spacing:-.03em}
-.hopper .next{grid-column:1;align-self:end;font-size:clamp(15px,1.4vw,21px);font-weight:750;color:var(--ink);line-height:1.25;border-top:3px solid var(--line);padding-top:12px}
-.hopper .next small{display:block;font-size:.72em;color:var(--muted);font-weight:800;letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px}
-/* condiments strip */
-.small-head{display:flex;align-items:baseline;justify-content:space-between;margin-top:4px}
-.small-head b{font-size:clamp(13px,1.1vw,16px);letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:900}
-.small-head span{font-size:clamp(13px,1.1vw,16px);font-weight:800;color:var(--muted)}
-.strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
-.cond{background:var(--panel);border-radius:14px;padding:12px 14px 12px;display:grid;gap:8px;border:3px solid transparent;text-align:left;color:inherit;font:inherit;cursor:pointer;min-height:92px}
-.cond.low{border-color:var(--low);background:#fff8ea}
-.cond.now{border-color:var(--now);background:#fff3ee}
-.cond.held{background:var(--held-bg)}
-.cond .row{display:flex;align-items:baseline;justify-content:space-between;gap:8px;flex-wrap:wrap}
-.cond .row b{font-size:clamp(18px,1.5vw,24px);letter-spacing:-.04em;line-height:1;flex:1 1 auto}
-.cond .row span{font-size:clamp(16px,1.5vw,24px);font-weight:950;letter-spacing:-.03em;white-space:nowrap}
-.cond.ok .row span{color:var(--ok)}
-.cond.low .row span{color:var(--low)}
-.cond.now .row span{color:var(--now)}
-.cond.held .row span{color:var(--held);font-size:clamp(13px,1.1vw,16px);letter-spacing:.08em}
-.cond .hbar{height:12px;border-radius:8px;background:#cfd8d0;overflow:hidden;border:2px solid #b7c2b9}
-.cond .hbar i{display:block;height:100%;background:var(--ok);transition:width .6s}
-.cond.low .hbar i{background:var(--low)}
-.cond.now .hbar i{background:var(--now)}
-.cond.held .hbar i{background:var(--held)}
-/* refill queue */
-.queue{background:var(--black);color:#fff;border-radius:18px;padding:16px 22px;display:flex;align-items:center;gap:22px;flex-wrap:wrap}
-.queue .lbl{font-size:clamp(12px,1vw,15px);font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:#93a59a}
-#queue{display:flex;align-items:baseline;gap:18px;flex-wrap:wrap}
-.queue .item{display:inline-flex;align-items:baseline;gap:10px}
-.queue .item b{font-size:clamp(20px,2vw,30px);letter-spacing:-.04em}
-.queue .item span{font-size:clamp(14px,1.3vw,20px);font-weight:900;color:var(--lime)}
-.queue .item.now span{color:#ff8d6a}
-.queue .who{margin-left:auto;font-size:clamp(13px,1.2vw,17px);font-weight:750;color:#c7d1ca}
-/* sheet (glove.css takes over) */
-.overlay{position:fixed;inset:0;background:rgba(6,12,8,.63);display:none;align-items:flex-end;justify-content:center;padding:20px;z-index:10}
-.overlay.show{display:flex}
-.sheet{background:#f8faf7;color:#18231c;width:min(800px,100%);border-radius:21px;padding:25px;box-shadow:var(--shadow)}
-.handle{height:5px;width:52px;border-radius:5px;background:#d5ded6;margin:-5px auto 22px}
-.sheet .eyebrow{font-size:11px;font-weight:900;letter-spacing:1.2px;text-transform:uppercase;color:#6b7b70}
-.sheet h2{font-size:clamp(28px,4vw,42px);line-height:.98;letter-spacing:-.06em;margin:8px 0 11px}
-.sheet p{margin:0;color:#617067;font-size:15px;line-height:1.4}
-.effects{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:18px 0}
-.effect{border:1px solid #d5ddd5;background:#fff;border-radius:11px;padding:13px}
-.effect b{font-size:13px;display:block}.effect span{display:block;color:#68756c;font-size:12px;margin-top:3px}
-.sheet-actions{display:flex;gap:10px;justify-content:flex-end}
-.sheet button{border-radius:11px;padding:15px 18px;font-weight:900;font-size:14px}
-.back{background:#fff;border:1px solid #cbd5cd;color:#324239}
-.confirm{background:var(--lime);border:0;color:#142217}
-.toast{position:fixed;right:23px;bottom:23px;z-index:20;background:#143727;color:#fff;border-radius:14px;padding:17px 19px;box-shadow:var(--shadow);display:none;max-width:360px}
-.toast.show{display:block}.toast b{display:block;font-size:16px}.toast span{font-size:12px;color:#c6daca;display:block;margin-top:3px}
-@media(max-width:1000px){.big{grid-template-columns:1fr 1fr}.hopper:first-child{grid-column:1/-1;min-height:300px}}
-@media(max-width:820px){.app{padding:10px;display:block}.rail{display:none}.main{min-height:0}.big{grid-template-columns:1fr}.hopper{min-height:240px;padding:18px}.hopper:first-child{grid-column:auto}.hopper .min b{font-size:76px}.gauge .bar{min-height:110px}.strip{grid-template-columns:1fr 1fr}.queue{gap:12px 18px}.queue .who{margin-left:0;width:100%}}
+:root{--ink:#f5f8f4;--muted:#a8b7ad;--black:#101914;--black2:#17231c;--lime:#cfff3e;--lime2:#e1ff82;--orange:#ff7a1a;--line:#34483b;--panel:#ecf0eb;--green:#155e43;--shadow:0 26px 70px rgba(7,12,9,.35)}*{box-sizing:border-box}body{margin:0;background:#dfe5de;color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}.app{min-height:100vh;padding:18px;display:grid;grid-template-columns:68px 1fr;gap:18px}.rail{border-radius:19px;background:var(--black);padding:13px 10px;display:flex;align-items:center;flex-direction:column;gap:13px}.logo{width:39px;height:39px;border-radius:12px;background:var(--lime);color:#102016;font-weight:950;font-size:12px;display:grid;place-items:center;margin-bottom:18px}.rail button{height:40px;width:40px;border:0;border-radius:11px;color:#93a59a;background:transparent;font-size:16px}.rail button.active{background:#294738;color:var(--lime)}.rail div:last-child{margin-top:auto}.main{width:100%;max-width:1480px;margin:auto}.top{height:52px;display:flex;align-items:center;justify-content:space-between;color:#26382d}.location{display:flex;align-items:center;gap:10px;font-size:13px;font-weight:750}.location b{font-size:16px;letter-spacing:-.5px}.tag{font-size:10px;letter-spacing:1px;font-weight:900;color:#496050;background:#cfd9d0;padding:6px 9px;border-radius:20px}.live{font-size:12px;font-weight:750;color:#3a7252;display:flex;align-items:center;gap:8px}.live i{height:8px;width:8px;border-radius:50%;background:#12b56b;box-shadow:0 0 0 4px #c9efda}.hero{min-height:630px;border-radius:25px;background:var(--black);position:relative;overflow:hidden;padding:42px clamp(28px,5vw,76px);box-shadow:var(--shadow);display:flex;flex-direction:column}.hero:before{content:"";position:absolute;right:-120px;top:-210px;width:570px;height:570px;border:75px solid rgba(207,255,62,.12);border-radius:50%}.hero:after{content:"";position:absolute;left:0;right:0;bottom:0;height:190px;background:linear-gradient(transparent,#0b120e)}.hero>*{position:relative;z-index:1}.status{color:#ffc08d;font-weight:900;text-transform:uppercase;letter-spacing:1.4px;font-size:12px;display:flex;gap:9px;align-items:center}.status i{height:10px;width:10px;border-radius:50%;background:var(--orange);box-shadow:0 0 0 6px rgba(255,122,26,.14)}h1{max-width:920px;font-size:clamp(44px,6.7vw,94px);line-height:.9;letter-spacing:-.07em;margin:30px 0 17px}h1 span{color:var(--lime)}.one-line{font-size:clamp(17px,2vw,25px);line-height:1.25;color:#c7d1ca;max-width:780px;margin:0}.numbers{display:flex;gap:50px;margin:38px 0 31px}.number{min-width:152px}.number b{font-size:clamp(43px,5.2vw,71px);line-height:.8;letter-spacing:-.07em;display:block;color:#fff}.number:first-child b{color:var(--lime)}.number span{display:block;font-size:12px;font-weight:850;text-transform:uppercase;letter-spacing:1.1px;color:#94a59a;margin-top:12px}.primary{border:0;background:var(--lime);color:#112116;border-radius:15px;min-height:106px;width:min(100%,850px);padding:20px 27px;display:flex;align-items:center;justify-content:space-between;text-align:left;font-weight:950;box-shadow:0 9px 0 #8caf20,0 15px 35px rgba(186,248,40,.23);transition:.14s}.primary:hover{transform:translateY(-3px);background:var(--lime2);box-shadow:0 12px 0 #8caf20,0 22px 42px rgba(186,248,40,.28)}.primary .action{font-size:clamp(22px,3vw,35px);letter-spacing:-.05em;line-height:1}.primary .hint{font-size:13px;margin-top:7px;font-weight:750;color:#3d5b25}.primary .arrow{font-size:44px;font-weight:400;line-height:1}.safe{margin-top:26px;display:flex;align-items:center;gap:9px;color:#b5c5ba;font-size:13px;font-weight:650}.safe i{height:22px;width:22px;border-radius:50%;display:grid;place-items:center;background:#204c36;color:var(--lime);font-style:normal;font-size:13px}.bottom{margin-top:18px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:13px}.action-card{min-height:120px;background:var(--panel);color:#19251e;border:0;border-radius:16px;padding:18px;text-align:left;position:relative;transition:.15s}.action-card:hover{transform:translateY(-2px);box-shadow:0 12px 23px rgba(18,34,23,.16)}.action-card .small{font-size:10px;font-weight:900;letter-spacing:1px;text-transform:uppercase;color:#6b7c71}.action-card b{font-size:19px;line-height:1.04;letter-spacing:-.04em;display:block;margin-top:8px;max-width:190px}.action-card span{position:absolute;right:16px;bottom:13px;font-size:21px;color:var(--green)}.action-card.dim{background:#ced6cf;color:#344238}.action-card.dim b{font-size:16px}.overlay{position:fixed;inset:0;background:rgba(6,12,8,.63);display:none;align-items:flex-end;justify-content:center;padding:20px;z-index:10}.overlay.show{display:flex}.sheet{background:#f8faf7;color:#18231c;width:min(800px,100%);border-radius:21px;padding:25px;box-shadow:var(--shadow);animation:slide .18s ease-out}@keyframes slide{from{opacity:.2;transform:translateY(25px)}to{opacity:1;transform:none}}.handle{height:5px;width:52px;border-radius:5px;background:#d5ded6;margin:-5px auto 22px}.sheet .eyebrow{font-size:11px;font-weight:900;letter-spacing:1.2px;text-transform:uppercase;color:#6b7b70}.sheet h2{font-size:clamp(28px,4vw,42px);line-height:.98;letter-spacing:-.06em;margin:8px 0 11px}.sheet p{margin:0;color:#617067;font-size:15px;line-height:1.4}.effects{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:18px 0}.effect{border:1px solid #d5ddd5;background:#fff;border-radius:11px;padding:13px}.effect b{font-size:13px;display:block}.effect span{display:block;color:#68756c;font-size:12px;margin-top:3px}.sheet-actions{display:flex;gap:10px;justify-content:flex-end}.sheet button{border-radius:11px;padding:15px 18px;font-weight:900;font-size:14px}.back{background:#fff;border:1px solid #cbd5cd;color:#324239}.confirm{background:var(--lime);border:0;color:#142217}.toast{position:fixed;right:23px;bottom:23px;z-index:20;background:#143727;color:#fff;border-radius:14px;padding:17px 19px;box-shadow:var(--shadow);display:none;max-width:360px}.toast.show{display:block}.toast b{display:block;font-size:16px}.toast span{font-size:12px;color:#c6daca;display:block;margin-top:3px}@media(max-width:820px){.app{padding:10px;display:block}.rail{display:none}.top{padding:0 5px}.hero{min-height:590px;padding:31px 23px}.numbers{gap:23px;margin:34px 0}.number{min-width:0}.number:nth-child(3){display:none}.primary{min-height:118px;padding:20px}.bottom{grid-template-columns:1fr 1fr}.action-card:last-child{grid-column:span 2}.effects{grid-template-columns:1fr}.sheet-actions{margin-top:4px}.sheet-actions button{flex:1}}
+
+/* quick view: hoppers, one thin strip, readable from a step back */
+.hop{display:grid;grid-template-columns:repeat(3,minmax(0,1fr)) minmax(0,1.6fr);gap:8px;margin:0 0 12px}
+.h{background:var(--panel);color:#19251e;border-radius:12px;padding:9px 12px;display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-rows:auto auto;gap:2px 10px;align-items:center;border:2px solid transparent;min-height:66px}
+.h.low{border-color:#b86a00;background:#fff6e3}.h.now{border-color:#c8320f;background:#ffede6}
+.h .n{grid-column:1;grid-row:1;font-size:14px;font-weight:900;letter-spacing:-.02em}
+.h .m{grid-column:2;grid-row:1/3;font-size:30px;font-weight:950;letter-spacing:-.06em;line-height:.9;text-align:right}
+.h.low .m{color:#b86a00}.h.now .m{color:#c8320f}
+.h .m small{display:block;font-size:9px;letter-spacing:1.1px;font-weight:900;color:#6b7c71;margin-top:3px;text-align:right}
+.h .b{grid-column:1;grid-row:2;height:7px;border-radius:5px;background:#c9d3cb;overflow:hidden}.h .b i{display:block;height:100%;background:#155e43}
+.h.low .b i{background:#b86a00}.h.now .b i{background:#c8320f}
+.c{background:var(--panel);border-radius:12px;padding:8px 10px;display:flex;flex-wrap:wrap;gap:5px 6px;align-content:center;min-height:66px}
+.chip{display:inline-flex;align-items:center;gap:6px;height:24px;padding:0 8px;border-radius:999px;background:#dfe6df;color:#19251e;font-size:12px;font-weight:850;white-space:nowrap}
+.chip i{width:8px;height:8px;border-radius:50%;background:#155e43;font-style:normal}
+.chip.low{background:#ffe7bf;color:#8a4f00}.chip.low i{background:#b86a00}
+.chip.now{background:#ffd9cc;color:#a02508}.chip.now i{background:#c8320f}
+.chip.held{background:#cfd6d0;color:#4b5a51}.chip.held i{background:#4b5a51}
+@media(max-width:820px){.hop{grid-template-columns:1fr 1fr}.c{grid-column:1/-1;min-height:0}}
 </style>
 <link rel="stylesheet" href="glove.css"></head>
 <body>
 <div class="app">
-  <aside class="rail"><div class="logo">L37</div><button>⌁</button><button class="active">◌</button><button>⇄</button><button>◫</button><div><button>?</button></div></aside>
+  <aside class="rail"><div class="logo">L37</div><button class="active">⌁</button><button>◌</button><button>⇄</button><button>◫</button><div><button>?</button></div></aside>
   <main class="main">
     <header class="top"><div class="location"><b>lab37</b><span>/ Uptown Bowl</span><span class="tag">LUNCH RUSH</span></div><div class="live"><i></i>LIVE</div></header>
-    <div class="head">
-      <h1>Hoppers.<br><span id="headline">Beef runs out in 6 minutes.</span></h1>
-      <div class="clock">Rush pace<b id="pace">38 bowls / 10 min</b></div>
-    </div>
-    <section class="big" id="big"></section>
-    <div class="small-head"><b>Toppings &amp; sauces</b><span>Minutes left at this pace · ✓ = more than 20</span></div>
-    <section class="strip" id="strip"></section>
-    <footer class="queue"><span class="lbl">Refill next</span><span id="queue"></span><span class="who">Maya is on hoppers · walk-in is 40 ft</span></footer>
+    <section class="hop" id="hop"></section>
+    <section class="hero">
+      <div class="status"><i></i>Action needed now</div>
+      <h1><span>7 orders.</span><br>Move them now.</h1>
+      <p class="one-line">Quinoa is under-dispensing at Bowl Builder 02.</p>
+      <div class="numbers"><div class="number"><b>7</b><span>Orders to protect</span></div><div class="number"><b>4 MIN</b><span>Until guests wait</span></div><div class="number"><b>12</b><span>Open slots at Bowl 2</span></div></div>
+      <button class="primary" onclick="openSheet('reroute')"><div><div class="action">REROUTE TO CHICKEN BOWL 2</div><div class="hint">Protect every order · Start now</div></div><div class="arrow">→</div></button>
+      <div class="safe"><i>✓</i>Other recipes are still running</div>
+    </section>
+    <section class="bottom">
+      <button class="action-card" onclick="openSheet('tech')"><div class="small">Next best action</div><b>Send tech<br>to recalibrate</b><span>→</span></button>
+      <button class="action-card" onclick="openSheet('fix')"><div class="small">At the machine</div><b>Quick<br>fix now</b><span>→</span></button>
+      <button class="action-card dim" onclick="openSheet('engineering')"><div class="small">Background</div><b>Alert Engineering<br>and log event</b><span>→</span></button>
+    </section>
   </main>
 </div>
 <div class="overlay" id="overlay"><div class="sheet"><div class="handle"></div><div class="eyebrow" id="sheetLabel"></div><h2 id="sheetTitle"></h2><p id="sheetText"></p><div class="effects" id="effects"></div><div class="sheet-actions"><button class="back" onclick="closeSheet()">BACK</button><button class="confirm" id="confirm" onclick="commit()"></button></div></div></div>
 <div class="toast" id="toast"><b id="toastTitle"></b><span id="toastText"></span></div>
 <script>
-/* level = % full in the hopper. burn = % per minute at the current rush pace. minutes = level / burn. */
-const BIG=[
-  {id:'chicken',name:'Chicken',level:64,burn:2.1,refill:'2 hotel pans · reach-in 1',who:'Maya'},
-  {id:'rice',   name:'Rice',   level:41,burn:2.9,refill:'1 batch · rice cooker 2 ready 12:31',who:'Maya'},
-  {id:'beef',   name:'Beef',   level:17,burn:2.8,refill:'1 hotel pan · walk-in, rear left',who:'Maya'},
-];
-const SMALL=[
-  {id:'quinoa',name:'Quinoa',level:58,burn:1.2,held:true,note:'Under-dispensing · held'},
-  {id:'beans',name:'Black beans',level:70,burn:1.5},
-  {id:'corn',name:'Corn',level:35,burn:1.6},
-  {id:'pico',name:'Pico',level:22,burn:1.9},
-  {id:'guac',name:'Guac',level:15,burn:1.7},
-  {id:'cheese',name:'Cheese',level:80,burn:1.4},
-  {id:'crema',name:'Crema',level:66,burn:1.0},
-  {id:'lettuce',name:'Lettuce',level:48,burn:1.3},
-  {id:'verde',name:'Salsa verde',level:73,burn:0.9},
-  {id:'chipotle',name:'Chipotle',level:30,burn:1.1},
-  {id:'cilantro',name:'Cilantro',level:52,burn:0.8},
-  {id:'lime',name:'Lime',level:90,burn:0.5},
-];
-const ALL=[...BIG,...SMALL];
-const mins=x=>Math.max(0,Math.round(x.level/x.burn));
-const state=x=> x.held?'held' : mins(x)<8?'now' : mins(x)<20?'low':'ok';
-const WORD={ok:['✓','OK'],low:['▲','Low'],now:['●','Refill now'],held:['■','Held']};
-function pill(x){const s=state(x);return `<span class="pill ${s}"><i>${WORD[s][0]}</i>${WORD[s][1]}</span>`;}
-function renderBig(){
-  document.getElementById('big').innerHTML=BIG.map(x=>{const s=state(x),m=mins(x);return `<button class="hopper ${s}" onclick="openSheet('${x.id}')">
-    <div class="name"><b>${x.name}</b>${pill(x)}</div>
-    <div class="min"><b>${x.held?'HELD':m}</b><span>${x.held?'not dispensing':'min left'}</span></div>
-    <div class="gauge"><div class="bar"><div class="fill" style="height:${x.level}%"></div></div><div class="pct">${x.level}%</div></div>
-    <div class="next"><small>Refill</small>${x.refill}</div>
-  </button>`;}).join('');
-}
-function renderSmall(){
-  document.getElementById('strip').innerHTML=SMALL.map(x=>{const s=state(x),m=mins(x);return `<button class="cond ${s}" onclick="openSheet('${x.id}')">
-    <div class="row"><b>${x.name}</b><span>${x.held?'HELD':s==='ok'?'✓':m+' min'}</span></div>
-    <div class="hbar"><i style="width:${x.level}%"></i></div>
-  </button>`;}).join('');
-}
-function renderQueue(){
-  const q=ALL.filter(x=>!x.held).sort((a,b)=>mins(a)-mins(b)).slice(0,4);
-  document.getElementById('queue').innerHTML=q.map(x=>`<span class="item ${state(x)}"><b>${x.name}</b><span>${mins(x)} min</span></span>`).join('<span style="opacity:.35">·</span>');
-  const worst=q[0];document.getElementById('headline').textContent=`${worst.name} runs out in ${mins(worst)} minutes.`;
-}
-function render(){renderBig();renderSmall();renderQueue();}
-render();
-/* live: hoppers drain at the rush pace */
-setInterval(()=>{ALL.forEach(x=>{if(!x.held)x.level=Math.max(0,+(x.level-x.burn/6).toFixed(1));});render();},10000);
-/* sheets */
-let selected='';
-function openSheet(id){selected=id;const x=ALL.find(a=>a.id===id);const s=state(x);
-  sheetLabel.textContent=x.held?'Machine hold':'Refill';
-  sheetTitle.textContent=x.held?`Release ${x.name} after the check?`:`Refill ${x.name} now?`;
-  sheetText.textContent=x.held?'Quinoa is held because three portions came in under target. A quick fix is two steps at the machine.':`${x.level}% full. About ${mins(x)} minutes at this pace. ${x.refill||'Backup is in the reach-in.'}`;
-  effects.innerHTML=(x.held?[['Machine','Bowl Builder 02 stays safe. Other recipes keep running'],['Guests','7 quinoa orders rerouted to Chicken Bowl 2']]:[['Who',(x.who||'Maya')+' gets the task on the crew screen'],['Service','Hopper keeps dispensing during the swap']]).map(a=>'<div class="effect"><b>'+a[0]+'</b><span>'+a[1]+'</span></div>').join('');
-  document.getElementById('confirm').textContent=x.held?'START QUICK FIX':`SEND ${(x.who||'MAYA').toUpperCase()}`;
-  overlay.classList.add('show');}
-function closeSheet(){overlay.classList.remove('show')}
-function commit(){const x=ALL.find(a=>a.id===selected);closeSheet();
-  if(x.held){toastTitle.textContent='Quick fix started';toastText.textContent='Bowl Builder 02 is ready for the first check.';}
-  else{x.level=100;render();toastTitle.textContent=`${x.name} refill sent to ${x.who||'Maya'}`;toastText.textContent='Marked full when the swap is confirmed at the hopper.';}
-  toast.classList.add('show');setTimeout(()=>toast.classList.remove('show'),4300);}
+let selected='';const data={reroute:{label:'Protect service',title:'Move 7 orders to Chicken Bowl 2?',text:'Chicken Bowl 2 has enough capacity to take every affected order now.',effects:[['Guests','All 7 orders stay in the service window'],['Bowl Builder 02','Quinoa is held. Other recipes keep running']],button:'MOVE 7 ORDERS',done:'Orders moving now',sub:'Chicken Bowl 2 is taking the work. Guests stay on track.'},tech:{label:'Service task',title:'Send tech to recalibrate?',text:'The task includes the machine state, recipe, and evidence automatically.',effects:[['Task','Recalibrate quinoa dispenser'],['Timing','Before the next lunch rush']],button:'SEND TECH',done:'Tech dispatched',sub:'The calibration task is ready with the right context.'},fix:{label:'Safe quick fix',title:'Start the quick fix?',text:'The machine is safe. You will get two simple, on-screen steps.',effects:[['Step 1','Open the yellow quinoa panel'],['Step 2','Loosen quinoa, then run a test']],button:'START QUICK FIX',done:'Quick fix started',sub:'Bowl Builder 02 is ready for the first check.'},engineering:{label:'Fleet learning',title:'Alert Engineering?',text:'This event will be linked to the quinoa low-fill pattern without slowing service.',effects:[['Pattern','14 similar incidents across 4 sites'],['Context','Today’s event is attached automatically']],button:'ALERT ENGINEERING',done:'Engineering alerted',sub:'This incident is now part of the fleet reliability signal.'}};
+function openSheet(key){selected=key;const x=data[key];sheetLabel.textContent=x.label;sheetTitle.textContent=x.title;sheetText.textContent=x.text;effects.innerHTML=x.effects.map(a=>'<div class="effect"><b>'+a[0]+'</b><span>'+a[1]+'</span></div>').join('');document.getElementById('confirm').textContent=x.button;overlay.classList.add('show')}function closeSheet(){overlay.classList.remove('show')}function commit(){const x=data[selected];closeSheet();toastTitle.textContent=x.done;toastText.textContent=x.sub;toast.classList.add('show');setTimeout(()=>toast.classList.remove('show'),4300)}
+
+/* hoppers quick view: level % and burn %/min at this pace */
+const H=[{n:'Chicken',l:64,b:2.1},{n:'Rice',l:41,b:2.9},{n:'Beef',l:17,b:2.8}];
+const C=[{n:'Quinoa',held:1},{n:'Beans',l:70,b:1.5},{n:'Corn',l:35,b:1.6},{n:'Pico',l:22,b:1.9},{n:'Guac',l:15,b:1.7},{n:'Cheese',l:80,b:1.4},{n:'Crema',l:66,b:1},{n:'Lettuce',l:48,b:1.3},{n:'Verde',l:73,b:.9},{n:'Chipotle',l:30,b:1.1},{n:'Cilantro',l:52,b:.8},{n:'Lime',l:90,b:.5}];
+const mn=x=>Math.max(0,Math.round(x.l/x.b)), st=x=>x.held?'held':mn(x)<8?'now':mn(x)<20?'low':'ok';
+function hop(){document.getElementById('hop').innerHTML=H.map(x=>`<div class="h ${st(x)}"><div class="n">${x.n}</div><div class="m">${mn(x)}<small>MIN</small></div><div class="b"><i style="width:${x.l}%"></i></div></div>`).join('')+'<div class="c">'+C.map(x=>`<span class="chip ${st(x)}"><i></i>${x.n}${x.held?' · held':st(x)==='ok'?'':' '+mn(x)+'m'}</span>`).join('')+'</div>';}
+hop();setInterval(()=>{[...H,...C].forEach(x=>{if(!x.held)x.l=Math.max(0,x.l-x.b/6)});hop()},10000);
 </script>
 <script src="glove.js"></script></body>
 </html>
