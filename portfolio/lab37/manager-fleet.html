@@ -128,6 +128,17 @@ b,.stat b,.card .k b,.chip .p,.thr b{font-variant-numeric:tabular-nums}
   .card{padding:10px 16px 10px}
   .card.watch .nm small,.card .nm small{display:inline;margin-left:8px}
 }
+
+/* band never overlaps: sized to fit, children keep their content width */
+@media(orientation:landscape){
+  .band{gap:12px;padding:10px 18px}
+  .band>*{min-width:auto}
+  .where{font-size:20px}.when{font-size:16px}
+  .stat{padding-left:12px;gap:6px}.stat b{font-size:30px}.stat span{font-size:14px}
+}
+@media(orientation:landscape) and (max-height:820px){
+  .chip .nm small{display:none}
+}
 </style></head>
 <body>
   <header class="band">
