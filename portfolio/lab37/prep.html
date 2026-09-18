@@ -143,7 +143,7 @@ blockquote mark{background:var(--today-bg);color:var(--today);padding:0 3px;bord
     <div class="count" id="count"><span>Call</span><b id="countv">—</b></div>
   </div>
   <nav class="nav" id="nav" aria-label="Sections">
-    <a href="#about">About you</a><a href="#call">Call plan</a><a href="#posting">Posting</a><a href="#embedded">Embedded?</a><a href="#map">Keywords</a><a href="#say">Say this</a><a href="#vocab">Vocabulary</a><a href="#gaps">Gaps</a><a href="#proof">Proof</a><a href="#ask">Ask her</a>
+    <a href="#about">About you</a><a href="#call">Call plan</a><a href="#posting">Posting</a><a href="#embedded">Embedded?</a><a href="#map">Keywords</a><a href="#say">Say this</a><a href="#vocab">Vocabulary</a><a href="#gaps">Gaps</a><a href="#proof">Proof</a><a href="#panels">The panels</a><a href="#ask">Ask her</a>
   </nav>
 </header>
 
@@ -358,6 +358,27 @@ blockquote mark{background:var(--today-bg);color:var(--today);padding:0 3px;bord
     <div><span class="w">Acts</span><span>Five approved iterations on the web, then React Native and TestFlight in one day.</span></div>
     <div><span class="w">Bench</span><span>Two surfaces from one token set; instruments its own tap count and task time; public on GitHub.</span></div>
     <div><span class="w">MW3</span><span>$1B in 36 hours; the comment stream that followed video across Facebook, YouTube, and COD.com.</span></div>
+  </div>
+</section>
+
+<section id="panels">
+  <h2>The panels you built for this call</h2>
+  <p>A working prototype of a worker HMI and a manager console for a robotic bowl line, "Bowl Maker 5000". Open them on the iPad before the call. If she asks what you would do on day one, this is the answer.</p>
+  <div class="proof">
+    <div><span class="w">Worker · light</span><span><a href="lunch-rush-light.html">lunch-rush-light</a> — the one to show first.</span></div>
+    <div><span class="w">Worker · dark</span><span><a href="lunch-rush-hoppers.html">lunch-rush-hoppers</a> — same panel, dark skin.</span></div>
+    <div><span class="w">Manager</span><span><a href="manager-fleet.html">manager-fleet</a> — 20 stores, three questions, tap Uptown to drop into the worker panel.</span></div>
+  </div>
+  <h3>How to talk about it (the decisions, not the pixels)</h3>
+  <div class="proof">
+    <div><span class="w">One screen</span><span>Fits one iPad screen with no scroll, landscape and portrait, from 9.7-inch to 12.9-inch. <b>Fixed header, floating status card, fixed action dock.</b> A worker's eye learns where things live.</span></div>
+    <div><span class="w">HMI, not web</span><span>No small text (body 14px+, labels 13px+), no text selection, no double-tap zoom, every tappable thing is a 48–72pt <b>glove button</b>. "Send tech" is a button that opens a hold-to-confirm sheet, never a link.</span></div>
+    <div><span class="w">Status first</span><span>Top lockup = title bar + <b>machine-at-a-glance line</b> (every component, one dot, one word). Then the status card: all ingredients grouped by a <b>taxonomy</b> (proteins, bases, vegetables, sauces, dairy), mains bigger than toppings, each with a photo, a percent and a <b>refill-by forecast</b> from the Thursday lunch curve.</span></div>
+    <div><span class="w">Actions dock</span><span>Hooked to the bottom edge, edge to edge, dark. Left: what and where, plus two secondary buttons. Middle: <b>minutes-until-late is the hero</b>, the other two numbers under it. Right: one verb-specific action ("TAP TO START REROUTE"). The worker never has to decide what the button does.</span></div>
+    <div><span class="w">No red</span><span>Red fails for color-blind workers under kitchen light. <b>Needs-you-now is the hot yellow-green of the action button</b>; on the light panel the box itself goes dark with yellow numbers. Low is amber. Fine is green. The alert dot is hot orange so it never competes with the button.</span></div>
+    <div><span class="w">Progress bar is the message</span><span>The level fill is the primary signal; the number confirms it. Numbers that tick use tabular figures so nothing jitters. State changes ease; nothing snaps.</span></div>
+    <div><span class="w">Scripted shift</span><span>It's a scene, not a mock: quinoa under-dispenses, the worker reroutes, then a quick fix, a release, a door interlock, a cleaning cycle, then chicken runs low. Manager numbers drift live.</span></div>
+    <div><span class="w">Process</span><span>Built in one session from the job description: the worker asked for calm colors, one key fact per box, mains bigger than toppings, and a dock. Every revision was <b>verified on iPad sizes in the browser</b> before it shipped. The rules are written down (<a href="PANEL-DESIGN.md">PANEL-DESIGN.md</a>) so the next designer keeps them.</span></div>
   </div>
 </section>
 
