@@ -746,6 +746,28 @@ body{padding-left:20px;padding-right:20px}
 .bar.low,.bar.now{background:#1c1c1e;box-shadow:0 2px 8px rgba(0,0,0,.18)}.bar.now{box-shadow:inset 0 0 0 3px var(--hot),0 2px 8px rgba(0,0,0,.18)}
 .bar.held{background:#ededf0;box-shadow:0 0 0 1px rgba(0,0,0,.05)}
 .hoppers .sec::after{background:#e2e2e7}
+
+/* more variation: the card is a clear step down from the boxes; the boxes lift off it */
+body{background:#ececf1}
+.hoppers{background:#f1f1f5;box-shadow:0 0 0 1px rgba(0,0,0,.05)}
+.bar{background:linear-gradient(180deg,#ffffff 0%,#f7f7fa 100%);box-shadow:0 1px 2px rgba(0,0,0,.08),0 4px 10px rgba(0,0,0,.06),0 0 0 1px rgba(0,0,0,.07)}
+.bar.held{background:#e4e4e9;box-shadow:0 0 0 1px rgba(0,0,0,.05)}
+.bar.held .ph{opacity:.4}
+.top,.hoppers .sec::after{background:#fff}
+.hoppers .sec::after{background:#dcdce2}
+.top{box-shadow:0 1px 2px rgba(0,0,0,.05),0 0 0 1px rgba(0,0,0,.05)}
+
+/* ANOTHER WAY (?look=flat): white card, boxes are soft gray cells, no lift; the photos separate them */
+html[data-look="flat"] body{background:#f2f2f7}
+html[data-look="flat"] .hoppers{background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.04),0 0 0 1px rgba(0,0,0,.04)}
+html[data-look="flat"] .bar{background:#f3f3f7;box-shadow:none}
+html[data-look="flat"] .bar.held{background:#e9e9ee;box-shadow:none}
+html[data-look="flat"] .bar.low,html[data-look="flat"] .bar.now{background:#1c1c1e;box-shadow:none}
+html[data-look="flat"] .bar.now{box-shadow:inset 0 0 0 3px var(--hot)}
+html[data-look="flat"] .bar i{height:6px;border-radius:0 3px 3px 0}
+html[data-look="flat"] .big .bar i{height:8px}
+html[data-look="flat"] .ph{box-shadow:none}
+html[data-look="flat"] .hoppers .sec::after{background:#e5e5ea}
 </style>
 <link rel="stylesheet" href="glove.css"></head>
 <body>
@@ -810,7 +832,7 @@ function render(){
   const IMG={"chicken": "Grilled_Chicken_Breasts_(28905381261).jpg", "beef": "Slow_Cooker_Beef_Barbacoa_(32130811495).jpg", "rice": "Bowl_of_white_rice_02.jpg", "quinoa": "Quinoa_cuit.JPG", "beans": "Black_beans.jpg", "corn": "Up_close_image_of_corn.jpg", "pico": "Mmm..._Pico_de_Gallo_(5923456035).jpg", "lettuce": "Romaine_lettuce.jpg", "cilantro": "Coriander_01.jpg", "lime": "Lime_-_whole_and_halved.jpg", "guac": "Guacamole_bowl.jpg", "verde": "SALSA_VERDE.jpg", "chipotle": "Chipotlesenadobo.jpg", "crema": "Sour_Cream.jpg", "cheese": "Fine_Microplane_Grating_Hard_Cheese.jpg"};
   const img=x=>'https://commons.wikimedia.org/wiki/Special:FilePath/'+encodeURIComponent(IMG[x.n.toLowerCase()]||'')+'?width=400';
   const ph=x=>`<div class="ph" style="background-image:url('${img(x)}')"></div>`;
-  {const p=new URLSearchParams(location.search).get('photo'); const w=p===null?25:(parseInt(p,10)||0); document.documentElement.style.setProperty('--phw',w+'%'); document.documentElement.dataset.photo=w;}
+  {const p=new URLSearchParams(location.search).get('photo'); const w=p===null?25:(parseInt(p,10)||0); document.documentElement.style.setProperty('--phw',w+'%'); document.documentElement.dataset.photo=w; const lk=new URLSearchParams(location.search).get('look'); if(lk) document.documentElement.dataset.look=lk;}
   const bigBar=x=>`<div class="bar ${st(x)} ${x.just?'just':''}" ${x.held?'':`onclick="openSheet('refill:${x.n}')"`}>${ph(x)}<i style="--l:${x.held?0:x.l}"></i><div class="n">${x.n}</div><div class="m"><b>${x.held?'HELD':Math.round(x.l)+'%'}</b><span>${x.held?'not dispensing':x.just?'REFILLED · '+x.just:mn(x)+' MIN<br>REFILL '+refillClock(x)}</span></div></div>`;
   const smallBar=x=>{const z=st(x);return `<div class="bar ${z} ${x.just?'just':''}" onclick="openSheet('refill:${x.n}')">${ph(x)}<i style="--l:${x.l}"></i><div class="n">${x.n}</div><div class="v">${x.just?'REFILLED · '+x.just:Math.round(x.l)+'%<small> · '+refillClock(x)+'</small>'}</div></div>`;};
   document.getElementById('g-prot').innerHTML=H.filter(x=>x.g==='prot').map(bigBar).join('');
