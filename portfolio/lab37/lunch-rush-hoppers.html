@@ -632,6 +632,24 @@ body{grid-template-rows:auto auto minmax(0,1fr);align-content:stretch}
   .nums{display:flex;justify-content:center;align-items:flex-end;gap:26px;padding:0;text-align:center}
   .num:nth-child(2){order:0}
 }
+
+/* STATUS CARD: the whole status area sits on its own card */
+.hoppers{background:var(--panel);border-radius:18px;padding:14px 18px 18px;margin-top:10px}
+@media(orientation:portrait){.hoppers{padding:12px 14px 14px;margin-top:8px}}
+
+.hoppers{box-shadow:inset 0 0 0 1px rgba(255,255,255,.06)}
+.hoppers .sec{color:#fff}
+
+/* the card's padding is paid for by the boxes, not by the gap to Actions */
+@media(orientation:landscape){.big .bar{height:14vh}.tops .bar{height:9.5vh}}
+@media(orientation:landscape) and (max-height:800px){.big .bar{height:12vh}.tops .bar{height:8.5vh}.hoppers{padding:10px 14px 12px;margin-top:2px}}
+@media(orientation:portrait){
+  html:not([data-photo="0"]) .big .bar{height:11vh}
+  .tops .bar{height:34px}
+  .hoppers{padding:10px 12px 12px;margin-top:4px}
+  .go{min-height:64px}
+  .alert .more button{min-height:54px}
+}
 </style>
 <link rel="stylesheet" href="glove.css"></head>
 <body>
