@@ -83,6 +83,36 @@ rediscovering:
   to break at, so `white-space:normal` alone still overflowed the card
   edge instead of wrapping.
 
+## Card anatomy (Apple card language)
+Locked 2026-09-18. Every slot card, on every screen, is built the same
+way, in Apple-HIG spirit — two honest zones, nothing competing with
+anything else for attention:
+- **Name band, top.** Centered, bold, on its own — the one glanceable
+  fact (which ingredient this is) gets zero visual competition. Wraps to
+  two lines rather than truncating or shrinking; a bay's `#N` badge and
+  hot/cold dot sit as a quiet corner overlay (top-right, ~50% opacity),
+  never inline with the name.
+- **Photo, full-bleed, below it (worker panel only — recipe-development's
+  compact edit chips skip the photo, there's no room and no need for one
+  in a dev tool).** Edge to edge, no padding, so it reads as a real
+  photo of the product, not a thumbnail. The live percent and refill time
+  caption its own bottom edge in a legible dark scrim over the image,
+  never fight the photo for space above it. The recipe "SF" tag sits on
+  the photo's top-left corner.
+- **Level fill** is a thin (4px) bar at the card's own bottom edge,
+  growing left to right — still "the fill is the message," just anchored
+  to the whole card now instead of starting after a photo gutter.
+- **Corner radius 18px** on every card, every tier, both files — call it
+  the house radius. Status coloring (hot-lime ring for "needs you now,"
+  dark card for low/now, grayscale photo for held) still applies to the
+  whole card, unchanged from before this pass; only the internal anatomy
+  moved.
+
+This reads as one system precisely because nothing here is bespoke per
+ingredient or per tier — same two zones, same radius, same badge
+position, same caption treatment, whether it's a 2.5-gallon hopper or a
+32oz squeeze bottle.
+
 Files on the slot-map layout: `recipe-development.html` (the rack),
 `lunch-rush-light-slots.html` (worker panel — identical shape in both
 orientations, only card size/font scales). `lunch-rush-light.html` and

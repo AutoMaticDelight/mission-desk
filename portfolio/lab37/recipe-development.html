@@ -56,14 +56,15 @@ main{max-width:1320px;margin:0 auto;padding:20px;display:grid;grid-template-colu
 .rlabel b{display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--ink3);line-height:1.25}
 .rlabel small{display:block;font-size:10px;font-weight:600;color:var(--ink3);opacity:.65;margin-top:3px}
 .rcards{display:flex;gap:8px;flex-wrap:wrap}
-.slot{border-radius:12px;padding:10px 10px 9px;display:flex;flex-direction:column;justify-content:space-between;cursor:pointer;border:1px solid var(--line);background:var(--panel2)}
+/* same Apple card language as the worker panel: 18px radius, centered name, corner badge overlay */
+.slot{position:relative;border-radius:18px;padding:10px 8px;display:flex;align-items:center;justify-content:center;cursor:pointer;border:1px solid var(--line);background:var(--panel2)}
 .slot.sz-L{flex:0 0 22%;min-height:108px}
 .slot.sz-M{flex:0 0 14%;min-height:80px}
 .slot.sz-S{flex:0 0 8%;min-height:58px}
-.slot .head{display:flex;justify-content:space-between;align-items:flex-start;font-size:11px;color:var(--ink3)}
-.slot .dot{width:8px;height:8px;border-radius:50%;flex:none;margin-top:2px}
+.slot .head{position:absolute;top:8px;right:8px;display:flex;align-items:center;gap:4px;font-size:11px;color:var(--ink3)}
+.slot .dot{width:8px;height:8px;border-radius:50%;flex:none}
 .slot.hot .dot{background:var(--amber)}.slot.cold .dot{background:var(--blue)}.slot.swing .dot{background:var(--ink3)}
-.slot .nm{font-size:14px;font-weight:700;letter-spacing:-.01em;line-height:1.15}
+.slot .nm{font-size:14px;font-weight:700;letter-spacing:-.01em;line-height:1.2;text-align:center}
 .slot.open{border-style:dashed;background:#fff}
 .slot.open .nm{color:var(--ink3);font-weight:600}
 .slot.new{background:var(--greenbg);border-color:#bfe8cb}
