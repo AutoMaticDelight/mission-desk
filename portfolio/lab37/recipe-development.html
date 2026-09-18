@@ -227,7 +227,12 @@ let EDIT=null; // slot number currently being edited/added
 
 function bySlot(n){return SLOTS.find(s=>s.slot===n)}
 function filled(){return SLOTS.filter(s=>s.name)}
-function openSlots(){return SLOTS.filter(s=>s.t==='swing'&&!s.name)}
+function openSlots(){return SLOTS.filter(s=>!s.name)}
+// TIER: hardware fact, not a setting — the count of slots per size is fixed by how many exist in
+// SLOTS with that sz. 4 Hot Grain Hopper, 6 Loose-Scoop Bin, 8 Sauce Dispenser bays. Not fungible:
+// a row at capacity has no "+ Add" card because there is no unbuilt physical bay to add one into.
+const TIER_NAME={L:'Hot Grain Hopper',M:'Loose-Scoop Bin',S:'Sauce Dispenser'};
+const GROUP_OPTIONS={L:[['prot','Protein'],['base','Base']],M:[['veg','Vegetable'],['dai','Dairy']],S:[['veg','Vegetable / garnish'],['sau','Sauce'],['dai','Dairy']]};
 
 function loadPreset(which){
   const p=PRESETS[which];
@@ -253,26 +258,28 @@ function toggleSlot(n){
 function renderEditRow(s){
   const row=document.getElementById('editRow');
   row.style.display='block';
+  const tier=TIER_NAME[s.sz];
   if(s.name){
-    row.innerHTML=`<div class="picked">Slot ${s.slot} · <b>${s.name}</b> · ${s.t==='hot'?'hot-held':'cold-held'}</div>
+    const usedInTier=SLOTS.filter(x=>x.sz===s.sz&&x.name).length, maxInTier=SLOTS.filter(x=>x.sz===s.sz).length;
+    row.innerHTML=`<div class="picked">Slot ${s.slot} · <b>${s.name}</b> · ${s.t==='hot'?'hot-held':'cold-held'} · ${tier}</div>
       <div class="editform"><button class="rm" onclick="removeSlot(${s.slot})">Remove from machine</button><button onclick="EDIT=null;renderRack();document.getElementById('editRow').style.display='none'">Cancel</button></div>
-      <div class="hint">Frees this slot for the next line. Removing it also drops it from any recipe using it.</div>`;
+      <div class="hint">Frees this ${tier} bay (currently ${usedInTier}/${maxInTier} used) for something else the same size. The bay itself doesn't change size — there's no such thing as turning a bin into a hopper. Removing it also drops it from any recipe using it.</div>`;
   } else {
-    const open=openSlots().length;
-    row.innerHTML=`<div class="picked">Slot ${s.slot} is open — add a new ingredient</div>
+    const opts=GROUP_OPTIONS[s.sz].map(([v,l])=>`<option value="${v}">${l}</option>`).join('');
+    row.innerHTML=`<div class="picked">Slot ${s.slot} is an open <b>${tier}</b> bay</div>
       <div class="editform">
         <input id="newName" placeholder="Ingredient name" maxlength="20">
-        <select id="newGroup"><option value="veg">Vegetable</option><option value="sau">Sauce</option><option value="dai">Dairy</option><option value="prot">Protein</option><option value="base">Base</option></select>
+        <select id="newGroup">${opts}</select>
         <button onclick="addSlot(${s.slot})">Add to slot</button>
       </div>
-      <div class="hint">${open} swing slot${open===1?'':'s'} open right now. A swing slot ships wired cold; switching one to hot needs a technician retrofit — budget 30 min, not something to do mid-service.</div>`;
+      <div class="hint">Fixed at ${tier} size — it can only hold what a ${tier.toLowerCase()} dispenses. Hot Grain Hopper and Loose-Scoop Bin are both already at capacity (4/4, 6/6); to put something new there, remove one first — there's no 5th hopper to add.</div>`;
   }
 }
 
 function removeSlot(n){
   const s=bySlot(n);
   const nm=s.name;
-  s.name=null; s.g=null; s.t='swing'; s.sz='S';
+  s.name=null; s.g=null; s.t='swing';
   delete SEL[nm];
   EDIT=null;
   document.getElementById('editRow').style.display='none';
@@ -285,7 +292,6 @@ function addSlot(n){
   if(!name) return;
   const s=bySlot(n);
   s.name=name; s.g=grpEl.value; s.t=(grpEl.value==='prot'||grpEl.value==='base')?'hot':'cold';
-  s.sz='S';
   s.isNew=true;
   EDIT=null;
   document.getElementById('editRow').style.display='none';
@@ -305,14 +311,14 @@ function renderRack(){
   };
   let html='';
   SIZE_TIERS.forEach(([tier,label,cap])=>{
-    const row=SLOTS.filter(s=>s.t!=='swing'&&s.sz===tier);
-    if(row.length) html+=`<div class="rrow"><div class="rlabel"><b>${label}</b><small>Holds ${cap}</small></div><div class="rcards">${row.map(slotCard).join('')}</div></div>`;
+    const row=SLOTS.filter(s=>s.sz===tier); // filled AND open bays of this size — the row IS the tier
+    const used=row.filter(s=>s.name).length;
+    const full=used===row.length;
+    html+=`<div class="rrow"><div class="rlabel"><b>${label}</b><small>${used}/${row.length}${full?' · full':''}</small><small>Holds ${cap}</small></div><div class="rcards">${row.map(slotCard).join('')}</div></div>`;
   });
-  const openRow=SLOTS.filter(s=>s.t==='swing');
-  html+=`<div class="rrow"><div class="rlabel"><b>Open</b></div><div class="rcards">${openRow.map(slotCard).join('')}</div></div>`;
   document.getElementById('rack').innerHTML=html;
   const used=filled().length, open=openSlots().length;
-  document.getElementById('capNote').innerHTML=`<b>${used}/18</b> slots loaded · <b>${open}</b> open. Standard build is 16 (4 mains, 12 toppings) — the 2 swing slots are what let a store trial something new without a full retrofit.`;
+  document.getElementById('capNote').innerHTML=`<b>${used}/18</b> bays loaded · <b>${open}</b> open — both in the Sauce Dispenser row. 4 Hot Grain Hopper and 6 Loose-Scoop Bin bays are fixed counts, always full; the 8 Sauce Dispenser bays are where a store has room to trial something new.`;
 }
 
 function toggleIngredient(name){

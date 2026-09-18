@@ -1023,16 +1023,21 @@ function render(){
     const z=st(x);
     return `<div class="bar slot sz-${x.sz} ${temp(x)} ${z} ${x.just?'just':''} ${x.n.length>=8?'long':''}" ${x.held?'':`onclick="openSheet('refill:${x.n}')"`}>${ph(x)}${inRecipe(x)?'<em class="rc-tag">SF</em>':''}<i style="--l:${x.held?0:x.l}"></i><div class="head"><span>#${x._slot}</span><span class="dot"></span></div><div class="n">${x.n}</div><div class="v">${x.held?'HELD':Math.round(x.l)+'%'}<small> · ${x.held?'not dispensing':x.just?'REFILLED':refillClock(x)}</small></div></div>`;
   };
-  // DISPLAY: reordered by size tier (L row 1, then M, then S, then Open) — array order no longer
-  // matches ALL's category order, so build the render sequence once and reuse it for the fast-path
-  // --l update below, or the two would drift out of sync.
+  // DISPLAY: reordered by size tier (L, then M, then S — the 2 open bays live inside the S row,
+  // not a separate row: they're Sauce Dispenser bays, physically). Array order no longer matches
+  // ALL's category order, so build the render sequence once and reuse it for the fast-path --l
+  // update below, or the two would drift out of sync.
   const OPEN=[{open:1,sz:'S',_slot:17},{open:1,sz:'S',_slot:18}];
   const DISPLAY=[...ALL.filter(x=>x.sz==='L'),...ALL.filter(x=>x.sz==='M'),...ALL.filter(x=>x.sz==='S'),...OPEN];
-  // capacity is per dispenser (one hopper/bin/bottle), not per row
+  // capacity is per dispenser (one hopper/bin/bottle), not per row. Counts are fixed hardware —
+  // Hot Grain Hopper and Loose-Scoop Bin are always full; only Sauce Dispenser has open bays.
   const ROWS=[['L','Hot Grain Hopper','≈ 2.5 gal'],['M','Loose-Scoop Bin','≈ 175 in³'],['S','Sauce Dispenser','≈ 32 oz']];
   window.LAST=window.LAST||{};
-  let html=ROWS.map(([tier,label,cap])=>{const row=DISPLAY.filter(x=>x.sz===tier&&!x.open); return row.length?`<div class="srow"><div class="rlabel"><b>${label}</b><small>Holds ${cap}</small></div><div class="rcards">${row.map(slotBar).join('')}</div></div>`:'';}).join('');
-  html+=`<div class="srow"><div class="rlabel"><b>Open</b></div><div class="rcards">${OPEN.map(slotBar).join('')}</div></div>`;
+  const html=ROWS.map(([tier,label,cap])=>{
+    const row=tier==='S'?[...DISPLAY.filter(x=>x.sz==='S'&&!x.open),...OPEN]:DISPLAY.filter(x=>x.sz===tier);
+    const used=row.filter(x=>!x.open).length, full=used===row.length;
+    return `<div class="srow"><div class="rlabel"><b>${label}</b><small>${used}/${row.length}${full?' · full':''}</small><small>Holds ${cap}</small></div><div class="rcards">${row.map(slotBar).join('')}</div></div>`;
+  }).join('');
   const slotsKey=html.replace(/--l:[0-9.]+/g,'--l:0');
   const el=document.getElementById('g-all');
   if(LAST['g-all']!==slotsKey){el.innerHTML=html; LAST['g-all']=slotsKey;} else {const bars=el.querySelectorAll('.bar i'); DISPLAY.forEach((x,i)=>{if(bars[i]&&!x.open) bars[i].style.setProperty('--l',x.held?0:x.l);});}

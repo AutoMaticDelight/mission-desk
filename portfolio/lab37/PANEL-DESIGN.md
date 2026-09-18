@@ -15,38 +15,51 @@ category → this, sized by real dispenser hardware). The machine has **18
 physical dispenser slots**, numbered 1–18, always in this fixed order.
 **Row 1 is the 4 mains.** Every row after that is one **dispenser-size
 tier**, left-justified, down to Open last:
-- Row **Hot Grain Hopper** (4, holds ≈2.5 gal each): 1 Chicken · 2 Beef ·
-  3 Rice · 4 Quinoa. Auger / steam-table dispensers — the most volume per
-  bowl, sized biggest.
-- Row **Loose-Scoop Bin** (6, holds ≈175 in³ each): 5 Beans · 6 Corn ·
-  7 Pico · 8 Lettuce · 9 Cilantro · 15 Cheese. Scoop-dispensed produce and
-  cheese.
-- Row **Sauce Dispenser** (6, holds ≈32 oz each): 10 Lime · 11 Guac ·
-  12 Verde · 13 Chipotle · 14 Roja · 16 Sour Cream. Squeeze bottles and
-  pinch garnish — smallest footprint, most of them fit one row with room
-  left.
-- Row **Open** (2): 17 · 18, both small-tier until something's added,
-  labeled "+ Add", not "OPEN" — an open slot is an action, not a status.
+- Row **Hot Grain Hopper** — **4 bays, always full, 4/4.** 1 Chicken ·
+  2 Beef · 3 Rice · 4 Quinoa. Holds ≈2.5 gal each. Auger / steam-table
+  dispensers — the most volume per bowl, sized biggest.
+- Row **Loose-Scoop Bin** — **6 bays, always full, 6/6.** 5 Beans ·
+  6 Corn · 7 Pico · 8 Lettuce · 9 Cilantro · 15 Cheese. Holds ≈175 in³
+  each. Scoop-dispensed produce and cheese.
+- Row **Sauce Dispenser** — **8 bays, 6 used + 2 open, 6/8.** 10 Lime ·
+  11 Guac · 12 Verde · 13 Chipotle · 14 Roja · 16 Sour Cream, then bays
+  17 · 18 open, labeled "+ Add" (never "OPEN" — an open bay is an action,
+  not a status). Holds ≈32 oz each. Squeeze bottles and pinch garnish —
+  smallest footprint, and the tier a bigger machine grows first: +1 to
+  Hot Grain Hopper, +2 to Loose-Scoop Bin, a bunch more Sauce Dispensers.
 
-Row labels are two lines: the dispenser type in caps, then a dimmer
-"Holds ≈N unit" capacity line — one gallons, one cubic inches, one ounces,
-picked per tier for whichever unit reads most naturally for that
-container (bulk hopper in gal, a rectangular bin in in³, a bottle in oz).
-Capacity is per dispenser, not per row.
+**The bay count per tier is fixed hardware, not a setting — 4 / 6 / 8,
+not fungible between tiers.** The two open bays physically live *inside*
+the Sauce Dispenser row, not a separate 4th row: there is no "Open"
+section, because on this machine only Sauce Dispenser has spare capacity.
+A row at its count has no "+ Add" card anywhere, on any screen — there is
+no such thing as a 5th hopper. To put something different in a full row,
+remove one of its bays first; the freed bay stays that same size (a
+hopper bay can only take another Hot-Grain-Hopper-sized thing — Protein
+or Base — never a sauce). Every row label shows its live `used/total`
+count, and "· full" when it's maxed, so nobody mistakes a full row for
+one with room.
+
+Row labels are three lines: the dispenser type in caps, the `used/total`
+count, then a dimmer "Holds ≈N unit" capacity line — one gallons, one
+cubic inches, one ounces, picked per tier for whichever unit reads most
+naturally for that container (bulk hopper in gal, a rectangular bin in
+in³, a bottle in oz). Capacity is per dispenser, not per row.
 
 Every screen that draws the machine's slots — the worker panel's status
 card, the manager console's machine detail (when built), `recipe-
-development.html`'s rack — draws this exact list, in these exact four
-rows, as the same numbered-slot primitive: a `#N` badge, a hot/cold dot
-(amber = hot-held, blue = cold-held, gray = open swing), then the name.
-Never merge or reorder the tier rows, size a slot off-tier, center a row
-instead of left-justifying it, or invent a different diagram per screen.
-**One physical object gets one visual representation** — recognizable at
-a glance whichever screen it's on, same shape in landscape and portrait
+development.html`'s rack — draws this exact list, in these exact three
+rows (no separate Open row), as the same numbered-slot primitive: a `#N`
+badge, a hot/cold dot (amber = hot-held, blue = cold-held, gray = open
+swing), then the name. Never merge or reorder the tier rows, size a slot
+off-tier, center a row instead of left-justifying it, show a "+ Add" on a
+row that's already full, or invent a different diagram per screen. **One
+physical object gets one visual representation** — recognizable at a
+glance whichever screen it's on, same shape in landscape and portrait
 alike. Per-context detail layers on top (the worker panel adds a photo,
 percent and refill countdown; recipe development adds edit/remove
-controls) but the 4 rows, their labels, order, numbering and *relative*
-sizing never change.
+controls) but the 3 rows, their labels, fixed bay counts, order,
+numbering and *relative* sizing never change.
 
 Sizing: card **width and height** both scale by tier (large hopper is
 visibly bigger in both dimensions, not just wider) — width via
