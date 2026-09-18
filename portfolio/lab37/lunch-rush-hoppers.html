@@ -595,6 +595,11 @@ html[data-photo="0"] .big .bar .m span br{display:none}
 /* landscape: the clock stands alone (day lives in the peak note); machine line tightens on smaller iPads */
 @media(orientation:landscape){.band .when .day{display:none}.band .when{min-width:0}}
 @media(orientation:landscape) and (max-width:1200px){.top .si{font-size:14px;padding:0 7px;gap:5px}}
+
+/* title never runs into the clock: it shrinks first */
+@media(orientation:landscape){.band .where{flex:0 1 auto;min-width:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}.band .when{flex:0 0 auto;margin-left:auto}.band .stat{flex:0 0 auto}}
+
+@media(orientation:landscape){.band{grid-template-columns:minmax(0,1fr) max-content max-content max-content}}
 </style>
 <link rel="stylesheet" href="glove.css"></head>
 <body>
