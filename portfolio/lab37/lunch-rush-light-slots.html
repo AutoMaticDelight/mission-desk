@@ -977,7 +977,14 @@ const pace=t=> t<PEAK[0]?1.0 : t<PEAK[1]?1.35 : t<13*60+10?1.0 : 0.6;
 const clock=t=>{const h=Math.floor(t/60),m=t%60;return (h>12?h-12:h)+':'+String(m).padStart(2,'0');};
 function refillMin(x){ let lvl=x.l, t=NOW; while(lvl>15 && t<NOW+240){ lvl-=x.b*pace(t); t++; } return t-NOW; }
 function refillClock(x){ if(x.held) return null; const m=refillMin(x); return m>=240?'AFTER 4 PM':clock(NOW+m); }
-const mn=x=>Math.max(0,Math.round(x.l/x.b)), st=x=>x.held?'held':mn(x)<8?'now':mn(x)<20?'low':'ok';
+// WEIGHT, not volume — a load cell under the bin, not a level sensor. x.l stays 0-100 internally
+// (the sim math and the fill-bar width are unaffected) but everything shown to a human is the
+// actual weight: FULL is the tier's full weight in lb, and below ~25% of it the last bit can't be
+// cleanly auger'd/pumped out anymore — a worker has to squeegee/scrape it, and what's left after
+// that gets thrown away. That physical floor is what drives "now," not a minutes-left guess.
+const FULL={L:20,M:8,S:2};
+const lbs=x=>+(x.l/100*FULL[x.sz]).toFixed(1);
+const mn=x=>Math.max(0,Math.round(x.l/x.b)), st=x=>x.held?'held':x.l<25?'now':x.l<40?'low':'ok';
 function nextUp(){const all=ALL.filter(x=>!x.held).map(x=>({x,t:refillClock(x),z:st(x),m:refillMin(x)})).sort((a,b)=>a.m-b.m).slice(0,4);document.getElementById('next').innerHTML='<div class="lbl">Next up</div>'+all.map(a=>`<div class="task ${a.z}"><b>${a.t}</b><span>${a.x.n}${a.x.src?' · '+a.x.src:''}</span></div>`).join('');}
 const M=[{n:'Bowl 01',s:'run',st:'Running',k:'14',l:'in queue',hr:134,sec:27},{n:'Bowl 02',s:'held',st:'Held',k:'7',l:'rerouting',hr:0,sec:0,sub:'HELD · quinoa'},{n:'Chicken 2',s:'run',st:'Running',k:'12',l:'slots open',hr:150,sec:24}];
 function machines(){
@@ -1029,7 +1036,7 @@ function render(){
     const z=st(x);
     return `<div class="bar slot sz-${x.sz} ${temp(x)} ${z} ${x.just?'just':''}" ${x.held?'':`onclick="openSheet('refill:${x.n}')"`}>
       <div class="n">${x.n}${badge}</div>
-      <div class="photo">${ph(x)}${inRecipe(x)?'<em class="rc-tag">SF</em>':''}<div class="v">${x.held?'HELD':Math.round(x.l)+'%'}<small> · ${x.held?'not dispensing':x.just?'REFILLED':refillClock(x)}</small></div></div>
+      <div class="photo">${ph(x)}${inRecipe(x)?'<em class="rc-tag">SF</em>':''}<div class="v">${x.held?'HELD':lbs(x)+' lb'}<small> · ${x.held?'not dispensing':x.just?'REFILLED':z==='now'?'SCRAPE IT':refillClock(x)}</small></div></div>
       <i style="--l:${x.held?0:x.l}"></i>
     </div>`;
   };
@@ -1085,7 +1092,7 @@ const SCENE={
  clean:{kind:'task',head:'Cleaning due at Bowl 01',sub:'Sanitation cycle · 6 min · start before 12:40',nums:[['6 MIN','cycle'],['14','in queue · moves to Bowl 02'],['12:40','deadline']],btn:'TAP TO START CLEANING',bs:'Bowl 01 pauses · Bowl 02 takes the queue',verbs:[['engineering','Log a note']],
    sheet:{label:'Cleaning',title:'Start the sanitation cycle at Bowl 01?',text:'Bowl 01 pauses for 6 minutes. Its queue moves to Bowl 02 automatically.',effects:[['Bowl 01','Cleaning · back in 6 min'],['Bowl 02','Takes 14 more orders']],button:'START CLEANING'},
    done:()=>{ M[0].s='clean';M[0].st='Cleaning';M[0].k='6';M[0].l='min left';M[0].hr=0;M[0].sub='CLEANING · back '+clock(NOW+6);M[1].k='25';machines(); cleanUntil=NOW+6; note('Bowl 01 cleaning · queue moved to Bowl 02'); go('clear'); }},
- chicken:{kind:'',head:'Chicken runs out in 4 min',sub:'Reach-in 1 · 2 hotel pans ready',nums:()=>[[String(mn(H[0])),'min at this pace'],[Math.round(H[0].l)+'%','in the hopper'],['2','pans in reach-in']],btn:'TAP TO START CHICKEN REFILL',bs:'Hopper keeps dispensing during the swap',verbs:[['engineering','Log a note']],
+ chicken:{kind:'',head:'Chicken runs out in 4 min',sub:'Reach-in 1 · 2 hotel pans ready',nums:()=>[[String(mn(H[0])),'min at this pace'],[lbs(H[0])+' lb','in the hopper'],['2','pans in reach-in']],btn:'TAP TO START CHICKEN REFILL',bs:'Hopper keeps dispensing during the swap',verbs:[['engineering','Log a note']],
    sheet:{label:'Refill',title:'Refill chicken now?',text:'Two pans in reach-in 1. Confirm at the hopper when the swap is done.',effects:[['Chicken','Back to 100%'],['Service','Keeps dispensing during the swap']],button:'REFILLED'},
    done:()=>{ refill(H[0],'you'); go('clear'); }},
 };
@@ -1115,7 +1122,7 @@ let selected='';const data={
  tech:{label:'Service task',title:'Send tech to Bowl 02?',text:'The task carries the machine state, recipe, and evidence automatically.',effects:[['Task','Recalibrate quinoa dispenser'],['Timing','Before the next lunch rush']],button:'SEND TECH',done:'Tech dispatched',sub:'The calibration task is ready with the right context.'},
  engineering:{label:'Fleet learning',title:'Log it and alert Engineering?',text:'This event joins the fleet pattern without slowing service.',effects:[['Pattern','14 similar incidents across 4 sites'],['Context','Today’s event is attached automatically']],button:'LOG + ALERT',done:'Logged. Engineering alerted',sub:'This incident is now part of the fleet reliability signal.'}};
 function openSheet(k){selected=k;
-  if(k.startsWith('refill:')){const x=ALL.find(a=>a.n===k.slice(7));sheetLabel.textContent='Refill';sheetTitle.textContent=`Mark ${x.n} refilled?`;sheetText.textContent=`${Math.round(x.l)}% now. Hold to confirm at the hopper. Next up updates on its own.`;effects.innerHTML='<div class="effect"><b>Hopper</b><span>'+x.n+' back to 100%</span></div><div class="effect"><b>Service</b><span>Dispensing keeps running during the swap</span></div>';document.getElementById('confirm').textContent='REFILLED';overlay.classList.add('show');return;}
+  if(k.startsWith('refill:')){const x=ALL.find(a=>a.n===k.slice(7));sheetLabel.textContent='Refill';sheetTitle.textContent=`Mark ${x.n} refilled?`;sheetText.textContent=`${lbs(x)} lb now. Hold to confirm at the hopper. Next up updates on its own.`;effects.innerHTML='<div class="effect"><b>Hopper</b><span>'+x.n+' back to '+FULL[x.sz]+' lb</span></div><div class="effect"><b>Service</b><span>Dispensing keeps running during the swap</span></div>';document.getElementById('confirm').textContent='REFILLED';overlay.classList.add('show');return;}
   const x=k==='scene'?SCENE[STEP].sheet:data[k];sheetLabel.textContent=x.label;sheetTitle.textContent=x.title;sheetText.textContent=x.text;effects.innerHTML=x.effects.map(a=>'<div class="effect"><b>'+a[0]+'</b><span>'+a[1]+'</span></div>').join('');document.getElementById('confirm').textContent=x.button;overlay.classList.add('show')}
 function closeSheet(){overlay.classList.remove('show')}
 function commit(){

@@ -95,10 +95,26 @@ anything else for attention:
 - **Photo, full-bleed, below it (worker panel only — recipe-development's
   compact edit chips skip the photo, there's no room and no need for one
   in a dev tool).** Edge to edge, no padding, so it reads as a real
-  photo of the product, not a thumbnail. The live percent and refill time
-  caption its own bottom edge in a legible dark scrim over the image,
-  never fight the photo for space above it. The recipe "SF" tag sits on
-  the photo's top-left corner.
+  photo of the product, not a thumbnail. The live **weight** and refill
+  time caption its own bottom edge in a legible dark scrim over the
+  image, never fight the photo for space above it. The recipe "SF" tag
+  sits on the photo's top-left corner.
+
+## Fullness is weight, not volume (2026-09-18)
+Every bin sits on a load cell — a scale is simpler and more reliable
+hardware than a volume sensor, and it's what the caption shows: **lb**,
+not a percent. Each size tier has a fixed full weight (`FULL` in
+`lunch-rush-light-slots.html`): Hot Grain Hopper 20 lb, Loose-Scoop Bin
+8 lb, Sauce Dispenser 2 lb. Below **25% of that weight** (5 lb / 2 lb /
+0.5 lb) is a physical floor, not a display threshold: an auger or pump
+can't cleanly pull the last bit out anymore, a worker has to squeegee or
+scrape it by hand, and whatever's left after that gets thrown away. That
+25% floor is what drives the "now" (needs-attention) state directly —
+not a minutes-until-empty guess — and its caption says so plainly:
+"SCRAPE IT" instead of a refill-by clock. 25–40% is "low" (plan a
+refill); above that is "ok." The internal simulation still tracks a
+0–100 level for the math (refill forecasting, the fill-bar width); `lb`
+is purely how a human reads it, via `lbs(x) = level/100 × FULL[tier]`.
 - **Level fill** is a thin (4px) bar at the card's own bottom edge,
   growing left to right — still "the fill is the message," just anchored
   to the whole card now instead of starting after a photo gutter.
