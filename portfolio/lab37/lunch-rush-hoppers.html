@@ -761,6 +761,8 @@ html[data-photo="0"] .bar .rc-tag{left:auto;right:8px}
 /* long names (Sour Cream) wrap in landscape; in portrait they drop the refill time instead of truncating */
 @media(orientation:landscape){.tops .bar.long .n{white-space:normal;line-height:1.05;overflow:visible;text-overflow:clip}}
 @media(orientation:portrait){.tops .bar.long .n{font-size:15px}.tops .bar.long .v small{display:none}}
+
+.ph{object-fit:cover;display:block}
 </style>
 <link rel="stylesheet" href="glove.css"></head>
 <body>
@@ -844,7 +846,9 @@ function render(){
   // PHOTOS: Wikimedia Commons, hotlinked via Special:FilePath (browser loads them). ?photo=25|50|0
   const IMG={"chicken": "Grilled_Chicken_Breasts_(28905381261).jpg", "beef": "Slow_Cooker_Beef_Barbacoa_(32130811495).jpg", "rice": "Bowl_of_white_rice_02.jpg", "quinoa": "Quinoa_cuit.JPG", "beans": "Black_beans.jpg", "corn": "Up_close_image_of_corn.jpg", "pico": "Mmm..._Pico_de_Gallo_(5923456035).jpg", "lettuce": "Romaine_lettuce.jpg", "cilantro": "Coriander_01.jpg", "lime": "Lime_-_whole_and_halved.jpg", "guac": "Guacamole_bowl.jpg", "verde": "SALSA_VERDE.jpg", "chipotle": "Chipotlesenadobo.jpg", "crema": "Smetana.jpg", "sour cream": "Sour_Cream.jpg", "cheese": "Fine_Microplane_Grating_Hard_Cheese.jpg"};
   const img=x=>'https://commons.wikimedia.org/wiki/Special:FilePath/'+encodeURIComponent(IMG[x.n.toLowerCase()]||'')+'?width=400';
-  const ph=x=>`<div class="ph" style="background-image:url('${img(x)}')"></div>`;
+  const key=x=>x.n.toLowerCase().replace(/\s+/g,'-');
+  // PHOTO STASH: img/<key>.jpg in this folder wins; if it is missing the browser falls back to the Commons photo
+  const ph=x=>`<img class="ph" alt="" src="img/${key(x)}.jpg" onerror="this.onerror=null;this.src='${img(x)}'">`;
   {const p=new URLSearchParams(location.search).get('photo'); const w=p===null?25:(parseInt(p,10)||0); document.documentElement.style.setProperty('--phw',w+'%'); document.documentElement.dataset.photo=w;}
   const bigBar=x=>`<div class="bar ${st(x)} ${x.just?'just':''}" ${x.held?'':`onclick="openSheet('refill:${x.n}')"`}>${ph(x)}${inRecipe(x)?'<em class="rc-tag">SF</em>':''}<i style="--l:${x.held?0:x.l}"></i><div class="n">${x.n}</div><div class="m"><b>${x.held?'HELD':Math.round(x.l)+'%'}</b><span>${x.held?'not dispensing':x.just?'REFILLED · '+x.just:mn(x)+' MIN<br>REFILL '+refillClock(x)}</span></div></div>`;
   const smallBar=x=>{const z=st(x);return `<div class="bar ${z} ${x.just?'just':''} ${x.n.length>8?'long':''}" onclick="openSheet('refill:${x.n}')">${ph(x)}${inRecipe(x)?'<em class="rc-tag">SF</em>':''}<i style="--l:${x.l}"></i><div class="n">${x.n}</div><div class="v">${x.just?'REFILLED · '+x.just:Math.round(x.l)+'%<small> · '+refillClock(x)+'</small>'}</div></div>`;};
