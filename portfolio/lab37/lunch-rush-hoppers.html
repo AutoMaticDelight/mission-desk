@@ -521,6 +521,12 @@ html:not([data-photo="0"]) .tops .bar .v{font-size:16px}
   html[data-photo="50"] .tops.sau .bar .n,html[data-photo="50"] .tops.dai .bar .n,html[data-photo="50"] .tops.sau .bar .v,html[data-photo="50"] .tops.dai .bar .v{font-size:14px}
   html[data-photo="50"] .big .bar .n{font-size:15px}
 }
+
+/* NO RED: the alert card's edge and dot use the hot yellow-green too */
+.alert{border-left-color:var(--hot)}
+.ahead i{background:var(--hot);box-shadow:0 0 0 7px rgba(207,255,62,.22)}
+.alert.task{border-left-color:var(--low)}.alert.task .ahead i{background:var(--low);box-shadow:0 0 0 7px rgba(240,160,0,.22)}
+.alert.clear{border-left-color:var(--ok)}
 </style>
 <link rel="stylesheet" href="glove.css"></head>
 <body>

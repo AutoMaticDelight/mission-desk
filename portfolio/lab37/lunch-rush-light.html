@@ -558,6 +558,17 @@ html:not([data-photo="0"]) .tops .bar .v{font-size:16px}
   html[data-photo="50"] .tops.sau .bar .n,html[data-photo="50"] .tops.dai .bar .n,html[data-photo="50"] .tops.sau .bar .v,html[data-photo="50"] .tops.dai .bar .v{font-size:14px}
   html[data-photo="50"] .big .bar .n{font-size:15px}
 }
+
+/* ACTIONS: the alert is a dark card with the hot yellow-green; no red anywhere */
+.alert{background:#1c1c1e;color:#fff;border-left:12px solid var(--hot);box-shadow:none}
+.ahead{color:#fff}.ahead small{color:#a1a1a6}
+.ahead i{background:var(--hot);box-shadow:0 0 0 5px rgba(200,240,0,.25)}
+.nums{border-color:rgba(255,255,255,.16)}.num b{color:#fff}.num span{color:#a1a1a6}
+.alert .more button{color:var(--hot)}.alert .more button:not(:last-child){border-right-color:rgba(255,255,255,.16)}
+.go{background:var(--hot);color:#111;box-shadow:0 3px 0 #8fb000}.go .s{color:rgba(0,0,0,.72)}
+.alert.task{border-left-color:var(--low)}.alert.task .ahead i{background:var(--low);box-shadow:0 0 0 5px rgba(255,159,10,.25)}
+.alert.clear{border-left-color:var(--ok)}.alert.clear .go{background:#34c759;color:#fff;box-shadow:0 3px 0 #1f8a3c}.alert.clear .go .s{color:rgba(255,255,255,.85)}
+.task.now b{color:#6f8400}
 </style>
 <link rel="stylesheet" href="glove.css"></head>
 <body>
