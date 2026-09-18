@@ -444,6 +444,83 @@ body{grid-template-rows:auto auto minmax(0,1fr) auto auto}
 body{grid-template-rows:auto auto auto auto auto;align-content:space-between}
 .alert{align-self:auto}
 @media(orientation:landscape){.big .bar{gap:8px}.big .bar .n{font-size:clamp(20px,2.6vh,26px)}}
+
+/* PHOTOS: a photo fills the left of every box. ?photo=50 for half, ?photo=0 for none */
+:root{--phw:25%}
+.bar{padding-left:calc(var(--phw) + 14px)}
+.ph{position:absolute;left:0;top:0;bottom:0;width:var(--phw);background-size:cover;background-position:center;z-index:1;background-color:rgba(0,0,0,.15)}
+.bar i{left:var(--phw);width:calc((100% - var(--phw)) * var(--l,0) / 100)}
+.bar.held .ph{filter:grayscale(1);opacity:.5}
+@media(orientation:portrait){.big .bar,.tops .bar{padding-left:calc(var(--phw) + 12px)}}
+
+/* SECTIONS: Status (all items) above, Actions below */
+.sec{display:flex;align-items:center;gap:12px;font-size:15px;letter-spacing:2px;text-transform:uppercase;font-weight:800;color:var(--dim)}
+.sec::after{content:'';flex:1;height:2px;background:var(--line)}
+.hoppers{grid-template-rows:auto auto auto}
+.actions{display:grid;gap:12px;min-height:0}
+body{grid-template-rows:auto auto auto auto}
+@media(orientation:portrait){.hoppers{grid-template-rows:auto auto auto}}
+
+/* ITEM ALERT COLOR: hot lime (same as the action button), not red; "just refilled" moves to green */
+.bar.now i{background:var(--hot)}
+.bar.now{outline:none;box-shadow:inset 0 0 0 4px var(--hot);animation:none}
+.bar.just{outline:none;box-shadow:inset 0 0 0 4px var(--ok)}
+.task.now b{color:var(--hot)}
+.si.bad i{background:var(--hot);box-shadow:0 0 0 4px rgba(207,255,62,.25)}.si.bad span{color:var(--hot)}
+
+:root{--hot:#cfff3e}
+.bar.just .v,.bar.just .m span{color:#fff}
+/* MACHINE LINE: a dark pill, like the message sliders */
+.sys{background:#080b09;border-radius:999px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.08)}
+@media(orientation:portrait){.sys{border-radius:24px}}
+
+/* photo width wins over box padding; 50% mode stacks mains and drops the refill time on small bars */
+.big .bar,.tops .bar{padding-left:calc(var(--phw) + 14px)}
+@media(orientation:portrait){.big .bar,.tops .bar{padding-left:calc(var(--phw) + 12px)}}
+.tops .bar .v small{font-size:inherit}
+.big .bar .n{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+html[data-photo="50"] .tops .bar .v small{display:none}
+html[data-photo="50"] .big .bar{flex-direction:column;align-items:flex-start;justify-content:center;gap:0}
+html[data-photo="50"] .big .bar .m{text-align:left}
+html[data-photo="50"] .big .bar .m span{white-space:normal;margin-top:2px}
+@media(orientation:portrait){html[data-photo="50"] .big .bar .n{font-size:18px}html[data-photo="50"] .big .bar .m b{font-size:clamp(28px,3.4vh,40px)}html[data-photo="50"] .big .bar .m span{font-size:14px}}
+
+/* photos on: mains stack name over number; small bars tighten; portrait vegetables go two across */
+html:not([data-photo="0"]) .big .bar{flex-direction:column;align-items:flex-start;justify-content:center;gap:0}
+html:not([data-photo="0"]) .big .bar .m{text-align:left}
+html:not([data-photo="0"]) .big .bar .m span{white-space:normal;margin-top:2px}
+html:not([data-photo="0"]) .tops .bar .v{white-space:nowrap}
+html:not([data-photo="0"]) .tops .bar .n{font-size:17px}
+html:not([data-photo="0"]) .tops .bar .v{font-size:16px}
+@media(orientation:portrait){
+  html:not([data-photo="0"]) .tops.veg{grid-template-columns:repeat(2,minmax(0,1fr))}
+  html[data-photo="50"] .row2{grid-template-columns:1fr}
+  html[data-photo="50"] .row2 .grp:first-child{grid-column:auto}
+  html[data-photo="50"] .big .bar{height:15vh}
+  html[data-photo="50"] .bar.held .m b{font-size:30px}
+}
+
+/* portrait with photos: vegetables two across, sauces two across beside dairy; mains give back height so nothing squeezes */
+@media(orientation:portrait){
+  html:not([data-photo="0"]) .row2{grid-template-columns:2fr 1fr;grid-template-rows:auto auto;gap:8px 10px}
+  html:not([data-photo="0"]) .row2 .grp:first-child{grid-column:1/-1}
+  html:not([data-photo="0"]) .big .bar{height:13vh}
+  html:not([data-photo="0"]) .tops.sau .bar .n,html:not([data-photo="0"]) .tops.dai .bar .n{font-size:16px}
+  html:not([data-photo="0"]) .tops.sau .bar .v,html:not([data-photo="0"]) .tops.dai .bar .v{font-size:15px}
+  html[data-photo="50"] .tops.sau .bar,html[data-photo="50"] .tops.dai .bar{padding:0 8px 0 calc(50% + 8px);gap:6px}
+  html[data-photo="50"] .tops.sau .bar .n,html[data-photo="50"] .tops.dai .bar .n,html[data-photo="50"] .tops.sau .bar .v,html[data-photo="50"] .tops.dai .bar .v{font-size:15px}
+  html[data-photo="50"] .big .bar .n{font-size:16px}
+  html[data-photo="50"] .big .bar .m b{font-size:clamp(26px,3vh,36px)}
+  html[data-photo="50"] .bar.held .m b{font-size:26px}
+}
+
+/* the wide display face needs a touch less in portrait sauce and dairy bars */
+@media(orientation:portrait){
+  html:not([data-photo="0"]) .tops.sau .bar .n,html:not([data-photo="0"]) .tops.dai .bar .n{font-size:15px}
+  html:not([data-photo="0"]) .tops.sau .bar .v,html:not([data-photo="0"]) .tops.dai .bar .v{font-size:14px}
+  html[data-photo="50"] .tops.sau .bar .n,html[data-photo="50"] .tops.dai .bar .n,html[data-photo="50"] .tops.sau .bar .v,html[data-photo="50"] .tops.dai .bar .v{font-size:14px}
+  html[data-photo="50"] .big .bar .n{font-size:15px}
+}
 </style>
 <link rel="stylesheet" href="glove.css"></head>
 <body>
@@ -455,6 +532,7 @@ body{grid-template-rows:auto auto auto auto auto;align-content:space-between}
   </header>
 
   <section class="hoppers">
+    <div class="sec">Status · all items</div>
     <div class="row1">
       <div class="grp"><div class="glabel">Proteins</div><div class="big" id="g-prot"></div></div>
       <div class="grp"><div class="glabel">Bases</div><div class="big" id="g-base"></div></div>
@@ -466,9 +544,11 @@ body{grid-template-rows:auto auto auto auto auto;align-content:space-between}
     </div>
   </section>
 
-  <section class="alert" id="alert"></section>
-
-  <section class="next" id="next"></section>
+  <section class="actions">
+    <div class="sec">Actions</div>
+    <section class="alert" id="alert"></section>
+    <section class="next" id="next"></section>
+  </section>
 
   <section class="sys" id="machines"></section>
 
@@ -499,8 +579,13 @@ function machines(){
 machines();
 function render(){
   nextUp();
-  const bigBar=x=>`<div class="bar ${st(x)} ${x.just?'just':''}" ${x.held?'':`onclick="openSheet('refill:${x.n}')"`}><i style="width:${x.held?0:x.l}%"></i><div class="n">${x.n}</div><div class="m"><b>${x.held?'HELD':Math.round(x.l)+'%'}</b><span>${x.held?'not dispensing':x.just?'REFILLED · '+x.just:mn(x)+' MIN · REFILL '+refillClock(x)}</span></div></div>`;
-  const smallBar=x=>{const z=st(x);return `<div class="bar ${z} ${x.just?'just':''}" onclick="openSheet('refill:${x.n}')"><i style="width:${x.l}%"></i><div class="n">${x.n}</div><div class="v">${x.just?'REFILLED · '+x.just:Math.round(x.l)+'% · '+refillClock(x)}</div></div>`;};
+  // PHOTOS: Wikimedia Commons, hotlinked via Special:FilePath (browser loads them). ?photo=25|50|0
+  const IMG={"chicken": "Grilled_Chicken_Breasts_(28905381261).jpg", "beef": "Slow_Cooker_Beef_Barbacoa_(32130811495).jpg", "rice": "Bowl_of_white_rice_02.jpg", "quinoa": "Quinoa_cuit.JPG", "beans": "Black_beans.jpg", "corn": "Up_close_image_of_corn.jpg", "pico": "Mmm..._Pico_de_Gallo_(5923456035).jpg", "lettuce": "Romaine_lettuce.jpg", "cilantro": "Coriander_01.jpg", "lime": "Lime_-_whole_and_halved.jpg", "guac": "Guacamole_bowl.jpg", "verde": "SALSA_VERDE.jpg", "chipotle": "Chipotlesenadobo.jpg", "crema": "Sour_Cream.jpg", "cheese": "Fine_Microplane_Grating_Hard_Cheese.jpg"};
+  const img=x=>'https://commons.wikimedia.org/wiki/Special:FilePath/'+encodeURIComponent(IMG[x.n.toLowerCase()]||'')+'?width=400';
+  const ph=x=>`<div class="ph" style="background-image:url('${img(x)}')"></div>`;
+  {const p=new URLSearchParams(location.search).get('photo'); const w=p===null?25:(parseInt(p,10)||0); document.documentElement.style.setProperty('--phw',w+'%'); document.documentElement.dataset.photo=w;}
+  const bigBar=x=>`<div class="bar ${st(x)} ${x.just?'just':''}" ${x.held?'':`onclick="openSheet('refill:${x.n}')"`}>${ph(x)}<i style="--l:${x.held?0:x.l}"></i><div class="n">${x.n}</div><div class="m"><b>${x.held?'HELD':Math.round(x.l)+'%'}</b><span>${x.held?'not dispensing':x.just?'REFILLED · '+x.just:mn(x)+' MIN · REFILL '+refillClock(x)}</span></div></div>`;
+  const smallBar=x=>{const z=st(x);return `<div class="bar ${z} ${x.just?'just':''}" onclick="openSheet('refill:${x.n}')">${ph(x)}<i style="--l:${x.l}"></i><div class="n">${x.n}</div><div class="v">${x.just?'REFILLED · '+x.just:Math.round(x.l)+'%<small> · '+refillClock(x)+'</small>'}</div></div>`;};
   document.getElementById('g-prot').innerHTML=H.filter(x=>x.g==='prot').map(bigBar).join('');
   document.getElementById('g-base').innerHTML=H.filter(x=>x.g==='base').map(bigBar).join('');
   document.getElementById('g-veg').innerHTML=C.filter(x=>x.g==='veg').map(smallBar).join('');
