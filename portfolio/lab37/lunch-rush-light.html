@@ -708,6 +708,25 @@ body{grid-template-rows:auto auto minmax(0,1fr);align-content:stretch}
   .go{min-height:64px}
   .alert .more button{min-height:54px}
 }
+
+/* ACTIONS LOCKUP: label, alert and Next Up are one dock, hooked to the bottom edge */
+.actions{gap:0;border-radius:18px 18px 0 0;overflow:hidden;margin-bottom:-20px;padding-bottom:max(0px,env(safe-area-inset-bottom))}
+.actions .sec{padding:12px 20px 8px}
+.actions .sec::after{opacity:.35}
+.actions .alert{border-radius:0;box-shadow:none;margin:0}
+.actions .next{border-radius:0;box-shadow:none;margin:0}
+@media(orientation:portrait){.actions{margin-bottom:-12px}.actions .sec{padding:10px 16px 6px}}
+
+.actions{background:#1c1c1e;box-shadow:none}
+.actions .sec{color:#fff}.actions .sec::after{background:rgba(255,255,255,.35)}
+.actions .alert{background:#1c1c1e}
+.actions .next{background:#111113;border-top:1px solid rgba(255,255,255,.1);color:#fff}
+.next .lbl{color:#a1a1a6;border-right-color:rgba(255,255,255,.16)}
+.task b{color:#fff}.task span{color:#a1a1a6}
+.task.now b{color:var(--hot)}.task.low b{color:#ffb340}.task.now span{color:#fff}
+
+body{padding-bottom:20px}
+@media(orientation:portrait){body{padding-bottom:12px}}
 </style>
 <link rel="stylesheet" href="glove.css"></head>
 <body>
