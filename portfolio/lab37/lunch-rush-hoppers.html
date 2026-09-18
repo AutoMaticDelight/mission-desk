@@ -677,6 +677,15 @@ body{padding-left:20px;padding-right:20px}
   .actions .alert{padding-left:22px;padding-right:32px}
   .actions .next{padding-left:32px;padding-right:32px}
 }
+
+/* TOP LOCKUP: edge to edge like the dock, flush with the top and both sides */
+body{padding-top:0}
+.top{margin-left:-20px;margin-right:-20px;border-radius:0;padding-top:max(0px,env(safe-area-inset-top))}
+.top .band{padding-left:40px;padding-right:40px;border-radius:0}
+.top .sys{padding-left:22px;padding-right:22px}
+@media(orientation:portrait){.top .band{padding-left:32px;padding-right:32px}.top .sys{padding-left:20px;padding-right:20px}}
+.hoppers{margin-top:16px}
+@media(orientation:portrait){.hoppers{margin-top:12px}}
 </style>
 <link rel="stylesheet" href="glove.css"></head>
 <body>
