@@ -46,9 +46,12 @@ main{max-width:1320px;margin:0 auto;padding:20px;display:grid;grid-template-colu
 .card h2{margin:0 0 3px;font-size:16px;letter-spacing:-.01em}
 .card .sub{margin:0 0 12px;font-size:13px;color:var(--ink2)}
 
-/* slot rack */
-.rack{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-.slot{border-radius:12px;padding:10px 10px 9px;min-height:74px;display:flex;flex-direction:column;justify-content:space-between;cursor:pointer;border:1px solid var(--line);background:var(--panel2)}
+/* slot rack — the 18-slot machine floor plan: 4 mains / 5 / 5 / 4 dairy+open, always in this shape.
+   Same row breaks as the worker panel's status card (PANEL-DESIGN.md "Machine layout"). */
+.rack{display:grid;gap:8px}
+.rrow{display:flex;gap:8px}
+.rrow.short{justify-content:center}
+.slot{flex:0 0 calc((100% - 32px)/5);border-radius:12px;padding:10px 10px 9px;min-height:74px;display:flex;flex-direction:column;justify-content:space-between;cursor:pointer;border:1px solid var(--line);background:var(--panel2)}
 .slot .head{display:flex;justify-content:space-between;align-items:flex-start;font-size:11px;color:var(--ink3)}
 .slot .dot{width:8px;height:8px;border-radius:50%;flex:none;margin-top:2px}
 .slot.hot .dot{background:var(--amber)}.slot.cold .dot{background:var(--blue)}.slot.swing .dot{background:var(--ink3)}
@@ -279,14 +282,21 @@ function addSlot(n){
   render();
 }
 
+const ROW_BREAKS=[0,4,9,14,18]; // 4 / 5 / 5 / 4 — the one shape, everywhere
 function renderRack(){
-  document.getElementById('rack').innerHTML=SLOTS.map(s=>{
+  const slotCard=s=>{
     const cls=s.name?(s.isNew?'new':s.t):'open swing';
     return `<div class="slot ${s.t} ${cls}" onclick="toggleSlot(${s.slot})">
       <div class="head"><span>#${s.slot}</span><span class="dot"></span></div>
       <div class="nm">${s.name||'OPEN'}</div>
     </div>`;
-  }).join('');
+  };
+  let html='';
+  for(let r=0;r<4;r++){
+    const row=SLOTS.slice(ROW_BREAKS[r],ROW_BREAKS[r+1]);
+    html+=`<div class="rrow ${row.length<5?'short':''}">${row.map(slotCard).join('')}</div>`;
+  }
+  document.getElementById('rack').innerHTML=html;
   const used=filled().length, open=openSlots().length;
   document.getElementById('capNote').innerHTML=`<b>${used}/18</b> slots loaded · <b>${open}</b> open. Standard build is 16 (4 mains, 12 toppings) — the 2 swing slots are what let a store trial something new without a full retrofit.`;
 }

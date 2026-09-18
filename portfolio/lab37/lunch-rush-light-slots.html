@@ -884,11 +884,13 @@ html[data-photo="0"] .bar .rc-tag{left:auto;right:8px}
 
 .ph{height:100%;width:var(--phw);object-fit:cover}
 
-/* SLOT MAP: the machine's 18 physical dispenser positions, flat and numbered — the same floor plan
-   drawn in recipe-development.html's rack. Never regrouped by category; #1-18 in the same order
-   everywhere the machine appears, so it reads as one object, not a different diagram each time. */
-.slots{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));grid-auto-rows:minmax(0,1fr);gap:10px;min-height:0}
-.slots .bar{flex-direction:column;align-items:flex-start;justify-content:center;gap:1px;padding:8px 12px;height:9.5vh;min-height:0}
+/* SLOT MAP: the machine's 18 physical dispenser positions — the same floor plan drawn in
+   recipe-development.html's rack. 4 mains / 5 / 5 / 4 dairy+open, in that order, same shape in
+   landscape and portrait alike. Never regrouped by category, never a different diagram per screen. */
+.slots{display:grid;gap:10px;min-height:0}
+.srow{display:flex;gap:10px;min-height:0}
+.srow.short{justify-content:center}
+.slots .bar{flex:0 0 calc((100% - 40px)/5);flex-direction:column;align-items:flex-start;justify-content:center;gap:1px;padding:8px 12px;height:9.5vh;min-height:0}
 .slots .bar .head{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:800;letter-spacing:.3px;opacity:.6}
 .slots .bar .head .dot{width:7px;height:7px;border-radius:50%;flex:none;background:var(--dot,#8e8e93)}
 .slots .bar.hot .head .dot{--dot:#ff9f0a}
@@ -903,8 +905,8 @@ html[data-photo="0"] .bar .rc-tag{left:auto;right:8px}
 .legend i{width:8px;height:8px;border-radius:50%;display:inline-block}
 @media(orientation:landscape) and (max-height:800px){.slots .bar{height:8vh}}
 @media(orientation:portrait){
-  .slots{grid-template-columns:repeat(3,minmax(0,1fr))}
-  .slots .bar{height:auto;min-height:58px;padding:6px 10px}
+  .slots,.srow{gap:8px}
+  .slots .bar{flex-basis:calc((100% - 32px)/5);height:auto;min-height:58px;padding:6px 10px}
   .slots .bar .n{font-size:14px}.slots .bar .v{font-size:13px}
 }
 </style>
@@ -997,9 +999,12 @@ function render(){
     return `<div class="bar slot ${temp(x)} ${z} ${x.just?'just':''} ${x.n.length>8?'long':''}" ${x.held?'':`onclick="openSheet('refill:${x.n}')"`}>${ph(x)}${inRecipe(x)?'<em class="rc-tag">SF</em>':''}<i style="--l:${x.held?0:x.l}"></i><div class="head"><span>#${i+1}</span><span class="dot"></span></div><div class="n">${x.n}</div><div class="v">${x.held?'HELD':Math.round(x.l)+'%'}<small> · ${x.held?'not dispensing':x.just?'REFILLED':refillClock(x)}</small></div></div>`;
   };
   window.LAST=window.LAST||{};
-  const paint=(id,items,tpl)=>{const el=document.getElementById(id); const html=items.map(tpl).join(''); const key=html.replace(/--l:[0-9.]+/g,'--l:0');
-    if(LAST[id]!==key){el.innerHTML=html; LAST[id]=key;} else {const bars=el.querySelectorAll('.bar i'); items.forEach((x,i)=>{if(bars[i]&&!x.open) bars[i].style.setProperty('--l',x.held?0:x.l);});}};
-  paint('g-all',SLOTS18,slotBar);
+  // ROWS: 4 / 5 / 5 / 4 — the same row breaks as recipe-development.html's rack (PANEL-DESIGN.md "Machine layout")
+  const ROWS=[[0,4],[4,9],[9,14],[14,18]];
+  const html=ROWS.map(([a,b])=>{const slice=SLOTS18.slice(a,b); return `<div class="srow ${slice.length<5?'short':''}">${slice.map((x,i)=>slotBar(x,a+i)).join('')}</div>`;}).join('');
+  const slotsKey=html.replace(/--l:[0-9.]+/g,'--l:0');
+  const el=document.getElementById('g-all');
+  if(LAST['g-all']!==slotsKey){el.innerHTML=html; LAST['g-all']=slotsKey;} else {const bars=el.querySelectorAll('.bar i'); SLOTS18.forEach((x,i)=>{if(bars[i]&&!x.open) bars[i].style.setProperty('--l',x.held?0:x.l);});}
   document.getElementById('clock').textContent=clock(NOW);
 }
 render();

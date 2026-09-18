@@ -10,29 +10,37 @@ Slot-map variant: `lunch-rush-light-slots.html` — same panel, status card
 redrawn as the 18-slot machine layout below instead of grouped-by-category.
 
 ## Machine layout (one shape, everywhere)
-Locked 2026-09-18. The machine has **18 physical dispenser slots**, numbered
-1–18, always in this fixed order — mains, then toppings, then the two open
-swing positions: 1 Chicken · 2 Beef · 3 Rice · 4 Quinoa · 5 Beans · 6 Corn ·
-7 Pico · 8 Lettuce · 9 Cilantro · 10 Lime · 11 Guac · 12 Verde · 13 Chipotle ·
-14 Roja · 15 Cheese · 16 Sour Cream · 17 open (swing) · 18 open (swing).
+Locked 2026-09-18, row shape revised same day. The machine has **18
+physical dispenser slots**, numbered 1–18, always in this fixed order and
+this fixed **4 / 5 / 5 / 4 row shape** — a diamond, not a rectangle:
+- Row 1 (4, centered): 1 Chicken · 2 Beef · 3 Rice · 4 Quinoa — the mains.
+- Row 2 (5, full width): 5 Beans · 6 Corn · 7 Pico · 8 Lettuce · 9 Cilantro.
+- Row 3 (5, full width): 10 Lime · 11 Guac · 12 Verde · 13 Chipotle · 14 Roja.
+- Row 4 (4, centered): 15 Cheese · 16 Sour Cream · 17 open (swing) · 18 open (swing).
 
 Every screen that draws the machine's slots — the worker panel's status
 card, the manager console's machine detail (when built), `recipe-
-development.html`'s rack — draws this exact list, in this exact order, as
-the same numbered-slot primitive: a `#N` badge, a hot/cold dot (amber =
-hot-held, blue = cold-held, gray = open swing), then the name. Never
-regroup it by category, resize some slots bigger than others, or invent a
-different diagram per screen. **One physical object gets one visual
-representation** — recognizable at a glance whichever screen it's on. Per-
+development.html`'s rack — draws this exact list, in these exact four
+rows, as the same numbered-slot primitive: a `#N` badge, a hot/cold dot
+(amber = hot-held, blue = cold-held, gray = open swing), then the name.
+Never regroup it by category, resize some slots bigger than others, change
+the row breaks, or invent a different diagram per screen. **One physical
+object gets one visual representation** — recognizable at a glance
+whichever screen it's on, same shape in landscape and portrait alike. Per-
 context detail layers on top of that shape (the worker panel adds a photo,
 percent and refill countdown; recipe development adds edit/remove
-controls) but the base 18-slot grid, order and numbering never change.
+controls) but the 4/5/5/4 grid, order and numbering never change.
 
-Files on the slot-map layout: `recipe-development.html` (the rack, 3
-columns), `lunch-rush-light-slots.html` (worker panel, 6 columns landscape
-/ 3 columns portrait — 3 columns matches the rack exactly in portrait).
-`lunch-rush-light.html` and `lunch-rush-hoppers.html` still use the older
-grouped-by-category layout in **Boxes** below — kept as-is, not migrated.
+Implementation: each row is a flex row of cards sized to `(100% - 4×gap) /
+5`, so a 4-card row's cards are centered and the exact same width as a
+5-card row's — never stretched to fill, which would break the size match
+between rows.
+
+Files on the slot-map layout: `recipe-development.html` (the rack),
+`lunch-rush-light-slots.html` (worker panel — identical 4/5/5/4 shape in
+both orientations, only the card size/font scales). `lunch-rush-light.html`
+and `lunch-rush-hoppers.html` still use the older grouped-by-category
+layout in **Boxes** below — kept as-is, not migrated.
 
 ## Brand
 - Name: **Bowl-O-Matic 5000** (hyphens, capital O). Mark: `logo.svg` — a solid hot yellow-green circle, no outline, with the icon
