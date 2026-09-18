@@ -527,6 +527,10 @@ html:not([data-photo="0"]) .tops .bar .v{font-size:16px}
 .ahead i{background:var(--hot);box-shadow:0 0 0 7px rgba(207,255,62,.22)}
 .alert.task{border-left-color:var(--low)}.alert.task .ahead i{background:var(--low);box-shadow:0 0 0 7px rgba(240,160,0,.22)}
 .alert.clear{border-left-color:var(--ok)}
+
+/* the alert's status dot is blue, so it does not compete with the lime edge and button */
+.ahead i{background:#3a8dff;box-shadow:0 0 0 7px rgba(58,141,255,.25)}
+.alert.task .ahead i{background:#3a8dff;box-shadow:0 0 0 7px rgba(58,141,255,.25)}
 </style>
 <link rel="stylesheet" href="glove.css"></head>
 <body>
