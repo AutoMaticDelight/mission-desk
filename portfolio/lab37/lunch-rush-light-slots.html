@@ -1,0 +1,1076 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Bowl-O-Matic 5000 - Lunch Rush · Light · Slots</title>
+<link rel="icon" href="logo.svg" type="image/svg+xml">
+<style>
+/* USER PANEL. Not a web page. One iPad screen, portrait or landscape, no scroll.
+   High contrast, readable from across the room, no training to operate: color is the state, the number is the detail, buttons are verbs. */
+:root{--bg:#0b120e;--panel:#17231c;--track:#3d4a42;--line:#2c3a31;--ink:#ffffff;--dim:#c7d1ca;
+  --ok:#1fa36a;--low:#f0a000;--now:#e5401a;--held:#6b7a70;--lime:#cfff3e;--orange:#ff7a1a}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;margin:0}
+body{background:var(--bg);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-weight:800;
+  display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:auto minmax(0,1fr) auto auto auto;gap:16px;padding:20px;height:100vh;overflow:hidden;
+  padding-top:max(12px,env(safe-area-inset-top));padding-bottom:max(12px,env(safe-area-inset-bottom))}
+b,strong{font-weight:950}
+
+/* TOP BAND: where, when, speed, to go */
+.band{display:grid;grid-template-columns:auto minmax(0,1fr) auto auto;gap:20px;align-items:center;background:var(--panel);border-radius:18px;padding:14px 24px;min-height:72px;min-width:0;overflow:hidden}
+.band>*{min-width:0}
+.band .where{font-size:clamp(20px,2.4vw,26px);letter-spacing:-.02em;white-space:nowrap}
+.band .where span{color:var(--lime);margin-left:10px}
+.band .when{font-size:18px;color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.band .when span{margin-left:12px;color:var(--ink)}
+.stat{display:flex;align-items:baseline;gap:8px;white-space:nowrap;border-left:2px solid var(--line);padding-left:20px}
+.stat b{font-size:clamp(32px,3.4vw,44px);letter-spacing:-.06em;line-height:.9}
+.stat span{font-size:17px;letter-spacing:.6px;color:var(--dim)}
+.stat i{font-style:normal;color:var(--ok);font-size:clamp(18px,2.2vh,22px)}
+
+/* HOPPERS: the bar is the message */
+.hoppers{display:grid;grid-template-rows:minmax(0,1.15fr) minmax(0,1fr);gap:14px;min-height:0}
+.big{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;min-height:0}
+.tops{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));grid-auto-rows:minmax(0,1fr);gap:10px;min-height:0}
+.bar{position:relative;overflow:hidden;border-radius:18px;background:var(--track);display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 24px;min-height:0;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.55)}
+.bar i{position:absolute;left:0;top:0;bottom:0;background:var(--ok);transition:width .6s}
+.bar.low i{background:var(--low)}.bar.now i{background:var(--now)}.bar.held{background:var(--held)}.bar.held i{display:none}
+.bar.now{outline:4px solid var(--now);outline-offset:-4px;animation:pulse 1.4s ease-in-out infinite}
+@keyframes pulse{50%{outline-color:#ffb39e}}
+.bar>*{position:relative;z-index:1}
+.big .bar .n{font-size:clamp(22px,3.2vh,34px);letter-spacing:-.02em;text-transform:uppercase;flex:0 1 auto;min-width:0}
+.big .bar .m{text-align:right;line-height:.85;flex:0 0 auto}
+.big .bar .m b{display:block;font-size:clamp(52px,9vh,96px);letter-spacing:-.07em}
+.big .bar .m span{display:block;font-size:clamp(17px,2.2vh,20px);letter-spacing:.4px;margin-top:8px;white-space:nowrap}
+.tops .bar{padding:0 16px;border-radius:12px}
+.tops .bar .n{font-size:clamp(18px,2.4vh,22px);text-transform:uppercase;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tops .bar .v{font-size:clamp(18px,2.4vh,24px);letter-spacing:-.02em;flex:0 0 auto}
+
+/* ALERT: what, numbers, one button */
+.alert{background:var(--panel);border:2px solid rgba(255,122,26,.55);border-radius:18px;padding:18px 24px 20px;display:grid;gap:14px}
+.ahead{display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;column-gap:14px;row-gap:4px;font-size:clamp(26px,3.8vh,42px);letter-spacing:-.03em;line-height:1.05}
+.ahead small{grid-column:2;font-size:clamp(17px,2.2vh,20px);color:var(--dim);letter-spacing:.3px;font-weight:800}
+.ahead i{flex:none;width:18px;height:18px;border-radius:50%;background:var(--now);box-shadow:0 0 0 7px rgba(229,64,26,.28)}
+.ahead em{font-style:normal;color:var(--orange)}
+.nums{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.num{background:var(--bg);border-radius:14px;padding:12px 18px;display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;min-width:0}
+.num b{font-size:clamp(40px,6.5vh,72px);letter-spacing:-.06em;line-height:.9}
+.num span{font-size:17px;letter-spacing:.5px;color:var(--dim);text-transform:uppercase;white-space:nowrap}
+.go{border:0;border-radius:18px;background:var(--lime);color:#0b120e;min-height:clamp(84px,12vh,120px);padding:12px 22px;display:flex;align-items:center;justify-content:space-between;gap:16px;text-align:left;cursor:pointer;box-shadow:0 8px 0 #8caf20;font:inherit}
+.go:active{transform:translateY(6px);box-shadow:0 2px 0 #8caf20}
+.go .t{font-size:clamp(28px,4.4vh,44px);letter-spacing:-.04em;line-height:1;font-weight:950}
+.go .s{font-size:clamp(18px,2.4vh,22px);margin-top:6px;font-weight:800}
+.go .a{font-size:clamp(40px,6vh,64px);line-height:1}
+
+/* MORE: three verbs */
+.more{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.more button{border:2px solid var(--track);background:var(--panel);color:#fff;border-radius:14px;min-height:clamp(64px,9vh,84px);font:inherit;font-size:clamp(19px,2.6vh,24px);font-weight:900;letter-spacing:-.01em;cursor:pointer;padding:8px 14px;text-align:center}
+.more button:active{background:var(--track)}
+
+/* orientation */
+@media(orientation:portrait){
+  .band{grid-template-columns:1fr 1fr;grid-template-rows:auto auto;row-gap:6px;min-height:0}
+  .band .when{grid-column:1/-1;font-size:18px}
+  .stat{border-left:0;padding-left:0}.stat:last-child{justify-content:flex-end}
+  .hoppers{grid-template-rows:minmax(0,1fr) minmax(0,1.1fr)}
+  .big .bar{flex-direction:column;align-items:flex-start;justify-content:center;gap:6px;padding:16px 20px}
+  .big .bar .m{text-align:left}.big .bar .m b{font-size:clamp(56px,8vh,84px)}.big .bar .m span{white-space:normal;margin-top:4px}
+  .tops{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .num{flex-direction:column;align-items:flex-start;gap:2px;padding:12px 16px}.num b{font-size:clamp(40px,5vh,60px)}.num span{white-space:normal}
+  .band .where{font-size:24px}
+}
+@media(max-width:600px){body{height:auto;overflow:auto}.big{grid-template-columns:1fr}.big .bar{min-height:84px}.tops{grid-template-columns:1fr 1fr}.tops .bar{min-height:48px}.more{grid-template-columns:1fr}}
+
+/* sheet base (glove.css turns it into the full-screen hold-to-confirm panel) */
+.overlay{position:fixed;inset:0;background:rgba(6,12,8,.63);display:none;align-items:flex-end;justify-content:center;padding:20px;z-index:10}
+.overlay.show{display:flex}
+.sheet{background:#f8faf7;color:#18231c;width:min(800px,100%);border-radius:21px;padding:25px}
+.handle{display:none}.sheet .eyebrow{font-size:16px;font-weight:900;letter-spacing:1.2px;text-transform:uppercase;color:#6b7b70}
+.sheet h2{font-size:42px;line-height:.98;letter-spacing:-.06em;margin:8px 0 11px}.sheet p{margin:0;color:#617067;font-size:18px;line-height:1.4}
+.effects{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:18px 0}.effect{border:1px solid #d5ddd5;background:#fff;border-radius:11px;padding:13px}
+.effect b{font-size:16px;display:block}.effect span{display:block;color:#68756c;font-size:16px;margin-top:3px}
+.sheet-actions{display:flex;gap:10px;justify-content:flex-end}.sheet button{border-radius:11px;padding:15px 18px;font-weight:900;font-size:16px}
+.back{background:#fff;border:1px solid #cbd5cd;color:#324239}.confirm{background:var(--lime);border:0;color:#142217}
+.toast{position:fixed;left:0;right:0;top:0;transform:none;z-index:20;background:#0f5a3a;color:#fff;padding:18px 24px;display:none;text-align:center;border-bottom:4px solid var(--lime)}
+.toast.show{display:block}.toast b{display:block;font-size:24px}.toast span{font-size:18px;display:block;margin-top:4px}
+
+/* NEXT UP: what is coming for the worker, from the same forecast. First one is live. */
+.next{display:grid;grid-template-columns:auto repeat(4,minmax(0,1fr));gap:16px;align-items:center;background:var(--panel);border-radius:18px;padding:12px 24px;min-width:0}
+.next .lbl{font-size:17px;letter-spacing:.8px;color:var(--dim);text-transform:uppercase;white-space:nowrap;padding-right:8px;border-right:2px solid var(--line)}
+.task{display:flex;align-items:baseline;gap:10px;min-width:0}
+.task b{font-size:clamp(24px,3.2vh,32px);letter-spacing:-.04em;line-height:1;flex:0 0 auto}
+.task span{font-size:clamp(17px,2.2vh,20px);text-transform:uppercase;letter-spacing:.3px;color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.task.now b{color:#ff8d6a}.task.now span{color:#fff}
+.task.low b{color:var(--low)}
+@media(orientation:landscape){.tops{grid-template-columns:repeat(4,minmax(0,1fr))}.band .when .peak{display:none}}
+@media(orientation:portrait){.next{grid-template-columns:1fr 1fr;row-gap:10px}.next .lbl{grid-column:1/-1;border-right:0;padding:0}}
+
+/* MACHINES AT A GLANCE: one tile per machine. Color is the state. One number each. */
+.machines{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.mach{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:14px;background:var(--panel);border-radius:18px;padding:10px 18px 10px 12px;min-height:clamp(68px,9vh,84px);min-width:0}
+.mach .st{align-self:stretch;display:grid;place-items:center;border-radius:12px;padding:0 14px;font-size:clamp(15px,2vh,18px);letter-spacing:.8px;text-transform:uppercase;background:var(--ok);color:#fff;white-space:nowrap}
+.mach.held .st{background:var(--now)}.mach.clean .st{background:var(--low);color:#1a1200}
+.mach .nm{font-size:clamp(19px,2.6vh,24px);letter-spacing:-.02em;text-transform:uppercase;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mach .nm small{display:block;font-size:17px;color:var(--dim);letter-spacing:.3px;font-weight:800;text-transform:none}
+@media(orientation:landscape){.mach .nm{font-size:20px}.mach{gap:10px;padding:10px 16px}.mach .k b{font-size:clamp(28px,4vh,40px)}}
+.mach .k{text-align:right;white-space:nowrap}
+.mach .k b{font-size:clamp(30px,4.2vh,44px);letter-spacing:-.06em;line-height:.9}
+.mach .k span{display:block;font-size:16px;color:var(--dim);letter-spacing:.4px;text-transform:uppercase;margin-top:2px}
+/* verbs inside the alert: smaller, one row */
+.alert .more{margin-top:2px}
+.alert .more button{min-height:clamp(52px,7vh,64px);font-size:clamp(17px,2.3vh,20px);border-radius:12px;background:var(--bg)}
+/* tighter vertical budget in landscape */
+@media(orientation:landscape){
+  body{gap:12px;padding:16px}
+  .band{min-height:64px;padding:10px 22px}
+  .tops{grid-template-columns:repeat(6,minmax(0,1fr))}.tops .bar{padding:0 12px}.tops .bar .n,.tops .bar .v{font-size:17px}
+  .alert{padding:14px 20px 16px;gap:10px}.num{padding:8px 16px}.num b{font-size:clamp(36px,5.5vh,56px)}
+  .go{min-height:clamp(72px,10vh,92px)}
+  .next{padding:10px 20px;grid-template-columns:auto repeat(3,minmax(0,1fr))}.next .task:nth-child(5){display:none}
+}
+@media(orientation:portrait){
+  body{gap:12px}
+  .band{padding:10px 20px;min-height:0}
+  .hoppers{min-height:30vh;overflow:hidden}
+  .hoppers{grid-template-rows:minmax(0,1fr) minmax(0,1fr)}
+  .machines{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+  .mach{grid-template-columns:1fr auto;grid-template-rows:auto auto;padding:8px 12px 10px;min-height:0;gap:6px 10px}
+  .mach .st{grid-column:1/-1;align-self:auto;padding:6px 10px;font-size:15px}
+  .mach .nm{font-size:19px}.mach .nm small{display:none}
+  .mach .k b{font-size:30px}.mach .k span{font-size:14px}
+  .alert{padding:12px 16px 14px;gap:10px}.ahead{font-size:clamp(26px,3.4vh,36px)}.num{padding:8px 14px;flex-direction:row;align-items:baseline;gap:8px}.num b{font-size:clamp(32px,4vh,44px)}.num span{white-space:nowrap;font-size:15px}
+  .nums{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .go{min-height:clamp(72px,8.5vh,88px)}.go .t{font-size:clamp(26px,3.8vh,36px)}
+  .alert .more button{min-height:50px;font-size:16px}
+  .next{padding:8px 16px}.task b{font-size:26px}
+  .big .bar .m b{font-size:clamp(48px,6.5vh,72px)}
+  .next{padding:10px 18px}
+}
+
+/* CALM: dark green = running / fine. Dark red = issue. The bright alert red is only for what needs attention NOW. */
+.bar i{background:#0f5a3a}
+.bar.low i{background:#b87a00}
+.bar.now i{background:var(--now)}
+.bar.now{outline:none;animation:none}
+.stat i{color:#5bd39a}
+.mach{background:#0f5a3a;grid-template-columns:minmax(0,1fr) auto;gap:6px 10px}
+.mach.held{background:#8a2410}.mach.clean{background:#7a5200}
+.mach .st{display:none}
+.mach .nm{font-size:clamp(20px,2.8vh,26px)}
+.mach .nm small{color:rgba(255,255,255,.85)}.mach .nm small b{color:#fff;font-size:1.15em}
+.mach .k span{color:rgba(255,255,255,.85)}
+@media(orientation:landscape){.mach{grid-template-columns:minmax(0,1fr) auto;padding:10px 16px}.mach .nm small{display:block;font-size:17px}}
+@media(orientation:portrait){.mach{grid-template-columns:minmax(0,1fr) auto;grid-template-rows:auto;padding:8px 10px;gap:4px 8px}.mach .nm{font-size:17px}.mach .nm small{display:block;font-size:14px;white-space:nowrap}.mach .nm small b{font-size:1.05em}.mach .k b{font-size:26px}.mach .k span{font-size:12px}}
+
+/* CALMER: top three at half height; alert box is quiet, one action */
+.hoppers{grid-template-rows:auto minmax(0,1fr)}
+.big{min-height:0}.big .bar{min-height:clamp(64px,9vh,88px);max-height:96px;padding:0 20px}
+.big .bar .n{font-size:clamp(18px,2.4vh,24px)}
+.big .bar .m b{font-size:clamp(34px,5vh,48px)}
+.big .bar .m span{font-size:16px;margin-top:4px}
+.tops .bar{min-height:34px}
+.alert{border:1px solid var(--line);background:#141d18;gap:12px}
+.ahead{font-size:clamp(24px,3.2vh,34px);letter-spacing:-.02em}
+.ahead em{color:#fff}
+.ahead i{width:14px;height:14px;box-shadow:0 0 0 5px rgba(229,64,26,.22)}
+.ahead small{color:var(--dim)}
+.nums{display:flex;gap:0;background:var(--bg);border-radius:14px;padding:10px 18px;align-items:baseline;flex-wrap:wrap}
+.num{background:none;padding:0;border-radius:0;gap:8px;flex:1 1 auto;justify-content:flex-start}
+.num b{font-size:clamp(28px,3.8vh,40px)}
+.num span{font-size:16px;text-transform:none;letter-spacing:0;color:var(--dim)}
+.go{box-shadow:0 5px 0 #8caf20;min-height:clamp(72px,9.5vh,92px)}
+.go .t{font-size:clamp(24px,3.6vh,36px)}.go .s{font-size:17px;color:#2d3d10}
+.alert .more{gap:0;display:flex;justify-content:space-between}
+.alert .more button{background:none;border:0;min-height:44px;font-size:17px;color:var(--dim);text-transform:none;letter-spacing:0;font-weight:800;padding:6px 8px;text-align:center}
+.alert .more button:active{color:#fff}
+@media(orientation:portrait){
+  .hoppers{min-height:0;grid-template-rows:auto minmax(0,1fr)}
+  .big .bar{flex-direction:row;align-items:center;justify-content:space-between;padding:0 16px;min-height:clamp(64px,7vh,80px)}
+  .big .bar .m{text-align:right}.big .bar .m b{font-size:clamp(34px,4.6vh,44px)}.big .bar .m span{white-space:nowrap;margin-top:2px}
+  .tops .bar{min-height:40px}
+  .nums{padding:8px 14px}.num{flex-direction:row;align-items:baseline}.num b{font-size:clamp(26px,3.4vh,36px)}.num span{white-space:nowrap}
+  .alert .more{flex-wrap:wrap}.alert .more button{flex:1 1 30%}
+}
+
+/* toppings: name on top, number under it */
+.tops .bar{flex-direction:column;align-items:flex-start;justify-content:center;gap:2px;padding:6px 14px;min-height:56px}
+.tops .bar .n{font-size:clamp(19px,2.6vh,24px);letter-spacing:-.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.tops .bar .v{font-size:clamp(18px,2.4vh,22px);color:rgba(255,255,255,.9)}
+/* refill moment: a worker just filled it */
+.bar.just{outline:4px solid var(--lime);outline-offset:-4px}
+.bar.just .v,.bar.just .m span{color:var(--lime)}
+.bar{cursor:pointer}
+@media(orientation:portrait){.tops .bar{min-height:52px;padding:4px 12px}.tops .bar .n{font-size:19px}.tops .bar .v{font-size:18px}}
+@media(orientation:landscape){.tops .bar{min-height:54px}}
+
+/* ALERT: info left, one big button right */
+.alert{display:grid;grid-template-columns:minmax(0,1fr) clamp(260px,30%,380px);gap:16px;align-items:stretch;padding:14px 16px 14px 20px}
+.aleft{display:grid;gap:10px;align-content:center;min-width:0}
+.ahead{font-size:clamp(22px,3vh,30px)}
+.ahead small{font-size:16px}
+.nums{background:none;padding:0;gap:22px;justify-content:flex-start}
+.num{flex:0 0 auto}
+.num b{font-size:clamp(26px,3.4vh,34px)}
+.num span{font-size:16px}
+.alert .more{display:flex;gap:4px;justify-content:flex-start;flex-wrap:wrap;margin:0}
+.alert .more button{padding:4px 12px 4px 0;min-height:32px;font-size:16px;text-align:left}
+.alert .more button:not(:last-child){border-right:2px solid var(--line);padding-right:14px;border-radius:0}
+.go{min-height:0;height:100%;display:grid;grid-template-rows:auto auto;align-content:center;justify-items:center;text-align:center;padding:14px 18px;gap:6px;position:relative}
+.go .t{font-size:clamp(26px,3.6vh,36px);line-height:.95}
+.go .s{font-size:16px;color:#2d3d10;margin:0}
+.go .a{position:absolute;right:16px;top:50%;transform:translateY(-50%);font-size:clamp(30px,4vh,40px)}
+@media(orientation:portrait){
+  .alert{grid-template-columns:minmax(0,1fr);gap:12px;padding:14px 16px}
+  .go{height:auto;min-height:clamp(84px,9vh,100px);grid-template-columns:minmax(0,1fr);justify-items:start;text-align:left;padding:12px 60px 12px 18px}
+  .go .t br{display:none}
+  .nums{gap:16px}.num b{font-size:clamp(24px,3vh,30px)}.num span{white-space:nowrap}
+}
+
+/* alert: words | numbers | button */
+.alert{grid-template-columns:minmax(0,1.2fr) max-content clamp(260px,30%,380px);gap:0 28px}
+.nums{display:grid;grid-template-columns:max-content minmax(0,1fr);column-gap:12px;row-gap:4px;align-content:center;align-items:baseline;justify-self:start;padding:0 0 0 28px;border-left:2px solid var(--line);align-self:stretch}
+.num{display:contents}
+.num b{font-size:clamp(26px,3.4vh,34px);text-align:right;font-variant-numeric:tabular-nums}
+.num span{font-size:16px;white-space:nowrap}
+@media(orientation:portrait){
+  .alert{grid-template-columns:minmax(0,1fr);gap:12px}
+  .nums{display:flex;gap:16px;padding:0;border-left:0;justify-self:stretch}
+  .num{display:flex;align-items:baseline;gap:8px}
+}
+
+/* alert: give the words the width */
+.alert{grid-template-columns:minmax(0,1fr) max-content clamp(240px,26%,320px);gap:0 22px;padding:12px 14px 12px 20px}
+.ahead{font-size:clamp(22px,2.8vh,26px)}
+.ahead small{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.aleft{gap:8px}
+.alert .more{flex-wrap:nowrap}
+.alert .more button{white-space:nowrap}
+.nums{padding:0 0 0 22px;column-gap:10px}
+.go{padding:12px 44px 12px 14px}
+.go .a{right:12px}
+@media(orientation:portrait){
+  .aleft{display:contents}
+  .ahead{order:1}.nums{order:2}.alert .more{order:3}.go{order:4}
+  .alert .more{flex-wrap:wrap}
+}
+
+/* final alert sizing; portrait declared last so it wins */
+.alert{grid-template-columns:minmax(0,1fr) max-content clamp(220px,24%,300px)}
+.ahead{font-size:clamp(21px,2.6vh,24px)}
+@media(orientation:portrait){
+  .alert{grid-template-columns:minmax(0,1fr);grid-template-rows:auto auto auto auto;gap:10px;padding:14px 16px}
+  .ahead,.nums,.alert .more,.go{grid-column:1}
+  .nums{display:flex;gap:16px;padding:0;border-left:0;justify-self:stretch;align-self:auto}
+  .num{display:flex;align-items:baseline;gap:8px}
+  .go{height:auto;min-height:clamp(84px,9vh,100px);display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:auto auto;justify-items:start;text-align:left;padding:12px 60px 12px 18px}
+  .go .t{font-size:clamp(26px,3.6vh,34px)}
+}
+
+/* alert: three real columns. Numbers sit in the middle of the box, not against the button. */
+@media(orientation:landscape){
+  .alert{grid-template-columns:minmax(0,1fr) minmax(0,1fr) clamp(220px,24%,300px);gap:0 24px}
+  .nums{justify-self:center;border-left:0;padding:0;column-gap:12px}
+  .aleft{border-right:2px solid var(--line);padding-right:16px}
+}
+
+/* HIERARCHY: mains tallest, toppings small and fixed, leftover height goes to the alert row */
+body{grid-template-rows:auto auto minmax(0,1fr) auto auto}
+.hoppers{grid-template-rows:auto auto;gap:10px;min-height:0}
+.big .bar{min-height:clamp(88px,12vh,120px);max-height:120px;padding:0 22px}
+.big .bar .n{font-size:clamp(22px,3vh,30px)}
+.big .bar .m b{font-size:clamp(40px,6vh,56px)}
+.big .bar .m span{font-size:17px}
+.tops{grid-auto-rows:auto}
+.tops .bar{min-height:50px;max-height:56px;padding:4px 14px}
+.tops .bar .n{font-size:18px}.tops .bar .v{font-size:17px}
+.alert{min-height:0;align-content:center}
+.aleft,.nums{align-self:center}
+.go{align-self:stretch}
+@media(orientation:portrait){
+  .big .bar{min-height:clamp(80px,9vh,104px);flex-direction:row}
+  .tops .bar{min-height:48px;max-height:54px}
+}
+
+/* leftover height goes to the mains (capped), never to the alert */
+body{grid-template-rows:auto minmax(0,1fr) auto auto auto}
+.hoppers{grid-template-rows:minmax(0,1fr) auto}
+.big .bar{max-height:150px;min-height:88px}
+.alert{align-content:center}
+@media(orientation:portrait){
+  .hoppers{grid-template-rows:minmax(0,1fr) auto}
+  .big .bar{max-height:132px;min-height:84px;padding:0 16px}
+  .big .bar .n{font-size:22px;flex:0 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis}
+  .big .bar .m{flex:0 0 auto}.big .bar .m b{font-size:40px}.big .bar .m span{font-size:15px}
+  .tops .bar{max-height:66px;min-height:48px}
+  .tops{grid-auto-rows:minmax(0,1fr)}
+}
+
+/* RATIO, NOT CAPS: mains row = 1.5 topping rows. Together they take the leftover. No voids, hierarchy holds. */
+.hoppers{grid-template-rows:minmax(0,1.5fr) minmax(0,2fr);gap:10px}
+.big .bar{max-height:none;min-height:0}
+.tops{grid-auto-rows:minmax(0,1fr)}
+.tops .bar{max-height:none;min-height:0}
+.big .bar .n{font-size:clamp(22px,3.2vh,32px)}
+.big .bar .m b{font-size:clamp(40px,7vh,64px)}
+.tops .bar .n{font-size:clamp(18px,2.6vh,22px)}.tops .bar .v{font-size:clamp(17px,2.4vh,20px)}
+@media(orientation:portrait){
+  .hoppers{grid-template-rows:minmax(0,1.5fr) minmax(0,4fr)}
+  .big .bar{flex-direction:column;align-items:flex-start;justify-content:center;gap:2px;padding:10px 16px;max-height:none;min-height:0}
+  .big .bar .n{font-size:24px;overflow:visible;flex:0 0 auto}
+  .big .bar .m{text-align:left}.big .bar .m b{font-size:clamp(40px,5vh,52px)}.big .bar .m span{white-space:normal;font-size:15px}
+  .tops .bar{max-height:none;min-height:0}
+}
+
+/* alert: thirds. words | numbers | button (one main-bar wide). Bright edge on the left to catch the eye. */
+.alert{border-left:12px solid var(--now);border-radius:18px;padding:14px 16px 14px 18px}
+@media(orientation:landscape){
+  .alert{grid-template-columns:repeat(3,minmax(0,1fr));gap:0 20px}
+  .aleft{border-right:0;padding-right:0}
+  .nums{justify-self:stretch;justify-content:center;border-left:2px solid var(--line);border-right:2px solid var(--line);padding:4px 20px;column-gap:14px}
+  .go{justify-self:stretch}
+  .go .t{font-size:clamp(26px,3.4vh,34px)}
+}
+@media(orientation:portrait){.alert{border-left-width:10px}}
+
+/* alert: headline never wraps; button text left-aligned with the arrow at the edge */
+.ahead span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
+@media(orientation:landscape){
+  .go{justify-items:start;text-align:left;padding:12px 52px 12px 20px}
+  .go .t{font-size:clamp(24px,3.2vh,32px)}
+}
+
+/* SCENE: the alert box changes with the shift. red = needs you now, task = next step, clear = all good */
+.alert.task{border-left-color:var(--low)}
+.alert.task .ahead i{background:var(--low);box-shadow:0 0 0 5px rgba(240,160,0,.22)}
+.alert.clear{border-left-color:#2fbf7f}
+.alert.clear .ahead i{background:#2fbf7f;box-shadow:0 0 0 5px rgba(47,191,127,.22)}
+.alert.clear .go{background:#1fa36a;color:#fff;box-shadow:0 5px 0 #0f5a3a}
+.alert.clear .go .s{color:rgba(255,255,255,.85)}
+.alert.pop{animation:pop .5s ease-out}
+@keyframes pop{0%{transform:translateY(8px);opacity:.4}100%{transform:none;opacity:1}}
+
+/* TAXONOMY: hoppers grouped by what they are, each group labeled */
+.hoppers{grid-template-rows:minmax(0,1.5fr) minmax(0,2fr);gap:12px}
+.row1{display:grid;grid-template-columns:1fr 1fr;gap:14px;min-height:0}
+.row2{display:grid;grid-template-columns:3fr 2fr 1fr;gap:14px;min-height:0}
+.grp{display:grid;grid-template-rows:auto minmax(0,1fr);gap:6px;min-height:0;min-width:0}
+.glabel{font-size:16px;letter-spacing:1.2px;text-transform:uppercase;color:var(--dim);font-weight:800;padding-left:4px}
+.big{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.tops{gap:8px}
+.tops.veg{grid-template-columns:repeat(3,minmax(0,1fr))}
+.tops.sau{grid-template-columns:repeat(2,minmax(0,1fr))}
+.tops.dai{grid-template-columns:1fr}
+.bar.held .m b{font-size:clamp(28px,4vh,40px)}
+@media(orientation:landscape){.tops{grid-template-columns:repeat(3,minmax(0,1fr))}.tops.sau{grid-template-columns:repeat(2,minmax(0,1fr))}.tops.dai{grid-template-columns:1fr}}
+@media(orientation:portrait){
+  .hoppers{grid-template-rows:minmax(0,1.3fr) minmax(0,2.2fr)}
+  .row1{grid-template-columns:1fr 1fr;gap:10px}
+  .row2{grid-template-columns:1fr;gap:10px;grid-template-rows:minmax(0,2fr) minmax(0,1fr) minmax(0,1fr)}
+  .big{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+  .big .bar{padding:8px 12px}.big .bar .n{font-size:20px}.big .bar .m b{font-size:clamp(32px,4vh,44px)}
+  .tops.veg{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .tops.sau{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .tops.dai{grid-template-columns:1fr}
+}
+
+/* SYSTEM AT A GLANCE: one line, every component, a small colored dot and a word */
+.sys{display:flex;align-items:center;background:var(--panel);border-radius:14px;padding:0 6px;min-height:46px;overflow:hidden;gap:0}
+.si{display:flex;align-items:center;gap:8px;padding:0 14px;border-right:2px solid var(--line);font-size:16px;white-space:nowrap;min-width:0;flex:1 1 auto;justify-content:center}
+.si:last-child{border-right:0}
+.si i{width:12px;height:12px;border-radius:50%;background:#2fbf7f;flex:none}
+.si.warn i{background:#f0a000}.si.bad i{background:var(--now);box-shadow:0 0 0 4px rgba(229,64,26,.25)}.si.off i{background:#6b7a70}
+.si b{font-weight:900;letter-spacing:.2px}
+.si span{font-weight:500;color:var(--dim)}
+.si.bad span{color:#ffb39e}.si.warn span{color:#ffd28a}
+.sys .lbl{font-size:14px;letter-spacing:1.2px;text-transform:uppercase;color:var(--dim);padding:0 12px 0 14px;border-right:2px solid var(--line);flex:none}
+@media(orientation:portrait){
+  .sys{flex-wrap:wrap;padding:6px 8px;row-gap:4px;min-height:0}
+  .si{flex:1 1 30%;padding:6px 10px;border-right:0;justify-content:flex-start}
+  .sys .lbl{flex:1 1 100%;border-right:0;padding:2px 10px 4px}
+  .big .bar .m span{font-size:14px}
+}
+
+/* band never overlaps: items keep their width, band clips rather than stacking */
+.si{flex:0 1 auto;min-width:max-content;padding:0 10px;gap:6px}
+.sys{justify-content:space-between;padding:0 4px}
+.sys .lbl{padding:0 10px 0 12px}
+/* portrait: fixed bar heights so names never clip; band in three columns */
+@media(orientation:portrait){
+  .hoppers{grid-template-rows:auto auto;gap:10px}
+  .row1 .grp,.row2 .grp{grid-template-rows:auto auto;align-content:start}
+  .row1{align-items:start}
+  .big .bar{height:104px;min-height:0;max-height:none}
+  .tops .bar{height:46px;min-height:0;max-height:none;padding:2px 12px}
+  .tops .bar .n{font-size:17px}.tops .bar .v{font-size:16px}
+  .row2{grid-template-rows:auto auto auto;gap:8px}
+  .glabel{font-size:14px;padding-left:2px}
+  .grp{gap:4px}
+  .si{flex:1 1 30%;min-width:0;padding:4px 8px}
+  .sys{padding:4px 6px}
+  .alert{padding:12px 14px}
+  .go{min-height:72px}.go .t{font-size:clamp(24px,3.2vh,30px)}
+  .next{padding:8px 14px}.task b{font-size:24px}
+}
+
+/* LIGHT VERSION: white boxes unless in jeopardy. Level is a thin line at the bottom of each box. */
+:root{--bg:#f2f2f7;--panel:#ffffff;--track:#ffffff;--line:#e5e5ea;--ink:#1d1d1f;--dim:#6e6e73;--lime:#0a84ff;
+  --ok:#34c759;--low:#ff9f0a;--now:#ff3b30;--held:#8e8e93;--orange:#ff3b30}
+body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text",Inter,"Helvetica Neue",Helvetica,Arial,sans-serif;font-weight:600}
+.band,.next,.sys{background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.04),0 0 0 1px rgba(0,0,0,.03)}
+.band .where span,.band .where{color:var(--ink)}.band .where span{color:#1f8a3c}
+.band .when{color:var(--dim)}.stat span{color:var(--dim)}.stat{border-left-color:var(--line)}.stat i{color:#1f8a3c}
+.glabel{color:var(--dim);font-weight:600}
+.bar{background:#fff;color:var(--ink);text-shadow:none;box-shadow:0 1px 2px rgba(0,0,0,.04),0 0 0 1px rgba(0,0,0,.04)}
+.bar i{top:auto;bottom:0;height:7px;background:var(--ok);border-radius:0 4px 4px 0}
+.big .bar i{height:9px}
+.bar.low{background:#fff4e0;box-shadow:0 0 0 2px var(--low) inset}.bar.low i{background:var(--low)}
+.bar.now{background:#ffe9e7;box-shadow:0 0 0 2px var(--now) inset}.bar.now i{background:var(--now)}
+.bar.now .m b,.bar.now .v{color:#c0281f}.bar.low .m b,.bar.low .v{color:#9a5b00}
+.bar.held{background:#f2f2f7;color:var(--dim);box-shadow:0 0 0 1px rgba(0,0,0,.05)}
+.big .bar .m span,.tops .bar .v{color:var(--dim);font-weight:600}
+.bar.just{outline:3px solid var(--ok)}.bar.just .v,.bar.just .m span{color:#1f8a3c}
+.alert{background:#fff;border:0;border-left:12px solid var(--now);box-shadow:0 1px 2px rgba(0,0,0,.04),0 0 0 1px rgba(0,0,0,.03)}
+.alert.task{border-left-color:var(--low)}.alert.clear{border-left-color:var(--ok)}
+.ahead{color:var(--ink)}.ahead small{color:var(--dim)}
+.ahead i{background:var(--now);box-shadow:0 0 0 4px rgba(255,59,48,.18)}
+.nums{border-color:var(--line)}.num b{color:var(--ink)}.num span{color:var(--dim)}
+.alert .more button{color:#0a84ff;font-weight:600}.alert .more button:not(:last-child){border-right-color:var(--line)}
+.go{background:#0a84ff;color:#fff;box-shadow:0 3px 0 #0060c9}.go .s{color:rgba(255,255,255,.85)}
+.alert.clear .go{background:#34c759;box-shadow:0 3px 0 #1f8a3c}
+.next .lbl{color:var(--dim);border-right-color:var(--line)}.task span{color:var(--dim)}.task b{color:var(--ink)}.task.now b{color:#c0281f}.task.low b{color:#9a5b00}.task.now span{color:var(--ink)}
+.sys .lbl{color:var(--dim);border-right-color:var(--line)}.si{border-right-color:var(--line)}.si b{color:var(--ink);font-weight:600}.si span{color:var(--dim)}
+.si i{background:var(--ok)}.si.bad span{color:#c0281f}.si.warn span{color:#9a5b00}
+.toast{background:#34c759;border-bottom-color:#1f8a3c}
+
+/* portrait: mains absorb leftover height; landscape band drops its label so nine components fit */
+@media(orientation:portrait){.hoppers{grid-template-rows:minmax(0,1fr) auto;align-content:stretch}.big .bar{height:auto;min-height:104px}}
+@media(orientation:landscape){.sys .lbl{display:none}}
+
+/* portrait: mains fill their row (no void); brand */
+@media(orientation:portrait){.row1{align-items:stretch}.row1 .grp{align-content:stretch;grid-template-rows:auto minmax(0,1fr)}.big .bar{height:auto;min-height:0}}
+
+/* SHORTER: every box 20% less tall, dairy is one box tall, leftover height goes to the alert */
+body{grid-template-rows:auto auto minmax(0,1fr) auto auto}
+.hoppers{grid-template-rows:auto auto;align-content:start;gap:10px;min-height:0}
+.row1,.row2{align-items:start}
+.grp,.row1 .grp,.row2 .grp{grid-template-rows:auto auto;align-content:start}
+.big .bar{height:16vh;min-height:0;max-height:none}
+.tops{grid-auto-rows:auto}
+.tops .bar{height:10.5vh;min-height:0;max-height:none;padding:4px 14px}
+.alert{align-self:center;max-height:150px;min-height:0}
+.nums{border-radius:0}
+@media(orientation:portrait){
+  .big .bar{height:16vh}
+  .tops .bar{height:37px;flex-direction:row;align-items:center;justify-content:space-between;gap:10px;padding:0 12px}
+  .tops .bar .n{font-size:18px}.tops .bar .v{font-size:17px}
+  .row2{grid-template-columns:2fr 1fr;grid-template-rows:auto auto;gap:8px 10px}
+  .row2 .grp:first-child{grid-column:1/-1}
+  .tops.veg{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .tops.sau{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .tops.dai{grid-template-columns:1fr}
+  .alert{max-height:300px}
+}
+/* freed height spreads evenly between sections instead of pooling around the alert */
+body{grid-template-rows:auto auto auto auto auto;align-content:space-between}
+.alert{align-self:auto}
+@media(orientation:landscape){.big .bar{gap:8px}.big .bar .n{font-size:clamp(20px,2.6vh,26px)}}
+
+/* PHOTOS: a photo fills the left of every box. ?photo=50 for half, ?photo=0 for none */
+:root{--phw:25%}
+.bar{padding-left:calc(var(--phw) + 14px)}
+.ph{position:absolute;left:0;top:0;bottom:0;width:var(--phw);background-size:cover;background-position:center;z-index:1;background-color:rgba(0,0,0,.15)}
+.bar i{left:var(--phw);width:calc((100% - var(--phw)) * var(--l,0) / 100)}
+.bar.held .ph{filter:grayscale(1);opacity:.5}
+@media(orientation:portrait){.big .bar,.tops .bar{padding-left:calc(var(--phw) + 12px)}}
+
+/* SECTIONS: Status (all items) above, Actions below */
+.sec{display:flex;align-items:center;gap:12px;font-size:15px;letter-spacing:2px;text-transform:uppercase;font-weight:800;color:var(--dim)}
+.sec::after{content:'';flex:1;height:2px;background:var(--line)}
+.hoppers{grid-template-rows:auto auto auto}
+.actions{display:grid;gap:12px;min-height:0}
+body{grid-template-rows:auto auto auto auto}
+@media(orientation:portrait){.hoppers{grid-template-rows:auto auto auto}}
+
+/* ITEM ALERT COLOR: hot lime (same as the action button), not red; "just refilled" moves to green */
+.bar.now i{background:var(--hot)}
+.bar.now{outline:none;box-shadow:inset 0 0 0 4px var(--hot);animation:none}
+.bar.just{outline:none;box-shadow:inset 0 0 0 4px var(--ok)}
+.task.now b{color:var(--hot)}
+.si.bad i{background:var(--hot);box-shadow:0 0 0 4px rgba(207,255,62,.25)}.si.bad span{color:var(--hot)}
+
+:root{--hot:#c8f000}
+.bar.now{background:#f8ffd6;box-shadow:inset 0 0 0 3px var(--hot)}.bar.now .m b,.bar.now .v{color:#5a6b00}
+.bar.just{background:#fff;box-shadow:inset 0 0 0 3px var(--ok)}.bar.just .v,.bar.just .m span{color:#1f8a3c}
+.task.now b{color:#6f8400}
+.si.bad span{color:var(--hot)}
+.ahead i{background:var(--hot);box-shadow:0 0 0 4px rgba(200,240,0,.25)}
+.alert{border-left-color:var(--hot)}
+/* MACHINE LINE: a dark pill, like the message sliders */
+.sys{background:#1c1c1e;color:#fff;border-radius:999px;box-shadow:none}
+.si{border-right-color:rgba(255,255,255,.14)}.si b{color:#fff}.si span{color:#a1a1a6}
+.sys .lbl{color:#a1a1a6;border-right-color:rgba(255,255,255,.14)}
+@media(orientation:portrait){.sys{border-radius:24px}}
+
+/* photo width wins over box padding; 50% mode stacks mains and drops the refill time on small bars */
+.big .bar,.tops .bar{padding-left:calc(var(--phw) + 14px)}
+@media(orientation:portrait){.big .bar,.tops .bar{padding-left:calc(var(--phw) + 12px)}}
+.tops .bar .v small{font-size:inherit}
+.big .bar .n{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+html[data-photo="50"] .tops .bar .v small{display:none}
+html[data-photo="50"] .big .bar{flex-direction:column;align-items:flex-start;justify-content:center;gap:0}
+html[data-photo="50"] .big .bar .m{text-align:left}
+html[data-photo="50"] .big .bar .m span{white-space:normal;margin-top:2px}
+@media(orientation:portrait){html[data-photo="50"] .big .bar .n{font-size:18px}html[data-photo="50"] .big .bar .m b{font-size:clamp(28px,3.4vh,40px)}html[data-photo="50"] .big .bar .m span{font-size:14px}}
+
+/* photos on: mains stack name over number; small bars tighten; portrait vegetables go two across */
+html:not([data-photo="0"]) .big .bar{flex-direction:column;align-items:flex-start;justify-content:center;gap:0}
+html:not([data-photo="0"]) .big .bar .m{text-align:left}
+html:not([data-photo="0"]) .big .bar .m span{white-space:normal;margin-top:2px}
+html:not([data-photo="0"]) .tops .bar .v{white-space:nowrap}
+html:not([data-photo="0"]) .tops .bar .n{font-size:17px}
+html:not([data-photo="0"]) .tops .bar .v{font-size:16px}
+@media(orientation:portrait){
+  html:not([data-photo="0"]) .tops.veg{grid-template-columns:repeat(2,minmax(0,1fr))}
+  html[data-photo="50"] .row2{grid-template-columns:1fr}
+  html[data-photo="50"] .row2 .grp:first-child{grid-column:auto}
+  html[data-photo="50"] .big .bar{height:15vh}
+  html[data-photo="50"] .bar.held .m b{font-size:30px}
+}
+
+/* portrait with photos: vegetables two across, sauces two across beside dairy; mains give back height so nothing squeezes */
+@media(orientation:portrait){
+  html:not([data-photo="0"]) .row2{grid-template-columns:2fr 1fr;grid-template-rows:auto auto;gap:8px 10px}
+  html:not([data-photo="0"]) .row2 .grp:first-child{grid-column:1/-1}
+  html:not([data-photo="0"]) .big .bar{height:13vh}
+  html:not([data-photo="0"]) .tops.sau .bar .n,html:not([data-photo="0"]) .tops.dai .bar .n{font-size:16px}
+  html:not([data-photo="0"]) .tops.sau .bar .v,html:not([data-photo="0"]) .tops.dai .bar .v{font-size:15px}
+  html[data-photo="50"] .tops.sau .bar,html[data-photo="50"] .tops.dai .bar{padding:0 8px 0 calc(50% + 8px);gap:6px}
+  html[data-photo="50"] .tops.sau .bar .n,html[data-photo="50"] .tops.dai .bar .n,html[data-photo="50"] .tops.sau .bar .v,html[data-photo="50"] .tops.dai .bar .v{font-size:15px}
+  html[data-photo="50"] .big .bar .n{font-size:16px}
+  html[data-photo="50"] .big .bar .m b{font-size:clamp(26px,3vh,36px)}
+  html[data-photo="50"] .bar.held .m b{font-size:26px}
+}
+
+/* the wide display face needs a touch less in portrait sauce and dairy bars */
+@media(orientation:portrait){
+  html:not([data-photo="0"]) .tops.sau .bar .n,html:not([data-photo="0"]) .tops.dai .bar .n{font-size:15px}
+  html:not([data-photo="0"]) .tops.sau .bar .v,html:not([data-photo="0"]) .tops.dai .bar .v{font-size:14px}
+  html[data-photo="50"] .tops.sau .bar .n,html[data-photo="50"] .tops.dai .bar .n,html[data-photo="50"] .tops.sau .bar .v,html[data-photo="50"] .tops.dai .bar .v{font-size:14px}
+  html[data-photo="50"] .big .bar .n{font-size:15px}
+}
+
+/* ACTIONS: the alert is a dark card with the hot yellow-green; no red anywhere */
+.alert{background:#1c1c1e;color:#fff;border-left:12px solid var(--hot);box-shadow:none}
+.ahead{color:#fff}.ahead small{color:#a1a1a6}
+.ahead i{background:var(--hot);box-shadow:0 0 0 5px rgba(200,240,0,.25)}
+.nums{border-color:rgba(255,255,255,.16)}.num b{color:#fff}.num span{color:#a1a1a6}
+.alert .more button{color:var(--hot)}.alert .more button:not(:last-child){border-right-color:rgba(255,255,255,.16)}
+.go{background:var(--hot);color:#111;box-shadow:0 3px 0 #8fb000}.go .s{color:rgba(0,0,0,.72)}
+.alert.task{border-left-color:var(--low)}.alert.task .ahead i{background:var(--low);box-shadow:0 0 0 5px rgba(255,159,10,.25)}
+.alert.clear{border-left-color:var(--ok)}.alert.clear .go{background:#34c759;color:#fff;box-shadow:0 3px 0 #1f8a3c}.alert.clear .go .s{color:rgba(255,255,255,.85)}
+.task.now b{color:#6f8400}
+
+/* the alert's status dot is blue, so it does not compete with the lime edge and button */
+.ahead i{background:#0a84ff;box-shadow:0 0 0 5px rgba(10,132,255,.25)}
+.alert.task .ahead i{background:#0a84ff;box-shadow:0 0 0 5px rgba(10,132,255,.25)}
+
+/* LOW / NOW boxes: dark background, bright yellow numbers, like the Actions card */
+.bar.low,.bar.now{background:#1c1c1e;color:#fff;box-shadow:none}
+.bar.low .n,.bar.now .n{color:#fff}
+.bar.low .m b,.bar.low .v,.bar.now .m b,.bar.now .v{color:var(--hot)}
+.bar.low .m span,.bar.now .m span,.bar.low .v small,.bar.now .v small{color:#e6e6e6}
+.bar.low i,.bar.now i{background:var(--hot)}
+.bar.now{box-shadow:inset 0 0 0 3px var(--hot)}
+
+/* the alert's status dot is hot orange */
+.ahead i,.alert.task .ahead i{background:#ff7a1a;box-shadow:0 0 0 6px rgba(255,122,26,.28)}
+
+/* big boxes: more breathing room between the photo and the title */
+.big .bar{padding-left:calc(var(--phw) + 26px)}
+@media(orientation:portrait){.big .bar{padding-left:calc(var(--phw) + 20px)}}
+
+/* secondary actions are real glove buttons: tall, outlined, one tap opens the hold-to-confirm sheet */
+.alert .more{display:flex;gap:10px;flex-wrap:nowrap;margin-top:6px}
+.alert .more button{flex:1 1 0;min-height:56px;padding:0 16px;border:2px solid rgba(255,255,255,.45);border-radius:14px;background:rgba(255,255,255,.06);color:#fff;font-size:18px;font-weight:800;text-align:center;white-space:nowrap;text-transform:none;letter-spacing:0}
+.alert .more button:not(:last-child){border-right:2px solid rgba(255,255,255,.45);padding-right:16px;border-radius:14px}
+.alert .more button:active{background:rgba(255,255,255,.18)}
+@media(orientation:portrait){.alert .more{flex-wrap:wrap}.alert .more button{flex:1 1 45%;min-height:60px;font-size:19px}}
+
+/* machine status line sits right under the title bar */
+.band{order:0}.sys{order:1}.hoppers{order:2}.actions{order:3}
+
+/* TOP LOCKUP: title bar and machine line are one status block */
+.top{order:0;display:grid;gap:0;border-radius:18px;overflow:hidden;background:var(--panel);min-height:0}
+.top .band{border-radius:0;box-shadow:none}
+.top .sys{border-radius:0;margin:0;box-shadow:none;border-top:2px solid var(--line)}
+@media(orientation:portrait){.top .sys{border-radius:0}}
+
+@media(orientation:landscape){.top .si{padding:0 8px;gap:5px;font-size:15px}.top .sys{padding:0 2px}}
+
+@media(orientation:landscape){.top .sys{flex-wrap:wrap;row-gap:0;padding:2px;min-height:0}.top .si{min-height:42px}}
+
+/* FINESSE PASS: craft details only, no layout changes */
+html{-webkit-text-size-adjust:100%}
+body{touch-action:manipulation;-webkit-user-select:none;user-select:none;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+/* numbers that tick must not jitter */
+#clock,#speedv,#expv,.big .bar .m b,.tops .bar .v,.num b,.next .t,.si span{font-variant-numeric:tabular-nums}
+/* uppercase names breathe; no negative tracking on caps */
+.big .bar .n,.tops .bar .n{letter-spacing:.01em}
+/* one hierarchy for labels: section labels lead, group labels follow */
+.sec{font-size:16px;letter-spacing:2.2px;color:var(--ink)}
+.sec::after{opacity:.6}
+.glabel{font-size:14px;letter-spacing:1.6px;font-weight:700;opacity:.85}
+/* the refill time is the second thought in a small bar */
+.tops .bar .v small{opacity:.78;font-weight:600}
+.big .bar .m span{opacity:.9}
+/* the clock never truncates in the title bar */
+.band .when{overflow:visible;text-overflow:clip;flex:0 0 auto}
+@media(orientation:landscape){.band .when{font-size:17px}}
+/* photo edge: a hairline between picture and panel; photos are never smeared */
+.ph{background-repeat:no-repeat;box-shadow:inset -1px 0 0 rgba(0,0,0,.12)}
+/* state changes ease instead of snapping */
+.bar{transition:background-color .35s ease,box-shadow .35s ease,color .35s ease}
+.bar i{transition:width .6s cubic-bezier(.2,.7,.2,1),background-color .35s ease}
+/* touch feedback on every tappable surface */
+.bar,.go,.alert .more button,.si{transition-property:transform,background-color,box-shadow,color;transition-duration:.12s,.35s,.35s,.35s}
+.bar:active{transform:scale(.985)}
+.go:active{transform:translateY(2px)}
+.go{transition:transform .08s ease,box-shadow .08s ease}
+/* even rhythm: same gap inside groups as between the two hopper rows */
+.big{gap:12px}.tops{gap:10px}
+html[data-photo="0"] .big .bar .m span br{display:none}
+
+/* light: the dark machine strip needs no line above it; hairlines stay hairlines */
+.top .sys{border-top:0}
+.bar{box-shadow:0 1px 2px rgba(0,0,0,.05),0 0 0 1px rgba(0,0,0,.05)}
+.bar.low,.bar.now{box-shadow:none}.bar.now{box-shadow:inset 0 0 0 3px var(--hot)}
+.top{box-shadow:0 1px 2px rgba(0,0,0,.04),0 0 0 1px rgba(0,0,0,.04)}
+.ph{box-shadow:inset -1px 0 0 rgba(0,0,0,.08)}
+
+/* landscape: the clock stands alone (day lives in the peak note); machine line tightens on smaller iPads */
+@media(orientation:landscape){.band .when .day{display:none}.band .when{min-width:0}}
+@media(orientation:landscape) and (max-width:1200px){.top .si{font-size:14px;padding:0 7px;gap:5px}}
+
+/* title never runs into the clock: it shrinks first */
+@media(orientation:landscape){.band .where{flex:0 1 auto;min-width:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}.band .when{flex:0 0 auto;margin-left:auto}.band .stat{flex:0 0 auto}}
+
+@media(orientation:landscape){.band{grid-template-columns:minmax(0,1fr) max-content max-content max-content}}
+
+/* Actions locks to the bottom edge; spare height opens between Status and Actions */
+body{grid-template-rows:auto auto minmax(0,1fr);align-content:stretch}
+.actions{align-self:end}
+
+/* a little more air above the Status label */
+.hoppers{margin-top:10px}
+@media(orientation:portrait){.hoppers{margin-top:8px}}
+
+/* short landscape screens (9.7-inch iPad): boxes give back a little height so Status never meets Actions */
+@media(orientation:landscape) and (max-height:800px){
+  .big .bar{height:13vh}
+  .tops .bar{height:9vh}
+  .hoppers{margin-top:4px}
+  .top .si{min-height:38px}
+}
+
+/* ALERT NUMBERS: the minutes-until-late is the hero, centered on top; the other two sit below it */
+.nums{display:grid;grid-template-columns:1fr 1fr;grid-auto-rows:auto;justify-items:center;align-content:center;column-gap:22px;row-gap:4px;text-align:center;justify-self:stretch;padding:0 18px}
+.num{display:flex;flex-direction:column;align-items:center;gap:0;min-width:0}
+.num b{text-align:center;line-height:1}
+.num span{white-space:nowrap}
+.num:nth-child(2){grid-column:1/-1;order:-1}
+.num:nth-child(2) b{font-size:clamp(36px,5vh,48px)}
+.num:nth-child(2) span{font-size:17px}
+.num:not(:nth-child(2)) b{font-size:clamp(24px,3.2vh,30px)}
+.num:not(:nth-child(2)) span{font-size:15px}
+.num:first-child:nth-last-child(2){grid-column:1/-1}
+@media(orientation:portrait){
+  .nums{display:flex;justify-content:center;align-items:flex-end;gap:26px;padding:0;text-align:center}
+  .num:nth-child(2){order:0}
+}
+
+/* STATUS CARD: the whole status area sits on its own card */
+.hoppers{background:var(--panel);border-radius:18px;padding:14px 18px 18px;margin-top:10px}
+@media(orientation:portrait){.hoppers{padding:12px 14px 14px;margin-top:8px}}
+
+.hoppers{background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.04),0 0 0 1px rgba(0,0,0,.04)}
+.hoppers .sec::after{background:var(--line)}
+.bar{box-shadow:0 1px 3px rgba(0,0,0,.07),0 0 0 1px rgba(0,0,0,.08)}
+.bar.low,.bar.now{box-shadow:none}.bar.now{box-shadow:inset 0 0 0 3px var(--hot)}
+.bar.held{box-shadow:0 0 0 1px rgba(0,0,0,.06)}
+
+/* the card's padding is paid for by the boxes, not by the gap to Actions */
+@media(orientation:landscape){.big .bar{height:14vh}.tops .bar{height:9.5vh}}
+@media(orientation:landscape) and (max-height:800px){.big .bar{height:12vh}.tops .bar{height:8.5vh}.hoppers{padding:10px 14px 12px;margin-top:2px}}
+@media(orientation:portrait){
+  html:not([data-photo="0"]) .big .bar{height:11vh}
+  .tops .bar{height:34px}
+  .hoppers{padding:10px 12px 12px;margin-top:4px}
+  .go{min-height:64px}
+  .alert .more button{min-height:54px}
+}
+
+/* ACTIONS LOCKUP: label, alert and Next Up are one dock, hooked to the bottom edge */
+.actions{gap:0;border-radius:18px 18px 0 0;overflow:hidden;margin-bottom:-20px;padding-bottom:max(0px,env(safe-area-inset-bottom))}
+.actions .sec{padding:12px 20px 8px}
+.actions .sec::after{opacity:.35}
+.actions .alert{border-radius:0;box-shadow:none;margin:0}
+.actions .next{border-radius:0;box-shadow:none;margin:0}
+@media(orientation:portrait){.actions{margin-bottom:-12px}.actions .sec{padding:10px 16px 6px}}
+
+.actions{background:#1c1c1e;box-shadow:none}
+.actions .sec{color:#fff}.actions .sec::after{background:rgba(255,255,255,.35)}
+.actions .alert{background:#1c1c1e}
+.actions .next{background:#111113;border-top:1px solid rgba(255,255,255,.1);color:#fff}
+.next .lbl{color:#a1a1a6;border-right-color:rgba(255,255,255,.16)}
+.task b{color:#fff}.task span{color:#a1a1a6}
+.task.now b{color:var(--hot)}.task.low b{color:#ffb340}.task.now span{color:#fff}
+
+body{padding-bottom:20px}
+@media(orientation:portrait){body{padding-bottom:12px}}
+
+/* ACTIONS DOCK: edge to edge, square, flush with the screen on three sides */
+body{padding-left:20px;padding-right:20px}
+.actions{margin-left:-20px;margin-right:-20px;border-radius:0}
+.actions .sec{padding-left:40px;padding-right:40px}
+.actions .alert{padding-left:28px;padding-right:36px}
+.actions .next{padding-left:40px;padding-right:40px}
+@media(orientation:portrait){
+  .actions .sec{padding-left:32px;padding-right:32px}
+  .actions .alert{padding-left:22px;padding-right:32px}
+  .actions .next{padding-left:32px;padding-right:32px}
+}
+
+/* variation in the whites: the card sits a shade below the boxes, the boxes carry a faint fall-off */
+.hoppers{background:#f7f7fa;box-shadow:0 1px 2px rgba(0,0,0,.03),0 0 0 1px rgba(0,0,0,.05)}
+.bar{background:linear-gradient(180deg,#ffffff 0%,#fbfbfd 100%);box-shadow:0 1px 2px rgba(0,0,0,.06),0 2px 6px rgba(0,0,0,.04),0 0 0 1px rgba(0,0,0,.06)}
+.bar.low,.bar.now{background:#1c1c1e;box-shadow:0 2px 8px rgba(0,0,0,.18)}.bar.now{box-shadow:inset 0 0 0 3px var(--hot),0 2px 8px rgba(0,0,0,.18)}
+.bar.held{background:#ededf0;box-shadow:0 0 0 1px rgba(0,0,0,.05)}
+.hoppers .sec::after{background:#e2e2e7}
+
+/* more variation: the card is a clear step down from the boxes; the boxes lift off it */
+body{background:#ececf1}
+.hoppers{background:#f1f1f5;box-shadow:0 0 0 1px rgba(0,0,0,.05)}
+.bar{background:linear-gradient(180deg,#ffffff 0%,#f7f7fa 100%);box-shadow:0 1px 2px rgba(0,0,0,.08),0 4px 10px rgba(0,0,0,.06),0 0 0 1px rgba(0,0,0,.07)}
+.bar.held{background:#e4e4e9;box-shadow:0 0 0 1px rgba(0,0,0,.05)}
+.bar.held .ph{opacity:.4}
+.top,.hoppers .sec::after{background:#fff}
+.hoppers .sec::after{background:#dcdce2}
+.top{box-shadow:0 1px 2px rgba(0,0,0,.05),0 0 0 1px rgba(0,0,0,.05)}
+
+/* ANOTHER WAY (?look=flat): white card, boxes are soft gray cells, no lift; the photos separate them */
+html[data-look="flat"] body{background:#f2f2f7}
+html[data-look="flat"] .hoppers{background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.04),0 0 0 1px rgba(0,0,0,.04)}
+html[data-look="flat"] .bar{background:#f3f3f7;box-shadow:none}
+html[data-look="flat"] .bar.held{background:#e9e9ee;box-shadow:none}
+html[data-look="flat"] .bar.low,html[data-look="flat"] .bar.now{background:#1c1c1e;box-shadow:none}
+html[data-look="flat"] .bar.now{box-shadow:inset 0 0 0 3px var(--hot)}
+html[data-look="flat"] .bar i{height:6px;border-radius:0 3px 3px 0}
+html[data-look="flat"] .big .bar i{height:8px}
+html[data-look="flat"] .ph{box-shadow:none}
+html[data-look="flat"] .hoppers .sec::after{background:#e5e5ea}
+
+/* boxes pure white; the status card a slight gray-green */
+body{background:#f2f2f7}
+.hoppers{background:#eef2ee;box-shadow:0 0 0 1px rgba(20,60,30,.08)}
+.hoppers .sec{color:#1d2b21}.hoppers .sec::after{background:#d6dfd8}
+.glabel{color:#5b6b60}
+.bar{background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.06),0 2px 6px rgba(0,0,0,.04),0 0 0 1px rgba(20,60,30,.07)}
+.bar.held{background:#e6eae7;box-shadow:0 0 0 1px rgba(20,60,30,.06)}
+html[data-look="flat"] .hoppers{background:#eef2ee}
+html[data-look="flat"] .bar{background:#fff;box-shadow:0 0 0 1px rgba(20,60,30,.08)}
+
+/* status card: a light blue-gray (slate) instead of green */
+.hoppers,html[data-look="flat"] .hoppers{background:#e9edf3;box-shadow:0 0 0 1px rgba(30,45,70,.09)}
+.hoppers .sec{color:#1f2a3a}.hoppers .sec::after{background:#cfd6e2}
+.glabel{color:#5a6678}
+.bar{box-shadow:0 1px 2px rgba(0,0,0,.06),0 2px 6px rgba(0,0,0,.04),0 0 0 1px rgba(30,45,70,.08)}
+.bar.held{background:#dfe4ec;box-shadow:0 0 0 1px rgba(30,45,70,.07)}
+html[data-look="flat"] .bar{box-shadow:0 0 0 1px rgba(30,45,70,.09)}
+
+/* cooler: unmistakably blue-gray, no green in it */
+.hoppers,html[data-look="flat"] .hoppers{background:#e2e7f1;box-shadow:0 0 0 1px rgba(40,60,100,.11)}
+.hoppers .sec{color:#1c2740}.hoppers .sec::after{background:#c7d0e0}
+.glabel{color:#56627a}
+.bar{box-shadow:0 1px 2px rgba(0,0,0,.06),0 2px 6px rgba(0,0,0,.04),0 0 0 1px rgba(40,60,100,.09)}
+.bar.held{background:#d8dfeb;box-shadow:0 0 0 1px rgba(40,60,100,.08)}
+
+/* TOP LOCKUP: edge to edge like the dock, flush with the top and both sides */
+body{padding-top:0}
+.top{margin-left:-20px;margin-right:-20px;border-radius:0;padding-top:max(0px,env(safe-area-inset-top))}
+.top .band{padding-left:40px;padding-right:40px;border-radius:0}
+.top .sys{padding-left:22px;padding-right:22px}
+@media(orientation:portrait){.top .band{padding-left:32px;padding-right:32px}.top .sys{padding-left:20px;padding-right:20px}}
+.hoppers{margin-top:16px}
+@media(orientation:portrait){.hoppers{margin-top:12px}}
+
+/* BRAND MARK in the title bar */
+.band .where{display:inline-flex;align-items:center;gap:10px}
+.band .where .logo{width:30px;height:30px;flex:none;color:currentColor;margin:0 2px 0 0}
+@media(orientation:portrait){.band .where .logo{width:28px;height:28px}}
+
+
+/* bigger mark in the title bar */
+.band .where .logo{width:44px;height:44px;margin:-4px 4px -4px 0}
+@media(orientation:portrait){.band .where .logo{width:40px;height:40px}}
+
+/* the mark never clips: no negative margins; the bar gives it room */
+.band .where .logo{margin:0 4px 0 0}
+.band{padding-top:10px;padding-bottom:10px}
+@media(orientation:portrait){.band{padding-top:8px;padding-bottom:8px}}
+
+/* RECIPE ROW: the job, inside the top lockup between the title bar and the machine line */
+.recipe{display:flex;align-items:center;gap:14px;padding:0 40px;min-height:40px;white-space:nowrap;overflow:hidden;font-size:16px;font-weight:700}
+.recipe .rc-lbl{font-size:13px;letter-spacing:1.6px;text-transform:uppercase;font-weight:800;opacity:.75;flex:none}
+.recipe .rc-who{display:inline-flex;align-items:baseline;gap:8px;flex:none}
+.recipe .rc-who b{font-size:19px;font-weight:900;letter-spacing:-.01em}
+.recipe .rc-id{font-size:13px;letter-spacing:.8px;font-weight:700;opacity:.7;font-variant-numeric:tabular-nums}
+.recipe .rc-meta{flex:0 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;opacity:.9}
+.recipe .rc-prog{position:relative;display:inline-flex;align-items:baseline;gap:4px;flex:none;padding:0 12px;height:30px;line-height:30px;border-radius:8px;overflow:hidden;font-variant-numeric:tabular-nums}
+.recipe .rc-prog i{position:absolute;left:0;top:0;bottom:0;width:var(--p);z-index:0}
+.recipe .rc-prog b,.recipe .rc-prog span,.recipe .rc-prog em{position:relative;z-index:1}
+.recipe .rc-prog b{font-size:20px;font-weight:900}
+.recipe .rc-prog span{font-size:14px;font-weight:700;opacity:.8}
+.recipe .rc-prog em{font-style:normal;font-size:14px;font-weight:700;margin-left:8px;opacity:.9}
+.recipe .rc-items{display:inline-flex;gap:6px;flex:1 1 auto;min-width:0;overflow:hidden}
+.recipe .rc-chip{display:inline-flex;align-items:center;gap:6px;height:28px;padding:0 10px 0 8px;border-radius:999px;font-size:14px;font-weight:800;flex:none}
+.recipe .rc-chip i{width:10px;height:10px;border-radius:50%;flex:none}
+.recipe .rc-chip small{font-size:12px;font-weight:700;opacity:.8}
+.recipe .rc-next{flex:none;font-size:14px;font-weight:700;opacity:.85}
+.recipe .rc-next b{font-weight:900}
+.recipe .rc-next small{font-size:13px;font-weight:600}
+/* recipe tag on the hoppers it uses */
+.bar .rc-tag{position:absolute;top:6px;right:8px;z-index:2;font-size:13px;letter-spacing:.6px;font-weight:900;line-height:1;padding:4px 6px;border-radius:6px}
+@media(orientation:portrait){
+  .recipe{flex-wrap:wrap;padding:6px 32px;row-gap:4px;min-height:0}
+  .recipe .rc-items,.recipe .rc-next{display:none}
+  .recipe .rc-meta{flex:1 1 100%;font-size:14px}
+}
+/* the row is paid for by the boxes */
+@media(orientation:landscape){.big .bar{height:12.5vh}.tops .bar{height:8.8vh}.hoppers{padding:12px 18px 16px}}
+@media(orientation:landscape) and (max-height:800px){.big .bar{height:11vh}.tops .bar{height:8vh}}
+@media(orientation:portrait){html:not([data-photo="0"]) .big .bar{height:10vh}.tops .bar{height:32px}}
+
+.recipe{background:#fff;color:var(--ink);border-top:1px solid var(--line)}
+.recipe .rc-prog{background:#eef0f4}.recipe .rc-prog i{background:#cdeed6}
+.recipe .rc-chip{background:#f2f2f7;color:var(--ink)}
+.recipe .rc-chip.ok i{background:var(--ok)}.recipe .rc-chip.low i{background:var(--low)}.recipe .rc-chip.now i{background:var(--hot);box-shadow:0 0 0 3px rgba(200,240,0,.3)}.recipe .rc-chip.held i{background:#b0b7c3}
+.recipe .rc-chip.held{color:var(--dim)}
+.bar .rc-tag{background:#e2e7f1;color:#1c2740}
+.bar.low .rc-tag,.bar.now .rc-tag{background:rgba(255,255,255,.14);color:#fff}
+
+/* portrait: recipe row is two rows, never three */
+@media(orientation:portrait){
+  .recipe{display:grid;grid-template-columns:auto minmax(0,1fr) auto;grid-template-rows:auto auto;align-items:center;column-gap:12px;row-gap:2px;padding:6px 32px 8px;white-space:nowrap}
+  .recipe .rc-lbl{grid-row:1}.recipe .rc-who{grid-row:1;min-width:0;overflow:hidden}.recipe .rc-prog{grid-row:1;grid-column:3}
+  .recipe .rc-meta{grid-row:2;grid-column:1/-1;flex:none;font-size:14px}
+  html:not([data-photo="0"]) .big .bar{height:9vh}
+  .tops .bar{height:30px}
+}
+@media(orientation:landscape){.big .bar{height:12vh}}
+@media(orientation:landscape) and (max-height:800px){.big .bar{height:10.5vh}}
+
+@media(orientation:portrait){.go{min-height:60px}.alert .more button{min-height:50px}.hoppers{padding:8px 10px 10px}.actions .sec{padding-top:8px;padding-bottom:4px}}
+
+/* recipe tag sits on the photo corner, never on the text */
+.bar .rc-tag{left:6px;top:6px;right:auto;background:rgba(0,0,0,.55);color:#fff}
+html[data-photo="0"] .bar .rc-tag{left:auto;right:8px}
+
+/* long names (Sour Cream) wrap in landscape; in portrait they drop the refill time instead of truncating */
+@media(orientation:landscape){.tops .bar.long .n{white-space:normal;line-height:1.05;overflow:visible;text-overflow:clip}}
+@media(orientation:portrait){.tops .bar.long .n{font-size:15px}.tops .bar.long .v small{display:none}}
+
+.ph{object-fit:cover;display:block}
+
+.ph{height:100%;width:var(--phw);object-fit:cover}
+
+/* SLOT MAP: the machine's 18 physical dispenser positions, flat and numbered — the same floor plan
+   drawn in recipe-development.html's rack. Never regrouped by category; #1-18 in the same order
+   everywhere the machine appears, so it reads as one object, not a different diagram each time. */
+.slots{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));grid-auto-rows:minmax(0,1fr);gap:10px;min-height:0}
+.slots .bar{flex-direction:column;align-items:flex-start;justify-content:center;gap:1px;padding:8px 12px;height:9.5vh;min-height:0}
+.slots .bar .head{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:800;letter-spacing:.3px;opacity:.6}
+.slots .bar .head .dot{width:7px;height:7px;border-radius:50%;flex:none;background:var(--dot,#8e8e93)}
+.slots .bar.hot .head .dot{--dot:#ff9f0a}
+.slots .bar.cold .head .dot{--dot:#0a84ff}
+.slots .bar .n{font-size:15px;letter-spacing:-.01em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%}
+.slots .bar .v{font-size:14px}
+.slots .bar.open{background:#fff;box-shadow:inset 0 0 0 2px var(--line);opacity:.55}
+.slots .bar.open .n{color:var(--dim);font-weight:700}
+.slots .bar.open .head{opacity:.45}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:13px;color:var(--dim);font-weight:600;padding:10px 4px 0}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{width:8px;height:8px;border-radius:50%;display:inline-block}
+@media(orientation:landscape) and (max-height:800px){.slots .bar{height:8vh}}
+@media(orientation:portrait){
+  .slots{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .slots .bar{height:auto;min-height:58px;padding:6px 10px}
+  .slots .bar .n{font-size:14px}.slots .bar .v{font-size:13px}
+}
+</style>
+<link rel="stylesheet" href="glove.css"></head>
+<body>
+  <section class="top">
+  <header class="band">
+    <a class="where" href="manager-fleet.html" style="color:inherit;text-decoration:none">‹ <svg class="logo" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="20" fill="#c8f000"/><g transform="translate(20 20.6) scale(.62) translate(-20 -21)"><circle cx="20" cy="11.5" r="6.5" fill="#0b120e"/><path d="M4.5 21.5h31a1.5 1.5 0 0 1 1.5 1.6C36.2 30.6 29 36.5 20 36.5S3.8 30.6 3 23.1a1.5 1.5 0 0 1 1.5-1.6z" fill="#0b120e"/></g></svg> BOWL-O-MATIC 5000 <span>UPTOWN · LUNCH RUSH</span></a>
+    <div class="when"><span class="day">THU</span> <span id="clock">12:18</span> <span class="peak">PEAK 12:30–12:50</span></div>
+    <div class="stat"><b id="speedv">38</b><span>BOWLS / 10 MIN</span><i>▲</i></div>
+    <div class="stat"><b id="expv">214</b><span>TO GO</span></div>
+  </header>
+  <div class="recipe" id="recipe"></div>
+  <section class="sys" id="machines"></section>
+  </section>
+
+  <section class="hoppers">
+    <div class="sec">Status · 18 slots</div>
+    <div class="slots" id="g-all"></div>
+    <div class="legend"><span><i style="background:#ff9f0a"></i>Hot-held</span><span><i style="background:#0a84ff"></i>Cold-held</span><span><i style="background:#8e8e93"></i>Open · swing slot</span></div>
+  </section>
+
+  <section class="actions">
+    <div class="sec">Actions</div>
+    <section class="alert" id="alert"></section>
+    <section class="next" id="next"></section>
+  </section>
+
+
+<div class="overlay" id="overlay"><div class="sheet"><div class="handle"></div><div class="eyebrow" id="sheetLabel"></div><h2 id="sheetTitle"></h2><p id="sheetText"></p><div class="effects" id="effects"></div><div class="sheet-actions"><button class="back" onclick="closeSheet()">BACK</button><button class="confirm" id="confirm" onclick="commit()"></button></div></div></div>
+<div class="toast" id="toast"><b id="toastTitle"></b><span id="toastText"></span></div>
+<script>
+/* hoppers: level % and burn %/min at this pace. Forecast walks the Thursday lunch curve (peak 12:30-12:50) to the 15% refill mark. */
+/* Simulated clock: 1 real second = 6 seconds on the line, so a minute passes every 10 seconds and the numbers visibly click down. */
+let NOW=12*60+18, SEC=0;
+const PEAK=[12*60+30,12*60+50];
+const H=[{n:'Chicken',g:'prot',l:64,b:2.1,src:'reach-in 1'},{n:'Beef',g:'prot',l:17,b:2.8,src:'walk-in'},{n:'Rice',g:'base',l:41,b:2.9,src:'cooker 2'},{n:'Quinoa',g:'base',l:0,b:1.2,held:1,src:'dry store'}];
+const C=[{n:'Beans',g:'veg',l:70,b:1.5},{n:'Corn',g:'veg',l:35,b:1.6},{n:'Pico',g:'veg',l:22,b:1.9},{n:'Lettuce',g:'veg',l:48,b:1.3},{n:'Cilantro',g:'veg',l:52,b:.8},{n:'Lime',g:'veg',l:90,b:.5},{n:'Guac',g:'sau',l:15,b:1.7},{n:'Verde',g:'sau',l:73,b:.9},{n:'Chipotle',g:'sau',l:30,b:1.1},{n:'Roja',g:'sau',l:66,b:1},{n:'Cheese',g:'dai',l:80,b:1.4},{n:'Sour Cream',g:'dai',l:58,b:1.2}];
+const ALL=[...H,...C];
+const pace=t=> t<PEAK[0]?1.0 : t<PEAK[1]?1.35 : t<13*60+10?1.0 : 0.6;
+const clock=t=>{const h=Math.floor(t/60),m=t%60;return (h>12?h-12:h)+':'+String(m).padStart(2,'0');};
+function refillMin(x){ let lvl=x.l, t=NOW; while(lvl>15 && t<NOW+240){ lvl-=x.b*pace(t); t++; } return t-NOW; }
+function refillClock(x){ if(x.held) return null; const m=refillMin(x); return m>=240?'AFTER 4 PM':clock(NOW+m); }
+const mn=x=>Math.max(0,Math.round(x.l/x.b)), st=x=>x.held?'held':mn(x)<8?'now':mn(x)<20?'low':'ok';
+function nextUp(){const all=ALL.filter(x=>!x.held).map(x=>({x,t:refillClock(x),z:st(x),m:refillMin(x)})).sort((a,b)=>a.m-b.m).slice(0,4);document.getElementById('next').innerHTML='<div class="lbl">Next up</div>'+all.map(a=>`<div class="task ${a.z}"><b>${a.t}</b><span>${a.x.n}${a.x.src?' · '+a.x.src:''}</span></div>`).join('');}
+const M=[{n:'Bowl 01',s:'run',st:'Running',k:'14',l:'in queue',hr:134,sec:27},{n:'Bowl 02',s:'held',st:'Held',k:'7',l:'rerouting',hr:0,sec:0,sub:'HELD · quinoa'},{n:'Chicken 2',s:'run',st:'Running',k:'12',l:'slots open',hr:150,sec:24}];
+function machines(){
+  const st=m=>m.s==='run'?'':m.s==='held'?'bad':m.s==='clean'?'warn':'off';
+  const word=m=>m.s==='run'?(m.k+(m.l==='in queue'?' queued':m.l==='slots open'?' open':' '+m.l)):m.s==='held'?((m.sub||'HELD').startsWith('DOOR')?'door open':'held'):m.s==='clean'?(m.k+' min clean'):'off';
+  const q=ALL.find(x=>x.n==='Quinoa'); const disp=q&&q.held?['warn','17/18']:['',''];
+  const items=M.map(m=>[st(m),m.n,word(m)]).concat([['','Conveyor',''],[disp[0],'Dispensers',disp[1]],['','Sealer',''],['','Pickup',''],['','Payments',''],['','Network','']]);
+  document.getElementById('machines').innerHTML='<span class="lbl">System</span>'+items.map(a=>`<span class="si ${a[0]}"><i></i><b>${a[1]}</b>${a[2]?`<span>${a[2]}</span>`:''}</span>`).join('');
+}
+machines();
+
+/* ---------- RECIPE: the job the line is running. One customer, N bowls, a due time, a fixed set of hoppers. ---------- */
+const RECIPE={id:'SF-0912',who:'Salesforce',where:'Salesforce Tower · 45F',when:'Wed 09-12-26 · 12:30 meeting',due:12*60+30,n:50,done:31,acc:0,
+  items:['Chicken','Rice','Beans','Corn','Guac','Pico','Cheese','Lime'],veg:{n:12,base:'Quinoa'},
+  next:[{who:'À la carte',n:9,note:'walk-in queue'},{who:'Stripe',n:24,note:'due 1:15'}]};
+const inRecipe=x=>RECIPE.items.includes(x.n)||x.n===RECIPE.veg.base;
+function recipeRow(){
+  const el=document.getElementById('recipe'); if(!el) return;
+  const rank={now:0,held:1,low:2,ok:3}; const all=RECIPE.items.concat([RECIPE.veg.base]).map(n=>{const x=ALL.find(y=>y.n===n);return {n,s:x?st(x):'ok'};}).sort((a,b)=>rank[a.s]-rank[b.s]);
+  const chips=all.slice(0,4).map(({n,s})=>`<span class="rc-chip ${s}"><i></i>${n}${n===RECIPE.veg.base?' <small>×'+RECIPE.veg.n+' veg</small>':''}</span>`).join('')+(all.length>4?`<span class="rc-chip more">+${all.length-4}</span>`:'');
+  const left=RECIPE.n-RECIPE.done, mins=Math.max(0,RECIPE.due-NOW), pct=Math.round(RECIPE.done/RECIPE.n*100);
+  const nx=RECIPE.next[0];
+  el.innerHTML=`<span class="rc-lbl">Recipe</span>
+    <span class="rc-who"><b>${RECIPE.who}</b><span class="rc-id">${RECIPE.id}</span></span>
+    <span class="rc-meta"><b>${RECIPE.n} bowls</b> · ${RECIPE.where} · ${RECIPE.when}</span>
+    <span class="rc-prog"><i style="--p:${pct}%"></i><b>${RECIPE.done}</b><span>/ ${RECIPE.n}</span><em>${left} left · ${mins} min</em></span>
+    <span class="rc-items">${chips}</span>
+    <span class="rc-next">Next <b>${nx.who}</b> ×${nx.n}<small> · ${nx.note}</small></span>`;
+}
+function render(){
+  nextUp(); recipeRow();
+  // PHOTOS: Wikimedia Commons, hotlinked via Special:FilePath (browser loads them). ?photo=25|50|0
+  const IMG={"chicken": "Grilled_Chicken_Breasts_(28905381261).jpg", "beef": "Shredded_Steak_with_Peppers,_Onions_and_Tomatoes_(Ropa_Vieja).jpg", "rice": "Bowl_of_white_rice_02.jpg", "quinoa": "Quinoa_cuit.JPG", "beans": "Black_bean,_frijol_negro,_feijão_preto_1.jpg", "corn": "Up_close_image_of_corn.jpg", "pico": "Mmm..._Pico_de_Gallo_(5923456035).jpg", "lettuce": "Romaine_lettuce.jpg", "cilantro": "Coriander_01.jpg", "lime": "Lime_-_whole_and_halved.jpg", "guac": "Guacamole_bowl.jpg", "verde": "SALSA_VERDE.jpg", "chipotle": "Chipotlesenadobo.jpg", "roja": "Bowl_of_salsa.jpg", "sour cream": "Sour_Cream.jpg", "cheese": "Fine_Microplane_Grating_Hard_Cheese.jpg"};
+  const img=x=>'https://commons.wikimedia.org/wiki/Special:FilePath/'+encodeURIComponent(IMG[x.n.toLowerCase()]||'')+'?width=400';
+  const key=x=>x.n.toLowerCase().replace(/\s+/g,'-');
+  // PHOTO STASH: img/<key>.jpg in this folder wins; if it is missing the browser falls back to the Commons photo
+  window.SRC=window.SRC||{}; window.phFail=function(el,k,fallback){SRC[k]=fallback; el.onerror=null; el.src=fallback;};
+  const ph=x=>{const k=key(x); const src=SRC[k]||`img/${k}.jpg`; return `<img class="ph" alt="" decoding="sync" src="${src}" ${SRC[k]?'':`onerror="phFail(this,'${k}','${img(x)}')"`}>`;};
+  {const p=new URLSearchParams(location.search).get('photo'); const w=p===null?25:(parseInt(p,10)||0); document.documentElement.style.setProperty('--phw',w+'%'); document.documentElement.dataset.photo=w; const lk=new URLSearchParams(location.search).get('look'); if(lk) document.documentElement.dataset.look=lk;}
+  // SLOT MAP: same #1-18 order as recipe-development.html's machine rack. Flat, never regrouped.
+  const temp=x=>(x.g==='prot'||x.g==='base')?'hot':'cold';
+  const SLOTS18=[...ALL,{open:1},{open:1}];
+  const slotBar=(x,i)=>{
+    if(x.open) return `<div class="bar slot open"><div class="head"><span>#${i+1}</span><span class="dot"></span></div><div class="n">OPEN</div><div class="v">swing slot</div></div>`;
+    const z=st(x);
+    return `<div class="bar slot ${temp(x)} ${z} ${x.just?'just':''} ${x.n.length>8?'long':''}" ${x.held?'':`onclick="openSheet('refill:${x.n}')"`}>${ph(x)}${inRecipe(x)?'<em class="rc-tag">SF</em>':''}<i style="--l:${x.held?0:x.l}"></i><div class="head"><span>#${i+1}</span><span class="dot"></span></div><div class="n">${x.n}</div><div class="v">${x.held?'HELD':Math.round(x.l)+'%'}<small> · ${x.held?'not dispensing':x.just?'REFILLED':refillClock(x)}</small></div></div>`;
+  };
+  window.LAST=window.LAST||{};
+  const paint=(id,items,tpl)=>{const el=document.getElementById(id); const html=items.map(tpl).join(''); const key=html.replace(/--l:[0-9.]+/g,'--l:0');
+    if(LAST[id]!==key){el.innerHTML=html; LAST[id]=key;} else {const bars=el.querySelectorAll('.bar i'); items.forEach((x,i)=>{if(bars[i]&&!x.open) bars[i].style.setProperty('--l',x.held?0:x.l);});}};
+  paint('g-all',SLOTS18,slotBar);
+  document.getElementById('clock').textContent=clock(NOW);
+}
+render();
+function refill(x,who){ x.l=100; x.just=who; render(); setTimeout(()=>{x.just=null;render();},6000); toastTitle.textContent=`${x.n} refilled by ${who} · ${clock(NOW)}`; toastText.textContent='Marked full at the hopper. Next up is updated.'; toast.classList.add('show'); setTimeout(()=>toast.classList.remove('show'),3500); }
+/* the worker on hoppers refills whatever hits the mark, about a minute after it does */
+const CREW=['Maya','Maya','Jordan'];
+setInterval(()=>{
+  SEC+=6; if(SEC>=60){SEC-=60; NOW+=1;}
+  ALL.forEach(x=>{ if(!x.held && !x.just){ x.l=Math.max(0,+(x.l-x.b*pace(NOW)/10).toFixed(2)); if(x.l<=12 && !x.due){ x.due=NOW+1; } if(x.due && NOW>=x.due){ x.due=null; refill(x,CREW[Math.floor(Math.random()*CREW.length)]); } } });
+  render(); popCheck(); if(cleanUntil&&NOW>=cleanUntil){cleanUntil=null;M[0].s='run';M[0].st='Running';M[0].k='9';M[0].l='in queue';M[0].hr=134;M[0].sub=null;machines();note('Bowl 01 back from cleaning');} if(SEC<6&&STEP==='clear') renderAlert(false);
+  const sp=Math.round(38*pace(NOW))+Math.round(Math.sin(SEC/9)*2);document.getElementById('speedv').textContent=sp;document.getElementById('expv').textContent=Math.max(0,214-Math.floor((NOW-(12*60+18))*sp/10));
+  if(RECIPE.done<RECIPE.n){RECIPE.acc+=sp/100; if(RECIPE.acc>=1){RECIPE.done+=1;RECIPE.acc-=1;}} recipeRow();
+},1000);
+/* ---------- SCENE: the shift, one step at a time ---------- */
+const Q=()=>ALL.find(x=>x.n==='Quinoa');
+const SCENE={
+ reroute:{kind:'',head:'Quinoa under-dispensing',sub:'Bowl 02 · held 12:16 · rest running',nums:[['7','orders waiting'],['4 MIN','until late'],['12','slots open at Bowl 2']],btn:'TAP TO START REROUTE',bs:'7 orders → Chicken 2',verbs:[['tech','Send tech'],['engineering','Log + alert Eng.']],
+   sheet:{label:'Reroute',title:'Move 7 orders to Chicken Bowl 2?',text:'Chicken Bowl 2 has 12 open slots. Every affected order lands in the same service window.',effects:[['Guests','All 7 orders stay on time'],['Bowl 02','Quinoa stays held. Other recipes keep running']],button:'START REROUTE'},
+   done:()=>{ M[1].k='0';M[1].l='waiting';M[1].sub='HELD · rerouted';M[2].k='19';M[2].l='in queue';machines(); note('Reroute started · 7 orders moving to Chicken 2'); go('quickfix'); }},
+ quickfix:{kind:'task',head:'Next: quick fix at Bowl 02',sub:'Two steps · about 2 min · orders are safe',nums:[['2','steps'],['2 MIN','at the machine'],['0','orders waiting']],btn:'TAP TO START QUICK FIX',bs:'Open the yellow quinoa panel',verbs:[['tech','Send tech instead']],
+   sheet:{label:'Quick fix',title:'Start the quick fix?',text:'The machine is safe. Two on-screen steps at Bowl 02.',effects:[['Step 1','Open the yellow quinoa panel'],['Step 2','Loosen quinoa, then run a test portion']],button:'START QUICK FIX'},
+   done:()=>{ note('Quick fix done · test portion on target'); go('release'); }},
+ release:{kind:'clear',head:'Quinoa test passed',sub:'Bowl 02 · ready to release the hold',nums:[['3','test portions OK'],['0','late orders'],['12','slots at Bowl 2']],btn:'TAP TO RELEASE QUINOA',bs:'Bowl 02 back to all recipes',verbs:[['engineering','Log for Engineering']],
+   sheet:{label:'Release hold',title:'Release quinoa at Bowl 02?',text:'Three test portions hit target. The path reopens and Bowl 02 takes orders again.',effects:[['Bowl 02','All recipes running'],['Guests','Nothing rerouted from here on']],button:'RELEASE QUINOA'},
+   done:()=>{ const q=Q(); q.held=0; q.l=100; q.b=1.2; q.just='MAYA'; setTimeout(()=>{q.just=null;render();},6000); M[1].s='run';M[1].st='Running';M[1].k='11';M[1].l='in queue';M[1].hr=128;M[1].sec=28;M[1].sub=null;machines(); note('Quinoa released · Bowl 02 running · Maya'); go('clear'); }},
+ clear:{kind:'clear',head:'All clear',sub:'Everything running',nums:()=>{const n=ALL.filter(x=>!x.held).map(x=>({x,m:refillMin(x)})).sort((a,b)=>a.m-b.m)[0];return [[n?refillClock(n.x):'—',n?'next refill · '+n.x.n:'next refill'],[String(Math.max(0,214-Math.floor((NOW-(12*60+18))*38/10))),'orders to go'],['0','alerts']];},btn:()=>{const n=ALL.filter(x=>!x.held).map(x=>({x,m:refillMin(x)})).sort((a,b)=>a.m-b.m)[0];return n?'TAP WHEN '+n.x.n.toUpperCase()+' IS REFILLED':'ALL CLEAR';},bs:()=>{const n=ALL.filter(x=>!x.held).map(x=>({x,m:refillMin(x)})).sort((a,b)=>a.m-b.m)[0];return n?n.x.n+' · from '+(n.x.src||'the reach-in'):'';},verbs:[['engineering','Log a note']],
+   sheet:{label:'Refill',title:'Mark the next refill done?',text:'Confirm at the hopper. Next up updates on its own.',effects:[['Hopper','Back to 100%'],['Service','Keeps dispensing during the swap']],button:'REFILLED'},
+   done:()=>{ const n=ALL.filter(x=>!x.held).map(x=>({x,m:refillMin(x)})).sort((a,b)=>a.m-b.m)[0]; if(n) refill(n.x,'you'); }},
+ door:{kind:'',head:'Door open at Chicken 2',sub:'Safety interlock · line paused',nums:[['5','orders waiting'],['1 MIN','until late'],['2','slots open']],btn:'TAP WHEN DOOR IS CLOSED',bs:'Chicken 2 resumes on its own',verbs:[['tech','Send tech']],
+   sheet:{label:'Door',title:'Door is closed and latched?',text:'The interlock releases and Chicken 2 picks up its queue.',effects:[['Chicken 2','Resumes in 10 seconds'],['Guests','5 orders back on time']],button:'DOOR IS CLOSED'},
+   done:()=>{ M[2].s='run';M[2].sub=null;M[2].k='12';M[2].l='in queue';machines(); note('Chicken 2 running again'); go('clear'); }},
+ clean:{kind:'task',head:'Cleaning due at Bowl 01',sub:'Sanitation cycle · 6 min · start before 12:40',nums:[['6 MIN','cycle'],['14','in queue · moves to Bowl 02'],['12:40','deadline']],btn:'TAP TO START CLEANING',bs:'Bowl 01 pauses · Bowl 02 takes the queue',verbs:[['engineering','Log a note']],
+   sheet:{label:'Cleaning',title:'Start the sanitation cycle at Bowl 01?',text:'Bowl 01 pauses for 6 minutes. Its queue moves to Bowl 02 automatically.',effects:[['Bowl 01','Cleaning · back in 6 min'],['Bowl 02','Takes 14 more orders']],button:'START CLEANING'},
+   done:()=>{ M[0].s='clean';M[0].st='Cleaning';M[0].k='6';M[0].l='min left';M[0].hr=0;M[0].sub='CLEANING · back '+clock(NOW+6);M[1].k='25';machines(); cleanUntil=NOW+6; note('Bowl 01 cleaning · queue moved to Bowl 02'); go('clear'); }},
+ chicken:{kind:'',head:'Chicken runs out in 4 min',sub:'Reach-in 1 · 2 hotel pans ready',nums:()=>[[String(mn(H[0])),'min at this pace'],[Math.round(H[0].l)+'%','in the hopper'],['2','pans in reach-in']],btn:'TAP TO START CHICKEN REFILL',bs:'Hopper keeps dispensing during the swap',verbs:[['engineering','Log a note']],
+   sheet:{label:'Refill',title:'Refill chicken now?',text:'Two pans in reach-in 1. Confirm at the hopper when the swap is done.',effects:[['Chicken','Back to 100%'],['Service','Keeps dispensing during the swap']],button:'REFILLED'},
+   done:()=>{ refill(H[0],'you'); go('clear'); }},
+};
+let STEP='reroute', cleanUntil=null, fired={};
+function go(k){ STEP=k; renderAlert(true); }
+function note(t){ toastTitle.textContent=t; toastText.textContent=clock(NOW); toast.classList.add('show'); setTimeout(()=>toast.classList.remove('show'),3500); }
+function renderAlert(popIn){
+  const st=SCENE[STEP]; const nums=typeof st.nums==='function'?st.nums():st.nums; const bs=typeof st.bs==='function'?st.bs():st.bs; const btn=typeof st.btn==='function'?st.btn():st.btn;
+  const el=document.getElementById('alert'); el.className='alert '+st.kind+(popIn?' pop':'');
+  el.innerHTML=`<div class="aleft"><div class="ahead"><i></i><span>${st.head}</span><small>${st.sub}</small></div><div class="more">${st.verbs.map(v=>`<button onclick="openSheet('${v[0]}')">${v[1]}</button>`).join('')}</div></div>
+  <div class="nums">${nums.map(n=>`<div class="num"><b>${n[0]}</b><span>${n[1]}</span></div>`).join('')}</div>
+  <button class="go" onclick="openSheet('scene')"><div class="t">${btn}</div><div class="s">${bs}</div><div class="a">→</div></button>`;
+  if(window.gloveBind) gloveBind();
+}
+renderAlert(false);
+/* ?autoplay: the shift runs itself, a step every 8 s. For a kiosk loop or a demo with no hands. */
+if(location.search.includes('autoplay')) setInterval(()=>{ if(STEP!=='clear') SCENE[STEP].done(); },8000);
+/* pops on the clock, only when the board is clear */
+function popCheck(){
+  if(STEP!=='clear') return;
+  if(!fired.door && NOW>=12*60+22){ fired.door=1; M[2].s='held';M[2].st='Held';M[2].sub='DOOR OPEN';M[2].k='5';M[2].l='waiting';machines(); go('door'); return; }
+  if(!fired.clean && NOW>=12*60+26){ fired.clean=1; go('clean'); return; }
+  if(!fired.chicken && H[0].l<22){ fired.chicken=1; go('chicken'); return; }
+}
+/* sheets */
+let selected='';const data={
+ tech:{label:'Service task',title:'Send tech to Bowl 02?',text:'The task carries the machine state, recipe, and evidence automatically.',effects:[['Task','Recalibrate quinoa dispenser'],['Timing','Before the next lunch rush']],button:'SEND TECH',done:'Tech dispatched',sub:'The calibration task is ready with the right context.'},
+ engineering:{label:'Fleet learning',title:'Log it and alert Engineering?',text:'This event joins the fleet pattern without slowing service.',effects:[['Pattern','14 similar incidents across 4 sites'],['Context','Today’s event is attached automatically']],button:'LOG + ALERT',done:'Logged. Engineering alerted',sub:'This incident is now part of the fleet reliability signal.'}};
+function openSheet(k){selected=k;
+  if(k.startsWith('refill:')){const x=ALL.find(a=>a.n===k.slice(7));sheetLabel.textContent='Refill';sheetTitle.textContent=`Mark ${x.n} refilled?`;sheetText.textContent=`${Math.round(x.l)}% now. Hold to confirm at the hopper. Next up updates on its own.`;effects.innerHTML='<div class="effect"><b>Hopper</b><span>'+x.n+' back to 100%</span></div><div class="effect"><b>Service</b><span>Dispensing keeps running during the swap</span></div>';document.getElementById('confirm').textContent='REFILLED';overlay.classList.add('show');return;}
+  const x=k==='scene'?SCENE[STEP].sheet:data[k];sheetLabel.textContent=x.label;sheetTitle.textContent=x.title;sheetText.textContent=x.text;effects.innerHTML=x.effects.map(a=>'<div class="effect"><b>'+a[0]+'</b><span>'+a[1]+'</span></div>').join('');document.getElementById('confirm').textContent=x.button;overlay.classList.add('show')}
+function closeSheet(){overlay.classList.remove('show')}
+function commit(){
+  if(selected.startsWith('refill:')){closeSheet();refill(ALL.find(a=>a.n===selected.slice(7)),'you');return;}
+  if(selected==='scene'){closeSheet();SCENE[STEP].done();return;}
+  const x=data[selected];closeSheet();toastTitle.textContent=x.done;toastText.textContent=x.sub;toast.classList.add('show');setTimeout(()=>toast.classList.remove('show'),4300)}
+</script>
+<script src="glove.js"></script></body>
+</html>
