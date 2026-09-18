@@ -663,6 +663,14 @@ body{grid-template-rows:auto auto minmax(0,1fr);align-content:stretch}
 /* a little more air above the Status label */
 .hoppers{margin-top:10px}
 @media(orientation:portrait){.hoppers{margin-top:8px}}
+
+/* short landscape screens (9.7-inch iPad): boxes give back a little height so Status never meets Actions */
+@media(orientation:landscape) and (max-height:800px){
+  .big .bar{height:13vh}
+  .tops .bar{height:9vh}
+  .hoppers{margin-top:4px}
+  .top .si{min-height:38px}
+}
 </style>
 <link rel="stylesheet" href="glove.css"></head>
 <body>
