@@ -665,6 +665,18 @@ body{grid-template-rows:auto auto minmax(0,1fr);align-content:stretch}
 
 body{padding-bottom:20px}
 @media(orientation:portrait){body{padding-bottom:12px}}
+
+/* ACTIONS DOCK: edge to edge, square, flush with the screen on three sides */
+body{padding-left:20px;padding-right:20px}
+.actions{margin-left:-20px;margin-right:-20px;border-radius:0}
+.actions .sec{padding-left:40px;padding-right:40px}
+.actions .alert{padding-left:28px;padding-right:36px}
+.actions .next{padding-left:40px;padding-right:40px}
+@media(orientation:portrait){
+  .actions .sec{padding-left:32px;padding-right:32px}
+  .actions .alert{padding-left:22px;padding-right:32px}
+  .actions .next{padding-left:32px;padding-right:32px}
+}
 </style>
 <link rel="stylesheet" href="glove.css"></head>
 <body>
