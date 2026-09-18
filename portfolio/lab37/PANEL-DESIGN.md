@@ -4,6 +4,7 @@ Locked by Bryan, 2026-09-18. These are decisions, not suggestions. Reskin within
 them; do not undo them without Bryan saying so.
 
 Files: `lunch-rush-hoppers.html` (dark), `lunch-rush-light.html` (light).
+Tokens, live states and rules as a page: `design-system.html`.
 Both share structure and JS; only the color layer differs.
 
 ## Structure (top to bottom, one iPad screen, no scroll)

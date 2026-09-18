@@ -1,0 +1,412 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Bowl Maker 5000 · Design System</title>
+<meta name="description" content="Tokens, type, spacing, states and components for the Bowl Maker 5000 worker panel and manager console.">
+<style>
+:root{
+  /* page chrome (this document only) */
+  --pg:#ffffff;--pg-2:#f4f6f8;--pg-3:#e9edf1;--tx:#1b1f27;--tx-2:#555d6b;--tx-3:#6b7380;--ln:#e1e5ea;--ln-2:#c9cfd7;--acc:#0a84ff;
+  /* ===== BOWL MAKER 5000 TOKENS · LIGHT SKIN ===== */
+  --l-bg:#f2f2f7;--l-card:#e2e7f1;--l-panel:#ffffff;--l-box:#ffffff;--l-dock:#1c1c1e;--l-dock-2:#111113;--l-line:#e5e5ea;--l-line-card:#c7d0e0;
+  --l-ink:#1d1d1f;--l-dim:#6e6e73;--l-ink-card:#1c2740;--l-dim-card:#56627a;
+  --l-ok:#34c759;--l-low:#ff9f0a;--l-hot:#c8f000;--l-hot-ink:#5a6b00;--l-orange:#ff7a1a;--l-held:#d8dfeb;--l-held-ink:#8e8e93;
+  /* ===== BOWL MAKER 5000 TOKENS · DARK SKIN ===== */
+  --d-bg:#0b120e;--d-panel:#17231c;--d-card:#17231c;--d-track:#3d4a42;--d-dock:#141d18;--d-dock-2:#0f1512;--d-line:#2c3a31;--d-machine:#080b09;
+  --d-ink:#ffffff;--d-dim:#c7d1ca;
+  --d-ok:#1fa36a;--d-fill:#0f5a3a;--d-low:#f0a000;--d-hot:#cfff3e;--d-orange:#ff7a1a;--d-held:#6b7a70;
+  /* ===== SHARED ===== */
+  --photo:25%;--r-card:18px;--r-box:18px;--r-small:12px;--r-btn:14px;--r-pill:999px;
+  --gutter:20px;--gutter-portrait:12px;--gap:16px;--gap-portrait:12px;--gap-group:12px;--gap-tops:10px;
+  --h-main:14vh;--h-main-portrait:11vh;--h-top:9.5vh;--h-top-portrait:34px;--h-btn:48px;--h-btn-glove:56px;--h-btn-big:72px;--h-machine:42px;
+  --sh-box:0 1px 2px rgba(0,0,0,.06),0 2px 6px rgba(0,0,0,.04),0 0 0 1px rgba(40,60,100,.09);
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--pg);color:var(--tx);font-family:Inter,-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Helvetica,Arial,sans-serif;font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased}
+a{color:var(--acc);text-decoration:none}a:hover{text-decoration:underline}
+header.hd{position:sticky;top:0;z-index:5;background:rgba(255,255,255,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--ln)}
+.hd .in{max-width:1180px;margin:0 auto;padding:14px 20px;display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+.hd h1{margin:0;font-size:20px;letter-spacing:-.01em}
+.hd h1 small{color:var(--tx-3);font-weight:500;margin-left:8px}
+.hd nav{display:flex;gap:6px;flex-wrap:wrap;margin-left:auto}
+.hd nav a{padding:6px 11px;border-radius:99px;background:var(--pg-2);color:var(--tx-2);font-size:14px;font-weight:600}
+main{max-width:1180px;margin:0 auto;padding:24px 20px 80px}
+section{padding:28px 0;border-bottom:1px solid var(--ln)}
+h2{font-size:24px;letter-spacing:-.01em;margin:0 0 6px}
+h3{font-size:14px;letter-spacing:1.6px;text-transform:uppercase;color:var(--tx-3);margin:22px 0 10px}
+p.lead{color:var(--tx-2);margin:0 0 14px;max-width:820px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px}
+.sw{border:1px solid var(--ln);border-radius:12px;overflow:hidden;background:#fff}
+.sw i{display:block;height:64px}
+.sw div{padding:8px 10px;font-size:13px}
+.sw b{display:block;font-size:14px}
+.sw code{color:var(--tx-3);font-size:12px}
+.sw small{display:block;color:var(--tx-2);margin-top:2px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+@media(max-width:800px){.two{grid-template-columns:1fr}}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--ln);vertical-align:top}
+th{font-size:12px;letter-spacing:1px;text-transform:uppercase;color:var(--tx-3)}
+td code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;background:var(--pg-2);padding:2px 6px;border-radius:6px}
+pre{background:var(--pg-2);border:1px solid var(--ln);border-radius:12px;padding:14px 16px;overflow:auto;font-size:13px;line-height:1.5;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+.note{background:var(--pg-2);border-left:4px solid var(--acc);padding:10px 14px;border-radius:0 10px 10px 0;font-size:15px;margin:12px 0}
+/* ---- live component samples ---- */
+.stage{border-radius:14px;padding:18px;display:grid;gap:14px}
+.stage.light{background:var(--l-bg)}
+.stage.dark{background:var(--d-bg)}
+.stage .lbl{font-size:12px;letter-spacing:1.4px;text-transform:uppercase;font-weight:800}
+.stage.light .lbl{color:var(--l-dim)}.stage.dark .lbl{color:var(--d-dim)}
+.boxes{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px}
+.bx{position:relative;overflow:hidden;border-radius:var(--r-box);height:96px;display:flex;flex-direction:column;justify-content:center;padding-left:calc(var(--photo) + 14px);padding-right:12px;font-weight:800}
+.bx .ph{position:absolute;left:0;top:0;bottom:0;width:var(--photo);background:linear-gradient(135deg,#d9c48a,#b98c4a)}
+.bx .n{font-size:16px;text-transform:uppercase;letter-spacing:.01em}
+.bx .v{font-size:28px;letter-spacing:-.02em;line-height:1;font-variant-numeric:tabular-nums}
+.bx .s{font-size:13px;opacity:.85}
+/* light box states */
+.light .bx{background:var(--l-box);color:var(--l-ink);box-shadow:var(--sh-box)}
+.light .bx .s{color:var(--l-dim)}
+.light .bx i{position:absolute;left:var(--photo);bottom:0;height:7px;background:var(--l-ok);border-radius:0 4px 4px 0}
+.light .bx.low,.light .bx.now{background:var(--l-dock);color:#fff;box-shadow:0 2px 8px rgba(0,0,0,.18)}
+.light .bx.low .v,.light .bx.now .v{color:var(--l-hot)}.light .bx.low .s,.light .bx.now .s{color:#e6e6e6}
+.light .bx.low i,.light .bx.now i{background:var(--l-hot)}
+.light .bx.now{box-shadow:inset 0 0 0 3px var(--l-hot),0 2px 8px rgba(0,0,0,.18)}
+.light .bx.just{box-shadow:inset 0 0 0 3px var(--l-ok)}.light .bx.just .s{color:#1f8a3c}
+.light .bx.held{background:var(--l-held);color:var(--l-held-ink);box-shadow:none}.light .bx.held .ph{filter:grayscale(1);opacity:.4}
+.light .card{background:var(--l-card);border-radius:var(--r-card);padding:14px 18px 18px;box-shadow:0 0 0 1px rgba(40,60,100,.11)}
+/* dark box states */
+.dark .bx{background:var(--d-track);color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.55)}
+.dark .bx i{position:absolute;left:var(--photo);top:0;bottom:0;background:var(--d-fill);z-index:0}
+.dark .bx>*{position:relative;z-index:1}.dark .bx .ph{z-index:1}
+.dark .bx.low i{background:var(--d-low)}
+.dark .bx.now i{background:var(--d-hot)}.dark .bx.now{box-shadow:inset 0 0 0 4px var(--d-hot)}
+.dark .bx.just{box-shadow:inset 0 0 0 4px var(--d-ok)}
+.dark .bx.held{background:var(--d-held)}.dark .bx.held i{display:none}.dark .bx.held .ph{filter:grayscale(1);opacity:.5}
+.dark .card{background:var(--d-panel);border-radius:var(--r-card);padding:14px 18px 18px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.06)}
+/* buttons */
+.btns{display:flex;gap:12px;flex-wrap:wrap;align-items:flex-start}
+.go{border:0;border-radius:var(--r-card);background:var(--d-hot);color:#0b120e;min-height:var(--h-btn-big);padding:10px 20px;display:flex;align-items:center;justify-content:space-between;gap:16px;min-width:280px;font:inherit;font-weight:900;text-align:left;box-shadow:0 5px 0 #8caf20;cursor:pointer}
+.go .t{font-size:22px;line-height:1;text-transform:uppercase;letter-spacing:-.01em}
+.go .s{display:block;font-size:14px;font-weight:700;margin-top:4px;text-transform:none;letter-spacing:0}
+.go .a{font-size:26px}
+.sec2{border:2px solid rgba(255,255,255,.45);background:rgba(255,255,255,.06);color:#fff;border-radius:var(--r-btn);min-height:var(--h-btn-glove);padding:0 18px;font:inherit;font-size:18px;font-weight:800;cursor:pointer}
+.dockwrap{background:var(--l-dock);border-radius:12px;padding:16px;display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+.chip{display:inline-flex;align-items:center;gap:6px;height:40px;padding:0 12px;border-radius:var(--r-pill);background:var(--l-dock);color:#fff;font-size:15px;font-weight:800}
+.chip i{width:12px;height:12px;border-radius:50%;background:var(--l-ok)}
+.chip.warn i{background:var(--l-low)}.chip.bad i{background:var(--l-hot);box-shadow:0 0 0 4px rgba(200,240,0,.25)}.chip.bad span{color:var(--l-hot)}
+.chip span{font-weight:500;color:#a1a1a6}
+/* number hero */
+.hero{background:var(--l-dock);color:#fff;border-radius:12px;padding:16px;display:grid;grid-template-columns:1fr 1fr;justify-items:center;column-gap:22px;row-gap:4px;text-align:center;max-width:360px}
+.hero .h{grid-column:1/-1}
+.hero b{display:block;line-height:1;font-variant-numeric:tabular-nums;font-weight:900}
+.hero .h b{font-size:44px}.hero .h span{font-size:17px;color:#e6e6e6}
+.hero div:not(.h) b{font-size:28px}.hero div:not(.h) span{font-size:15px;color:#a1a1a6}
+/* skeleton */
+.skel{border-radius:14px;overflow:hidden;background:var(--l-bg);display:grid;gap:14px;padding:0 0 0;border:1px solid var(--ln)}
+.skel .k-top{background:#fff;border-bottom:1px solid var(--ln);padding:12px 20px;font-weight:800}
+.skel .k-mach{background:var(--l-dock);color:#fff;padding:8px 20px;font-size:13px;margin-top:-14px}
+.skel .k-card{margin:0 20px;background:var(--l-card);border-radius:var(--r-card);padding:14px 18px;min-height:120px;box-shadow:0 0 0 1px rgba(40,60,100,.11);font-weight:800;color:var(--l-ink-card)}
+.skel .k-dock{background:var(--l-dock);color:#fff;padding:14px 20px;font-weight:800}
+.skel .k-dock small{display:block;font-weight:500;color:#a1a1a6}
+.type div{display:flex;align-items:baseline;gap:16px;padding:10px 0;border-bottom:1px solid var(--ln)}
+.type .sm{width:220px;flex:none;font-size:13px;color:var(--tx-3)}
+.type .ex{font-weight:900;letter-spacing:-.02em;line-height:1}
+.rules{columns:2;column-gap:32px;font-size:15px}
+@media(max-width:800px){.rules{columns:1}}
+.rules li{break-inside:avoid;margin:0 0 8px}
+.tag{display:inline-block;font-size:12px;letter-spacing:1px;text-transform:uppercase;padding:2px 8px;border-radius:99px;background:var(--pg-3);color:var(--tx-2);margin-left:6px}
+</style>
+</head>
+<body>
+<header class="hd"><div class="in">
+  <h1>Bowl Maker 5000 <small>Design system · tokens</small></h1>
+  <nav><a href="#skins">Color</a><a href="#states">States</a><a href="#type">Type</a><a href="#space">Space</a><a href="#components">Components</a><a href="#rules">Rules</a><a href="#export">Export</a><a href="prep.html">Prep</a><a href="lunch-rush-light.html">Panel</a></nav>
+</div></header>
+
+<main>
+
+<section id="intro" style="padding-top:8px">
+  <h2>One token source, two skins, one worker HMI</h2>
+  <p class="lead">Everything on the worker panel and manager console comes from the tokens on this page. The dark skin and the light skin share every size, radius, spacing value and rule; only the color layer changes. A state is a color first and a number second. Nothing here is decorative.</p>
+  <div class="two">
+    <div class="skel">
+      <div class="k-top">‹ BOWL MAKER 5000 · UPTOWN · LUNCH RUSH <span style="float:right">40 BOWLS / 10 MIN · 214 TO GO</span></div>
+      <div class="k-mach">● Bowl 01 · ● Bowl 02 · ● Chicken 2 · ● Conveyor · ● Dispensers · ● Sealer · ● Pickup · ● Payments · ● Network</div>
+      <div class="k-card">STATUS · ALL ITEMS<br><span style="font-weight:500;color:var(--l-dim-card)">Proteins · Bases · Vegetables · Sauces · Dairy</span></div>
+      <div class="k-dock">ACTIONS<small>alert · numbers · one big verb · Next Up</small></div>
+    </div>
+    <div>
+      <h3>Anatomy</h3>
+      <table>
+        <tr><th>Zone</th><th>What it is</th><th>Token</th></tr>
+        <tr><td>Top lockup</td><td>Title bar + machine line, one card, edge to edge, flush top</td><td><code>--l-panel</code> / <code>--l-dock</code></td></tr>
+        <tr><td>Status card</td><td>All ingredients in five groups, on one tinted card</td><td><code>--l-card</code></td></tr>
+        <tr><td>Boxes</td><td>One ingredient each: photo, name, percent, refill-by, level fill</td><td><code>--l-box</code> + state</td></tr>
+        <tr><td>Actions dock</td><td>Label + alert + Next Up, one dark dock, edge to edge, hooked to the bottom</td><td><code>--l-dock</code></td></tr>
+        <tr><td>Spare height</td><td>Opens only between Status and Actions</td><td>—</td></tr>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section id="skins">
+  <h2>Color</h2>
+  <p class="lead">Semantic first. A worker learns four colors: green is fine, amber is getting low, hot yellow-green is <em>needs you now</em>, and the same yellow-green is the button that fixes it. There is no red anywhere; it fails for color-blind workers under kitchen light.</p>
+  <h3>Light skin <span class="tag">default</span></h3>
+  <div class="grid">
+    <div class="sw"><i style="background:var(--l-bg)"></i><div><b>Page</b><code>--l-bg · #f2f2f7</code></div></div>
+    <div class="sw"><i style="background:var(--l-card)"></i><div><b>Status card</b><code>--l-card · #e2e7f1</code><small>light blue-gray, never green</small></div></div>
+    <div class="sw"><i style="background:var(--l-box);border-bottom:1px solid var(--ln)"></i><div><b>Box / panel</b><code>--l-box · #ffffff</code></div></div>
+    <div class="sw"><i style="background:var(--l-dock)"></i><div><b>Dock / machine line / alert box</b><code>--l-dock · #1c1c1e</code></div></div>
+    <div class="sw"><i style="background:var(--l-dock-2)"></i><div><b>Dock, second row</b><code>--l-dock-2 · #111113</code></div></div>
+    <div class="sw"><i style="background:var(--l-ink)"></i><div><b>Ink</b><code>--l-ink · #1d1d1f</code></div></div>
+    <div class="sw"><i style="background:var(--l-dim)"></i><div><b>Dim</b><code>--l-dim · #6e6e73</code></div></div>
+    <div class="sw"><i style="background:var(--l-line-card)"></i><div><b>Card rule</b><code>--l-line-card · #c7d0e0</code></div></div>
+  </div>
+  <h3>Light · state colors</h3>
+  <div class="grid">
+    <div class="sw"><i style="background:var(--l-ok)"></i><div><b>Fine</b><code>--l-ok · #34c759</code><small>level fill; "just refilled" ring</small></div></div>
+    <div class="sw"><i style="background:var(--l-low)"></i><div><b>Getting low</b><code>--l-low · #ff9f0a</code><small>Next Up times; machine warn dot</small></div></div>
+    <div class="sw"><i style="background:var(--l-hot)"></i><div><b>Needs you now / action</b><code>--l-hot · #c8f000</code><small>box goes dark, numbers this color</small></div></div>
+    <div class="sw"><i style="background:var(--l-hot-ink)"></i><div><b>Hot on white</b><code>--l-hot-ink · #5a6b00</code><small>when hot must be text on a light ground</small></div></div>
+    <div class="sw"><i style="background:var(--l-orange)"></i><div><b>Alert dot</b><code>--l-orange · #ff7a1a</code><small>only the status dot in the alert</small></div></div>
+    <div class="sw"><i style="background:var(--l-held)"></i><div><b>Held</b><code>--l-held · #d8dfeb</code><small>not dispensing; photo greyed</small></div></div>
+  </div>
+  <h3>Dark skin</h3>
+  <div class="grid">
+    <div class="sw"><i style="background:var(--d-bg)"></i><div><b>Page</b><code>--d-bg · #0b120e</code></div></div>
+    <div class="sw"><i style="background:var(--d-panel)"></i><div><b>Panel / status card</b><code>--d-panel · #17231c</code></div></div>
+    <div class="sw"><i style="background:var(--d-track)"></i><div><b>Box track</b><code>--d-track · #3d4a42</code></div></div>
+    <div class="sw"><i style="background:var(--d-fill)"></i><div><b>Fine fill</b><code>--d-fill · #0f5a3a</code></div></div>
+    <div class="sw"><i style="background:var(--d-dock)"></i><div><b>Dock</b><code>--d-dock · #141d18</code></div></div>
+    <div class="sw"><i style="background:var(--d-machine)"></i><div><b>Machine line</b><code>--d-machine · #080b09</code></div></div>
+    <div class="sw"><i style="background:var(--d-low)"></i><div><b>Getting low</b><code>--d-low · #f0a000</code></div></div>
+    <div class="sw"><i style="background:var(--d-hot)"></i><div><b>Needs you now / action</b><code>--d-hot · #cfff3e</code></div></div>
+    <div class="sw"><i style="background:var(--d-ok)"></i><div><b>Fine / dot</b><code>--d-ok · #1fa36a</code></div></div>
+    <div class="sw"><i style="background:var(--d-orange)"></i><div><b>Alert dot</b><code>--d-orange · #ff7a1a</code></div></div>
+    <div class="sw"><i style="background:var(--d-held)"></i><div><b>Held</b><code>--d-held · #6b7a70</code></div></div>
+    <div class="sw"><i style="background:var(--d-dim)"></i><div><b>Dim text</b><code>--d-dim · #c7d1ca</code></div></div>
+  </div>
+  <div class="note"><b>Semantic map.</b> fine → <code>ok</code> · getting low → <code>low</code> · needs you now → <code>hot</code> · the action button → <code>hot</code> · just refilled → <code>ok</code> ring · held → <code>held</code> · alert status dot → <code>orange</code>. Red is not a token.</div>
+</section>
+
+<section id="states">
+  <h2>Box states, live</h2>
+  <p class="lead">Same box, five states, both skins. The level fill is the message; the number confirms it. The photo occupies the left <code>--photo</code> (25%) and is greyed when held.</p>
+  <div class="two">
+    <div class="stage light"><div class="lbl">Light</div><div class="card"><div class="boxes">
+      <div class="bx"><div class="ph"></div><div class="n">Chicken</div><div class="v">63%</div><div class="s">30 MIN · REFILL 12:39</div><i style="width:calc(75% * .63)"></i></div>
+      <div class="bx low"><div class="ph"></div><div class="n">Rice</div><div class="v">33%</div><div class="s">11 MIN · REFILL 12:27</div><i style="width:calc(75% * .33)"></i></div>
+      <div class="bx now"><div class="ph"></div><div class="n">Beef</div><div class="v">16%</div><div class="s">6 MIN · REFILL 12:19</div><i style="width:calc(75% * .16)"></i></div>
+      <div class="bx just"><div class="ph"></div><div class="n">Quinoa</div><div class="v">100%</div><div class="s">REFILLED · 12:22</div><i style="width:75%"></i></div>
+      <div class="bx held"><div class="ph"></div><div class="n">Quinoa</div><div class="v">HELD</div><div class="s">not dispensing</div></div>
+    </div></div></div>
+    <div class="stage dark"><div class="lbl">Dark</div><div class="card"><div class="boxes">
+      <div class="bx"><div class="ph"></div><i style="width:calc(75% * .63)"></i><div class="n">Chicken</div><div class="v">63%</div><div class="s">30 MIN · REFILL 12:39</div></div>
+      <div class="bx low"><div class="ph"></div><i style="width:calc(75% * .33)"></i><div class="n">Rice</div><div class="v">33%</div><div class="s">11 MIN · REFILL 12:27</div></div>
+      <div class="bx now"><div class="ph"></div><i style="width:calc(75% * .16)"></i><div class="n">Beef</div><div class="v">16%</div><div class="s">6 MIN · REFILL 12:19</div></div>
+      <div class="bx just"><div class="ph"></div><i style="width:75%"></i><div class="n">Quinoa</div><div class="v">100%</div><div class="s">REFILLED · 12:22</div></div>
+      <div class="bx held"><div class="ph"></div><div class="n">Quinoa</div><div class="v">HELD</div><div class="s">not dispensing</div></div>
+    </div></div></div>
+  </div>
+  <table style="margin-top:16px">
+    <tr><th>State</th><th>Trigger</th><th>Light</th><th>Dark</th></tr>
+    <tr><td>Fine</td><td>level above the low line</td><td>white box, green line at the bottom</td><td>track box, deep-green fill from the photo edge</td></tr>
+    <tr><td>Getting low</td><td>refill needed inside the next ~15 min</td><td>box goes dark, numbers hot yellow, hot line</td><td>amber fill</td></tr>
+    <tr><td>Needs you now</td><td>refill needed inside ~6 min, or a fault</td><td>dark box, hot numbers, hot ring</td><td>hot fill, hot ring</td></tr>
+    <tr><td>Just refilled</td><td>worker confirmed a refill</td><td>green ring, green sub</td><td>green ring</td></tr>
+    <tr><td>Held</td><td>machine holding this ingredient</td><td>muted blue-gray, photo greyed</td><td>gray-green, photo greyed, no fill</td></tr>
+  </table>
+</section>
+
+<section id="type">
+  <h2>Type</h2>
+  <p class="lead">Inter on the dark skin, SF Pro (system) on the light skin. Floors: body 14px, labels 13px. Anything that ticks uses tabular numerals. Uppercase names get +.01em tracking, never negative.</p>
+  <div class="type">
+    <div><span class="sm">Display number · main box<br><code>clamp(40px, 6vh, 56px)</code> · 900</span><span class="ex" style="font-size:56px">63%</span></div>
+    <div><span class="sm">Alert hero · minutes until late<br><code>clamp(36px, 5vh, 48px)</code> · 900</span><span class="ex" style="font-size:48px">4 MIN</span></div>
+    <div><span class="sm">Title bar stat<br><code>clamp(30px, 4vh, 40px)</code> · 900</span><span class="ex" style="font-size:40px">214</span></div>
+    <div><span class="sm">Secondary number · alert<br><code>clamp(24px, 3.2vh, 30px)</code> · 900</span><span class="ex" style="font-size:30px">7</span></div>
+    <div><span class="sm">Name · main box<br><code>clamp(22px, 3vh, 30px)</code> · 800 · caps</span><span class="ex" style="font-size:26px;letter-spacing:.01em">CHICKEN</span></div>
+    <div><span class="sm">Action button<br><code>clamp(24px, 3.2vh, 30px)</code> · 900 · caps</span><span class="ex" style="font-size:28px">TAP TO START REROUTE</span></div>
+    <div><span class="sm">Name · small box<br><code>17px</code> · 800 · caps</span><span class="ex" style="font-size:17px;letter-spacing:.01em">CILANTRO</span></div>
+    <div><span class="sm">Value · small box<br><code>16px</code> · 800 · tabular</span><span class="ex" style="font-size:16px;font-variant-numeric:tabular-nums">52% <span style="opacity:.78;font-weight:600">· 12:57</span></span></div>
+    <div><span class="sm">Glove button<br><code>18px</code> · 800</span><span class="ex" style="font-size:18px;font-weight:800">Send tech</span></div>
+    <div><span class="sm">Section label<br><code>16px</code> · 800 · 2.2px tracking · ink</span><span class="ex" style="font-size:16px;letter-spacing:2.2px;font-weight:800">STATUS · ALL ITEMS</span></div>
+    <div><span class="sm">Group label<br><code>14px</code> · 700 · 1.6px tracking · dim</span><span class="ex" style="font-size:14px;letter-spacing:1.6px;font-weight:700;color:var(--tx-3)">VEGETABLES</span></div>
+    <div><span class="sm">Machine line<br><code>15px</code> · 800 / 500</span><span class="ex" style="font-size:15px;font-weight:800">Bowl 02 <span style="font-weight:500;color:var(--tx-3)">held</span></span></div>
+    <div><span class="sm">Sub line · floor<br><code>14px</code> · 700</span><span class="ex" style="font-size:14px;font-weight:700">30 MIN · REFILL 12:39</span></div>
+  </div>
+</section>
+
+<section id="space">
+  <h2>Space, size, shape, depth</h2>
+  <div class="two">
+    <div>
+      <h3>Spacing</h3>
+      <table>
+        <tr><th>Token</th><th>Value</th><th>Use</th></tr>
+        <tr><td><code>--gutter</code></td><td>20px · portrait 12px</td><td>page edge; lockups cancel it to bleed</td></tr>
+        <tr><td><code>--gap</code></td><td>16px · portrait 12px</td><td>between zones</td></tr>
+        <tr><td><code>--gap-group</code></td><td>12px</td><td>between main boxes</td></tr>
+        <tr><td><code>--gap-tops</code></td><td>10px</td><td>between small boxes</td></tr>
+        <tr><td>card padding</td><td>14 18 18 · portrait 10 12 12</td><td>status card</td></tr>
+        <tr><td>dock padding</td><td>label 12/40 · alert 28/36 · next 40</td><td>edge-to-edge dock keeps text on the card's column</td></tr>
+        <tr><td>photo → title</td><td>+26px · portrait +20px</td><td>main boxes only</td></tr>
+      </table>
+      <h3>Radius</h3>
+      <table>
+        <tr><td><code>--r-card</code> / <code>--r-box</code></td><td>18px</td><td>cards, main boxes, action button</td></tr>
+        <tr><td><code>--r-btn</code></td><td>14px</td><td>glove buttons</td></tr>
+        <tr><td><code>--r-small</code></td><td>12px</td><td>small boxes</td></tr>
+        <tr><td><code>--r-pill</code></td><td>999px</td><td>machine line when it floats</td></tr>
+        <tr><td>0</td><td>—</td><td>lockups where they meet the screen edge or each other</td></tr>
+      </table>
+    </div>
+    <div>
+      <h3>Sizes</h3>
+      <table>
+        <tr><th>Token</th><th>Value</th><th>Note</th></tr>
+        <tr><td><code>--h-main</code></td><td>14vh · ≤800px tall: 12vh · portrait 11vh</td><td>main boxes; 20% shorter than v1</td></tr>
+        <tr><td><code>--h-top</code></td><td>9.5vh · ≤800px tall: 8.5vh · portrait 34px</td><td>small boxes, one line in portrait</td></tr>
+        <tr><td><code>--h-btn-big</code></td><td>72pt</td><td>the one action (title + reward subline)</td></tr>
+        <tr><td><code>--h-btn-glove</code></td><td>56pt · portrait 54–60pt</td><td>secondary actions</td></tr>
+        <tr><td><code>--h-btn</code></td><td>48pt</td><td>floor for anything tappable</td></tr>
+        <tr><td><code>--h-machine</code></td><td>42px per line</td><td>wraps to two lines below 1200px wide</td></tr>
+        <tr><td><code>--photo</code></td><td>25% · options 50% / 0</td><td><code>?photo=50</code>, <code>?photo=0</code></td></tr>
+      </table>
+      <h3>Depth</h3>
+      <table>
+        <tr><td>Box (light)</td><td><code>0 1px 2px .06 · 0 2px 6px .04 · ring 1px .09</code></td></tr>
+        <tr><td>Dark box on light</td><td><code>0 2px 8px rgba(0,0,0,.18)</code></td></tr>
+        <tr><td>Ring · now</td><td><code>inset 0 0 0 3px hot</code> (dark skin 4px)</td></tr>
+        <tr><td>Ring · just</td><td><code>inset 0 0 0 3px ok</code></td></tr>
+        <tr><td>Hairline</td><td><code>1px rgba(0,0,0,.05)</code> light · <code>rgba(255,255,255,.06)</code> dark</td></tr>
+        <tr><td>Photo edge</td><td><code>inset -1px 0 0 rgba(0,0,0,.08)</code></td></tr>
+      </table>
+      <h3>Motion</h3>
+      <table>
+        <tr><td>Level fill</td><td><code>width .6s cubic-bezier(.2,.7,.2,1)</code></td></tr>
+        <tr><td>State change</td><td><code>background, box-shadow, color .35s ease</code></td></tr>
+        <tr><td>Press</td><td>box <code>scale(.985)</code> · big button <code>translateY(2px)</code> · .08–.12s</td></tr>
+        <tr><td>Clock</td><td>1 real second = 6 panel seconds; Thursday pace curve</td></tr>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section id="components">
+  <h2>Components</h2>
+  <h3>Buttons · one system</h3>
+  <div class="dockwrap">
+    <button class="go"><span><span class="t">Tap to start<br>reroute</span><span class="s">7 orders → Chicken 2</span></span><span class="a">→</span></button>
+    <button class="sec2">Send tech</button>
+    <button class="sec2">Log + alert Eng.</button>
+  </div>
+  <p class="lead" style="margin-top:10px">One big verb per alert, never a generic "OK". Secondary actions are glove buttons that open a hold-two-seconds confirm sheet. Nothing in the HMI is a text link.</p>
+  <h3>Machine line · one dot, one word</h3>
+  <div class="btns">
+    <span class="chip"><i></i>Bowl 01 <span>14 queued</span></span>
+    <span class="chip bad"><i></i>Bowl 02 <span>held</span></span>
+    <span class="chip"><i></i>Chicken 2 <span>12 open</span></span>
+    <span class="chip warn"><i></i>Dispensers <span>17/18</span></span>
+    <span class="chip"><i></i>Conveyor</span><span class="chip"><i></i>Sealer</span><span class="chip"><i></i>Pickup</span><span class="chip"><i></i>Payments</span><span class="chip"><i></i>Network</span>
+  </div>
+  <h3>Alert numbers · the hero on top</h3>
+  <div class="hero">
+    <div class="h"><b>4 MIN</b><span>until late</span></div>
+    <div><b>7</b><span>orders waiting</span></div>
+    <div><b>12</b><span>slots open at Bowl 2</span></div>
+  </div>
+  <p class="lead" style="margin-top:10px">Minutes-until-late is always the middle datum in a scene and always the hero. The other two sit under it. The whole block is centered between the headline column and the button. Dividers are straight lines, never rounded.</p>
+</section>
+
+<section id="rules">
+  <h2>Rules (locked)</h2>
+  <ul class="rules">
+    <li><b>One screen.</b> Fits one iPad, landscape and portrait, 9.7" to 12.9", no scroll. Verified sizes: 1024×768, 1180×820, 1366×1024, 820×1180.</li>
+    <li><b>Fixed header, floating status card, fixed dock.</b> Both lockups run edge to edge with square corners. Spare height opens between Status and Actions only.</li>
+    <li><b>HMI, not a web page.</b> No text selection, no double-tap zoom, press feedback everywhere, no text links.</li>
+    <li><b>No small text.</b> Body ≥14px, labels ≥13px. Bigger, bolder, higher contrast; never cute.</li>
+    <li><b>Mains bigger than toppings.</b> Proteins and bases lead; five groups by taxonomy; dairy is one box.</li>
+    <li><b>Photo on every box</b>, left 25%, square-cropped, greyed when held.</li>
+    <li><b>The progress bar is the message.</b> Percent and refill-by on every box; the forecast walks the Thursday curve to 15%.</li>
+    <li><b>No red.</b> Needs-you-now is the hot yellow-green of the action button. Low is amber. Fine is green. The alert dot is hot orange.</li>
+    <li><b>Low or now on light = the box goes dark</b> with bright yellow numbers.</li>
+    <li><b>Alert card:</b> headline + sub + two glove buttons · centered number stack with the minutes hero · one verb-specific big button.</li>
+    <li><b>Manager: 100% = on plan.</b> Concept small, not bold. Throughput right-justified, tabular. Store names are real.</li>
+    <li><b>Done = verified on iPad sizes in the browser</b> before it ships. Rules live in <a href="PANEL-DESIGN.md">PANEL-DESIGN.md</a>.</li>
+  </ul>
+</section>
+
+<section id="export">
+  <h2>Export</h2>
+  <p class="lead">Copy the block. Both skins share the shared block; pick one color block per surface.</p>
+  <div class="two">
+<pre>/* shared */
+--photo:25%;
+--r-card:18px; --r-box:18px; --r-btn:14px; --r-small:12px; --r-pill:999px;
+--gutter:20px; --gutter-portrait:12px;
+--gap:16px; --gap-portrait:12px; --gap-group:12px; --gap-tops:10px;
+--h-main:14vh; --h-main-short:12vh; --h-main-portrait:11vh;
+--h-top:9.5vh; --h-top-short:8.5vh; --h-top-portrait:34px;
+--h-btn:48px; --h-btn-glove:56px; --h-btn-big:72px; --h-machine:42px;
+--ease-fill:.6s cubic-bezier(.2,.7,.2,1); --ease-state:.35s ease;
+
+/* light skin */
+--bg:#f2f2f7; --card:#e2e7f1; --panel:#ffffff; --box:#ffffff;
+--dock:#1c1c1e; --dock-2:#111113;
+--line:#e5e5ea; --line-card:#c7d0e0;
+--ink:#1d1d1f; --dim:#6e6e73; --ink-card:#1c2740; --dim-card:#56627a;
+--ok:#34c759; --low:#ff9f0a; --hot:#c8f000; --hot-ink:#5a6b00;
+--orange:#ff7a1a; --held:#d8dfeb; --held-ink:#8e8e93;
+
+/* dark skin */
+--bg:#0b120e; --panel:#17231c; --card:#17231c; --track:#3d4a42;
+--dock:#141d18; --dock-2:#0f1512; --machine:#080b09; --line:#2c3a31;
+--ink:#ffffff; --dim:#c7d1ca;
+--ok:#1fa36a; --fill:#0f5a3a; --low:#f0a000; --hot:#cfff3e;
+--orange:#ff7a1a; --held:#6b7a70;</pre>
+<pre>{
+  "meta": { "name": "Bowl Maker 5000", "version": "1.0", "locked": "2026-09-18" },
+  "photo": "25%",
+  "radius": { "card": 18, "box": 18, "btn": 14, "small": 12, "pill": 999 },
+  "space": { "gutter": [20, 12], "gap": [16, 12], "group": 12, "tops": 10 },
+  "size": {
+    "main": ["14vh", "12vh", "11vh"], "top": ["9.5vh", "8.5vh", "34px"],
+    "btn": 48, "btnGlove": 56, "btnBig": 72, "machineLine": 42
+  },
+  "type": {
+    "family": { "dark": "Inter", "light": "SF Pro / system" },
+    "floor": { "body": 14, "label": 13 }, "numerals": "tabular",
+    "display": "clamp(40px,6vh,56px)", "hero": "clamp(36px,5vh,48px)",
+    "name": "clamp(22px,3vh,30px)", "nameSmall": 17, "valueSmall": 16,
+    "section": 16, "group": 14, "button": "clamp(24px,3.2vh,30px)", "glove": 18
+  },
+  "light": {
+    "bg": "#f2f2f7", "card": "#e2e7f1", "panel": "#ffffff", "box": "#ffffff",
+    "dock": "#1c1c1e", "dock2": "#111113", "line": "#e5e5ea", "lineCard": "#c7d0e0",
+    "ink": "#1d1d1f", "dim": "#6e6e73", "inkCard": "#1c2740", "dimCard": "#56627a",
+    "ok": "#34c759", "low": "#ff9f0a", "hot": "#c8f000", "hotInk": "#5a6b00",
+    "orange": "#ff7a1a", "held": "#d8dfeb", "heldInk": "#8e8e93"
+  },
+  "dark": {
+    "bg": "#0b120e", "panel": "#17231c", "card": "#17231c", "track": "#3d4a42",
+    "dock": "#141d18", "dock2": "#0f1512", "machine": "#080b09", "line": "#2c3a31",
+    "ink": "#ffffff", "dim": "#c7d1ca",
+    "ok": "#1fa36a", "fill": "#0f5a3a", "low": "#f0a000", "hot": "#cfff3e",
+    "orange": "#ff7a1a", "held": "#6b7a70"
+  },
+  "semantic": {
+    "fine": "ok", "gettingLow": "low", "needsYouNow": "hot", "action": "hot",
+    "justRefilled": "ok-ring", "held": "held", "alertDot": "orange", "red": null
+  }
+}</pre>
+  </div>
+</section>
+
+</main>
+</body>
+</html>
