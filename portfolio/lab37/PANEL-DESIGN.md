@@ -1,4 +1,4 @@
-# Bowl Maker 5000 worker panel — locked design rules
+# Bowl-O-Matic 5000 worker panel — locked design rules
 
 Locked by Bryan, 2026-09-18. These are decisions, not suggestions. Reskin within
 them; do not undo them without Bryan saying so.
@@ -6,6 +6,10 @@ them; do not undo them without Bryan saying so.
 Files: `lunch-rush-hoppers.html` (dark), `lunch-rush-light.html` (light).
 Tokens, live states and rules as a page: `design-system.html`.
 Both share structure and JS; only the color layer differs.
+
+## Brand
+- Name: **Bowl-O-Matic 5000** (hyphens, capital O). Mark: `logo.svg` — an O ring over a bowl with a drop;
+  ring and drop in the surface's hot yellow-green, bowl in currentColor. In every title bar at 30px (28px portrait).
 
 ## Structure (top to bottom, one iPad screen, no scroll)
 1. **Top lockup** — title bar + machine status line fused as one card,

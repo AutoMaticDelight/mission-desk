@@ -3,17 +3,18 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Bowl Maker 5000 · Design System</title>
-<meta name="description" content="Tokens, type, spacing, states and components for the Bowl Maker 5000 worker panel and manager console.">
+<title>Bowl-O-Matic 5000 · Design System</title>
+<link rel="icon" href="logo.svg" type="image/svg+xml">
+<meta name="description" content="Tokens, type, spacing, states and components for the Bowl-O-Matic 5000 worker panel and manager console.">
 <style>
 :root{
   /* page chrome (this document only) */
   --pg:#ffffff;--pg-2:#f4f6f8;--pg-3:#e9edf1;--tx:#1b1f27;--tx-2:#555d6b;--tx-3:#6b7380;--ln:#e1e5ea;--ln-2:#c9cfd7;--acc:#0a84ff;
-  /* ===== BOWL MAKER 5000 TOKENS · LIGHT SKIN ===== */
+  /* ===== BOWL-O-MATIC 5000 TOKENS · LIGHT SKIN ===== */
   --l-bg:#f2f2f7;--l-card:#e2e7f1;--l-panel:#ffffff;--l-box:#ffffff;--l-dock:#1c1c1e;--l-dock-2:#111113;--l-line:#e5e5ea;--l-line-card:#c7d0e0;
   --l-ink:#1d1d1f;--l-dim:#6e6e73;--l-ink-card:#1c2740;--l-dim-card:#56627a;
   --l-ok:#34c759;--l-low:#ff9f0a;--l-hot:#c8f000;--l-hot-ink:#5a6b00;--l-orange:#ff7a1a;--l-held:#d8dfeb;--l-held-ink:#8e8e93;
-  /* ===== BOWL MAKER 5000 TOKENS · DARK SKIN ===== */
+  /* ===== BOWL-O-MATIC 5000 TOKENS · DARK SKIN ===== */
   --d-bg:#0b120e;--d-panel:#17231c;--d-card:#17231c;--d-track:#3d4a42;--d-dock:#141d18;--d-dock-2:#0f1512;--d-line:#2c3a31;--d-machine:#080b09;
   --d-ink:#ffffff;--d-dim:#c7d1ca;
   --d-ok:#1fa36a;--d-fill:#0f5a3a;--d-low:#f0a000;--d-hot:#cfff3e;--d-orange:#ff7a1a;--d-held:#6b7a70;
@@ -121,8 +122,8 @@ pre{background:var(--pg-2);border:1px solid var(--ln);border-radius:12px;padding
 </head>
 <body>
 <header class="hd"><div class="in">
-  <h1>Bowl Maker 5000 <small>Design system · tokens</small></h1>
-  <nav><a href="#skins">Color</a><a href="#states">States</a><a href="#type">Type</a><a href="#space">Space</a><a href="#components">Components</a><a href="#rules">Rules</a><a href="#export">Export</a><a href="prep.html">Prep</a><a href="lunch-rush-light.html">Panel</a></nav>
+  <h1 style="display:flex;align-items:center;gap:10px"><svg class="logo" style="width:28px;height:28px;color:#1b1f27" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="11.5" r="6.5" fill="none" stroke="#cfff3e" stroke-width="3.6"/><path d="M4.5 21.5h31a1.5 1.5 0 0 1 1.5 1.6C36.2 30.6 29 36.5 20 36.5S3.8 30.6 3 23.1a1.5 1.5 0 0 1 1.5-1.6z" fill="currentColor"/><circle cx="20" cy="18" r="1.9" fill="#c8f000"/></svg> Bowl-O-Matic 5000 <small>Design system · tokens</small></h1>
+  <nav><a href="#logo">Logo</a><a href="#skins">Color</a><a href="#states">States</a><a href="#type">Type</a><a href="#space">Space</a><a href="#components">Components</a><a href="#rules">Rules</a><a href="#export">Export</a><a href="prep.html">Prep</a><a href="lunch-rush-light.html">Panel</a></nav>
 </div></header>
 
 <main>
@@ -132,7 +133,7 @@ pre{background:var(--pg-2);border:1px solid var(--ln);border-radius:12px;padding
   <p class="lead">Everything on the worker panel and manager console comes from the tokens on this page. The dark skin and the light skin share every size, radius, spacing value and rule; only the color layer changes. A state is a color first and a number second. Nothing here is decorative.</p>
   <div class="two">
     <div class="skel">
-      <div class="k-top">‹ BOWL MAKER 5000 · UPTOWN · LUNCH RUSH <span style="float:right">40 BOWLS / 10 MIN · 214 TO GO</span></div>
+      <div class="k-top">‹ BOWL-O-MATIC 5000 · UPTOWN · LUNCH RUSH <span style="float:right">40 BOWLS / 10 MIN · 214 TO GO</span></div>
       <div class="k-mach">● Bowl 01 · ● Bowl 02 · ● Chicken 2 · ● Conveyor · ● Dispensers · ● Sealer · ● Pickup · ● Payments · ● Network</div>
       <div class="k-card">STATUS · ALL ITEMS<br><span style="font-weight:500;color:var(--l-dim-card)">Proteins · Bases · Vegetables · Sauces · Dairy</span></div>
       <div class="k-dock">ACTIONS<small>alert · numbers · one big verb · Next Up</small></div>
@@ -149,6 +150,30 @@ pre{background:var(--pg-2);border:1px solid var(--ln);border-radius:12px;padding
       </table>
     </div>
   </div>
+</section>
+
+<section id="logo">
+  <h2>Logo</h2>
+  <p class="lead">The mark is the name: an <b>O</b> over a bowl. The ring is the hopper, the machine's eye; the drop is the portion on its way down; the bowl is the promise. The ring and the drop are always the hot yellow-green of the surface they sit on (#cfff3e on dark, #c8f000 on light); the bowl takes the ink of whatever it sits on. Never recolor the ring, never add a gradient, never rotate it.</p>
+  <div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(220px,1fr))">
+    <div class="sw"><i style="height:140px;display:grid;place-items:center;background:#fff;color:#1d1d1f"><svg viewBox="0 0 40 40" width="88" height="88"><circle cx="20" cy="11.5" r="6.5" fill="none" stroke="#c8f000" stroke-width="3.6"/><path d="M4.5 21.5h31a1.5 1.5 0 0 1 1.5 1.6C36.2 30.6 29 36.5 20 36.5S3.8 30.6 3 23.1a1.5 1.5 0 0 1 1.5-1.6z" fill="currentColor"/><circle cx="20" cy="18" r="1.9" fill="#c8f000"/></svg></i><div><b>On light</b><code>bowl: --l-ink · ring: --l-hot #c8f000</code></div></div>
+    <div class="sw"><i style="height:140px;display:grid;place-items:center;background:#0b120e;color:#fff"><svg viewBox="0 0 40 40" width="88" height="88"><circle cx="20" cy="11.5" r="6.5" fill="none" stroke="#cfff3e" stroke-width="3.6"/><path d="M4.5 21.5h31a1.5 1.5 0 0 1 1.5 1.6C36.2 30.6 29 36.5 20 36.5S3.8 30.6 3 23.1a1.5 1.5 0 0 1 1.5-1.6z" fill="currentColor"/><circle cx="20" cy="18" r="1.9" fill="#cfff3e"/></svg></i><div><b>On dark</b><code>bowl: --d-ink · ring: --d-hot #cfff3e</code></div></div>
+    <div class="sw"><i style="height:140px;display:grid;place-items:center;background:#1c1c1e;color:#fff"><svg viewBox="0 0 40 40" width="88" height="88"><circle cx="20" cy="11.5" r="6.5" fill="none" stroke="#cfff3e" stroke-width="3.6"/><path d="M4.5 21.5h31a1.5 1.5 0 0 1 1.5 1.6C36.2 30.6 29 36.5 20 36.5S3.8 30.6 3 23.1a1.5 1.5 0 0 1 1.5-1.6z" fill="currentColor"/><circle cx="20" cy="18" r="1.9" fill="#cfff3e"/></svg></i><div><b>On the dock</b><code>bowl: white · ring: hot</code></div></div>
+    <div class="sw"><i style="height:140px;display:grid;place-items:center;background:#cfff3e;color:#0b120e"><svg viewBox="0 0 40 40" width="88" height="88"><circle cx="20" cy="11.5" r="6.5" fill="none" stroke="#0b120e" stroke-width="3.6"/><path d="M4.5 21.5h31a1.5 1.5 0 0 1 1.5 1.6C36.2 30.6 29 36.5 20 36.5S3.8 30.6 3 23.1a1.5 1.5 0 0 1 1.5-1.6z" fill="currentColor"/><circle cx="20" cy="18" r="1.9" fill="#0b120e"/></svg></i><div><b>On hot (one-color)</b><code>all ink</code></div></div>
+  </div>
+  <h3>Lockup</h3>
+  <div class="two">
+    <div class="sw" style="padding:22px 24px;display:flex;align-items:center;gap:12px;font-weight:900;font-size:26px;letter-spacing:-.01em;color:#1d1d1f"><svg viewBox="0 0 40 40" width="34" height="34" style="color:#1d1d1f"><circle cx="20" cy="11.5" r="6.5" fill="none" stroke="#c8f000" stroke-width="3.6"/><path d="M4.5 21.5h31a1.5 1.5 0 0 1 1.5 1.6C36.2 30.6 29 36.5 20 36.5S3.8 30.6 3 23.1a1.5 1.5 0 0 1 1.5-1.6z" fill="currentColor"/><circle cx="20" cy="18" r="1.9" fill="#c8f000"/></svg>BOWL-O-MATIC 5000</div>
+    <div class="sw" style="padding:22px 24px;display:flex;align-items:center;gap:12px;font-weight:900;font-size:26px;letter-spacing:-.01em;background:#0b120e;color:#fff"><svg viewBox="0 0 40 40" width="34" height="34"><circle cx="20" cy="11.5" r="6.5" fill="none" stroke="#cfff3e" stroke-width="3.6"/><path d="M4.5 21.5h31a1.5 1.5 0 0 1 1.5 1.6C36.2 30.6 29 36.5 20 36.5S3.8 30.6 3 23.1a1.5 1.5 0 0 1 1.5-1.6z" fill="currentColor"/><circle cx="20" cy="18" r="1.9" fill="#cfff3e"/></svg>BOWL-O-MATIC 5000</div>
+  </div>
+  <table style="margin-top:14px">
+    <tr><th>Rule</th><th>Value</th></tr>
+    <tr><td>Wordmark</td><td>BOWL-O-MATIC 5000 · caps · 900 · −.01em · always with the hyphens, always with the O capitalised</td></tr>
+    <tr><td>Mark size in a title bar</td><td>30px landscape · 28px portrait · gap 10px to the wordmark</td></tr>
+    <tr><td>Clear space</td><td>the ring's diameter on every side</td></tr>
+    <tr><td>Minimum size</td><td>20px (favicon) — the ring stays a ring</td></tr>
+    <tr><td>File</td><td><a href="logo.svg">logo.svg</a> · 40×40 viewBox · bowl uses <code>currentColor</code></td></tr>
+  </table>
 </section>
 
 <section id="skins">
@@ -370,7 +395,7 @@ pre{background:var(--pg-2);border:1px solid var(--ln);border-radius:12px;padding
 --ok:#1fa36a; --fill:#0f5a3a; --low:#f0a000; --hot:#cfff3e;
 --orange:#ff7a1a; --held:#6b7a70;</pre>
 <pre>{
-  "meta": { "name": "Bowl Maker 5000", "version": "1.0", "locked": "2026-09-18" },
+  "meta": { "name": "Bowl-O-Matic 5000", "version": "1.0", "locked": "2026-09-18" },
   "photo": "25%",
   "radius": { "card": 18, "box": 18, "btn": 14, "small": 12, "pill": 999 },
   "space": { "gutter": [20, 12], "gap": [16, 12], "group": 12, "tops": 10 },
