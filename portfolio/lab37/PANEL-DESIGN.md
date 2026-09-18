@@ -61,15 +61,18 @@ percent and refill countdown; recipe development adds edit/remove
 controls) but the 3 rows, their labels, fixed bay counts, order,
 numbering and *relative* sizing never change.
 
-Sizing: card **width and height** both scale by tier (large hopper is
-visibly bigger in both dimensions, not just wider) — width via
-`flex-basis` percentage (L 22% / M 14% / S 11%, tuned so all 6 Small-tier
-names fit one line or wrap to two without truncating — 8% was tried first
-and clipped "Chipotle"/"Sour Cream" to illegible fragments, caught and
-fixed same session), height via a fixed value per tier. Rows are
-left-justified (`justify-content:flex-start`, `flex-wrap:wrap`), never
-centered or stretched to fill — a short tier row is allowed to leave
-empty space on the right, that's the hardware talking, not a layout bug.
+Sizing: every row fills the full width, edge to edge, same as every
+other row — cards are `flex:1` within their row, not a fixed percentage.
+Size hierarchy still reads clearly without ever leaving a ragged trailing
+gap: a row with only 4 cards (Hot Grain Hopper) divides that same full
+width four ways, so each card is wider than a Sauce Dispenser card
+sharing that width eight ways — the tier's width emerges from its own
+bay count, it isn't set directly. Height is still an explicit value per
+tier (large hopper is visibly taller too, not just wider). An earlier
+version fixed each tier's width to a percentage (L 22% / M 14% / S 11%)
+and left-justified rows with unfilled space on the right — rejected for
+not reading as one aligned grid; full-width `flex:1` replaced it same
+session.
 
 Two gotchas hit and fixed while building this, both worth not
 rediscovering:
@@ -84,21 +87,29 @@ rediscovering:
   edge instead of wrapping.
 
 ## Card anatomy (Apple card language)
-Locked 2026-09-18. Every slot card, on every screen, is built the same
-way, in Apple-HIG spirit — two honest zones, nothing competing with
-anything else for attention:
-- **Name band, top.** Centered, bold, on its own — the one glanceable
-  fact (which ingredient this is) gets zero visual competition. Wraps to
-  two lines rather than truncating or shrinking; a bay's `#N` badge and
-  hot/cold dot sit as a quiet corner overlay (top-right, ~50% opacity),
-  never inline with the name.
-- **Photo, full-bleed, below it (worker panel only — recipe-development's
-  compact edit chips skip the photo, there's no room and no need for one
-  in a dev tool).** Edge to edge, no padding, so it reads as a real
-  photo of the product, not a thumbnail. The live **weight** and refill
-  time caption its own bottom edge in a legible dark scrim over the
-  image, never fight the photo for space above it. The recipe "SF" tag
-  sits on the photo's top-left corner.
+Locked 2026-09-18, revised same day to four stacked bands instead of two
+— every fact gets its own centered zone, nothing overlaid on anything
+else:
+- **Name, top.** Centered, bold, the one glanceable fact (which
+  ingredient this is) with zero visual competition. Wraps to two lines
+  rather than truncating or shrinking; a bay's `#N` badge and hot/cold
+  dot sit as a quiet corner overlay (top-right, ~50% opacity), never
+  inline with the name.
+- **Quantity, centered, directly below the name.** The live **weight**
+  and refill time (or "SCRAPE IT" — see below), its own band, not an
+  overlay on the photo — a fact this important doesn't share space with
+  an image.
+- **Progress track, touching the photo.** A thin (4px) bar sitting flush
+  against the photo's top edge with zero gap — genuinely touching it, not
+  just close — filling left to right with the same live level. This is
+  "the fill is the message," now a real progress bar instead of a bottom
+  edge line.
+- **Photo, full-bleed, below the track (worker panel only —
+  recipe-development's compact edit chips skip the photo, there's no room
+  and no need for one in a dev tool).** Edge to edge, no padding, no text
+  overlaid on it — it's pure image, so it actually reads as a photo of
+  the product, not a thumbnail with a caption. The recipe "SF" tag is the
+  one exception, small in its top-left corner.
 
 ## Fullness is weight, not volume (2026-09-18)
 Every bin sits on a load cell — a scale is simpler and more reliable

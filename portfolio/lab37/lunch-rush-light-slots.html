@@ -893,28 +893,30 @@ html[data-photo="0"] .bar .rc-tag{left:auto;right:8px}
 .rlabel{flex:0 0 68px;align-self:center}
 .rlabel b{display:block;font-size:13px;font-weight:800;letter-spacing:.3px;opacity:.62;line-height:1.15}
 .rlabel small{display:block;font-size:11px;font-weight:700;opacity:.5;margin-top:3px}
-.rcards{flex:1;display:flex;gap:10px;flex-wrap:wrap;min-width:0;min-height:0}
-/* APPLE CARD: two honest zones, top to bottom. Name is the one glanceable fact everyone needs
-   first, so it gets its own full-width band, centered, no photo competing with it. Below it, a
-   full-bleed (edge to edge, no padding) recognizable photo — the thing you'd actually see on the
-   ingredient — captioned with the live percent and refill time in a legible scrim at its own
-   bottom edge. Corner radius 18px (inherited from the base .bar rule), consistent gutter,
-   everything centered and aligned the same way in every card, every tier. */
-.slots .bar{flex-direction:column;align-items:stretch;justify-content:flex-start;gap:0;padding:0;min-height:0}
-.slots .bar.sz-L{flex:0 0 22%;height:11.5vh}
-.slots .bar.sz-M{flex:0 0 14%;height:8.5vh}
-.slots .bar.sz-S{flex:0 0 11%;height:7vh}
-.slots .bar .n{flex:0 0 auto;text-align:center;font-size:14px;font-weight:800;letter-spacing:-.01em;line-height:1.2;padding:7px 24px 5px 8px;position:relative;white-space:normal;overflow-wrap:break-word}
+/* Every card in a row is flex:1 — the row always fills the full width, edge to edge, same as
+   every other row. Size hierarchy still reads clearly (fewer Large cards share that same width,
+   so each is wider; height is set per tier below too) without ever leaving a ragged trailing gap. */
+.rcards{flex:1;display:flex;gap:10px;min-width:0;min-height:0}
+/* APPLE CARD: title centered on top, the live quantity centered right below it, then a real
+   progress track sitting flush against the photo — touching it, no gap — and the full-bleed photo
+   itself. Nothing overlaid on the image; every fact gets its own centered band. Corner radius
+   18px (inherited from the base .bar rule), same anatomy in every card, every tier. */
+.slots .bar{flex:1 1 0;flex-direction:column;align-items:stretch;justify-content:flex-start;gap:0;padding:0;min-width:0;min-height:0}
+.slots .bar.sz-L{height:11.5vh}
+.slots .bar.sz-M{height:8.5vh}
+.slots .bar.sz-S{height:7vh}
+.slots .bar .n{flex:0 0 auto;text-align:center;font-size:14px;font-weight:800;letter-spacing:-.01em;line-height:1.2;padding:7px 24px 1px 8px;position:relative;white-space:normal;overflow-wrap:break-word}
 .slots .bar .head{position:absolute;top:6px;right:6px;z-index:2;display:flex;align-items:center;gap:4px;font-size:10px;font-weight:800;letter-spacing:.3px;opacity:.5}
 .slots .bar .head .dot{width:6px;height:6px;border-radius:50%;flex:none;background:var(--dot,#8e8e93)}
 .slots .bar.hot .head .dot{--dot:#ff9f0a}
 .slots .bar.cold .head .dot{--dot:#0a84ff}
+.slots .bar .v{flex:0 0 auto;text-align:center;font-size:12px;font-weight:800;padding:0 6px 5px;color:var(--dim)}
+.slots .bar .v small{opacity:.8;font-weight:700}
+.slots .bar .track{flex:0 0 4px;position:relative;background:rgba(0,0,0,.08)}
+.slots .bar .track>i{position:absolute;left:0;top:0;bottom:0;width:calc(var(--l,0)*1%);background:var(--ok)}
 .slots .bar .photo{position:relative;flex:1 1 auto;min-height:0;background:#dfe3e8;overflow:hidden}
 .slots .bar .ph{width:100%;height:100%;object-fit:cover;display:block}
 .slots .bar .rc-tag{top:5px;left:5px;font-size:10px;padding:2px 5px}
-.slots .bar .v{position:absolute;left:0;right:0;bottom:0;z-index:1;padding:4px 8px 5px;font-size:12px;font-weight:800;text-align:center;color:#fff;background:linear-gradient(transparent,rgba(0,0,0,.62));text-shadow:0 1px 2px rgba(0,0,0,.35)}
-.slots .bar .v small{opacity:.92;font-weight:700}
-.slots .bar>i{left:0!important;top:auto!important;bottom:0;height:4px;width:calc(var(--l,0)*1%)!important;z-index:2}
 .slots .bar.open{background:#fff;box-shadow:inset 0 0 0 2px var(--line);opacity:.6;align-items:stretch}
 .slots .bar.open .n{flex:1;display:flex;align-items:center;justify-content:center;padding:6px;color:var(--dim);font-weight:800}
 .slots .bar.open .head{opacity:.4}
@@ -1036,8 +1038,9 @@ function render(){
     const z=st(x);
     return `<div class="bar slot sz-${x.sz} ${temp(x)} ${z} ${x.just?'just':''}" ${x.held?'':`onclick="openSheet('refill:${x.n}')"`}>
       <div class="n">${x.n}${badge}</div>
-      <div class="photo">${ph(x)}${inRecipe(x)?'<em class="rc-tag">SF</em>':''}<div class="v">${x.held?'HELD':lbs(x)+' lb'}<small> · ${x.held?'not dispensing':x.just?'REFILLED':z==='now'?'SCRAPE IT':refillClock(x)}</small></div></div>
-      <i style="--l:${x.held?0:x.l}"></i>
+      <div class="v">${x.held?'HELD':lbs(x)+' lb'}<small> · ${x.held?'not dispensing':x.just?'REFILLED':z==='now'?'SCRAPE IT':refillClock(x)}</small></div>
+      <div class="track"><i style="--l:${x.held?0:x.l}"></i></div>
+      <div class="photo">${ph(x)}${inRecipe(x)?'<em class="rc-tag">SF</em>':''}</div>
     </div>`;
   };
   // DISPLAY: reordered by size tier (L, then M, then S — the 2 open bays live inside the S row,
