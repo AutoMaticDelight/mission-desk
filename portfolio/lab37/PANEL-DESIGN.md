@@ -8,8 +8,8 @@ Tokens, live states and rules as a page: `design-system.html`.
 Both share structure and JS; only the color layer differs.
 
 ## Brand
-- Name: **Bowl-O-Matic 5000** (hyphens, capital O). Mark: `logo.svg` — an O ring over a bowl with a drop;
-  ring and drop in the surface's hot yellow-green, bowl in currentColor. In every title bar at 30px (28px portrait).
+- Name: **Bowl-O-Matic 5000** (hyphens, capital O). Mark: `logo.svg` — a solid hot yellow-green circle, no outline, with the icon
+  (O ring over a bowl) in black centered inside. On a hot surface, icon only, in ink.
 
 ## Structure (top to bottom, one iPad screen, no scroll)
 1. **Top lockup** — title bar + machine status line fused as one card,
