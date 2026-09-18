@@ -9,7 +9,7 @@ Both share structure and JS; only the color layer differs.
 
 ## Brand
 - Name: **Bowl-O-Matic 5000** (hyphens, capital O). Mark: `logo.svg` — a solid hot yellow-green circle, no outline, with the icon
-  (O ring over a bowl) in black centered inside. On a hot surface, icon only, in ink.
+  (solid O dot over a bowl, no outlines) in black centered inside. On a hot surface, icon only, in ink.
 
 ## Structure (top to bottom, one iPad screen, no scroll)
 1. **Top lockup** — title bar + machine status line fused as one card,
