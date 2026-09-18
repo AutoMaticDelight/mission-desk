@@ -600,6 +600,10 @@ html[data-photo="0"] .big .bar .m span br{display:none}
 @media(orientation:landscape){.band .where{flex:0 1 auto;min-width:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}.band .when{flex:0 0 auto;margin-left:auto}.band .stat{flex:0 0 auto}}
 
 @media(orientation:landscape){.band{grid-template-columns:minmax(0,1fr) max-content max-content max-content}}
+
+/* Actions locks to the bottom edge; spare height opens between Status and Actions */
+body{grid-template-rows:auto auto minmax(0,1fr);align-content:stretch}
+.actions{align-self:end}
 </style>
 <link rel="stylesheet" href="glove.css"></head>
 <body>
