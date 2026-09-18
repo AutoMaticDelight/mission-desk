@@ -538,6 +538,13 @@ html:not([data-photo="0"]) .tops .bar .v{font-size:16px}
 /* big boxes: more breathing room between the photo and the title */
 .big .bar{padding-left:calc(var(--phw) + 26px)}
 @media(orientation:portrait){.big .bar{padding-left:calc(var(--phw) + 20px)}}
+
+/* secondary actions are real glove buttons: tall, outlined, one tap opens the hold-to-confirm sheet */
+.alert .more{display:flex;gap:10px;flex-wrap:nowrap;margin-top:6px}
+.alert .more button{flex:1 1 0;min-height:56px;padding:0 16px;border:2px solid rgba(255,255,255,.45);border-radius:14px;background:rgba(255,255,255,.06);color:#fff;font-size:18px;font-weight:800;text-align:center;white-space:nowrap;text-transform:none;letter-spacing:0}
+.alert .more button:not(:last-child){border-right:2px solid rgba(255,255,255,.45);padding-right:16px;border-radius:14px}
+.alert .more button:active{background:rgba(255,255,255,.18)}
+@media(orientation:portrait){.alert .more{flex-wrap:wrap}.alert .more button{flex:1 1 45%;min-height:60px;font-size:19px}}
 </style>
 <link rel="stylesheet" href="glove.css"></head>
 <body>
