@@ -548,15 +548,28 @@ html:not([data-photo="0"]) .tops .bar .v{font-size:16px}
 
 /* machine status line sits right under the title bar */
 .band{order:0}.sys{order:1}.hoppers{order:2}.actions{order:3}
+
+/* TOP LOCKUP: title bar and machine line are one status block */
+.top{order:0;display:grid;gap:0;border-radius:18px;overflow:hidden;background:var(--panel);min-height:0}
+.top .band{border-radius:0;box-shadow:none}
+.top .sys{border-radius:0;margin:0;box-shadow:none;border-top:2px solid var(--line)}
+@media(orientation:portrait){.top .sys{border-radius:0}}
+
+@media(orientation:landscape){.top .si{padding:0 8px;gap:5px;font-size:15px}.top .sys{padding:0 2px}}
+
+@media(orientation:landscape){.top .sys{flex-wrap:wrap;row-gap:0;padding:2px;min-height:0}.top .si{min-height:42px}}
 </style>
 <link rel="stylesheet" href="glove.css"></head>
 <body>
+  <section class="top">
   <header class="band">
     <a class="where" href="manager-fleet.html" style="color:inherit;text-decoration:none">‹ BOWL MAKER 5000 <span>UPTOWN · LUNCH RUSH</span></a>
     <div class="when">THU <span id="clock">12:18</span> <span class="peak">PEAK 12:30–12:50</span></div>
     <div class="stat"><b id="speedv">38</b><span>BOWLS / 10 MIN</span><i>▲</i></div>
     <div class="stat"><b id="expv">214</b><span>TO GO</span></div>
   </header>
+  <section class="sys" id="machines"></section>
+  </section>
 
   <section class="hoppers">
     <div class="sec">Status · all items</div>
@@ -577,7 +590,6 @@ html:not([data-photo="0"]) .tops .bar .v{font-size:16px}
     <section class="next" id="next"></section>
   </section>
 
-  <section class="sys" id="machines"></section>
 
 <div class="overlay" id="overlay"><div class="sheet"><div class="handle"></div><div class="eyebrow" id="sheetLabel"></div><h2 id="sheetTitle"></h2><p id="sheetText"></p><div class="effects" id="effects"></div><div class="sheet-actions"><button class="back" onclick="closeSheet()">BACK</button><button class="confirm" id="confirm" onclick="commit()"></button></div></div></div>
 <div class="toast" id="toast"><b id="toastTitle"></b><span id="toastText"></span></div>
