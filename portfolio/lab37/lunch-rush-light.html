@@ -813,6 +813,11 @@ body{padding-top:0}
 /* bigger mark in the title bar */
 .band .where .logo{width:44px;height:44px;margin:-4px 4px -4px 0}
 @media(orientation:portrait){.band .where .logo{width:40px;height:40px}}
+
+/* the mark never clips: no negative margins; the bar gives it room */
+.band .where .logo{margin:0 4px 0 0}
+.band{padding-top:10px;padding-bottom:10px}
+@media(orientation:portrait){.band{padding-top:8px;padding-bottom:8px}}
 </style>
 <link rel="stylesheet" href="glove.css"></head>
 <body>
