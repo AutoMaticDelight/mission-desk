@@ -46,12 +46,15 @@ main{max-width:1320px;margin:0 auto;padding:20px;display:grid;grid-template-colu
 .card h2{margin:0 0 3px;font-size:16px;letter-spacing:-.01em}
 .card .sub{margin:0 0 12px;font-size:13px;color:var(--ink2)}
 
-/* slot rack — the 18-slot machine floor plan: 4 mains / 5 / 5 / 4 dairy+open, always in this shape.
-   Same row breaks as the worker panel's status card (PANEL-DESIGN.md "Machine layout"). */
+/* slot rack — the 18-slot machine floor plan: one row per category (Proteins, Bases, Vegetables,
+   Sauces, Dairy, Open), cards all sized to the widest row (Vegetables, 6). Same shape as the
+   worker panel's status card (PANEL-DESIGN.md "Machine layout"). */
 .rack{display:grid;gap:8px}
-.rrow{display:flex;gap:8px}
-.rrow.short{justify-content:center}
-.slot{flex:0 0 calc((100% - 32px)/5);border-radius:12px;padding:10px 10px 9px;min-height:74px;display:flex;flex-direction:column;justify-content:space-between;cursor:pointer;border:1px solid var(--line);background:var(--panel2)}
+.rrow{display:flex;align-items:center;gap:8px}
+.rlabel{flex:0 0 64px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--ink3)}
+.rcards{flex:1;display:flex;gap:8px;min-width:0}
+.rcards.short{justify-content:center}
+.slot{flex:0 0 calc((100% - 40px)/6);border-radius:12px;padding:10px 10px 9px;min-height:74px;display:flex;flex-direction:column;justify-content:space-between;cursor:pointer;border:1px solid var(--line);background:var(--panel2)}
 .slot .head{display:flex;justify-content:space-between;align-items:flex-start;font-size:11px;color:var(--ink3)}
 .slot .dot{width:8px;height:8px;border-radius:50%;flex:none;margin-top:2px}
 .slot.hot .dot{background:var(--amber)}.slot.cold .dot{background:var(--blue)}.slot.swing .dot{background:var(--ink3)}
@@ -282,7 +285,8 @@ function addSlot(n){
   render();
 }
 
-const ROW_BREAKS=[0,4,9,14,18]; // 4 / 5 / 5 / 4 — the one shape, everywhere
+// ROWS: one row per category — the widest (Vegetables, 6) sets the card size everyone else shares
+const ROW_GROUPS=[['prot','Proteins'],['base','Bases'],['veg','Vegetables'],['sau','Sauces'],['dai','Dairy'],[null,'Open']];
 function renderRack(){
   const slotCard=s=>{
     const cls=s.name?(s.isNew?'new':s.t):'open swing';
@@ -291,11 +295,10 @@ function renderRack(){
       <div class="nm">${s.name||'OPEN'}</div>
     </div>`;
   };
-  let html='';
-  for(let r=0;r<4;r++){
-    const row=SLOTS.slice(ROW_BREAKS[r],ROW_BREAKS[r+1]);
-    html+=`<div class="rrow ${row.length<5?'short':''}">${row.map(slotCard).join('')}</div>`;
-  }
+  const html=ROW_GROUPS.map(([g,label])=>{
+    const row=g?SLOTS.filter(s=>s.g===g):SLOTS.filter(s=>s.t==='swing');
+    return `<div class="rrow"><div class="rlabel">${label}</div><div class="rcards ${row.length<6?'short':''}">${row.map(slotCard).join('')}</div></div>`;
+  }).join('');
   document.getElementById('rack').innerHTML=html;
   const used=filled().length, open=openSlots().length;
   document.getElementById('capNote').innerHTML=`<b>${used}/18</b> slots loaded · <b>${open}</b> open. Standard build is 16 (4 mains, 12 toppings) — the 2 swing slots are what let a store trial something new without a full retrofit.`;

@@ -10,37 +10,46 @@ Slot-map variant: `lunch-rush-light-slots.html` — same panel, status card
 redrawn as the 18-slot machine layout below instead of grouped-by-category.
 
 ## Machine layout (one shape, everywhere)
-Locked 2026-09-18, row shape revised same day. The machine has **18
-physical dispenser slots**, numbered 1–18, always in this fixed order and
-this fixed **4 / 5 / 5 / 4 row shape** — a diamond, not a rectangle:
-- Row 1 (4, centered): 1 Chicken · 2 Beef · 3 Rice · 4 Quinoa — the mains.
-- Row 2 (5, full width): 5 Beans · 6 Corn · 7 Pico · 8 Lettuce · 9 Cilantro.
-- Row 3 (5, full width): 10 Lime · 11 Guac · 12 Verde · 13 Chipotle · 14 Roja.
-- Row 4 (4, centered): 15 Cheese · 16 Sour Cream · 17 open (swing) · 18 open (swing).
+Locked 2026-09-18, revised twice same day (diamond, then this — one row
+per category). The machine has **18 physical dispenser slots**, numbered
+1–18, always in this fixed order and **one row per category**, labeled:
+- Row **Proteins** (2): 1 Chicken · 2 Beef.
+- Row **Bases** (2): 3 Rice · 4 Quinoa.
+- Row **Vegetables** (6): 5 Beans · 6 Corn · 7 Pico · 8 Lettuce · 9 Cilantro · 10 Lime.
+- Row **Sauces** (4): 11 Guac · 12 Verde · 13 Chipotle · 14 Roja.
+- Row **Dairy** (2): 15 Cheese · 16 Sour Cream.
+- Row **Open** (2): 17 open (swing) · 18 open (swing).
 
 Every screen that draws the machine's slots — the worker panel's status
 card, the manager console's machine detail (when built), `recipe-
-development.html`'s rack — draws this exact list, in these exact four
-rows, as the same numbered-slot primitive: a `#N` badge, a hot/cold dot
-(amber = hot-held, blue = cold-held, gray = open swing), then the name.
-Never regroup it by category, resize some slots bigger than others, change
-the row breaks, or invent a different diagram per screen. **One physical
-object gets one visual representation** — recognizable at a glance
-whichever screen it's on, same shape in landscape and portrait alike. Per-
-context detail layers on top of that shape (the worker panel adds a photo,
-percent and refill countdown; recipe development adds edit/remove
-controls) but the 4/5/5/4 grid, order and numbering never change.
+development.html`'s rack — draws this exact list, in these exact six
+labeled rows, as the same numbered-slot primitive: a `#N` badge, a
+hot/cold dot (amber = hot-held, blue = cold-held, gray = open swing), then
+the name. Never merge or reorder the category rows, resize some slots
+bigger than others, or invent a different diagram per screen. **One
+physical object gets one visual representation** — recognizable at a
+glance whichever screen it's on, same shape in landscape and portrait
+alike. Per-context detail layers on top of that shape (the worker panel
+adds a photo, percent and refill countdown; recipe development adds
+edit/remove controls) but the 6 rows, their labels, order and numbering
+never change.
 
-Implementation: each row is a flex row of cards sized to `(100% - 4×gap) /
-5`, so a 4-card row's cards are centered and the exact same width as a
-5-card row's — never stretched to fill, which would break the size match
-between rows.
+Implementation: each row is `<label><cards>` — a fixed-width label
+followed by a flex row of cards sized to the widest category (Vegetables,
+6): `(100% - 5×gap) / 6`. Shorter rows (2 or 4 cards) center within that
+same per-card width rather than stretching to fill, so every card is the
+same size everywhere. Gotcha hit and fixed while building this: a
+percentage-based photo gutter (`padding-left: calc(var(--phw) + Npx)`) on
+a flex item with a `calc()` flex-basis resolves against the flex
+*container's* width in Chromium, not the item's own — it must be a fixed
+px value on these cards, not `--phw`'s percentage.
 
 Files on the slot-map layout: `recipe-development.html` (the rack),
-`lunch-rush-light-slots.html` (worker panel — identical 4/5/5/4 shape in
-both orientations, only the card size/font scales). `lunch-rush-light.html`
-and `lunch-rush-hoppers.html` still use the older grouped-by-category
-layout in **Boxes** below — kept as-is, not migrated.
+`lunch-rush-light-slots.html` (worker panel — identical category-row shape
+in both orientations, only the card size/font scales). `lunch-rush-
+light.html` and `lunch-rush-hoppers.html` still use the older grouped-by-
+category layout in **Boxes** below (visually similar in spirit, but not on
+this shared numbered-slot contract) — kept as-is, not migrated.
 
 ## Brand
 - Name: **Bowl-O-Matic 5000** (hyphens, capital O). Mark: `logo.svg` — a solid hot yellow-green circle, no outline, with the icon

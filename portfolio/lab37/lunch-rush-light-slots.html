@@ -885,29 +885,40 @@ html[data-photo="0"] .bar .rc-tag{left:auto;right:8px}
 .ph{height:100%;width:var(--phw);object-fit:cover}
 
 /* SLOT MAP: the machine's 18 physical dispenser positions — the same floor plan drawn in
-   recipe-development.html's rack. 4 mains / 5 / 5 / 4 dairy+open, in that order, same shape in
-   landscape and portrait alike. Never regrouped by category, never a different diagram per screen. */
-.slots{display:grid;gap:10px;min-height:0}
-.srow{display:flex;gap:10px;min-height:0}
-.srow.short{justify-content:center}
-.slots .bar{flex:0 0 calc((100% - 40px)/5);flex-direction:column;align-items:flex-start;justify-content:center;gap:1px;padding:8px 12px;height:9.5vh;min-height:0}
-.slots .bar .head{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:800;letter-spacing:.3px;opacity:.6}
-.slots .bar .head .dot{width:7px;height:7px;border-radius:50%;flex:none;background:var(--dot,#8e8e93)}
+   recipe-development.html's rack. One row per category (Proteins, Bases, Vegetables, Sauces,
+   Dairy, Open), cards sized to the widest row (Vegetables, 6). Same shape in landscape and
+   portrait alike. Never regrouped differently, never a different diagram per screen. */
+.slots{display:grid;gap:6px;min-height:0}
+.srow{display:flex;align-items:center;gap:10px;min-height:0}
+.rlabel{flex:0 0 52px;font-size:11px;font-weight:800;letter-spacing:.3px;opacity:.55;line-height:1.15}
+.rcards{flex:1;display:flex;gap:10px;min-width:0;min-height:0}
+.rcards.short{justify-content:center}
+/* fixed px photo gutter, not --phw's percentage: on a flex item with a calc() flex-basis,
+   Chromium resolves percentage padding against the flex CONTAINER's width, not the item's own
+   (a real, reproducible quirk) — a %-based gutter here blows up to hundreds of px. */
+.slots .bar{--sphw:30px;flex:0 0 calc((100% - 50px)/6);flex-direction:column;align-items:flex-start;justify-content:center;gap:1px;padding:6px 10px 6px calc(var(--sphw) + 10px);height:6.6vh;min-height:0}
+.slots .bar .ph{width:var(--sphw)}
+.slots .bar i{left:var(--sphw);width:calc((100% - var(--sphw)) * var(--l,0) / 100)}
+.slots .bar .rc-tag{font-size:10px;padding:2px 4px;top:3px;left:3px}
+.slots .bar .head{position:absolute;top:5px;right:7px;z-index:2;display:flex;align-items:center;gap:4px;font-size:10px;font-weight:800;letter-spacing:.3px;opacity:.55}
+.slots .bar .head .dot{width:6px;height:6px;border-radius:50%;flex:none;background:var(--dot,#8e8e93)}
 .slots .bar.hot .head .dot{--dot:#ff9f0a}
 .slots .bar.cold .head .dot{--dot:#0a84ff}
-.slots .bar .n{font-size:15px;letter-spacing:-.01em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%}
-.slots .bar .v{font-size:14px}
+.slots .bar .n{font-size:14px;letter-spacing:-.01em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%}
+.slots .bar .v{font-size:13px}
 .slots .bar.open{background:#fff;box-shadow:inset 0 0 0 2px var(--line);opacity:.55}
 .slots .bar.open .n{color:var(--dim);font-weight:700}
 .slots .bar.open .head{opacity:.45}
-.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:13px;color:var(--dim);font-weight:600;padding:10px 4px 0}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:13px;color:var(--dim);font-weight:600;padding:8px 4px 0}
 .legend span{display:inline-flex;align-items:center;gap:6px}
 .legend i{width:8px;height:8px;border-radius:50%;display:inline-block}
-@media(orientation:landscape) and (max-height:800px){.slots .bar{height:8vh}}
 @media(orientation:portrait){
-  .slots,.srow{gap:8px}
-  .slots .bar{flex-basis:calc((100% - 32px)/5);height:auto;min-height:58px;padding:6px 10px}
-  .slots .bar .n{font-size:14px}.slots .bar .v{font-size:13px}
+  .slots{gap:5px}
+  .srow{gap:8px}
+  .rlabel{flex-basis:44px;font-size:10px}
+  .rcards{gap:8px}
+  .slots .bar{--sphw:26px;flex-basis:calc((100% - 40px)/6);height:auto;min-height:42px;padding:4px 8px 4px calc(var(--sphw) + 8px)}
+  .slots .bar .n{font-size:12px}.slots .bar .v{font-size:11px}
 }
 </style>
 <link rel="stylesheet" href="glove.css"></head>
@@ -990,18 +1001,22 @@ function render(){
   window.SRC=window.SRC||{}; window.phFail=function(el,k,fallback){SRC[k]=fallback; el.onerror=null; el.src=fallback;};
   const ph=x=>{const k=key(x); const src=SRC[k]||`img/${k}.jpg`; return `<img class="ph" alt="" decoding="sync" src="${src}" ${SRC[k]?'':`onerror="phFail(this,'${k}','${img(x)}')"`}>`;};
   {const p=new URLSearchParams(location.search).get('photo'); const w=p===null?25:(parseInt(p,10)||0); document.documentElement.style.setProperty('--phw',w+'%'); document.documentElement.dataset.photo=w; const lk=new URLSearchParams(location.search).get('look'); if(lk) document.documentElement.dataset.look=lk;}
-  // SLOT MAP: same #1-18 order as recipe-development.html's machine rack. Flat, never regrouped.
+  // SLOT MAP: same #1-18 numbering as recipe-development.html's machine rack, one row per
+  // category — same row groups as the rack (PANEL-DESIGN.md "Machine layout").
   const temp=x=>(x.g==='prot'||x.g==='base')?'hot':'cold';
   const SLOTS18=[...ALL,{open:1},{open:1}];
-  const slotBar=(x,i)=>{
-    if(x.open) return `<div class="bar slot open"><div class="head"><span>#${i+1}</span><span class="dot"></span></div><div class="n">OPEN</div><div class="v">swing slot</div></div>`;
+  SLOTS18.forEach((x,i)=>{x._slot=i+1});
+  const slotBar=x=>{
+    if(x.open) return `<div class="bar slot open"><div class="head"><span>#${x._slot}</span><span class="dot"></span></div><div class="n">OPEN</div><div class="v">swing slot</div></div>`;
     const z=st(x);
-    return `<div class="bar slot ${temp(x)} ${z} ${x.just?'just':''} ${x.n.length>8?'long':''}" ${x.held?'':`onclick="openSheet('refill:${x.n}')"`}>${ph(x)}${inRecipe(x)?'<em class="rc-tag">SF</em>':''}<i style="--l:${x.held?0:x.l}"></i><div class="head"><span>#${i+1}</span><span class="dot"></span></div><div class="n">${x.n}</div><div class="v">${x.held?'HELD':Math.round(x.l)+'%'}<small> · ${x.held?'not dispensing':x.just?'REFILLED':refillClock(x)}</small></div></div>`;
+    return `<div class="bar slot ${temp(x)} ${z} ${x.just?'just':''} ${x.n.length>8?'long':''}" ${x.held?'':`onclick="openSheet('refill:${x.n}')"`}>${ph(x)}${inRecipe(x)?'<em class="rc-tag">SF</em>':''}<i style="--l:${x.held?0:x.l}"></i><div class="head"><span>#${x._slot}</span><span class="dot"></span></div><div class="n">${x.n}</div><div class="v">${x.held?'HELD':Math.round(x.l)+'%'}<small> · ${x.held?'not dispensing':x.just?'REFILLED':refillClock(x)}</small></div></div>`;
   };
+  // ROWS: one per category — Proteins(2) Bases(2) Vegetables(6) Sauces(4) Dairy(2) Open(2).
+  // Same breakpoints as recipe-development.html's rack (PANEL-DESIGN.md "Machine layout"); this
+  // also happens to match H/C's own group-contiguous order, so SLOTS18's array order is unchanged.
+  const ROWS=[[0,2,'Proteins'],[2,4,'Bases'],[4,10,'Vegetables'],[10,14,'Sauces'],[14,16,'Dairy'],[16,18,'Open']];
   window.LAST=window.LAST||{};
-  // ROWS: 4 / 5 / 5 / 4 — the same row breaks as recipe-development.html's rack (PANEL-DESIGN.md "Machine layout")
-  const ROWS=[[0,4],[4,9],[9,14],[14,18]];
-  const html=ROWS.map(([a,b])=>{const slice=SLOTS18.slice(a,b); return `<div class="srow ${slice.length<5?'short':''}">${slice.map((x,i)=>slotBar(x,a+i)).join('')}</div>`;}).join('');
+  const html=ROWS.map(([a,b,label])=>{const slice=SLOTS18.slice(a,b); return `<div class="srow"><div class="rlabel">${label}</div><div class="rcards ${slice.length<6?'short':''}">${slice.map(slotBar).join('')}</div></div>`;}).join('');
   const slotsKey=html.replace(/--l:[0-9.]+/g,'--l:0');
   const el=document.getElementById('g-all');
   if(LAST['g-all']!==slotsKey){el.innerHTML=html; LAST['g-all']=slotsKey;} else {const bars=el.querySelectorAll('.bar i'); SLOTS18.forEach((x,i)=>{if(bars[i]&&!x.open) bars[i].style.setProperty('--l',x.held?0:x.l);});}
