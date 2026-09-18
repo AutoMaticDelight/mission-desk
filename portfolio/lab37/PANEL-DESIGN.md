@@ -23,6 +23,19 @@ Both share structure and JS; only the color layer differs.
    dock, edge to edge, hooked to the bottom edge, square corners.
    Spare height opens between Status and Actions, never elsewhere.
 
+## Recipe (the job)
+- Model: each machine is a company; each **order** is a series of bowls for one
+  customer. An order is either à la carte (a handful of bowls within a range) or
+  a **recipe**: a named batch, e.g. `SF-0912 · Salesforce · 50 bowls · Salesforce
+  Tower 45F · Wed 09-12-26 12:30 meeting`, with a fixed hopper set and a veg
+  variant (12 on quinoa).
+- The recipe row lives in the top lockup between the title bar and the machine
+  line: label · customer + id · bowls/where/when · progress (done / total, left,
+  minutes to due) · hopper chips (problem hoppers first, four then +N) · next job.
+- Every hopper the recipe uses carries an `SF` tag on its photo corner.
+- Progress ticks with the line's speed; when the batch completes the next job
+  takes over. Manager's store card shows the running recipe in one line.
+
 ## Boxes
 - Every box carries a photo of its ingredient on the left: 25% width by
   default (`?photo=50` half, `?photo=0` none). Photos hotlink Wikimedia

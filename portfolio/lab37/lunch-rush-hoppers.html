@@ -701,6 +701,62 @@ body{padding-top:0}
 .band .where .logo{margin:0 4px 0 0}
 .band{padding-top:10px;padding-bottom:10px}
 @media(orientation:portrait){.band{padding-top:8px;padding-bottom:8px}}
+
+/* RECIPE ROW: the job, inside the top lockup between the title bar and the machine line */
+.recipe{display:flex;align-items:center;gap:14px;padding:0 40px;min-height:40px;white-space:nowrap;overflow:hidden;font-size:16px;font-weight:700}
+.recipe .rc-lbl{font-size:13px;letter-spacing:1.6px;text-transform:uppercase;font-weight:800;opacity:.75;flex:none}
+.recipe .rc-who{display:inline-flex;align-items:baseline;gap:8px;flex:none}
+.recipe .rc-who b{font-size:19px;font-weight:900;letter-spacing:-.01em}
+.recipe .rc-id{font-size:13px;letter-spacing:.8px;font-weight:700;opacity:.7;font-variant-numeric:tabular-nums}
+.recipe .rc-meta{flex:0 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;opacity:.9}
+.recipe .rc-prog{position:relative;display:inline-flex;align-items:baseline;gap:4px;flex:none;padding:0 12px;height:30px;line-height:30px;border-radius:8px;overflow:hidden;font-variant-numeric:tabular-nums}
+.recipe .rc-prog i{position:absolute;left:0;top:0;bottom:0;width:var(--p);z-index:0}
+.recipe .rc-prog b,.recipe .rc-prog span,.recipe .rc-prog em{position:relative;z-index:1}
+.recipe .rc-prog b{font-size:20px;font-weight:900}
+.recipe .rc-prog span{font-size:14px;font-weight:700;opacity:.8}
+.recipe .rc-prog em{font-style:normal;font-size:14px;font-weight:700;margin-left:8px;opacity:.9}
+.recipe .rc-items{display:inline-flex;gap:6px;flex:1 1 auto;min-width:0;overflow:hidden}
+.recipe .rc-chip{display:inline-flex;align-items:center;gap:6px;height:28px;padding:0 10px 0 8px;border-radius:999px;font-size:14px;font-weight:800;flex:none}
+.recipe .rc-chip i{width:10px;height:10px;border-radius:50%;flex:none}
+.recipe .rc-chip small{font-size:12px;font-weight:700;opacity:.8}
+.recipe .rc-next{flex:none;font-size:14px;font-weight:700;opacity:.85}
+.recipe .rc-next b{font-weight:900}
+.recipe .rc-next small{font-size:13px;font-weight:600}
+/* recipe tag on the hoppers it uses */
+.bar .rc-tag{position:absolute;top:6px;right:8px;z-index:2;font-size:13px;letter-spacing:.6px;font-weight:900;line-height:1;padding:4px 6px;border-radius:6px}
+@media(orientation:portrait){
+  .recipe{flex-wrap:wrap;padding:6px 32px;row-gap:4px;min-height:0}
+  .recipe .rc-items,.recipe .rc-next{display:none}
+  .recipe .rc-meta{flex:1 1 100%;font-size:14px}
+}
+/* the row is paid for by the boxes */
+@media(orientation:landscape){.big .bar{height:12.5vh}.tops .bar{height:8.8vh}.hoppers{padding:12px 18px 16px}}
+@media(orientation:landscape) and (max-height:800px){.big .bar{height:11vh}.tops .bar{height:8vh}}
+@media(orientation:portrait){html:not([data-photo="0"]) .big .bar{height:10vh}.tops .bar{height:32px}}
+
+.recipe{background:#101815;color:#fff;border-top:1px solid rgba(255,255,255,.08)}
+.recipe .rc-prog{background:rgba(255,255,255,.08)}.recipe .rc-prog i{background:#0f5a3a}
+.recipe .rc-chip{background:rgba(255,255,255,.08);color:#fff}
+.recipe .rc-chip.ok i{background:var(--ok)}.recipe .rc-chip.low i{background:var(--low)}.recipe .rc-chip.now i{background:var(--hot);box-shadow:0 0 0 3px rgba(207,255,62,.25)}.recipe .rc-chip.held i{background:#8a978f}
+.recipe .rc-chip.held{color:#c7d1ca}
+.bar .rc-tag{background:rgba(0,0,0,.45);color:#fff}
+
+/* portrait: recipe row is two rows, never three */
+@media(orientation:portrait){
+  .recipe{display:grid;grid-template-columns:auto minmax(0,1fr) auto;grid-template-rows:auto auto;align-items:center;column-gap:12px;row-gap:2px;padding:6px 32px 8px;white-space:nowrap}
+  .recipe .rc-lbl{grid-row:1}.recipe .rc-who{grid-row:1;min-width:0;overflow:hidden}.recipe .rc-prog{grid-row:1;grid-column:3}
+  .recipe .rc-meta{grid-row:2;grid-column:1/-1;flex:none;font-size:14px}
+  html:not([data-photo="0"]) .big .bar{height:9vh}
+  .tops .bar{height:30px}
+}
+@media(orientation:landscape){.big .bar{height:12vh}}
+@media(orientation:landscape) and (max-height:800px){.big .bar{height:10.5vh}}
+
+@media(orientation:portrait){.go{min-height:60px}.alert .more button{min-height:50px}.hoppers{padding:8px 10px 10px}.actions .sec{padding-top:8px;padding-bottom:4px}}
+
+/* recipe tag sits on the photo corner, never on the text */
+.bar .rc-tag{left:6px;top:6px;right:auto;background:rgba(0,0,0,.55);color:#fff}
+html[data-photo="0"] .bar .rc-tag{left:auto;right:8px}
 </style>
 <link rel="stylesheet" href="glove.css"></head>
 <body>
@@ -711,6 +767,7 @@ body{padding-top:0}
     <div class="stat"><b id="speedv">38</b><span>BOWLS / 10 MIN</span><i>▲</i></div>
     <div class="stat"><b id="expv">214</b><span>TO GO</span></div>
   </header>
+  <div class="recipe" id="recipe"></div>
   <section class="sys" id="machines"></section>
   </section>
 
@@ -759,15 +816,34 @@ function machines(){
   document.getElementById('machines').innerHTML='<span class="lbl">System</span>'+items.map(a=>`<span class="si ${a[0]}"><i></i><b>${a[1]}</b>${a[2]?`<span>${a[2]}</span>`:''}</span>`).join('');
 }
 machines();
+
+/* ---------- RECIPE: the job the line is running. One customer, N bowls, a due time, a fixed set of hoppers. ---------- */
+const RECIPE={id:'SF-0912',who:'Salesforce',where:'Salesforce Tower · 45F',when:'Wed 09-12-26 · 12:30 meeting',due:12*60+30,n:50,done:31,acc:0,
+  items:['Chicken','Rice','Beans','Corn','Guac','Pico','Cheese','Lime'],veg:{n:12,base:'Quinoa'},
+  next:[{who:'À la carte',n:9,note:'walk-in queue'},{who:'Stripe',n:24,note:'due 1:15'}]};
+const inRecipe=x=>RECIPE.items.includes(x.n)||x.n===RECIPE.veg.base;
+function recipeRow(){
+  const el=document.getElementById('recipe'); if(!el) return;
+  const rank={now:0,held:1,low:2,ok:3}; const all=RECIPE.items.concat([RECIPE.veg.base]).map(n=>{const x=ALL.find(y=>y.n===n);return {n,s:x?st(x):'ok'};}).sort((a,b)=>rank[a.s]-rank[b.s]);
+  const chips=all.slice(0,4).map(({n,s})=>`<span class="rc-chip ${s}"><i></i>${n}${n===RECIPE.veg.base?' <small>×'+RECIPE.veg.n+' veg</small>':''}</span>`).join('')+(all.length>4?`<span class="rc-chip more">+${all.length-4}</span>`:'');
+  const left=RECIPE.n-RECIPE.done, mins=Math.max(0,RECIPE.due-NOW), pct=Math.round(RECIPE.done/RECIPE.n*100);
+  const nx=RECIPE.next[0];
+  el.innerHTML=`<span class="rc-lbl">Recipe</span>
+    <span class="rc-who"><b>${RECIPE.who}</b><span class="rc-id">${RECIPE.id}</span></span>
+    <span class="rc-meta"><b>${RECIPE.n} bowls</b> · ${RECIPE.where} · ${RECIPE.when}</span>
+    <span class="rc-prog"><i style="--p:${pct}%"></i><b>${RECIPE.done}</b><span>/ ${RECIPE.n}</span><em>${left} left · ${mins} min</em></span>
+    <span class="rc-items">${chips}</span>
+    <span class="rc-next">Next <b>${nx.who}</b> ×${nx.n}<small> · ${nx.note}</small></span>`;
+}
 function render(){
-  nextUp();
+  nextUp(); recipeRow();
   // PHOTOS: Wikimedia Commons, hotlinked via Special:FilePath (browser loads them). ?photo=25|50|0
   const IMG={"chicken": "Grilled_Chicken_Breasts_(28905381261).jpg", "beef": "Slow_Cooker_Beef_Barbacoa_(32130811495).jpg", "rice": "Bowl_of_white_rice_02.jpg", "quinoa": "Quinoa_cuit.JPG", "beans": "Black_beans.jpg", "corn": "Up_close_image_of_corn.jpg", "pico": "Mmm..._Pico_de_Gallo_(5923456035).jpg", "lettuce": "Romaine_lettuce.jpg", "cilantro": "Coriander_01.jpg", "lime": "Lime_-_whole_and_halved.jpg", "guac": "Guacamole_bowl.jpg", "verde": "SALSA_VERDE.jpg", "chipotle": "Chipotlesenadobo.jpg", "crema": "Sour_Cream.jpg", "cheese": "Fine_Microplane_Grating_Hard_Cheese.jpg"};
   const img=x=>'https://commons.wikimedia.org/wiki/Special:FilePath/'+encodeURIComponent(IMG[x.n.toLowerCase()]||'')+'?width=400';
   const ph=x=>`<div class="ph" style="background-image:url('${img(x)}')"></div>`;
   {const p=new URLSearchParams(location.search).get('photo'); const w=p===null?25:(parseInt(p,10)||0); document.documentElement.style.setProperty('--phw',w+'%'); document.documentElement.dataset.photo=w;}
-  const bigBar=x=>`<div class="bar ${st(x)} ${x.just?'just':''}" ${x.held?'':`onclick="openSheet('refill:${x.n}')"`}>${ph(x)}<i style="--l:${x.held?0:x.l}"></i><div class="n">${x.n}</div><div class="m"><b>${x.held?'HELD':Math.round(x.l)+'%'}</b><span>${x.held?'not dispensing':x.just?'REFILLED · '+x.just:mn(x)+' MIN<br>REFILL '+refillClock(x)}</span></div></div>`;
-  const smallBar=x=>{const z=st(x);return `<div class="bar ${z} ${x.just?'just':''}" onclick="openSheet('refill:${x.n}')">${ph(x)}<i style="--l:${x.l}"></i><div class="n">${x.n}</div><div class="v">${x.just?'REFILLED · '+x.just:Math.round(x.l)+'%<small> · '+refillClock(x)+'</small>'}</div></div>`;};
+  const bigBar=x=>`<div class="bar ${st(x)} ${x.just?'just':''}" ${x.held?'':`onclick="openSheet('refill:${x.n}')"`}>${ph(x)}${inRecipe(x)?'<em class="rc-tag">SF</em>':''}<i style="--l:${x.held?0:x.l}"></i><div class="n">${x.n}</div><div class="m"><b>${x.held?'HELD':Math.round(x.l)+'%'}</b><span>${x.held?'not dispensing':x.just?'REFILLED · '+x.just:mn(x)+' MIN<br>REFILL '+refillClock(x)}</span></div></div>`;
+  const smallBar=x=>{const z=st(x);return `<div class="bar ${z} ${x.just?'just':''}" onclick="openSheet('refill:${x.n}')">${ph(x)}${inRecipe(x)?'<em class="rc-tag">SF</em>':''}<i style="--l:${x.l}"></i><div class="n">${x.n}</div><div class="v">${x.just?'REFILLED · '+x.just:Math.round(x.l)+'%<small> · '+refillClock(x)+'</small>'}</div></div>`;};
   document.getElementById('g-prot').innerHTML=H.filter(x=>x.g==='prot').map(bigBar).join('');
   document.getElementById('g-base').innerHTML=H.filter(x=>x.g==='base').map(bigBar).join('');
   document.getElementById('g-veg').innerHTML=C.filter(x=>x.g==='veg').map(smallBar).join('');
@@ -784,6 +860,7 @@ setInterval(()=>{
   ALL.forEach(x=>{ if(!x.held && !x.just){ x.l=Math.max(0,+(x.l-x.b*pace(NOW)/10).toFixed(2)); if(x.l<=12 && !x.due){ x.due=NOW+1; } if(x.due && NOW>=x.due){ x.due=null; refill(x,CREW[Math.floor(Math.random()*CREW.length)]); } } });
   render(); popCheck(); if(cleanUntil&&NOW>=cleanUntil){cleanUntil=null;M[0].s='run';M[0].st='Running';M[0].k='9';M[0].l='in queue';M[0].hr=134;M[0].sub=null;machines();note('Bowl 01 back from cleaning');} if(SEC<6&&STEP==='clear') renderAlert(false);
   const sp=Math.round(38*pace(NOW))+Math.round(Math.sin(SEC/9)*2);document.getElementById('speedv').textContent=sp;document.getElementById('expv').textContent=Math.max(0,214-Math.floor((NOW-(12*60+18))*sp/10));
+  if(RECIPE.done<RECIPE.n){RECIPE.acc+=sp/100; if(RECIPE.acc>=1){RECIPE.done+=1;RECIPE.acc-=1;}} recipeRow();
 },1000);
 /* ---------- SCENE: the shift, one step at a time ---------- */
 const Q=()=>ALL.find(x=>x.n==='Quinoa');

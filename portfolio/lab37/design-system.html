@@ -142,7 +142,8 @@ pre{background:var(--pg-2);border:1px solid var(--ln);border-radius:12px;padding
       <h3>Anatomy</h3>
       <table>
         <tr><th>Zone</th><th>What it is</th><th>Token</th></tr>
-        <tr><td>Top lockup</td><td>Title bar + machine line, one card, edge to edge, flush top</td><td><code>--l-panel</code> / <code>--l-dock</code></td></tr>
+        <tr><td>Top lockup</td><td>Title bar + <b>recipe row</b> + machine line, one card, edge to edge, flush top</td><td><code>--l-panel</code> / <code>--l-dock</code></td></tr>
+        <tr><td>Recipe row</td><td>The job: customer + id, bowls / where / when, progress, the hoppers it uses (problems first), next job</td><td><code>--l-panel</code> + state dots</td></tr>
         <tr><td>Status card</td><td>All ingredients in five groups, on one tinted card</td><td><code>--l-card</code></td></tr>
         <tr><td>Boxes</td><td>One ingredient each: photo, name, percent, refill-by, level fill</td><td><code>--l-box</code> + state</td></tr>
         <tr><td>Actions dock</td><td>Label + alert + Next Up, one dark dock, edge to edge, hooked to the bottom</td><td><code>--l-dock</code></td></tr>
@@ -356,7 +357,8 @@ pre{background:var(--pg-2);border:1px solid var(--ln);border-radius:12px;padding
     <li><b>HMI, not a web page.</b> No text selection, no double-tap zoom, press feedback everywhere, no text links.</li>
     <li><b>No small text.</b> Body ≥14px, labels ≥13px. Bigger, bolder, higher contrast; never cute.</li>
     <li><b>Mains bigger than toppings.</b> Proteins and bases lead; five groups by taxonomy; dairy is one box.</li>
-    <li><b>Photo on every box</b>, left 25%, square-cropped, greyed when held.</li>
+    <li><b>Photo on every box</b>, left 25%, square-cropped, greyed when held. Hoppers in the running recipe carry its tag on the photo corner.</li>
+    <li><b>Recipe = the job.</b> One customer, N bowls, a due time, a fixed hopper set. It sits in the top lockup and links to the hoppers it depends on.</li>
     <li><b>The progress bar is the message.</b> Percent and refill-by on every box; the forecast walks the Thursday curve to 15%.</li>
     <li><b>No red.</b> Needs-you-now is the hot yellow-green of the action button. Low is amber. Fine is green. The alert dot is hot orange.</li>
     <li><b>Low or now on light = the box goes dark</b> with bright yellow numbers.</li>

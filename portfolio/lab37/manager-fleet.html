@@ -96,6 +96,8 @@ h2 b{color:var(--ink);font-weight:600}
 }
 
 .where{display:inline-flex;align-items:center;gap:10px}.where .logo{width:28px;height:28px;flex:none;color:#1d1d1f}
+
+.card .what .run{display:block;margin-top:4px;font-size:14px;color:var(--ink2);font-weight:600;font-variant-numeric:tabular-nums}
 </style></head>
 <body>
   <header class="band">
@@ -112,7 +114,7 @@ h2 b{color:var(--ink);font-weight:600}
   <section><h2 class="f"><i></i><b id="fineCount"></b> stores on plan · 100% = on plan</h2><div class="fine" id="fine"></div></section>
 <script>
 const S=[
- {n:'Uptown',c:'Bowls',s:'now',what:'Quinoa under-dispensing · line held 12:16',k:7,l:'orders rerouting',go:'Open the Uptown panel',href:'lunch-rush-hoppers.html',p:0,e:30},
+ {n:'Uptown',c:'Bowls',s:'now',what:'Quinoa under-dispensing · line held 12:16',run:'Recipe SF-0912 · Salesforce ×50 · 31 done · due 12:30',k:7,l:'orders rerouting',go:'Open the Uptown panel',href:'lunch-rush-hoppers.html',p:0,e:30},
  {n:'Airport T2',c:'Tacos',s:'now',what:'Door interlock open · line stopped',k:3,l:'orders waiting',go:'Crew paged · 2 min',p:0,e:52},
  {n:'Midtown',c:'Bowls',s:'watch',what:'Cleaning · back 12:24',k:6,l:'min left',p:0,e:30},
  {n:'Stadium',c:'Burgers',s:'watch',what:'Patties low · refill 12:33',k:-20,l:'of plan',p:44,e:55},
@@ -128,7 +130,7 @@ function render(){
   const now=S.filter(x=>x.s==='now'), watch=S.filter(x=>x.s==='watch'), fine=S.filter(x=>!x.s).sort((a,b)=>pct(a)-pct(b));
   document.getElementById('now').innerHTML=now.map(x=>`<button class="card now" ${x.href?`onclick="location.href='${x.href}'"`:''}>
     <div class="top"><i class="light red"></i><span class="nm">${x.n}<small>${x.c}</small></span></div>
-    <div class="what">${x.what}</div>
+    <div class="what">${x.what}${x.run?`<span class="run">${x.run}</span>`:''}</div>
     <div class="k"><b class="num">${x.k}</b><span>${x.l}</span></div>
     <div class="go">${x.go} ›</div></button>`).join('');
   document.getElementById('watch').innerHTML=watch.map(x=>`<button class="card watch">
