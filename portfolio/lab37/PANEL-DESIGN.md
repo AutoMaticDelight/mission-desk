@@ -96,9 +96,12 @@ Locked 2026-09-18, revised same day to four stacked bands instead of two
 else:
 - **Name, top.** Centered, bold, the one glanceable fact (which
   ingredient this is) with zero visual competition. Wraps to two lines
-  rather than truncating or shrinking; a bay's `#N` badge and hot/cold
-  dot sit as a quiet corner overlay (top-right, ~50% opacity), never
-  inline with the name.
+  rather than truncating or shrinking; a bay's `#N` badge and its actual
+  **dispensing temperature** (140°F hot-held, 38°F cold-held — the FDA
+  hot-hold floor and cold-hold ceiling, real numbers not placeholders)
+  sit as a quiet corner overlay (top-right, ~60% opacity, colored amber
+  or blue), never inline with the name. An earlier version showed a
+  plain hot/cold dot there instead of the number — replaced same session.
 - **Quantity, centered, directly below the name.** The live **weight**
   and refill time (or "SCRAPE IT" — see below), its own band, not an
   overlay on the photo — a fact this important doesn't share space with
@@ -114,6 +117,14 @@ else:
   overlaid on it — it's pure image, so it actually reads as a photo of
   the product, not a thumbnail with a caption. The recipe "SF" tag is the
   one exception, small in its top-left corner.
+
+Row header: a full-width bar sitting above its own row (not a narrow
+sidebar beside it) carrying all three tier facts on one line — name,
+live `used/total` (+ "full"), and capacity. An earlier version put this
+in a ~68px gray column to the left of the cards; replaced same session
+because a header reads as one line of information, not stacked small
+print squeezed into a strip. Card gap is 16px landscape / 12px portrait
+(up from 10px/8px) for real breathing room between cards.
 
 ## Fullness is weight, not volume (2026-09-18)
 Every bin sits on a load cell — a scale is simpler and more reliable

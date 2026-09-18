@@ -888,11 +888,14 @@ html[data-photo="0"] .bar .rc-tag{left:auto;right:8px}
    same floor plan as recipe-development.html's rack. Row 1 is the 4 mains (large hopper), then
    one left-justified row per size tier down to small squeeze/garnish, then Open. Width AND
    height scale by tier. Same shape in landscape and portrait; never a different diagram per screen. */
-.slots{display:grid;gap:6px;min-height:0}
-.srow{display:flex;align-items:stretch;gap:10px;min-height:0}
-.rlabel{flex:0 0 68px;align-self:center}
-.rlabel b{display:block;font-size:13px;font-weight:800;letter-spacing:.3px;opacity:.62;line-height:1.15}
-.rlabel small{display:block;font-size:11px;font-weight:700;opacity:.5;margin-top:3px}
+.slots{display:grid;gap:14px;min-height:0}
+.srow{display:flex;flex-direction:column;gap:6px;min-height:0}
+/* Full-width header bar, same row it labels — the tier name, its live used/total count and
+   "full" flag, and its capacity, all in one line. Replaces the old narrow gray sidebar column. */
+.rheader{display:flex;align-items:baseline;gap:10px;padding:0 2px}
+.rheader b{font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:.4px;opacity:.68}
+.rheader span{font-size:11px;font-weight:700;opacity:.5}
+.rheader span.full{opacity:.8}
 /* Every card in a row is flex:1 — the row always fills the full width, edge to edge, same as
    every other row. Size hierarchy still reads clearly (fewer Large cards share that same width,
    so each is wider; height is set per tier below too) without ever leaving a ragged trailing gap. */
@@ -904,11 +907,11 @@ html[data-photo="0"] .bar .rc-tag{left:auto;right:8px}
 /* Every card is the same height, in every row — only width varies (from the row's own bay
    count, above). A 4-bay row and an 8-bay row still read as one consistent grid this way. */
 .slots .bar{flex:1 1 0;flex-direction:column;align-items:stretch;justify-content:flex-start;gap:0;padding:0;min-width:0;min-height:0;height:9.5vh}
-.slots .bar .n{flex:0 0 auto;text-align:center;font-size:14px;font-weight:800;letter-spacing:-.01em;line-height:1.2;padding:7px 24px 1px 8px;position:relative;white-space:normal;overflow-wrap:break-word}
-.slots .bar .head{position:absolute;top:6px;right:6px;z-index:2;display:flex;align-items:center;gap:4px;font-size:10px;font-weight:800;letter-spacing:.3px;opacity:.5}
-.slots .bar .head .dot{width:6px;height:6px;border-radius:50%;flex:none;background:var(--dot,#8e8e93)}
-.slots .bar.hot .head .dot{--dot:#ff9f0a}
-.slots .bar.cold .head .dot{--dot:#0a84ff}
+.slots .bar .n{flex:0 0 auto;text-align:center;font-size:14px;font-weight:800;letter-spacing:-.01em;line-height:1.2;padding:7px 50px 1px 8px;position:relative;white-space:normal;overflow-wrap:break-word}
+.slots .bar .head{position:absolute;top:6px;right:6px;z-index:2;display:flex;align-items:center;gap:5px;font-size:10px;font-weight:800;letter-spacing:.2px;opacity:.6}
+.slots .bar .head .temp{color:var(--tc,#8e8e93)}
+.slots .bar.hot .head .temp{--tc:#c67600}
+.slots .bar.cold .head .temp{--tc:#0a6cd4}
 .slots .bar .v{flex:0 0 auto;text-align:center;font-size:12px;font-weight:800;padding:0 6px 5px;color:var(--dim)}
 .slots .bar .v small{opacity:.8;font-weight:700}
 .slots .bar .track{flex:0 0 4px;position:relative;background:rgba(0,0,0,.08)}
@@ -925,12 +928,11 @@ html[data-photo="0"] .bar .rc-tag{left:auto;right:8px}
 @media(orientation:portrait){
   .slots{gap:5px}
   .srow{gap:8px}
-  .rlabel{flex-basis:58px}
-  .rlabel b{font-size:13px}
-  .rlabel small{font-size:10px}
+  .rheader b{font-size:12px}
+  .rheader span{font-size:10px}
   .rcards{gap:12px}
   .slots .bar{height:80px}
-  .slots .bar .n{font-size:12px;padding:5px 30px 3px 6px}
+  .slots .bar .n{font-size:12px;padding:5px 44px 3px 6px}
   .slots .bar .head{font-size:9px;top:5px;right:5px}
   .slots .bar .v{font-size:11px}
 }
@@ -1027,10 +1029,11 @@ function render(){
   // dispenser hardware (PANEL-DESIGN.md "Machine layout"). Row 1 is the 4 mains; then one
   // left-justified row per size tier; then Open.
   const temp=x=>(x.g==='prot'||x.g==='base')?'hot':'cold';
+  const TEMP_F={hot:140,cold:38}; // FDA hot-hold floor / cold-hold ceiling — real numbers, not placeholders
   ALL.forEach((x,i)=>{x._slot=i+1});
   // APPLE CARD: name band on top (the one glanceable fact), full-bleed photo below, captioned.
   const slotBar=x=>{
-    const badge=`<span class="head"><span>#${x._slot}</span><span class="dot"></span></span>`;
+    const badge=`<span class="head"><span>#${x._slot}</span><span class="temp">${TEMP_F[temp(x)]}°F</span></span>`;
     if(x.open) return `<div class="bar slot sz-${x.sz} open"><div class="n">${badge}+ Add</div></div>`;
     const z=st(x);
     return `<div class="bar slot sz-${x.sz} ${temp(x)} ${z} ${x.just?'just':''}" ${x.held?'':`onclick="openSheet('refill:${x.n}')"`}>
@@ -1053,7 +1056,7 @@ function render(){
   const html=ROWS.map(([tier,label,cap])=>{
     const row=tier==='S'?[...DISPLAY.filter(x=>x.sz==='S'&&!x.open),...OPEN]:DISPLAY.filter(x=>x.sz===tier);
     const used=row.filter(x=>!x.open).length, full=used===row.length;
-    return `<div class="srow"><div class="rlabel"><b>${label}</b><small>${used}/${row.length}${full?' · full':''}</small><small>Holds ${cap}</small></div><div class="rcards">${row.map(slotBar).join('')}</div></div>`;
+    return `<div class="srow"><div class="rheader"><b>${label}</b><span class="${full?'full':''}">${used}/${row.length}${full?' · full':''}</span><span>Holds ${cap}</span></div><div class="rcards">${row.map(slotBar).join('')}</div></div>`;
   }).join('');
   const slotsKey=html.replace(/--l:[0-9.]+/g,'--l:0');
   const el=document.getElementById('g-all');
