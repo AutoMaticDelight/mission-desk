@@ -534,6 +534,10 @@ html:not([data-photo="0"]) .tops .bar .v{font-size:16px}
 
 /* the alert's status dot is hot orange */
 .ahead i,.alert.task .ahead i{background:#ff7a1a;box-shadow:0 0 0 6px rgba(255,122,26,.28)}
+
+/* big boxes: more breathing room between the photo and the title */
+.big .bar{padding-left:calc(var(--phw) + 26px)}
+@media(orientation:portrait){.big .bar{padding-left:calc(var(--phw) + 20px)}}
 </style>
 <link rel="stylesheet" href="glove.css"></head>
 <body>
