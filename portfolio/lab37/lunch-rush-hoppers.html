@@ -844,7 +844,7 @@ function recipeRow(){
 function render(){
   nextUp(); recipeRow();
   // PHOTOS: Wikimedia Commons, hotlinked via Special:FilePath (browser loads them). ?photo=25|50|0
-  const IMG={"chicken": "Grilled_Chicken_Breasts_(28905381261).jpg", "beef": "Slow_Cooker_Beef_Barbacoa_(32130811495).jpg", "rice": "Bowl_of_white_rice_02.jpg", "quinoa": "Quinoa_cuit.JPG", "beans": "Black_beans.jpg", "corn": "Up_close_image_of_corn.jpg", "pico": "Mmm..._Pico_de_Gallo_(5923456035).jpg", "lettuce": "Romaine_lettuce.jpg", "cilantro": "Coriander_01.jpg", "lime": "Lime_-_whole_and_halved.jpg", "guac": "Guacamole_bowl.jpg", "verde": "SALSA_VERDE.jpg", "chipotle": "Chipotlesenadobo.jpg", "crema": "Smetana.jpg", "sour cream": "Sour_Cream.jpg", "cheese": "Fine_Microplane_Grating_Hard_Cheese.jpg"};
+  const IMG={"chicken": "Grilled_Chicken_Breasts_(28905381261).jpg", "beef": "Slow_Cooker_Beef_Barbacoa_(32130811495).jpg", "rice": "Bowl_of_white_rice_02.jpg", "quinoa": "Quinoa_cuit.JPG", "beans": "Black_beans.jpg", "corn": "Up_close_image_of_corn.jpg", "pico": "Mmm..._Pico_de_Gallo_(5923456035).jpg", "lettuce": "Romaine_lettuce.jpg", "cilantro": "Coriander_01.jpg", "lime": "Lime_-_whole_and_halved.jpg", "guac": "Guacamole_bowl.jpg", "verde": "SALSA_VERDE.jpg", "chipotle": "Chipotlesenadobo.jpg", "crema": "Sour_Cream.jpg", "sour cream": "Sour_Cream.jpg", "cheese": "Fine_Microplane_Grating_Hard_Cheese.jpg"};
   const img=x=>'https://commons.wikimedia.org/wiki/Special:FilePath/'+encodeURIComponent(IMG[x.n.toLowerCase()]||'')+'?width=400';
   const key=x=>x.n.toLowerCase().replace(/\s+/g,'-');
   // PHOTO STASH: img/<key>.jpg in this folder wins; if it is missing the browser falls back to the Commons photo
