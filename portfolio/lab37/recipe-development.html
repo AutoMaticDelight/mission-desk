@@ -1,0 +1,386 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Bowl-O-Matic 5000 · Recipe Development</title>
+<link rel="icon" href="logo.svg" type="image/svg+xml">
+<meta name="description" content="Internal tool: build a recipe from the machine's 18 dispenser slots, and see what's actually buildable — temperature compatibility, which stores have it loaded, and whether it can reach a delivery on time.">
+<style>
+:root{
+  --bg:#f2f2f7;--card:#ffffff;--panel2:#f4f6f8;--ink:#1d1d1f;--ink2:#6e6e73;--ink3:#aeaeb2;--line:#e5e5ea;--sep:#d1d1d6;
+  --green:#34c759;--greenbg:#e4f8ea;--greenink:#1f8a3c;
+  --amber:#ff9f0a;--amberbg:#fff4e2;--amberink:#9a5b00;
+  --red:#ff3b30;--redbg:#fdeceb;--redink:#c0281f;
+  --blue:#0a84ff;--hot:#c8f000;--hotink:#5a6b00;
+  color-scheme:light;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg)}
+body{color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","SF Pro Display",Inter,"Helvetica Neue",Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased;padding-bottom:40px}
+b{font-weight:700}
+.num{font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+a{color:var(--blue)}
+
+header.band{position:sticky;top:0;z-index:6;background:rgba(242,242,247,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);padding:12px 20px}
+.band-in{max-width:1320px;margin:0 auto;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.where{display:flex;align-items:center;gap:10px;font-size:20px;font-weight:700;letter-spacing:-.02em;white-space:nowrap}
+.where .logo{width:26px;height:26px;flex:none}
+.where small{font-size:13px;font-weight:500;color:var(--ink2)}
+.presets{display:flex;gap:6px;margin-left:8px}
+.presets button{border:1px solid var(--sep);background:#fff;color:var(--ink);font:600 13px/1 inherit;padding:8px 12px;border-radius:99px;cursor:pointer}
+.presets button.on{background:var(--ink);border-color:var(--ink);color:#fff}
+.meta{display:flex;gap:8px;margin-left:auto;flex-wrap:wrap;align-items:center}
+.meta label{font-size:11px;color:var(--ink2);display:block;margin-bottom:2px;text-transform:uppercase;letter-spacing:.4px}
+.meta .f{display:flex;flex-direction:column}
+.meta input{border:1px solid var(--sep);background:#fff;border-radius:8px;padding:7px 9px;font:600 14px inherit;width:110px}
+.meta input.wide{width:150px}
+.send{border:0;border-radius:10px;background:var(--hot);color:var(--hotink);font:800 14px inherit;padding:0 18px;height:42px;cursor:pointer;white-space:nowrap}
+.send[disabled]{background:var(--line);color:var(--ink3);cursor:not-allowed}
+
+main{max-width:1320px;margin:0 auto;padding:20px;display:grid;grid-template-columns:1.1fr 1fr 1.15fr;gap:16px;align-items:start}
+@media(max-width:1100px){main{grid-template-columns:1fr}}
+
+.col{display:grid;gap:14px}
+.card{background:var(--card);border-radius:16px;padding:16px 18px;box-shadow:0 1px 2px rgba(0,0,0,.04),0 0 0 1px rgba(0,0,0,.03)}
+.card h2{margin:0 0 3px;font-size:16px;letter-spacing:-.01em}
+.card .sub{margin:0 0 12px;font-size:13px;color:var(--ink2)}
+
+/* slot rack */
+.rack{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.slot{border-radius:12px;padding:10px 10px 9px;min-height:74px;display:flex;flex-direction:column;justify-content:space-between;cursor:pointer;border:1px solid var(--line);background:var(--panel2)}
+.slot .head{display:flex;justify-content:space-between;align-items:flex-start;font-size:11px;color:var(--ink3)}
+.slot .dot{width:8px;height:8px;border-radius:50%;flex:none;margin-top:2px}
+.slot.hot .dot{background:var(--amber)}.slot.cold .dot{background:var(--blue)}.slot.swing .dot{background:var(--ink3)}
+.slot .nm{font-size:14px;font-weight:700;letter-spacing:-.01em;line-height:1.15}
+.slot.open{border-style:dashed;background:#fff}
+.slot.open .nm{color:var(--ink3);font-weight:600}
+.slot.new{background:var(--greenbg);border-color:#bfe8cb}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--ink2);margin-top:12px}
+.legend span{display:inline-flex;align-items:center;gap:5px}
+.legend i{width:8px;height:8px;border-radius:50%;display:inline-block}
+.cap{margin-top:12px;padding:10px 12px;border-radius:10px;background:var(--panel2);font-size:13px;color:var(--ink2)}
+.cap b{color:var(--ink)}
+
+.editrow{margin-top:12px;border-top:1px solid var(--line);padding-top:12px}
+.editrow .picked{font-size:13px;color:var(--ink2);margin-bottom:8px}
+.editrow .picked b{color:var(--ink)}
+.editform{display:flex;gap:6px;flex-wrap:wrap}
+.editform input{border:1px solid var(--sep);border-radius:8px;padding:8px 9px;font:500 13px inherit;flex:1;min-width:110px}
+.editform select{border:1px solid var(--sep);border-radius:8px;padding:8px 9px;font:500 13px inherit;background:#fff}
+.editform button{border:0;border-radius:8px;background:var(--ink);color:#fff;font:700 13px inherit;padding:8px 12px;cursor:pointer}
+.editform button.rm{background:var(--redbg);color:var(--redink)}
+.hint{font-size:12px;color:var(--ink3);margin-top:6px}
+
+/* recipe builder */
+.grp-h{display:flex;justify-content:space-between;align-items:baseline;margin:14px 0 6px}
+.grp-h:first-child{margin-top:0}
+.grp-h span{font-size:12px;text-transform:uppercase;letter-spacing:1px;color:var(--ink3);font-weight:700}
+.grp-h b{font-size:12px;color:var(--ink2);font-weight:600}
+.grp-h b.bad{color:var(--redink)}
+.opts{display:flex;flex-wrap:wrap;gap:7px}
+.opt{border:1px solid var(--sep);border-radius:99px;padding:7px 13px;font-size:13px;font-weight:600;cursor:pointer;background:#fff;color:var(--ink);user-select:none}
+.opt input{display:none}
+.opt.on{background:var(--ink);border-color:var(--ink);color:#fff}
+.opt.disabled{opacity:.4;cursor:not-allowed}
+.opt small{font-weight:500;opacity:.7;margin-left:2px}
+
+.preview{margin-top:14px;border-top:1px solid var(--line);padding-top:12px}
+.rowchip{display:inline-flex;align-items:center;gap:6px;background:var(--panel2);border-radius:8px;padding:5px 9px;font-size:12px;font-weight:600;margin:0 5px 5px 0}
+.rowline{font-size:13px;color:var(--ink2);line-height:1.7}
+.rowline b{color:var(--ink)}
+
+/* feasibility */
+.verdict{border-radius:14px;padding:14px 16px;margin-bottom:2px;font-size:14px}
+.verdict.ok{background:var(--greenbg);color:var(--greenink)}
+.verdict.bad{background:var(--redbg);color:var(--redink)}
+.verdict b{display:block;font-size:16px;margin-bottom:2px}
+.check{display:flex;gap:10px;align-items:flex-start;padding:9px 0;border-bottom:1px solid var(--line);font-size:14px}
+.check:last-child{border-bottom:0}
+.check i{width:18px;height:18px;border-radius:50%;flex:none;margin-top:1px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#fff}
+.check i.ok{background:var(--green)}.check i.bad{background:var(--red)}.check i.warn{background:var(--amber)}
+.check .t{color:var(--ink2)}
+.check .t b{color:var(--ink)}
+
+table.loc{width:100%;border-collapse:collapse;font-size:13px;margin-top:2px;table-layout:fixed}
+table.loc th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--ink3);padding:0 8px 6px 0;font-weight:700;overflow:hidden}
+table.loc th:last-child,table.loc td:last-child{padding-right:0}
+table.loc td{padding:8px 8px 8px 0;border-top:1px solid var(--line);vertical-align:top;overflow:hidden}
+table.loc td.n{font-weight:700;overflow-wrap:break-word}
+table.loc td.n small{display:block;font-weight:500;color:var(--ink3);font-size:11px;white-space:normal;overflow-wrap:break-word;line-height:1.35;margin-top:2px}
+.pill{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:700;border-radius:99px;padding:3px 9px;white-space:nowrap}
+.pill.ok{background:var(--greenbg);color:var(--greenink)}
+.pill.bad{background:var(--redbg);color:var(--redink)}
+.why{color:var(--ink3);font-size:12px;display:block;margin-top:3px;white-space:nowrap}
+
+.deliv-row{display:flex;gap:8px;margin:10px 0 4px;flex-wrap:wrap}
+.deliv-row select{border:1px solid var(--sep);border-radius:8px;padding:8px 9px;font:600 13px inherit;background:#fff}
+.deliv-row .due{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--ink2)}
+.deliv-row input{width:52px;border:1px solid var(--sep);border-radius:8px;padding:7px 8px;font:700 13px inherit;text-align:center}
+
+.foot{max-width:1320px;margin:24px auto 0;padding:0 20px 20px;color:var(--ink3);font-size:13px}
+.foot a{color:var(--ink2)}
+</style></head>
+<body>
+
+<header class="band"><div class="band-in">
+  <div class="where"><svg class="logo" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="20" fill="#c8f000"/><g transform="translate(20 20.6) scale(.62) translate(-20 -21)"><circle cx="20" cy="11.5" r="6.5" fill="#0b120e"/><path d="M4.5 21.5h31a1.5 1.5 0 0 1 1.5 1.6C36.2 30.6 29 36.5 20 36.5S3.8 30.6 3 23.1a1.5 1.5 0 0 1 1.5-1.6z" fill="#0b120e"/></g></svg>Bowl-O-Matic 5000<small>Recipe Development</small></div>
+  <div class="presets"><button id="p-new" onclick="loadPreset('new')">New draft</button><button id="p-sf" onclick="loadPreset('sf')">SF-0912 · Salesforce</button></div>
+  <div class="meta">
+    <div class="f"><label>Recipe ID</label><input id="m-id" value="SF-0912"></div>
+    <div class="f"><label>Customer</label><input id="m-cust" class="wide" value="Salesforce"></div>
+    <div class="f"><label>Bowls</label><input id="m-bowls" type="number" min="1" value="50" style="width:70px"></div>
+  </div>
+  <button class="send" id="sendBtn" onclick="send()">Send to floor</button>
+</div></header>
+
+<main>
+  <div class="col">
+    <div class="card">
+      <h2>Machine slots</h2>
+      <p class="sub" id="rackSub">18 dispenser modules on this machine — click a filled slot to remove it, an open one to add something new.</p>
+      <div class="rack" id="rack"></div>
+      <div class="legend"><span><i style="background:var(--amber)"></i>Hot-held</span><span><i style="background:var(--blue)"></i>Cold-held</span><span><i style="background:var(--ink3)"></i>Open · swing slot</span></div>
+      <div class="cap" id="capNote"></div>
+      <div class="editrow" id="editRow" style="display:none"></div>
+    </div>
+  </div>
+
+  <div class="col">
+    <div class="card">
+      <h2>This recipe</h2>
+      <p class="sub">À la carte within a range, or a fixed batch. Pick what goes in the bowl — the machine's limits apply live.</p>
+      <div id="builder"></div>
+      <div class="preview">
+        <div class="rowline" id="rowPreview"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col">
+    <div class="card">
+      <div class="verdict" id="verdict"></div>
+      <div id="checks"></div>
+    </div>
+    <div class="card">
+      <h2>Which stores can run this</h2>
+      <p class="sub">Only <b>Bowls</b>-type stores in the fleet — Tacos, Burgers and Salads run a different machine.</p>
+      <table class="loc"><colgroup><col style="width:32%"><col style="width:34%"><col style="width:34%"></colgroup><thead><tr><th>Store</th><th>Ingredients</th><th>Delivery</th></tr></thead><tbody id="locBody"></tbody></table>
+    </div>
+    <div class="card">
+      <h2>Delivery reach</h2>
+      <p class="sub">Planning clock fixed at <b>12:18</b> (today's lunch rush) for this demo.</p>
+      <div class="deliv-row">
+        <select id="delivTarget" onchange="render()"><option value="sf">Salesforce Tower</option><option value="dt">Downtown Office Park</option><option value="bv">Bayview Labs</option><option value="off">No delivery — in-store only</option></select>
+        <span class="due">Due in <input id="dueIn" type="number" value="12" min="1" oninput="render()"> min</span>
+      </div>
+      <div class="hint">Distances are demo data tied to these three known addresses — a real tool would call a routing API for an arbitrary one.</div>
+    </div>
+  </div>
+</main>
+
+<footer class="foot"><a href="prep.html">← Lab37 prep</a> · <a href="manager-fleet.html">Manager console</a> · <a href="index.html">All screens</a></footer>
+
+<script>
+const GROUPS={prot:'Proteins',base:'Bases',veg:'Vegetables',sau:'Sauces',dai:'Dairy'};
+const LIMITS={prot:{min:1,max:2},base:{min:1,max:2},topping:{max:8}}; // topping = veg+sau+dai combined
+
+let SLOTS=[
+ {slot:1,name:'Chicken',g:'prot',t:'hot'},{slot:2,name:'Beef',g:'prot',t:'hot'},
+ {slot:3,name:'Rice',g:'base',t:'hot'},{slot:4,name:'Quinoa',g:'base',t:'hot'},
+ {slot:5,name:'Beans',g:'veg',t:'cold'},{slot:6,name:'Corn',g:'veg',t:'cold'},{slot:7,name:'Pico',g:'veg',t:'cold'},
+ {slot:8,name:'Lettuce',g:'veg',t:'cold'},{slot:9,name:'Cilantro',g:'veg',t:'cold'},{slot:10,name:'Lime',g:'veg',t:'cold'},
+ {slot:11,name:'Guac',g:'sau',t:'cold'},{slot:12,name:'Verde',g:'sau',t:'cold'},{slot:13,name:'Chipotle',g:'sau',t:'cold'},{slot:14,name:'Roja',g:'sau',t:'cold'},
+ {slot:15,name:'Cheese',g:'dai',t:'cold'},{slot:16,name:'Sour Cream',g:'dai',t:'cold'},
+ {slot:17,name:null,g:null,t:'swing'},{slot:18,name:null,g:null,t:'swing'},
+];
+
+// other stores in the fleet running Bowl-O-Matic ("Bowls" type in manager-fleet.html), fixed as of today
+const STORES=[
+ {n:'Uptown',   note:'Already running SF-0912', gaps:[], dist:{sf:[0.4,6], dt:[1.8,14], bv:[2.6,17]}},
+ {n:'Civic',    note:'', gaps:[], dist:{sf:[1.1,9], dt:[0.6,5], bv:[3.8,22]}},
+ {n:'Union Sq', note:'', gaps:[], dist:{sf:[1.6,13], dt:[0.9,7], bv:[4.5,25]}},
+ {n:'Marina',   note:'Swing slot filled with a trial (Pickled Onion) — does not block standard items', gaps:[], dist:{sf:[3.2,19], dt:[3.0,18], bv:[1.4,10]}},
+ {n:'Harbor',   note:'', gaps:[], dist:{sf:[4.0,22], dt:[2.5,16], bv:[0.9,7]}},
+ {n:'Tech Park',note:'Chipotle swapped for a trial sauce this week', gaps:['Chipotle'], dist:{sf:[4.6,25], dt:[3.6,20], bv:[2.9,18]}},
+ {n:'Parkway',  note:'Avocado supply short — Guac off the line', gaps:['Guac'], dist:{sf:[5.8,31], dt:[4.9,26], bv:[6.7,35]}},
+];
+
+const PRESETS={
+  new:{id:'DRAFT-01', cust:'', bowls:10, sel:{Chicken:1,Rice:1}, target:'off', due:20},
+  sf:{id:'SF-0912', cust:'Salesforce', bowls:50, sel:{Chicken:1,Rice:1,Quinoa:1,Beans:1,Pico:1,Lettuce:1,Cilantro:1,Chipotle:1,Roja:1,Cheese:1,'Sour Cream':1}, target:'sf', due:12},
+};
+let SEL={...PRESETS.sf.sel};
+let EDIT=null; // slot number currently being edited/added
+
+function bySlot(n){return SLOTS.find(s=>s.slot===n)}
+function filled(){return SLOTS.filter(s=>s.name)}
+function openSlots(){return SLOTS.filter(s=>s.t==='swing'&&!s.name)}
+
+function loadPreset(which){
+  const p=PRESETS[which];
+  document.getElementById('m-id').value=p.id;
+  document.getElementById('m-cust').value=p.cust;
+  document.getElementById('m-bowls').value=p.bowls;
+  document.getElementById('delivTarget').value=p.target;
+  document.getElementById('dueIn').value=p.due;
+  SEL={...p.sel};
+  document.getElementById('p-new').classList.toggle('on',which==='new');
+  document.getElementById('p-sf').classList.toggle('on',which==='sf');
+  render();
+}
+
+function toggleSlot(n){
+  const s=bySlot(n);
+  if(EDIT===n){EDIT=null; renderRack(); document.getElementById('editRow').style.display='none'; return;}
+  EDIT=n;
+  renderEditRow(s);
+  renderRack();
+}
+
+function renderEditRow(s){
+  const row=document.getElementById('editRow');
+  row.style.display='block';
+  if(s.name){
+    row.innerHTML=`<div class="picked">Slot ${s.slot} · <b>${s.name}</b> · ${s.t==='hot'?'hot-held':'cold-held'}</div>
+      <div class="editform"><button class="rm" onclick="removeSlot(${s.slot})">Remove from machine</button><button onclick="EDIT=null;renderRack();document.getElementById('editRow').style.display='none'">Cancel</button></div>
+      <div class="hint">Frees this slot for the next line. Removing it also drops it from any recipe using it.</div>`;
+  } else {
+    const open=openSlots().length;
+    row.innerHTML=`<div class="picked">Slot ${s.slot} is open — add a new ingredient</div>
+      <div class="editform">
+        <input id="newName" placeholder="Ingredient name" maxlength="20">
+        <select id="newGroup"><option value="veg">Vegetable</option><option value="sau">Sauce</option><option value="dai">Dairy</option><option value="prot">Protein</option><option value="base">Base</option></select>
+        <button onclick="addSlot(${s.slot})">Add to slot</button>
+      </div>
+      <div class="hint">${open} swing slot${open===1?'':'s'} open right now. A swing slot ships wired cold; switching one to hot needs a technician retrofit — budget 30 min, not something to do mid-service.</div>`;
+  }
+}
+
+function removeSlot(n){
+  const s=bySlot(n);
+  const nm=s.name;
+  s.name=null; s.g=null; s.t='swing';
+  delete SEL[nm];
+  EDIT=null;
+  document.getElementById('editRow').style.display='none';
+  render();
+}
+
+function addSlot(n){
+  const nameEl=document.getElementById('newName'), grpEl=document.getElementById('newGroup');
+  const name=nameEl.value.trim();
+  if(!name) return;
+  const s=bySlot(n);
+  s.name=name; s.g=grpEl.value; s.t=(grpEl.value==='prot'||grpEl.value==='base')?'hot':'cold';
+  s.isNew=true;
+  EDIT=null;
+  document.getElementById('editRow').style.display='none';
+  render();
+}
+
+function renderRack(){
+  document.getElementById('rack').innerHTML=SLOTS.map(s=>{
+    const cls=s.name?(s.isNew?'new':s.t):'open swing';
+    return `<div class="slot ${s.t} ${cls}" onclick="toggleSlot(${s.slot})">
+      <div class="head"><span>#${s.slot}</span><span class="dot"></span></div>
+      <div class="nm">${s.name||'OPEN'}</div>
+    </div>`;
+  }).join('');
+  const used=filled().length, open=openSlots().length;
+  document.getElementById('capNote').innerHTML=`<b>${used}/18</b> slots loaded · <b>${open}</b> open. Standard build is 16 (4 mains, 12 toppings) — the 2 swing slots are what let a store trial something new without a full retrofit.`;
+}
+
+function toggleIngredient(name){
+  if(SEL[name]) delete SEL[name]; else SEL[name]=1;
+  render();
+}
+
+function renderBuilder(){
+  const groups=['prot','base','veg','sau','dai'];
+  let html='';
+  groups.forEach(g=>{
+    const items=filled().filter(s=>s.g===g);
+    if(!items.length) return;
+    const count=items.filter(s=>SEL[s.name]).length;
+    const lim=g==='veg'||g==='sau'||g==='dai'?null:LIMITS[g];
+    let badge='';
+    if(lim) badge=`<b class="${count<lim.min||count>lim.max?'bad':''}">${count} selected · need ${lim.min}${lim.max>lim.min?'–'+lim.max:''}</b>`;
+    html+=`<div class="grp-h"><span>${GROUPS[g]}</span>${badge}</div><div class="opts">`;
+    items.forEach(s=>{
+      const on=!!SEL[s.name];
+      html+=`<label class="opt ${on?'on':''}"><input type="checkbox" ${on?'checked':''} onchange="toggleIngredient('${s.name}')">${s.name}${s.isNew?'<small>new</small>':''}</label>`;
+    });
+    html+='</div>';
+  });
+  document.getElementById('builder').innerHTML=html;
+  const toppingCount=['veg','sau','dai'].reduce((a,g)=>a+filled().filter(s=>s.g===g&&SEL[s.name]).length,0);
+  const toppingBadgeEl=[...document.querySelectorAll('.grp-h')].find(el=>/Vegetables|Sauces|Dairy/.test(el.textContent));
+}
+
+function verdict(){
+  const protCount=filled().filter(s=>s.g==='prot'&&SEL[s.name]).length;
+  const baseCount=filled().filter(s=>s.g==='base'&&SEL[s.name]).length;
+  const toppingCount=['veg','sau','dai'].reduce((a,g)=>a+filled().filter(s=>s.g===g&&SEL[s.name]).length,0);
+  const checks=[
+    {ok:protCount>=LIMITS.prot.min&&protCount<=LIMITS.prot.max, t:`<b>${protCount} protein${protCount===1?'':'s'}</b> selected — machine allows 1–2.`},
+    {ok:baseCount>=LIMITS.base.min&&baseCount<=LIMITS.base.max, t:`<b>${baseCount} base${baseCount===1?'':'s'}</b> selected — machine allows 1–2.`},
+    {ok:toppingCount<=LIMITS.topping.max, t:`<b>${toppingCount}/${LIMITS.topping.max} toppings</b> — line speed caps out past 8; more than that and each bowl slows the belt.`},
+    {ok:true, warn:filled().some(s=>s.isNew), t:filled().some(s=>s.isNew)?`This recipe uses a <b>new, unstocked ingredient</b> — only the machine you're editing has it until it's added fleet-wide.`:`No unstocked ingredients in this recipe.`},
+  ];
+  const target=document.getElementById('delivTarget').value;
+  const dueIn=parseInt(document.getElementById('dueIn').value,10)||0;
+  let deliveryOk=true, reachable=[];
+  if(target!=='off'){
+    reachable=STORES.filter(s=>s.gaps.every(g=>!SEL[g])).filter(s=>s.dist[target][1]<=dueIn);
+    deliveryOk=reachable.length>0;
+    checks.push({ok:deliveryOk, t:deliveryOk?`<b>${reachable.length} store${reachable.length===1?'':'s'}</b> can make the ${dueIn}-min delivery window with every ingredient this recipe needs.`:`<b>No store</b> can make this delivery in ${dueIn} min with this ingredient list — widen the window, pick a closer target, or drop an ingredient a nearby store is missing.`});
+  }
+  const allOk=checks.every(c=>c.ok);
+  document.getElementById('verdict').className='verdict '+(allOk?'ok':'bad');
+  document.getElementById('verdict').innerHTML=allOk?`<b>Ready to send to the floor</b>Every check below passes.`:`<b>Not yet — ${checks.filter(c=>!c.ok).length} blocker${checks.filter(c=>!c.ok).length===1?'':'s'}</b>Fix the red items below before this goes out.`;
+  document.getElementById('checks').innerHTML=checks.map(c=>`<div class="check"><i class="${c.ok?'ok':(c.warn?'warn':'bad')}">${c.ok?'✓':'!'}</i><div class="t">${c.t}</div></div>`).join('');
+  document.getElementById('sendBtn').disabled=!allOk;
+  return {allOk};
+}
+
+function renderLocations(){
+  const target=document.getElementById('delivTarget').value;
+  const dueIn=parseInt(document.getElementById('dueIn').value,10)||0;
+  document.getElementById('locBody').innerHTML=STORES.map(s=>{
+    const missing=s.gaps.filter(g=>SEL[g]);
+    const hasAll=missing.length===0;
+    let delivHtml='<span class="why">not requested</span>';
+    if(target!=='off'){
+      const [mi,eta]=s.dist[target];
+      const ok=eta<=dueIn;
+      delivHtml=`<span class="pill ${ok?'ok':'bad'}">${ok?'On time':'Too far'}</span><span class="why">${mi} mi · ${eta} min</span>`;
+    }
+    return `<tr><td class="n">${s.n}${s.note?`<small>${s.note}</small>`:''}</td>
+      <td><span class="pill ${hasAll?'ok':'bad'}">${hasAll?'Has it':'Missing '+missing.join(', ')}</span></td>
+      <td>${delivHtml}</td></tr>`;
+  }).join('');
+}
+
+function renderPreview(){
+  const id=document.getElementById('m-id').value, cust=document.getElementById('m-cust').value, bowls=document.getElementById('m-bowls').value;
+  const names=Object.keys(SEL).filter(n=>SEL[n]);
+  document.getElementById('rowPreview').innerHTML=`<b>${id||'—'}</b> · ${cust||'—'} · ${bowls||0} bowls<br>${names.map(n=>`<span class="rowchip">${n}</span>`).join('')||'<span class="why">nothing selected</span>'}`;
+}
+
+function send(){
+  const v=verdict();
+  if(!v.allOk) return;
+  alert('Queued for the floor. (Prototype — wire this to the manager console when the machine API exists.)');
+}
+
+function render(){
+  renderRack();
+  renderBuilder();
+  verdict();
+  renderLocations();
+  renderPreview();
+}
+render();
+</script>
+</body></html>
