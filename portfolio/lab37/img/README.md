@@ -19,7 +19,7 @@ least 400×400.
 | guac.jpg | Guac |
 | verde.jpg | Verde |
 | chipotle.jpg | Chipotle |
-| crema.jpg | Crema |
+| roja.jpg | Roja (salsa roja) |
 | cheese.jpg | Cheese |
 | sour-cream.jpg | Sour Cream |
 
