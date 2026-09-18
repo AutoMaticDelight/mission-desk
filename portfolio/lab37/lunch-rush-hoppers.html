@@ -763,6 +763,8 @@ html[data-photo="0"] .bar .rc-tag{left:auto;right:8px}
 @media(orientation:portrait){.tops .bar.long .n{font-size:15px}.tops .bar.long .v small{display:none}}
 
 .ph{object-fit:cover;display:block}
+
+.ph{height:100%;width:var(--phw);object-fit:cover}
 </style>
 <link rel="stylesheet" href="glove.css"></head>
 <body>
@@ -844,19 +846,23 @@ function recipeRow(){
 function render(){
   nextUp(); recipeRow();
   // PHOTOS: Wikimedia Commons, hotlinked via Special:FilePath (browser loads them). ?photo=25|50|0
-  const IMG={"chicken": "Grilled_Chicken_Breasts_(28905381261).jpg", "beef": "Slow_Cooker_Beef_Barbacoa_(32130811495).jpg", "rice": "Bowl_of_white_rice_02.jpg", "quinoa": "Quinoa_cuit.JPG", "beans": "Black_beans.jpg", "corn": "Up_close_image_of_corn.jpg", "pico": "Mmm..._Pico_de_Gallo_(5923456035).jpg", "lettuce": "Romaine_lettuce.jpg", "cilantro": "Coriander_01.jpg", "lime": "Lime_-_whole_and_halved.jpg", "guac": "Guacamole_bowl.jpg", "verde": "SALSA_VERDE.jpg", "chipotle": "Chipotlesenadobo.jpg", "roja": "Bowl_of_salsa.jpg", "sour cream": "Sour_Cream.jpg", "cheese": "Fine_Microplane_Grating_Hard_Cheese.jpg"};
+  const IMG={"chicken": "Grilled_Chicken_Breasts_(28905381261).jpg", "beef": "Shredded_Steak_with_Peppers,_Onions_and_Tomatoes_(Ropa_Vieja).jpg", "rice": "Bowl_of_white_rice_02.jpg", "quinoa": "Quinoa_cuit.JPG", "beans": "Black_bean,_frijol_negro,_feijão_preto_1.jpg", "corn": "Up_close_image_of_corn.jpg", "pico": "Mmm..._Pico_de_Gallo_(5923456035).jpg", "lettuce": "Romaine_lettuce.jpg", "cilantro": "Coriander_01.jpg", "lime": "Lime_-_whole_and_halved.jpg", "guac": "Guacamole_bowl.jpg", "verde": "SALSA_VERDE.jpg", "chipotle": "Chipotlesenadobo.jpg", "roja": "Bowl_of_salsa.jpg", "sour cream": "Sour_Cream.jpg", "cheese": "Fine_Microplane_Grating_Hard_Cheese.jpg"};
   const img=x=>'https://commons.wikimedia.org/wiki/Special:FilePath/'+encodeURIComponent(IMG[x.n.toLowerCase()]||'')+'?width=400';
   const key=x=>x.n.toLowerCase().replace(/\s+/g,'-');
   // PHOTO STASH: img/<key>.jpg in this folder wins; if it is missing the browser falls back to the Commons photo
-  const ph=x=>`<img class="ph" alt="" src="img/${key(x)}.jpg" onerror="this.onerror=null;this.src='${img(x)}'">`;
+  window.SRC=window.SRC||{}; window.phFail=function(el,k,fallback){SRC[k]=fallback; el.onerror=null; el.src=fallback;};
+  const ph=x=>{const k=key(x); const src=SRC[k]||`img/${k}.jpg`; return `<img class="ph" alt="" decoding="sync" src="${src}" ${SRC[k]?'':`onerror="phFail(this,'${k}','${img(x)}')"`}>`;};
   {const p=new URLSearchParams(location.search).get('photo'); const w=p===null?25:(parseInt(p,10)||0); document.documentElement.style.setProperty('--phw',w+'%'); document.documentElement.dataset.photo=w;}
   const bigBar=x=>`<div class="bar ${st(x)} ${x.just?'just':''}" ${x.held?'':`onclick="openSheet('refill:${x.n}')"`}>${ph(x)}${inRecipe(x)?'<em class="rc-tag">SF</em>':''}<i style="--l:${x.held?0:x.l}"></i><div class="n">${x.n}</div><div class="m"><b>${x.held?'HELD':Math.round(x.l)+'%'}</b><span>${x.held?'not dispensing':x.just?'REFILLED · '+x.just:mn(x)+' MIN<br>REFILL '+refillClock(x)}</span></div></div>`;
   const smallBar=x=>{const z=st(x);return `<div class="bar ${z} ${x.just?'just':''} ${x.n.length>8?'long':''}" onclick="openSheet('refill:${x.n}')">${ph(x)}${inRecipe(x)?'<em class="rc-tag">SF</em>':''}<i style="--l:${x.l}"></i><div class="n">${x.n}</div><div class="v">${x.just?'REFILLED · '+x.just:Math.round(x.l)+'%<small> · '+refillClock(x)+'</small>'}</div></div>`;};
-  document.getElementById('g-prot').innerHTML=H.filter(x=>x.g==='prot').map(bigBar).join('');
-  document.getElementById('g-base').innerHTML=H.filter(x=>x.g==='base').map(bigBar).join('');
-  document.getElementById('g-veg').innerHTML=C.filter(x=>x.g==='veg').map(smallBar).join('');
-  document.getElementById('g-sau').innerHTML=C.filter(x=>x.g==='sau').map(smallBar).join('');
-  document.getElementById('g-dai').innerHTML=C.filter(x=>x.g==='dai').map(smallBar).join('');
+  window.LAST=window.LAST||{};
+  const paint=(id,items,tpl)=>{const el=document.getElementById(id); const html=items.map(tpl).join(''); const key=html.replace(/--l:[0-9.]+/g,'--l:0');
+    if(LAST[id]!==key){el.innerHTML=html; LAST[id]=key;} else {const bars=el.querySelectorAll('.bar i'); items.forEach((x,i)=>{if(bars[i]) bars[i].style.setProperty('--l',x.held?0:x.l);});}};
+  paint('g-prot',H.filter(x=>x.g==='prot'),bigBar);
+  paint('g-base',H.filter(x=>x.g==='base'),bigBar);
+  paint('g-veg',C.filter(x=>x.g==='veg'),smallBar);
+  paint('g-sau',C.filter(x=>x.g==='sau'),smallBar);
+  paint('g-dai',C.filter(x=>x.g==='dai'),smallBar);
   document.getElementById('clock').textContent=clock(NOW);
 }
 render();
