@@ -907,7 +907,9 @@ html[data-photo="0"] .bar .rc-tag{left:auto;right:8px}
 /* Every card is the same height, in every row — only width varies (from the row's own bay
    count, above). A 4-bay row and an 8-bay row still read as one consistent grid this way. */
 .slots .bar{flex:1 1 0;flex-direction:column;align-items:stretch;justify-content:flex-start;gap:0;padding:0;min-width:0;min-height:0;height:9.5vh}
-.slots .bar .n{flex:0 0 auto;text-align:center;font-size:14px;font-weight:800;letter-spacing:-.01em;line-height:1.2;padding:7px 50px 1px 8px;position:relative;white-space:normal;overflow-wrap:break-word}
+/* Name padding is symmetric — the bin badge lives outside this box entirely (a sibling,
+   positioned against the whole card, not the name) so it never pulls the title off-center. */
+.slots .bar .n{flex:0 0 auto;text-align:center;font-size:14px;font-weight:800;letter-spacing:-.01em;line-height:1.2;padding:19px 8px 1px;white-space:normal;overflow-wrap:break-word}
 .slots .bar .head{position:absolute;top:6px;right:6px;z-index:2;display:flex;align-items:center;gap:5px;font-size:10px;font-weight:800;letter-spacing:.2px;opacity:.6}
 .slots .bar .head .temp{color:var(--tc,#8e8e93)}
 .slots .bar.hot .head .temp{--tc:#c67600}
@@ -932,7 +934,7 @@ html[data-photo="0"] .bar .rc-tag{left:auto;right:8px}
   .rheader span{font-size:10px}
   .rcards{gap:12px}
   .slots .bar{height:80px}
-  .slots .bar .n{font-size:12px;padding:5px 44px 3px 6px}
+  .slots .bar .n{font-size:12px;padding:16px 6px 3px}
   .slots .bar .head{font-size:9px;top:5px;right:5px}
   .slots .bar .v{font-size:11px}
 }
@@ -1034,10 +1036,11 @@ function render(){
   // APPLE CARD: name band on top (the one glanceable fact), full-bleed photo below, captioned.
   const slotBar=x=>{
     const badge=`<span class="head"><span>#${x._slot}</span><span class="temp">${TEMP_F[temp(x)]}°F</span></span>`;
-    if(x.open) return `<div class="bar slot sz-${x.sz} open"><div class="n">${badge}+ Add</div></div>`;
+    if(x.open) return `<div class="bar slot sz-${x.sz} open">${badge}<div class="n">+ Add</div></div>`;
     const z=st(x);
     return `<div class="bar slot sz-${x.sz} ${temp(x)} ${z} ${x.just?'just':''}" ${x.held?'':`onclick="openSheet('refill:${x.n}')"`}>
-      <div class="n">${x.n}${badge}</div>
+      ${badge}
+      <div class="n">${x.n}</div>
       <div class="v">${x.held?'HELD':lbs(x)+' lb'}<small> · ${x.held?'not dispensing':x.just?'REFILLED':z==='now'?'SCRAPE IT':refillClock(x)}</small></div>
       <div class="track"><i style="--l:${x.held?0:x.l}"></i></div>
       <div class="photo">${ph(x)}${inRecipe(x)?'<em class="rc-tag">SF</em>':''}</div>

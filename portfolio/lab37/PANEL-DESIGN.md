@@ -102,6 +102,18 @@ else:
   sit as a quiet corner overlay (top-right, ~60% opacity, colored amber
   or blue), never inline with the name. An earlier version showed a
   plain hot/cold dot there instead of the number — replaced same session.
+  **The badge is a sibling of the name, not inside it** — it's
+  positioned against the whole card, so the name's padding stays
+  perfectly symmetric and the title is genuinely centered on the card,
+  not just centered inside a box some padding shoved off to one side.
+  (Caught exactly that bug once already: reserving space for the badge
+  with lopsided left/right padding on the name centered the *text box*,
+  not the *text*.) The one thing the badge still needs is enough *top*
+  clearance on the name (padding-top, which doesn't touch horizontal
+  centering at all) so a short single-line name doesn't sit in the same
+  row as the badge and collide with it — vertical clearance and
+  horizontal centering are two separate problems, solve them
+  separately.
 - **Quantity, centered, directly below the name.** The live **weight**
   and refill time (or "SCRAPE IT" — see below), its own band, not an
   overlay on the photo — a fact this important doesn't share space with
