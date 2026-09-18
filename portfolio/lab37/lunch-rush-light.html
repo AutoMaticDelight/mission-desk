@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Bowl Maker 5000 - Lunch Rush</title>
+<title>Bowl Maker 5000 - Lunch Rush · Light</title>
 <style>
 /* USER PANEL. Not a web page. One iPad screen, portrait or landscape, no scroll.
    High contrast, readable from across the room, no training to operate: color is the state, the number is the detail, buttons are verbs. */
@@ -411,6 +411,36 @@ body{grid-template-rows:auto minmax(0,1fr) auto auto auto}
   .go{min-height:72px}.go .t{font-size:clamp(24px,3.2vh,30px)}
   .next{padding:8px 14px}.task b{font-size:24px}
 }
+
+/* LIGHT VERSION: white boxes unless in jeopardy. Level is a thin line at the bottom of each box. */
+:root{--bg:#f2f2f7;--panel:#ffffff;--track:#ffffff;--line:#e5e5ea;--ink:#1d1d1f;--dim:#6e6e73;--lime:#0a84ff;
+  --ok:#34c759;--low:#ff9f0a;--now:#ff3b30;--held:#8e8e93;--orange:#ff3b30}
+body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text",Inter,"Helvetica Neue",Helvetica,Arial,sans-serif;font-weight:600}
+.band,.next,.sys{background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.04),0 0 0 1px rgba(0,0,0,.03)}
+.band .where span,.band .where{color:var(--ink)}.band .where span{color:#1f8a3c}
+.band .when{color:var(--dim)}.stat span{color:var(--dim)}.stat{border-left-color:var(--line)}.stat i{color:#1f8a3c}
+.glabel{color:var(--dim);font-weight:600}
+.bar{background:#fff;color:var(--ink);text-shadow:none;box-shadow:0 1px 2px rgba(0,0,0,.04),0 0 0 1px rgba(0,0,0,.04)}
+.bar i{top:auto;bottom:0;height:7px;background:var(--ok);border-radius:0 4px 4px 0}
+.big .bar i{height:9px}
+.bar.low{background:#fff4e0;box-shadow:0 0 0 2px var(--low) inset}.bar.low i{background:var(--low)}
+.bar.now{background:#ffe9e7;box-shadow:0 0 0 2px var(--now) inset}.bar.now i{background:var(--now)}
+.bar.now .m b,.bar.now .v{color:#c0281f}.bar.low .m b,.bar.low .v{color:#9a5b00}
+.bar.held{background:#f2f2f7;color:var(--dim);box-shadow:0 0 0 1px rgba(0,0,0,.05)}
+.big .bar .m span,.tops .bar .v{color:var(--dim);font-weight:600}
+.bar.just{outline:3px solid var(--ok)}.bar.just .v,.bar.just .m span{color:#1f8a3c}
+.alert{background:#fff;border:0;border-left:12px solid var(--now);box-shadow:0 1px 2px rgba(0,0,0,.04),0 0 0 1px rgba(0,0,0,.03)}
+.alert.task{border-left-color:var(--low)}.alert.clear{border-left-color:var(--ok)}
+.ahead{color:var(--ink)}.ahead small{color:var(--dim)}
+.ahead i{background:var(--now);box-shadow:0 0 0 4px rgba(255,59,48,.18)}
+.nums{border-color:var(--line)}.num b{color:var(--ink)}.num span{color:var(--dim)}
+.alert .more button{color:#0a84ff;font-weight:600}.alert .more button:not(:last-child){border-right-color:var(--line)}
+.go{background:#0a84ff;color:#fff;box-shadow:0 3px 0 #0060c9}.go .s{color:rgba(255,255,255,.85)}
+.alert.clear .go{background:#34c759;box-shadow:0 3px 0 #1f8a3c}
+.next .lbl{color:var(--dim);border-right-color:var(--line)}.task span{color:var(--dim)}.task b{color:var(--ink)}.task.now b{color:#c0281f}.task.low b{color:#9a5b00}.task.now span{color:var(--ink)}
+.sys .lbl{color:var(--dim);border-right-color:var(--line)}.si{border-right-color:var(--line)}.si b{color:var(--ink);font-weight:600}.si span{color:var(--dim)}
+.si i{background:var(--ok)}.si.bad span{color:#c0281f}.si.warn span{color:#9a5b00}
+.toast{background:#34c759;border-bottom-color:#1f8a3c}
 
 /* portrait: mains absorb leftover height; landscape band drops its label so nine components fit */
 @media(orientation:portrait){.hoppers{grid-template-rows:minmax(0,1fr) auto;align-content:stretch}.big .bar{height:auto;min-height:104px}}

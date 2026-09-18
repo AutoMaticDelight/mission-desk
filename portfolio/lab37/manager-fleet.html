@@ -3,206 +3,150 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Lab37 - Manager · All Stores</title>
+<title>Bowl Maker 5000 - Manager</title>
 <style>
-/* MANAGER PANEL. 20 machines, one iPad, no scroll.
-   Three questions, in order: Who needs me now? What should I watch? Is everything else on plan?
-   Machines are named by store, because that is what a manager says out loud. */
-:root{--bg:#0b120e;--panel:#141d18;--line:#2c3a31;--ink:#fff;--dim:#c7d1ca;--ok:#0f5a3a;--okline:#1a7a4f;--warn:#7a5200;--bad:#8a2410;--now:#e5401a;--lime:#cfff3e}
+/* MANAGER CONSOLE. Light, quiet, Apple-clean. Every store is a white card with a status light.
+   Three questions in order: who needs me now, what should I watch, is everything else on plan. */
+:root{--bg:#f2f2f7;--card:#ffffff;--ink:#1d1d1f;--ink2:#6e6e73;--ink3:#aeaeb2;--line:#e5e5ea;--sep:#d1d1d6;
+  --green:#34c759;--amber:#ff9f0a;--red:#ff3b30;--blue:#0a84ff;--redink:#c0281f;--amberink:#9a5b00;--greenink:#1f8a3c}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{height:100%;margin:0}
-body{background:var(--bg);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-weight:800;display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:auto auto auto minmax(0,1fr);gap:14px;padding:16px;height:100vh;overflow:hidden;padding-top:max(16px,env(safe-area-inset-top));padding-bottom:max(16px,env(safe-area-inset-bottom))}
-b{font-weight:950}
-h2{margin:0;font-size:16px;letter-spacing:1px;text-transform:uppercase;color:var(--dim);display:block;line-height:1.3}
-h2 b{font-size:16px;color:#fff}
-h2 i{width:12px;height:12px;border-radius:50%;background:var(--now);display:inline-block;margin-right:10px;vertical-align:middle}
-h2.h-watch i{background:#f0a000}h2.h-fine i{background:#1a7a4f}
-/* top band */
-.band{display:grid;grid-template-columns:auto minmax(0,1fr) auto auto auto auto auto;gap:14px;align-items:center;background:var(--panel);border-radius:18px;padding:10px 22px;min-height:64px;min-width:0;overflow:hidden}
-.band>*{min-width:0}
-.where{font-size:22px;letter-spacing:-.02em;white-space:nowrap}.where span{color:var(--lime);margin-left:10px}
-.when{font-size:18px;color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.stat{display:flex;align-items:baseline;gap:7px;white-space:nowrap;border-left:2px solid var(--line);padding-left:14px}
-.stat b{font-size:clamp(28px,2.9vw,36px);letter-spacing:-.06em;line-height:.9}
-.stat span{font-size:16px;letter-spacing:.4px;color:var(--dim)}
-.stat.up b{color:#5bd39a}.stat.bad b{color:#ff8d6a}
-.stat b small{font-size:.55em;color:var(--dim);letter-spacing:0;font-weight:800}
+body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","SF Pro Display",Inter,"Helvetica Neue",Helvetica,Arial,sans-serif;font-weight:500;-webkit-font-smoothing:antialiased;
+  display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:auto auto auto minmax(0,1fr);gap:16px;padding:16px 20px;height:100vh;overflow:hidden;
+  padding-top:max(16px,env(safe-area-inset-top));padding-bottom:max(16px,env(safe-area-inset-bottom))}
+b{font-weight:700}
+.num{font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+/* header */
+.band{display:flex;align-items:center;gap:0;background:var(--card);border-radius:16px;padding:10px 20px;min-height:64px;box-shadow:0 1px 2px rgba(0,0,0,.04),0 0 0 1px rgba(0,0,0,.03)}
+.where{font-size:22px;font-weight:700;letter-spacing:-.02em;white-space:nowrap;display:flex;align-items:baseline;gap:10px}
+.where span{font-size:16px;font-weight:500;color:var(--ink2)}
+.when{font-size:16px;color:var(--ink2);white-space:nowrap;margin-left:14px;margin-right:auto;font-weight:500}
+.stat{display:flex;align-items:baseline;gap:8px;white-space:nowrap;padding:0 18px;border-left:1px solid var(--sep)}
+.stat:last-child{padding-right:0}
+.stat b{font-size:28px;font-weight:700;letter-spacing:-.03em;line-height:1}
+.stat span{font-size:14px;color:var(--ink2);font-weight:500;letter-spacing:.2px}
+.stat.good b{color:var(--greenink)}.stat.bad b{color:var(--redink)}
+.stat b small{font-size:.6em;color:var(--ink3);font-weight:600}
 /* sections */
-section{display:grid;grid-template-rows:auto minmax(0,1fr);gap:10px;min-height:0}
+section{display:grid;grid-template-rows:auto minmax(0,1fr);gap:8px;min-height:0}
+h2{margin:0;font-size:14px;font-weight:600;letter-spacing:.2px;color:var(--ink2);display:flex;align-items:center;gap:8px;padding-left:2px}
+h2 i{width:10px;height:10px;border-radius:50%;background:var(--red);display:inline-block}
+h2.w i{background:var(--amber)}h2.f i{background:var(--green)}
+h2 b{color:var(--ink);font-weight:600}
+/* status light */
+.light{width:12px;height:12px;border-radius:50%;background:var(--green);flex:none;box-shadow:0 0 0 3px rgba(52,199,89,.18)}
+.light.red{background:var(--red);box-shadow:0 0 0 3px rgba(255,59,48,.2);animation:pulse 1.6s ease-in-out infinite}
+.light.amber{background:var(--amber);box-shadow:0 0 0 3px rgba(255,159,10,.2)}
+@keyframes pulse{50%{box-shadow:0 0 0 7px rgba(255,59,48,.12)}}
+/* cards */
+.card{background:var(--card);border:0;border-radius:16px;padding:14px 18px;display:grid;grid-template-columns:minmax(0,1fr) max-content;grid-template-rows:auto auto auto;column-gap:18px;row-gap:4px;align-items:start;text-align:left;color:var(--ink);font:inherit;cursor:pointer;min-width:0;box-shadow:0 1px 2px rgba(0,0,0,.04),0 0 0 1px rgba(0,0,0,.03)}
+.card:active{transform:scale(.995)}
+.card .top{display:flex;align-items:center;gap:10px;min-width:0}
+.card .nm{font-size:20px;font-weight:700;letter-spacing:-.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card .nm small{font-size:14px;font-weight:500;color:var(--ink2);margin-left:8px}
+.card .what{grid-column:1;font-size:15px;color:var(--ink2);line-height:1.3;font-weight:500}
+.card.now .what{color:var(--redink)}
+.card.watch .what{color:var(--amberink)}
+.card .k{grid-column:2;grid-row:1/3;text-align:right;white-space:nowrap;align-self:start}
+.card .k b{display:block;font-size:40px;font-weight:700;letter-spacing:-.04em;line-height:.95}
+.card .k span{font-size:13px;color:var(--ink2);font-weight:500;letter-spacing:.3px;text-transform:uppercase}
+.card.now .k b{color:var(--redink)}.card.watch .k b{color:var(--amberink)}
+.card .go{grid-column:1/-1;grid-row:3;font-size:14px;font-weight:600;color:var(--blue);margin-top:4px}
+.card .thr{grid-column:1/-1;grid-row:3;display:flex;justify-content:space-between;align-items:baseline;border-top:1px solid var(--line);padding-top:8px;margin-top:6px;font-size:14px;color:var(--ink2)}
+.card .thr b{font-weight:600;color:var(--ink);font-size:15px}
 .now{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
-.card{border:0;border-radius:16px;padding:14px 20px;display:grid;grid-template-columns:minmax(0,1fr) max-content;gap:4px 20px;align-items:center;justify-items:start;text-align:left;color:#fff;font:inherit;cursor:pointer;min-width:0;background:var(--bad)}
-.card .nm{grid-column:1;grid-row:1;font-size:clamp(22px,3vh,28px);letter-spacing:-.02em;line-height:1}
-.card .what{grid-column:1;grid-row:2;font-size:clamp(17px,2.2vh,20px);line-height:1.25;color:rgba(255,255,255,.92);font-weight:800;justify-self:stretch}
-.card .k{grid-column:2;grid-row:1/3;text-align:right;white-space:nowrap;justify-self:end}
-.card .k b{display:block;font-size:clamp(40px,6vh,64px);letter-spacing:-.06em;line-height:.9}
-.card .k span{font-size:16px;text-transform:uppercase;letter-spacing:.5px;opacity:.9}
-.card .go{grid-column:1/-1;grid-row:3;margin-top:6px;font-size:16px;letter-spacing:.6px;text-transform:uppercase;color:var(--lime)}
 .watch{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
-.card.watch{background:var(--warn)}
-.card.watch .nm{font-size:clamp(20px,2.6vh,24px)}
-.card.watch .k b{font-size:clamp(30px,4.2vh,42px)}.card.watch .what{font-size:17px}.card .what .thr{display:inline-flex;margin:6px 0 0;padding:4px 10px}
-/* the fine field: same because it is the same */
-.fine{background:none;border-radius:0;padding:0;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));grid-auto-rows:minmax(0,1fr);gap:10px;min-height:0}
-.chip{display:grid;grid-template-columns:minmax(0,1fr) max-content;grid-template-rows:auto auto;align-items:baseline;column-gap:8px;row-gap:2px;background:var(--ok);border-radius:16px;padding:8px 14px 10px;min-width:0;min-height:0;overflow:hidden;align-content:center}
-.chip .nm{font-size:clamp(18px,2.4vh,20px);letter-spacing:-.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.1}
-.chip .nm small{display:none}
-.thr{grid-column:1/-1;display:flex;align-items:baseline;gap:5px;background:rgba(0,0,0,.42);border-radius:10px;padding:5px 10px;margin-top:3px;white-space:nowrap;min-width:0;overflow:hidden}
-.thr b{font-size:clamp(19px,2.6vh,22px);letter-spacing:-.03em;color:#fff}
-.thr em{font-style:normal;font-size:14px;color:rgba(255,255,255,.7);margin-right:12px}
-.thr em:last-child{margin-right:0}
-.chip .p{font-size:clamp(21px,2.8vh,24px);letter-spacing:-.04em;white-space:nowrap;color:#fff}
-.chip .p.down{color:#ffd9cc}
+/* on-plan field */
+.fine{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));grid-auto-rows:auto;gap:12px;min-height:0;align-content:start}
+.chip{background:var(--card);border-radius:14px;padding:12px 16px 10px;display:grid;grid-template-columns:minmax(0,1fr) max-content;grid-template-rows:auto auto;column-gap:10px;row-gap:6px;align-items:baseline;min-width:0;box-shadow:0 1px 2px rgba(0,0,0,.04),0 0 0 1px rgba(0,0,0,.03)}
+.chip .top{display:flex;align-items:center;gap:9px;min-width:0}
+.chip .nm{font-size:17px;font-weight:600;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chip .p{font-size:22px;font-weight:700;letter-spacing:-.03em;white-space:nowrap}
+.chip .p.down{color:var(--redink)}
+.chip .thr{grid-column:1/-1;display:flex;justify-content:space-between;align-items:baseline;border-top:1px solid var(--line);padding-top:7px;font-size:14px;color:var(--ink2);font-weight:500}
+.chip .thr b{font-weight:600;color:var(--ink);font-size:15px}
+.chip .thr em{font-style:normal;color:var(--ink3);font-size:13px;margin-left:3px}
+@media(orientation:landscape) and (max-height:820px){.chip{padding:10px 14px 8px;row-gap:4px}.chip .thr{padding-top:5px}.card{padding:12px 16px}}
 @media(orientation:portrait){
-  .band{grid-template-columns:1fr 1fr 1fr;grid-template-rows:auto auto auto;row-gap:6px}
-  .band .where{grid-column:1/-1}
-  .when{grid-column:1/-1}.stat{border-left:0;padding-left:0}
-  .now{grid-template-columns:1fr}
-  .watch{grid-template-columns:1fr}
-  .card.watch .go{display:none}
-  .fine{grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}.chip{padding:6px 10px 8px;border-radius:12px}.chip .nm{font-size:18px}.chip .p{font-size:22px}.thr{padding:3px 8px;margin-top:2px}.thr b{font-size:18px}.thr em{font-size:13px;margin-right:8px}
-  .card{padding:10px 16px;gap:2px 14px}.card .nm{font-size:24px}.card .k b{font-size:44px}.card .go{margin-top:2px;font-size:15px}
-  .card.watch{padding:8px 16px}.card.watch .nm{font-size:22px}.card.watch .k b{font-size:34px}.card .what .thr{margin-top:2px}
+  .band{flex-wrap:wrap;row-gap:6px;padding:12px 18px}
+  .when{margin-right:0;flex:1 1 100%;margin-left:0}
+  .stat{padding:0 14px 0 0;border-left:0}
+  .now{grid-template-columns:1fr 1fr;gap:10px}.watch{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+  .card{padding:12px 14px;column-gap:10px}.card .nm{font-size:18px}.card .k b{font-size:32px}.card .what{font-size:14px}.card .thr{font-size:13px}
+  .fine{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+  .chip{padding:10px 12px 8px}.chip .nm{font-size:16px}.chip .p{font-size:20px}
 }
-@media(max-width:600px){body{height:auto;overflow:auto}.fine{grid-template-columns:1fr 1fr}.chip{min-height:48px}}
+@media(max-width:600px){body{height:auto;overflow:auto}.fine{grid-template-columns:1fr 1fr}}
 
-/* DESIGN PASS: content-height boxes, right-justified tabular throughput, consistent rhythm */
-body{grid-template-rows:auto auto auto minmax(0,1fr);gap:18px;padding:18px}
-section{gap:10px;align-content:start}
-h2{padding-left:4px}
-b,.stat b,.card .k b,.chip .p,.thr b{font-variant-numeric:tabular-nums}
-/* on-plan boxes */
-.fine{align-content:start;grid-auto-rows:auto;gap:12px}
-.chip{display:grid;grid-template-columns:minmax(0,1fr) max-content;grid-template-rows:auto auto;align-items:baseline;column-gap:12px;row-gap:8px;padding:14px 18px 12px;border-radius:16px;overflow:hidden;align-content:start}
-.chip .nm{font-size:clamp(19px,1.5vw,22px)}
-.chip .p{font-size:clamp(22px,1.8vw,26px)}
-.thr{grid-column:1/-1;display:grid;grid-template-columns:max-content max-content;justify-content:end;column-gap:22px;align-items:baseline;background:rgba(0,0,0,.35);border-radius:10px;padding:6px 12px;margin:0;white-space:nowrap}
-.thr b{font-size:clamp(20px,1.6vw,24px);color:#fff;letter-spacing:-.02em}
-.thr em{font-style:normal;font-size:14px;color:rgba(255,255,255,.7);margin:0 0 0 4px;letter-spacing:.3px}
-/* watch cards: name/what left, number right, throughput row under, right-justified */
-.card{grid-template-rows:auto auto auto;row-gap:6px;padding:14px 18px 12px;align-content:start}
-.card .k{align-self:start}
-.card .what .thr{display:grid;grid-column:auto;margin:0}
-.card .thrrow{grid-column:1/-1;grid-row:3;display:grid;grid-template-columns:max-content max-content;justify-content:end;column-gap:22px;align-items:baseline;background:rgba(0,0,0,.35);border-radius:10px;padding:6px 12px;white-space:nowrap}
-.card .thrrow b{font-size:clamp(20px,1.6vw,24px);color:#fff}
-.card .thrrow em{font-style:normal;font-size:14px;color:rgba(255,255,255,.7);margin-left:4px}
-.card .go{grid-row:3}
-@media(orientation:portrait){.fine{gap:10px}.chip{padding:10px 14px 10px;row-gap:6px}.thr{column-gap:14px;padding:4px 10px}.thr b{font-size:18px}.thr em{font-size:13px}.card{padding:10px 16px 10px}}
-
-/* band fits every width: peak note only in portrait, to-go drops below 1250px */
-@media(orientation:landscape){.peak{display:none}}
-@media(orientation:landscape) and (max-width:1250px){.band{grid-template-columns:auto minmax(0,1fr) auto auto auto auto}.stat.togo{display:none}.stat b{font-size:30px}.stat span{font-size:15px}.band{gap:12px;padding:10px 18px}.stat{padding-left:12px}}
-/* watch cards: reason gets the width, throughput sits under the number, right-justified */
-.card{grid-template-columns:minmax(0,1.7fr) max-content}
-.card .thrrow{justify-self:end;grid-column:2;grid-row:3}
-.card.watch{grid-template-rows:auto auto auto}
-.card.watch .what{grid-row:2/4;align-self:start}
-.chip .thr{justify-self:stretch}
+/* names never clip: concept steps aside on watch cards when narrow; portrait fills its height */
+@media(max-width:1500px){.card.watch .nm small{display:none}.card.watch .k b{font-size:34px}}
 @media(orientation:portrait){
-  .chip .nm{font-size:16px}.chip .p{font-size:20px}.chip{padding:8px 12px 8px;row-gap:5px}
-  .card .thrrow{grid-column:2;grid-row:3;justify-self:end}
+  .card .nm small{display:none}.card.watch .k b{font-size:28px}.card .k span{font-size:12px}
+  .fine{align-content:stretch;grid-auto-rows:minmax(0,1fr)}.chip{align-content:center}
 }
 
-/* green boxes: top half name and percent, bottom half a darker band edge to edge with the rate */
-.chip{padding:0;row-gap:0;overflow:hidden}
-.chip .nm{padding:12px 0 10px 18px}
-.chip .p{padding:12px 18px 10px 0}
-.chip .thr{grid-column:1/-1;justify-self:stretch;margin:0;border-radius:0;background:rgba(0,0,0,.38);padding:9px 18px 11px;justify-content:end}
-@media(orientation:portrait){.chip .nm{padding:9px 0 7px 12px}.chip .p{padding:9px 12px 7px 0}.chip .thr{padding:6px 12px 8px}}
-
-/* concept under the store name: small, not bold */
-.chip .nm small{display:block;font-size:14px;font-weight:500;color:rgba(255,255,255,.72);letter-spacing:.2px;margin-top:2px;text-transform:none}
-.chip .nm{line-height:1.05}
-.card .nm small{display:block;font-size:14px;font-weight:500;color:rgba(255,255,255,.75);margin-top:2px}
-@media(orientation:portrait){.chip .nm small{font-size:13px}}
-
-/* band: clock always visible; short landscape screens: concept inline so three rows of boxes fit */
-@media(orientation:landscape){
-  .band{grid-template-columns:auto auto auto auto auto auto auto;justify-content:start}
-  .when{margin-right:auto;overflow:visible;text-overflow:clip}
+/* portrait watch cards stack: name, reason, number, rate. Long store names wrap in landscape. */
+.card.watch .nm{white-space:normal;line-height:1.1}
+@media(orientation:portrait){
+  .card.watch{grid-template-columns:minmax(0,1fr);grid-template-rows:auto auto auto auto}
+  .card.watch .k{grid-column:1;grid-row:3;text-align:left;margin-top:4px}
+  .card.watch .k b{display:inline;font-size:30px;margin-right:8px}.card.watch .k span{display:inline}
+  .card.watch .thr{grid-row:4}
 }
-@media(orientation:landscape) and (max-height:820px){
-  .chip .nm{padding:8px 0 5px 16px}
-  .chip .p{padding:8px 16px 5px 0}
-  .chip .nm small{display:inline;margin:0 0 0 8px}
-  .chip .thr{padding:5px 16px 6px}
-  .card{padding:10px 16px 10px}
-  .card.watch .nm small,.card .nm small{display:inline;margin-left:8px}
-}
-
-/* band never overlaps: sized to fit, children keep their content width */
-@media(orientation:landscape){
-  .band{gap:12px;padding:10px 18px}
-  .band>*{min-width:auto}
-  .where{font-size:20px}.when{font-size:16px}
-  .stat{padding-left:12px;gap:6px}.stat b{font-size:30px}.stat span{font-size:14px}
-}
-@media(orientation:landscape) and (max-height:820px){
-  .chip .nm small{display:none}
-}
-
-/* green boxes: only the name and the percent are bold. The rate is information, not a headline. */
-.chip .thr b{font-weight:500;letter-spacing:0}
-.chip .thr em{font-weight:400;color:rgba(255,255,255,.65)}
-.chip .nm small{font-weight:400}
-.card .thrrow b{font-weight:500}.card .thrrow em{font-weight:400}
-.card .what{font-weight:500}
 </style></head>
 <body>
   <header class="band">
-    <div class="where">LAB37 <span>ALL STORES</span></div>
-    <div class="when">THU <span id="clock">12:18</span><span class="peak"> · PEAK 12:30–12:50</span></div>
-    <div class="stat"><b id="fleetPace">3,930</b><span>ORDERS / HR</span></div>
-    <div class="stat up"><b id="fleetPct">101%</b><span>OF PLAN</span></div>
-    <div class="stat togo"><b id="toGo">3,180</b><span>TO GO</span></div>
-    <div class="stat"><b id="active">17<small>/20</small></b><span>ACTIVE</span></div>
-    <div class="stat bad"><b id="needCount">2</b><span>NEED YOU</span></div>
+    <div class="where">Bowl Maker 5000 <span>All stores</span></div>
+    <div class="when">Thu <span id="clock">12:18</span> · Peak 12:30–12:50</div>
+    <div class="stat"><b id="fleetPace" class="num">3,930</b><span>orders / hr</span></div>
+    <div class="stat good"><b id="fleetPct" class="num">100%</b><span>of plan</span></div>
+    <div class="stat"><b id="toGo" class="num">3,180</b><span>to go</span></div>
+    <div class="stat"><b id="active" class="num">17<small>/20</small></b><span>active</span></div>
+    <div class="stat bad"><b id="needCount" class="num">2</b><span>need you</span></div>
   </header>
-
-  <section>
-    <h2><i></i>Needs you now</h2>
-    <div class="now" id="now"></div>
-  </section>
-
-  <section>
-    <h2 class="h-watch"><i></i>Watch · <b id="watchCount"></b> stores</h2>
-    <div class="watch" id="watch"></div>
-  </section>
-
-  <section>
-    <h2 class="h-fine"><i></i><b id="fineCount"></b> stores on plan · <b>100% = on plan</b></h2>
-    <div class="fine" id="fine"></div>
-  </section>
+  <section><h2><i></i>Needs you now</h2><div class="now" id="now"></div></section>
+  <section><h2 class="w"><i></i>Watch · <b id="watchCount"></b> stores</h2><div class="watch" id="watch"></div></section>
+  <section><h2 class="f"><i></i><b id="fineCount"></b> stores on plan · 100% = on plan</h2><div class="fine" id="fine"></div></section>
 <script>
-/* 20 machines, one per store. p = bowls per 10 min now. e = plan for this store at this hour. */
 const S=[
- {n:'Uptown',c:'Bowls',s:'now',what:'Quinoa under-dispensing · line held 12:16',k:7,l:'orders rerouting',go:'Tap to open the Uptown panel',href:'lunch-rush-hoppers.html',p:0,e:30},
- {n:'Airport T2',c:'Tacos',s:'now',what:'Door interlock open · line stopped',k:3,l:'orders waiting',go:'Crew has been paged · 2 min',p:0,e:52},
+ {n:'Uptown',c:'Bowls',s:'now',what:'Quinoa under-dispensing · line held 12:16',k:7,l:'orders rerouting',go:'Open the Uptown panel',href:'lunch-rush-hoppers.html',p:0,e:30},
+ {n:'Airport T2',c:'Tacos',s:'now',what:'Door interlock open · line stopped',k:3,l:'orders waiting',go:'Crew paged · 2 min',p:0,e:52},
  {n:'Midtown',c:'Bowls',s:'watch',what:'Cleaning · back 12:24',k:6,l:'min left',p:0,e:30},
- {n:'Stadium',c:'Burgers',s:'watch',what:'Patties low · refill 12:33',k:-20,l:'% vs plan',p:44,e:55},
- {n:'Campus North',c:'Salads',s:'watch',what:'Greens low · refill 12:29',k:-17,l:'% vs plan',p:20,e:24},
- {n:'Harbor',i:'Refill 12:41',c:'Bowls',p:36,e:30},{n:'Old Town',i:'12 in queue',c:'Tacos',p:58,e:52},{n:'Riverside',i:'Greens 12:38',c:'Salads',p:27,e:24},{n:'Tech Park',i:'9 in queue',c:'Bowls',p:33,e:30},{n:'Westgate',i:'Peak in 12 min',c:'Burgers',p:59,e:55},
- {n:'Union Sq',i:'Refill 12:44',c:'Bowls',p:32,e:30},{n:'Lakeside',i:'6 in queue',c:'Salads',p:25,e:24},{n:'Eastside',i:'11 in queue',c:'Tacos',p:54,e:52},{n:'Civic',i:'On plan all day',c:'Bowls',p:30,e:30},{n:'Southpoint',i:'Cleaning 1:10',c:'Burgers',p:55,e:55},
- {n:'Hillcrest',i:'Dressing 12:35',c:'Salads',p:23,e:24},{n:'Marina',i:'Rice 12:36',c:'Bowls',p:29,e:30},{n:'Downtown',i:'Catching up',c:'Tacos',p:49,e:52},{n:'Parkway',i:'8 in queue',c:'Bowls',p:31,e:30},{n:'Northgate',i:'Patties 12:30',c:'Burgers',p:50,e:55},
+ {n:'Stadium',c:'Burgers',s:'watch',what:'Patties low · refill 12:33',k:-20,l:'of plan',p:44,e:55},
+ {n:'Campus North',c:'Salads',s:'watch',what:'Greens low · refill 12:29',k:-17,l:'of plan',p:20,e:24},
+ {n:'Harbor',c:'Bowls',i:'Refill 12:41',p:36,e:30},{n:'Old Town',c:'Tacos',i:'12 in queue',p:58,e:52},{n:'Riverside',c:'Salads',i:'Greens 12:38',p:27,e:24},{n:'Tech Park',c:'Bowls',i:'9 in queue',p:33,e:30},{n:'Westgate',c:'Burgers',i:'Peak in 12 min',p:59,e:55},
+ {n:'Union Sq',c:'Bowls',i:'Refill 12:44',p:32,e:30},{n:'Lakeside',c:'Salads',i:'6 in queue',p:25,e:24},{n:'Eastside',c:'Tacos',i:'11 in queue',p:54,e:52},{n:'Civic',c:'Bowls',i:'On plan all day',p:30,e:30},{n:'Southpoint',c:'Burgers',i:'Cleaning 1:10',p:55,e:55},
+ {n:'Hillcrest',c:'Salads',i:'Dressing 12:35',p:23,e:24},{n:'Marina',c:'Bowls',i:'Rice 12:36',p:29,e:30},{n:'Downtown',c:'Tacos',i:'Catching up',p:49,e:52},{n:'Parkway',c:'Bowls',i:'8 in queue',p:31,e:30},{n:'Northgate',c:'Burgers',i:'Patties 12:30',p:50,e:55},
 ];
 const pct=x=>Math.round((x.p-x.e)/x.e*100);
-const ofp=x=>100+pct(x);
+const order={now:0,watch:1};
+const light=x=>x.s==='now'?'red':x.s==='watch'?'amber':'';
 function render(){
   const now=S.filter(x=>x.s==='now'), watch=S.filter(x=>x.s==='watch'), fine=S.filter(x=>!x.s).sort((a,b)=>pct(a)-pct(b));
-  document.getElementById('now').innerHTML=now.map(x=>`<button class="card" ${x.href?`onclick="location.href='${x.href}'"`:''}>
-    <div class="nm">${x.n}<small>${x.c}</small></div><div class="what">${x.what}</div>
-    <div class="k"><b>${x.k}</b><span>${x.l}</span></div>
-    <div class="go">${x.go} →</div></button>`).join('');
+  document.getElementById('now').innerHTML=now.map(x=>`<button class="card now" ${x.href?`onclick="location.href='${x.href}'"`:''}>
+    <div class="top"><i class="light red"></i><span class="nm">${x.n}<small>${x.c}</small></span></div>
+    <div class="what">${x.what}</div>
+    <div class="k"><b class="num">${x.k}</b><span>${x.l}</span></div>
+    <div class="go">${x.go} ›</div></button>`).join('');
   document.getElementById('watch').innerHTML=watch.map(x=>`<button class="card watch">
-    <div class="nm">${x.n}<small>${x.c}</small></div><div class="what">${x.what}</div>${x.p?`<div class="thrrow"><span><b>${x.p*6}</b><em>/hr</em></span><span><b>:${Math.round(600/x.p)}</b><em>ea</em></span></div>`:''}
-    <div class="k"><b>${x.l.includes('vs plan')?(100+x.k)+'%':x.k}</b><span>${x.l.includes('vs plan')?'of plan':x.l}</span></div></button>`).join('');
-  document.getElementById('fine').innerHTML=fine.map(x=>{const d=pct(x);const hr=x.p*6, sec=Math.round(3600/hr);return `<div class="chip" title="${x.i}"><span class="nm">${x.n}<small>${x.c}</small></span><span class="p ${d<0?'down':''}">${100+d}%</span><span class="thr"><span><b>${hr}</b><em>/hr</em></span><span><b>:${sec}</b><em>ea</em></span></span></div>`;}).join('');
-  document.getElementById('needCount').textContent=now.length;document.getElementById('active').innerHTML=S.filter(x=>x.p>0).length+'<small>/'+S.length+'</small>';
+    <div class="top"><i class="light amber"></i><span class="nm">${x.n}<small>${x.c}</small></span></div>
+    <div class="what">${x.what}</div>
+    <div class="k"><b class="num">${x.l==='of plan'?(100+x.k)+'%':x.k}</b><span>${x.l}</span></div>
+    ${x.p?`<div class="thr"><span><b class="num">${x.p*6}</b> /hr</span><span><b class="num">:${Math.round(600/x.p)}</b> ea</span></div>`:''}</button>`).join('');
+  document.getElementById('fine').innerHTML=fine.map(x=>{const d=pct(x),hr=x.p*6,sec=Math.round(3600/hr);return `<div class="chip" title="${x.i}">
+    <div class="top"><i class="light"></i><span class="nm">${x.n}</span></div>
+    <span class="p num ${d<0?'down':''}">${100+d}%</span>
+    <div class="thr"><span>${x.c}</span><span><b class="num">${hr}</b><em>/hr</em> &nbsp; <b class="num">:${sec}</b><em>ea</em></span></div></div>`;}).join('');
+  document.getElementById('needCount').textContent=now.length;
   document.getElementById('watchCount').textContent=watch.length;
   document.getElementById('fineCount').textContent=fine.length;
-  const run=S.filter(x=>x.p>0);const P=run.reduce((a,x)=>a+x.p,0),E=run.reduce((a,x)=>a+x.e,0);document.getElementById('fleetPace').textContent=(P*6).toLocaleString();const fp=Math.round((P-E)/E*100);const el=document.getElementById('fleetPct');el.textContent=(100+fp)+'%';el.parentElement.className='stat '+(fp>=0?'up':'bad');
+  document.getElementById('active').innerHTML=S.filter(x=>x.p>0).length+'<small>/'+S.length+'</small>';
+  const run=S.filter(x=>x.p>0);const P=run.reduce((a,x)=>a+x.p,0),E=run.reduce((a,x)=>a+x.e,0);
+  document.getElementById('fleetPace').textContent=(P*6).toLocaleString();
+  const fp=Math.round((P-E)/E*100);const el=document.getElementById('fleetPct');el.textContent=(100+fp)+'%';el.parentElement.className='stat '+(fp>=0?'good':'bad');
 }
 render();
-/* LIVE: 1 real second = 6 seconds on the floor. Paces drift, to-go counts down, cleaning counts down, percents recompute. */
+/* LIVE: 1 real second = 6 seconds on the floor. */
 let NOW=12*60+18, SEC=0, TOGO=3180;
 const clock=t=>{const h=Math.floor(t/60),m=t%60;return (h>12?h-12:h)+':'+String(m).padStart(2,'0');};
 setInterval(()=>{
@@ -210,11 +154,11 @@ setInterval(()=>{
   if(SEC>=60){ SEC-=60; NOW+=1;
     S.forEach(x=>{ if(x.p>0){ x.p=Math.max(1, x.p+(Math.random()<0.5?-1:1)*(Math.random()<0.45?1:0)); } });
     const mid=S.find(x=>x.n==='Midtown'); if(mid.s==='watch'&&mid.l==='min left'){ mid.k=Math.max(0,mid.k-1); if(mid.k===0){ mid.s=undefined; mid.p=30; mid.i='Back from cleaning'; } else mid.what='Cleaning · back '+clock(NOW+mid.k); }
-    S.filter(x=>x.s==='watch'&&x.l.includes('vs plan')).forEach(x=>{ x.k=pct(x); });
+    S.filter(x=>x.s==='watch'&&x.l==='of plan').forEach(x=>{ x.k=pct(x); });
     document.getElementById('clock').textContent=clock(NOW);
     render();
   }
-  TOGO=Math.max(0,TOGO-Math.round(S.reduce((a,x)=>a+x.p,0)/10/10));
+  TOGO=Math.max(0,TOGO-Math.round(S.reduce((a,x)=>a+x.p,0)/100));
   document.getElementById('toGo').textContent=TOGO.toLocaleString();
 },1000);
 </script>
