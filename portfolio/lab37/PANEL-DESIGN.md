@@ -15,15 +15,24 @@ category → this, sized by real dispenser hardware). The machine has **18
 physical dispenser slots**, numbered 1–18, always in this fixed order.
 **Row 1 is the 4 mains.** Every row after that is one **dispenser-size
 tier**, left-justified, down to Open last:
-- Row **Large · hopper** (4): 1 Chicken · 2 Beef · 3 Rice · 4 Quinoa. Auger
-  / steam-table dispensers — the most volume per bowl, sized biggest.
-- Row **Medium · bin** (6): 5 Beans · 6 Corn · 7 Pico · 8 Lettuce ·
-  9 Cilantro · 15 Cheese. Scoop-dispensed produce and cheese.
-- Row **Small · squeeze / garnish** (6): 10 Lime · 11 Guac · 12 Verde ·
-  13 Chipotle · 14 Roja · 16 Sour Cream. Squeeze bottles and pinch
-  garnish — smallest footprint, most of them fit one row with room left.
+- Row **Hot Grain Hopper** (4, holds ≈2.5 gal each): 1 Chicken · 2 Beef ·
+  3 Rice · 4 Quinoa. Auger / steam-table dispensers — the most volume per
+  bowl, sized biggest.
+- Row **Loose-Scoop Bin** (6, holds ≈175 in³ each): 5 Beans · 6 Corn ·
+  7 Pico · 8 Lettuce · 9 Cilantro · 15 Cheese. Scoop-dispensed produce and
+  cheese.
+- Row **Sauce Dispenser** (6, holds ≈32 oz each): 10 Lime · 11 Guac ·
+  12 Verde · 13 Chipotle · 14 Roja · 16 Sour Cream. Squeeze bottles and
+  pinch garnish — smallest footprint, most of them fit one row with room
+  left.
 - Row **Open** (2): 17 · 18, both small-tier until something's added,
   labeled "+ Add", not "OPEN" — an open slot is an action, not a status.
+
+Row labels are two lines: the dispenser type in caps, then a dimmer
+"Holds ≈N unit" capacity line — one gallons, one cubic inches, one ounces,
+picked per tier for whichever unit reads most naturally for that
+container (bulk hopper in gal, a rectangular bin in in³, a bottle in oz).
+Capacity is per dispenser, not per row.
 
 Every screen that draws the machine's slots — the worker panel's status
 card, the manager console's machine detail (when built), `recipe-

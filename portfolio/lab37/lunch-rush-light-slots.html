@@ -890,7 +890,9 @@ html[data-photo="0"] .bar .rc-tag{left:auto;right:8px}
    height scale by tier. Same shape in landscape and portrait; never a different diagram per screen. */
 .slots{display:grid;gap:6px;min-height:0}
 .srow{display:flex;align-items:stretch;gap:10px;min-height:0}
-.rlabel{flex:0 0 52px;font-size:11px;font-weight:800;letter-spacing:.3px;opacity:.55;line-height:1.15;align-self:center}
+.rlabel{flex:0 0 68px;align-self:center}
+.rlabel b{display:block;font-size:13px;font-weight:800;letter-spacing:.3px;opacity:.62;line-height:1.15}
+.rlabel small{display:block;font-size:11px;font-weight:700;opacity:.5;margin-top:3px}
 .rcards{flex:1;display:flex;gap:10px;flex-wrap:wrap;min-width:0;min-height:0}
 /* fixed px photo gutter, not --phw's percentage: on a flex item with a calc() flex-basis,
    Chromium resolves percentage padding against the flex CONTAINER's width, not the item's own
@@ -919,7 +921,9 @@ html[data-photo="0"] .bar .rc-tag{left:auto;right:8px}
 @media(orientation:portrait){
   .slots{gap:5px}
   .srow{gap:8px}
-  .rlabel{flex-basis:44px;font-size:10px}
+  .rlabel{flex-basis:58px}
+  .rlabel b{font-size:13px}
+  .rlabel small{font-size:10px}
   .rcards{gap:8px}
   .slots .bar{--sphw:26px;height:auto;padding:4px 8px 4px calc(var(--sphw) + 8px)}
   .slots .bar.sz-L{min-height:78px}
@@ -1024,10 +1028,11 @@ function render(){
   // --l update below, or the two would drift out of sync.
   const OPEN=[{open:1,sz:'S',_slot:17},{open:1,sz:'S',_slot:18}];
   const DISPLAY=[...ALL.filter(x=>x.sz==='L'),...ALL.filter(x=>x.sz==='M'),...ALL.filter(x=>x.sz==='S'),...OPEN];
-  const ROWS=[['L','Large · hopper'],['M','Medium · bin'],['S','Small · squeeze / garnish']];
+  // capacity is per dispenser (one hopper/bin/bottle), not per row
+  const ROWS=[['L','Hot Grain Hopper','≈ 2.5 gal'],['M','Loose-Scoop Bin','≈ 175 in³'],['S','Sauce Dispenser','≈ 32 oz']];
   window.LAST=window.LAST||{};
-  let html=ROWS.map(([tier,label])=>{const row=DISPLAY.filter(x=>x.sz===tier&&!x.open); return row.length?`<div class="srow"><div class="rlabel">${label}</div><div class="rcards">${row.map(slotBar).join('')}</div></div>`:'';}).join('');
-  html+=`<div class="srow"><div class="rlabel">Open</div><div class="rcards">${OPEN.map(slotBar).join('')}</div></div>`;
+  let html=ROWS.map(([tier,label,cap])=>{const row=DISPLAY.filter(x=>x.sz===tier&&!x.open); return row.length?`<div class="srow"><div class="rlabel"><b>${label}</b><small>Holds ${cap}</small></div><div class="rcards">${row.map(slotBar).join('')}</div></div>`:'';}).join('');
+  html+=`<div class="srow"><div class="rlabel"><b>Open</b></div><div class="rcards">${OPEN.map(slotBar).join('')}</div></div>`;
   const slotsKey=html.replace(/--l:[0-9.]+/g,'--l:0');
   const el=document.getElementById('g-all');
   if(LAST['g-all']!==slotsKey){el.innerHTML=html; LAST['g-all']=slotsKey;} else {const bars=el.querySelectorAll('.bar i'); DISPLAY.forEach((x,i)=>{if(bars[i]&&!x.open) bars[i].style.setProperty('--l',x.held?0:x.l);});}

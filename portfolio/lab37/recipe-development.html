@@ -52,7 +52,9 @@ main{max-width:1320px;margin:0 auto;padding:20px;display:grid;grid-template-colu
    just wider. Same shape as the worker panel's status card (PANEL-DESIGN.md "Machine layout"). */
 .rack{display:grid;gap:8px}
 .rrow{display:flex;align-items:stretch;gap:8px;justify-content:flex-start}
-.rlabel{flex:0 0 64px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--ink3);align-self:center}
+.rlabel{flex:0 0 76px;align-self:center}
+.rlabel b{display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--ink3);line-height:1.25}
+.rlabel small{display:block;font-size:10px;font-weight:600;color:var(--ink3);opacity:.65;margin-top:3px}
 .rcards{display:flex;gap:8px;flex-wrap:wrap}
 .slot{border-radius:12px;padding:10px 10px 9px;display:flex;flex-direction:column;justify-content:space-between;cursor:pointer;border:1px solid var(--line);background:var(--panel2)}
 .slot.sz-L{flex:0 0 22%;min-height:108px}
@@ -290,8 +292,9 @@ function addSlot(n){
   render();
 }
 
-// ROWS: row 1 is the 4 mains; then one left-justified row per dispenser-size tier, then Open.
-const SIZE_TIERS=[['L','Large · hopper'],['M','Medium · bin'],['S','Small · squeeze / garnish']];
+// ROWS: row 1 is the 4 mains; then one left-justified row per dispenser hardware tier, then Open.
+// Capacity is per dispenser (one hopper/bin/bottle), not per row.
+const SIZE_TIERS=[['L','Hot Grain Hopper','≈ 2.5 gal'],['M','Loose-Scoop Bin','≈ 175 in³'],['S','Sauce Dispenser','≈ 32 oz']];
 function renderRack(){
   const slotCard=s=>{
     const cls=s.name?(s.isNew?'new':s.t):'open swing';
@@ -301,12 +304,12 @@ function renderRack(){
     </div>`;
   };
   let html='';
-  SIZE_TIERS.forEach(([tier,label])=>{
+  SIZE_TIERS.forEach(([tier,label,cap])=>{
     const row=SLOTS.filter(s=>s.t!=='swing'&&s.sz===tier);
-    if(row.length) html+=`<div class="rrow"><div class="rlabel">${label}</div><div class="rcards">${row.map(slotCard).join('')}</div></div>`;
+    if(row.length) html+=`<div class="rrow"><div class="rlabel"><b>${label}</b><small>Holds ${cap}</small></div><div class="rcards">${row.map(slotCard).join('')}</div></div>`;
   });
   const openRow=SLOTS.filter(s=>s.t==='swing');
-  html+=`<div class="rrow"><div class="rlabel">Open</div><div class="rcards">${openRow.map(slotCard).join('')}</div></div>`;
+  html+=`<div class="rrow"><div class="rlabel"><b>Open</b></div><div class="rcards">${openRow.map(slotCard).join('')}</div></div>`;
   document.getElementById('rack').innerHTML=html;
   const used=filled().length, open=openSlots().length;
   document.getElementById('capNote').innerHTML=`<b>${used}/18</b> slots loaded · <b>${open}</b> open. Standard build is 16 (4 mains, 12 toppings) — the 2 swing slots are what let a store trial something new without a full retrofit.`;
