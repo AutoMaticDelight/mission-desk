@@ -46,15 +46,18 @@ main{max-width:1320px;margin:0 auto;padding:20px;display:grid;grid-template-colu
 .card h2{margin:0 0 3px;font-size:16px;letter-spacing:-.01em}
 .card .sub{margin:0 0 12px;font-size:13px;color:var(--ink2)}
 
-/* slot rack — the 18-slot machine floor plan: one row per category (Proteins, Bases, Vegetables,
-   Sauces, Dairy, Open), cards all sized to the widest row (Vegetables, 6). Same shape as the
-   worker panel's status card (PANEL-DESIGN.md "Machine layout"). */
+/* slot rack — the 18-slot machine floor plan, sized by real dispenser hardware. Row 1 is the 4
+   mains (large hopper). Then one left-justified row per size tier down to small squeeze/garnish,
+   then Open last. Box width AND height scale by tier, so "big" reads as literally bigger, not
+   just wider. Same shape as the worker panel's status card (PANEL-DESIGN.md "Machine layout"). */
 .rack{display:grid;gap:8px}
-.rrow{display:flex;align-items:center;gap:8px}
-.rlabel{flex:0 0 64px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--ink3)}
-.rcards{flex:1;display:flex;gap:8px;min-width:0}
-.rcards.short{justify-content:center}
-.slot{flex:0 0 calc((100% - 40px)/6);border-radius:12px;padding:10px 10px 9px;min-height:74px;display:flex;flex-direction:column;justify-content:space-between;cursor:pointer;border:1px solid var(--line);background:var(--panel2)}
+.rrow{display:flex;align-items:stretch;gap:8px;justify-content:flex-start}
+.rlabel{flex:0 0 64px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--ink3);align-self:center}
+.rcards{display:flex;gap:8px;flex-wrap:wrap}
+.slot{border-radius:12px;padding:10px 10px 9px;display:flex;flex-direction:column;justify-content:space-between;cursor:pointer;border:1px solid var(--line);background:var(--panel2)}
+.slot.sz-L{flex:0 0 22%;min-height:108px}
+.slot.sz-M{flex:0 0 14%;min-height:80px}
+.slot.sz-S{flex:0 0 8%;min-height:58px}
 .slot .head{display:flex;justify-content:space-between;align-items:flex-start;font-size:11px;color:var(--ink3)}
 .slot .dot{width:8px;height:8px;border-radius:50%;flex:none;margin-top:2px}
 .slot.hot .dot{background:var(--amber)}.slot.cold .dot{background:var(--blue)}.slot.swing .dot{background:var(--ink3)}
@@ -192,13 +195,14 @@ const GROUPS={prot:'Proteins',base:'Bases',veg:'Vegetables',sau:'Sauces',dai:'Da
 const LIMITS={prot:{min:1,max:2},base:{min:1,max:2},topping:{max:8}}; // topping = veg+sau+dai combined
 
 let SLOTS=[
- {slot:1,name:'Chicken',g:'prot',t:'hot'},{slot:2,name:'Beef',g:'prot',t:'hot'},
- {slot:3,name:'Rice',g:'base',t:'hot'},{slot:4,name:'Quinoa',g:'base',t:'hot'},
- {slot:5,name:'Beans',g:'veg',t:'cold'},{slot:6,name:'Corn',g:'veg',t:'cold'},{slot:7,name:'Pico',g:'veg',t:'cold'},
- {slot:8,name:'Lettuce',g:'veg',t:'cold'},{slot:9,name:'Cilantro',g:'veg',t:'cold'},{slot:10,name:'Lime',g:'veg',t:'cold'},
- {slot:11,name:'Guac',g:'sau',t:'cold'},{slot:12,name:'Verde',g:'sau',t:'cold'},{slot:13,name:'Chipotle',g:'sau',t:'cold'},{slot:14,name:'Roja',g:'sau',t:'cold'},
- {slot:15,name:'Cheese',g:'dai',t:'cold'},{slot:16,name:'Sour Cream',g:'dai',t:'cold'},
- {slot:17,name:null,g:null,t:'swing'},{slot:18,name:null,g:null,t:'swing'},
+ // sz: dispenser hardware size — L large hopper (auger/steam-table), M medium bin (scoop), S small squeeze/garnish
+ {slot:1,name:'Chicken',g:'prot',t:'hot',sz:'L'},{slot:2,name:'Beef',g:'prot',t:'hot',sz:'L'},
+ {slot:3,name:'Rice',g:'base',t:'hot',sz:'L'},{slot:4,name:'Quinoa',g:'base',t:'hot',sz:'L'},
+ {slot:5,name:'Beans',g:'veg',t:'cold',sz:'M'},{slot:6,name:'Corn',g:'veg',t:'cold',sz:'M'},{slot:7,name:'Pico',g:'veg',t:'cold',sz:'M'},
+ {slot:8,name:'Lettuce',g:'veg',t:'cold',sz:'M'},{slot:9,name:'Cilantro',g:'veg',t:'cold',sz:'M'},{slot:10,name:'Lime',g:'veg',t:'cold',sz:'S'},
+ {slot:11,name:'Guac',g:'sau',t:'cold',sz:'S'},{slot:12,name:'Verde',g:'sau',t:'cold',sz:'S'},{slot:13,name:'Chipotle',g:'sau',t:'cold',sz:'S'},{slot:14,name:'Roja',g:'sau',t:'cold',sz:'S'},
+ {slot:15,name:'Cheese',g:'dai',t:'cold',sz:'M'},{slot:16,name:'Sour Cream',g:'dai',t:'cold',sz:'S'},
+ {slot:17,name:null,g:null,t:'swing',sz:'S'},{slot:18,name:null,g:null,t:'swing',sz:'S'},
 ];
 
 // other stores in the fleet running Bowl-O-Matic ("Bowls" type in manager-fleet.html), fixed as of today
@@ -266,7 +270,7 @@ function renderEditRow(s){
 function removeSlot(n){
   const s=bySlot(n);
   const nm=s.name;
-  s.name=null; s.g=null; s.t='swing';
+  s.name=null; s.g=null; s.t='swing'; s.sz='S';
   delete SEL[nm];
   EDIT=null;
   document.getElementById('editRow').style.display='none';
@@ -279,26 +283,30 @@ function addSlot(n){
   if(!name) return;
   const s=bySlot(n);
   s.name=name; s.g=grpEl.value; s.t=(grpEl.value==='prot'||grpEl.value==='base')?'hot':'cold';
+  s.sz='S';
   s.isNew=true;
   EDIT=null;
   document.getElementById('editRow').style.display='none';
   render();
 }
 
-// ROWS: one row per category — the widest (Vegetables, 6) sets the card size everyone else shares
-const ROW_GROUPS=[['prot','Proteins'],['base','Bases'],['veg','Vegetables'],['sau','Sauces'],['dai','Dairy'],[null,'Open']];
+// ROWS: row 1 is the 4 mains; then one left-justified row per dispenser-size tier, then Open.
+const SIZE_TIERS=[['L','Large · hopper'],['M','Medium · bin'],['S','Small · squeeze / garnish']];
 function renderRack(){
   const slotCard=s=>{
     const cls=s.name?(s.isNew?'new':s.t):'open swing';
-    return `<div class="slot ${s.t} ${cls}" onclick="toggleSlot(${s.slot})">
+    return `<div class="slot sz-${s.sz} ${s.t} ${cls}" onclick="toggleSlot(${s.slot})">
       <div class="head"><span>#${s.slot}</span><span class="dot"></span></div>
-      <div class="nm">${s.name||'OPEN'}</div>
+      <div class="nm">${s.name||'+ Add'}</div>
     </div>`;
   };
-  const html=ROW_GROUPS.map(([g,label])=>{
-    const row=g?SLOTS.filter(s=>s.g===g):SLOTS.filter(s=>s.t==='swing');
-    return `<div class="rrow"><div class="rlabel">${label}</div><div class="rcards ${row.length<6?'short':''}">${row.map(slotCard).join('')}</div></div>`;
-  }).join('');
+  let html='';
+  SIZE_TIERS.forEach(([tier,label])=>{
+    const row=SLOTS.filter(s=>s.t!=='swing'&&s.sz===tier);
+    if(row.length) html+=`<div class="rrow"><div class="rlabel">${label}</div><div class="rcards">${row.map(slotCard).join('')}</div></div>`;
+  });
+  const openRow=SLOTS.filter(s=>s.t==='swing');
+  html+=`<div class="rrow"><div class="rlabel">Open</div><div class="rcards">${openRow.map(slotCard).join('')}</div></div>`;
   document.getElementById('rack').innerHTML=html;
   const used=filled().length, open=openSlots().length;
   document.getElementById('capNote').innerHTML=`<b>${used}/18</b> slots loaded · <b>${open}</b> open. Standard build is 16 (4 mains, 12 toppings) — the 2 swing slots are what let a store trial something new without a full retrofit.`;

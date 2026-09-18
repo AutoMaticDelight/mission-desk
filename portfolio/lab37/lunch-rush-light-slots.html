@@ -884,19 +884,21 @@ html[data-photo="0"] .bar .rc-tag{left:auto;right:8px}
 
 .ph{height:100%;width:var(--phw);object-fit:cover}
 
-/* SLOT MAP: the machine's 18 physical dispenser positions — the same floor plan drawn in
-   recipe-development.html's rack. One row per category (Proteins, Bases, Vegetables, Sauces,
-   Dairy, Open), cards sized to the widest row (Vegetables, 6). Same shape in landscape and
-   portrait alike. Never regrouped differently, never a different diagram per screen. */
+/* SLOT MAP: the machine's 18 physical dispenser positions, sized by real dispenser hardware —
+   same floor plan as recipe-development.html's rack. Row 1 is the 4 mains (large hopper), then
+   one left-justified row per size tier down to small squeeze/garnish, then Open. Width AND
+   height scale by tier. Same shape in landscape and portrait; never a different diagram per screen. */
 .slots{display:grid;gap:6px;min-height:0}
-.srow{display:flex;align-items:center;gap:10px;min-height:0}
-.rlabel{flex:0 0 52px;font-size:11px;font-weight:800;letter-spacing:.3px;opacity:.55;line-height:1.15}
-.rcards{flex:1;display:flex;gap:10px;min-width:0;min-height:0}
-.rcards.short{justify-content:center}
+.srow{display:flex;align-items:stretch;gap:10px;min-height:0}
+.rlabel{flex:0 0 52px;font-size:11px;font-weight:800;letter-spacing:.3px;opacity:.55;line-height:1.15;align-self:center}
+.rcards{flex:1;display:flex;gap:10px;flex-wrap:wrap;min-width:0;min-height:0}
 /* fixed px photo gutter, not --phw's percentage: on a flex item with a calc() flex-basis,
    Chromium resolves percentage padding against the flex CONTAINER's width, not the item's own
    (a real, reproducible quirk) — a %-based gutter here blows up to hundreds of px. */
-.slots .bar{--sphw:30px;flex:0 0 calc((100% - 50px)/6);flex-direction:column;align-items:flex-start;justify-content:center;gap:1px;padding:6px 10px 6px calc(var(--sphw) + 10px);height:6.6vh;min-height:0}
+.slots .bar{--sphw:30px;flex-direction:column;align-items:flex-start;justify-content:center;gap:1px;padding:6px 10px 6px calc(var(--sphw) + 10px);min-height:0}
+.slots .bar.sz-L{flex:0 0 22%;height:11.5vh}
+.slots .bar.sz-M{flex:0 0 14%;height:8.5vh}
+.slots .bar.sz-S{flex:0 0 11%;height:7vh}
 .slots .bar .ph{width:var(--sphw)}
 .slots .bar i{left:var(--sphw);width:calc((100% - var(--sphw)) * var(--l,0) / 100)}
 .slots .bar .rc-tag{font-size:10px;padding:2px 4px;top:3px;left:3px}
@@ -905,6 +907,8 @@ html[data-photo="0"] .bar .rc-tag{left:auto;right:8px}
 .slots .bar.hot .head .dot{--dot:#ff9f0a}
 .slots .bar.cold .head .dot{--dot:#0a84ff}
 .slots .bar .n{font-size:14px;letter-spacing:-.01em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%}
+.slots .bar.long .n{white-space:normal;line-height:1.05;overflow:visible;text-overflow:clip;overflow-wrap:break-word}
+.slots .bar.sz-S.long{height:auto;min-height:7vh}
 .slots .bar .v{font-size:13px}
 .slots .bar.open{background:#fff;box-shadow:inset 0 0 0 2px var(--line);opacity:.55}
 .slots .bar.open .n{color:var(--dim);font-weight:700}
@@ -917,7 +921,10 @@ html[data-photo="0"] .bar .rc-tag{left:auto;right:8px}
   .srow{gap:8px}
   .rlabel{flex-basis:44px;font-size:10px}
   .rcards{gap:8px}
-  .slots .bar{--sphw:26px;flex-basis:calc((100% - 40px)/6);height:auto;min-height:42px;padding:4px 8px 4px calc(var(--sphw) + 8px)}
+  .slots .bar{--sphw:26px;height:auto;padding:4px 8px 4px calc(var(--sphw) + 8px)}
+  .slots .bar.sz-L{min-height:78px}
+  .slots .bar.sz-M{min-height:56px}
+  .slots .bar.sz-S{min-height:44px}
   .slots .bar .n{font-size:12px}.slots .bar .v{font-size:11px}
 }
 </style>
@@ -954,8 +961,9 @@ html[data-photo="0"] .bar .rc-tag{left:auto;right:8px}
 /* Simulated clock: 1 real second = 6 seconds on the line, so a minute passes every 10 seconds and the numbers visibly click down. */
 let NOW=12*60+18, SEC=0;
 const PEAK=[12*60+30,12*60+50];
-const H=[{n:'Chicken',g:'prot',l:64,b:2.1,src:'reach-in 1'},{n:'Beef',g:'prot',l:17,b:2.8,src:'walk-in'},{n:'Rice',g:'base',l:41,b:2.9,src:'cooker 2'},{n:'Quinoa',g:'base',l:0,b:1.2,held:1,src:'dry store'}];
-const C=[{n:'Beans',g:'veg',l:70,b:1.5},{n:'Corn',g:'veg',l:35,b:1.6},{n:'Pico',g:'veg',l:22,b:1.9},{n:'Lettuce',g:'veg',l:48,b:1.3},{n:'Cilantro',g:'veg',l:52,b:.8},{n:'Lime',g:'veg',l:90,b:.5},{n:'Guac',g:'sau',l:15,b:1.7},{n:'Verde',g:'sau',l:73,b:.9},{n:'Chipotle',g:'sau',l:30,b:1.1},{n:'Roja',g:'sau',l:66,b:1},{n:'Cheese',g:'dai',l:80,b:1.4},{n:'Sour Cream',g:'dai',l:58,b:1.2}];
+// sz: dispenser hardware size — L large hopper (auger/steam-table), M medium bin (scoop), S small squeeze/garnish
+const H=[{n:'Chicken',g:'prot',sz:'L',l:64,b:2.1,src:'reach-in 1'},{n:'Beef',g:'prot',sz:'L',l:17,b:2.8,src:'walk-in'},{n:'Rice',g:'base',sz:'L',l:41,b:2.9,src:'cooker 2'},{n:'Quinoa',g:'base',sz:'L',l:0,b:1.2,held:1,src:'dry store'}];
+const C=[{n:'Beans',g:'veg',sz:'M',l:70,b:1.5},{n:'Corn',g:'veg',sz:'M',l:35,b:1.6},{n:'Pico',g:'veg',sz:'M',l:22,b:1.9},{n:'Lettuce',g:'veg',sz:'M',l:48,b:1.3},{n:'Cilantro',g:'veg',sz:'M',l:52,b:.8},{n:'Lime',g:'veg',sz:'S',l:90,b:.5},{n:'Guac',g:'sau',sz:'S',l:15,b:1.7},{n:'Verde',g:'sau',sz:'S',l:73,b:.9},{n:'Chipotle',g:'sau',sz:'S',l:30,b:1.1},{n:'Roja',g:'sau',sz:'S',l:66,b:1},{n:'Cheese',g:'dai',sz:'M',l:80,b:1.4},{n:'Sour Cream',g:'dai',sz:'S',l:58,b:1.2}];
 const ALL=[...H,...C];
 const pace=t=> t<PEAK[0]?1.0 : t<PEAK[1]?1.35 : t<13*60+10?1.0 : 0.6;
 const clock=t=>{const h=Math.floor(t/60),m=t%60;return (h>12?h-12:h)+':'+String(m).padStart(2,'0');};
@@ -1001,25 +1009,28 @@ function render(){
   window.SRC=window.SRC||{}; window.phFail=function(el,k,fallback){SRC[k]=fallback; el.onerror=null; el.src=fallback;};
   const ph=x=>{const k=key(x); const src=SRC[k]||`img/${k}.jpg`; return `<img class="ph" alt="" decoding="sync" src="${src}" ${SRC[k]?'':`onerror="phFail(this,'${k}','${img(x)}')"`}>`;};
   {const p=new URLSearchParams(location.search).get('photo'); const w=p===null?25:(parseInt(p,10)||0); document.documentElement.style.setProperty('--phw',w+'%'); document.documentElement.dataset.photo=w; const lk=new URLSearchParams(location.search).get('look'); if(lk) document.documentElement.dataset.look=lk;}
-  // SLOT MAP: same #1-18 numbering as recipe-development.html's machine rack, one row per
-  // category — same row groups as the rack (PANEL-DESIGN.md "Machine layout").
+  // SLOT MAP: same #1-18 numbering as recipe-development.html's machine rack, sized by real
+  // dispenser hardware (PANEL-DESIGN.md "Machine layout"). Row 1 is the 4 mains; then one
+  // left-justified row per size tier; then Open.
   const temp=x=>(x.g==='prot'||x.g==='base')?'hot':'cold';
-  const SLOTS18=[...ALL,{open:1},{open:1}];
-  SLOTS18.forEach((x,i)=>{x._slot=i+1});
+  ALL.forEach((x,i)=>{x._slot=i+1});
   const slotBar=x=>{
-    if(x.open) return `<div class="bar slot open"><div class="head"><span>#${x._slot}</span><span class="dot"></span></div><div class="n">OPEN</div><div class="v">swing slot</div></div>`;
+    if(x.open) return `<div class="bar slot sz-${x.sz} open"><div class="head"><span>#${x._slot}</span><span class="dot"></span></div><div class="n">+ Add</div></div>`;
     const z=st(x);
-    return `<div class="bar slot ${temp(x)} ${z} ${x.just?'just':''} ${x.n.length>8?'long':''}" ${x.held?'':`onclick="openSheet('refill:${x.n}')"`}>${ph(x)}${inRecipe(x)?'<em class="rc-tag">SF</em>':''}<i style="--l:${x.held?0:x.l}"></i><div class="head"><span>#${x._slot}</span><span class="dot"></span></div><div class="n">${x.n}</div><div class="v">${x.held?'HELD':Math.round(x.l)+'%'}<small> · ${x.held?'not dispensing':x.just?'REFILLED':refillClock(x)}</small></div></div>`;
+    return `<div class="bar slot sz-${x.sz} ${temp(x)} ${z} ${x.just?'just':''} ${x.n.length>=8?'long':''}" ${x.held?'':`onclick="openSheet('refill:${x.n}')"`}>${ph(x)}${inRecipe(x)?'<em class="rc-tag">SF</em>':''}<i style="--l:${x.held?0:x.l}"></i><div class="head"><span>#${x._slot}</span><span class="dot"></span></div><div class="n">${x.n}</div><div class="v">${x.held?'HELD':Math.round(x.l)+'%'}<small> · ${x.held?'not dispensing':x.just?'REFILLED':refillClock(x)}</small></div></div>`;
   };
-  // ROWS: one per category — Proteins(2) Bases(2) Vegetables(6) Sauces(4) Dairy(2) Open(2).
-  // Same breakpoints as recipe-development.html's rack (PANEL-DESIGN.md "Machine layout"); this
-  // also happens to match H/C's own group-contiguous order, so SLOTS18's array order is unchanged.
-  const ROWS=[[0,2,'Proteins'],[2,4,'Bases'],[4,10,'Vegetables'],[10,14,'Sauces'],[14,16,'Dairy'],[16,18,'Open']];
+  // DISPLAY: reordered by size tier (L row 1, then M, then S, then Open) — array order no longer
+  // matches ALL's category order, so build the render sequence once and reuse it for the fast-path
+  // --l update below, or the two would drift out of sync.
+  const OPEN=[{open:1,sz:'S',_slot:17},{open:1,sz:'S',_slot:18}];
+  const DISPLAY=[...ALL.filter(x=>x.sz==='L'),...ALL.filter(x=>x.sz==='M'),...ALL.filter(x=>x.sz==='S'),...OPEN];
+  const ROWS=[['L','Large · hopper'],['M','Medium · bin'],['S','Small · squeeze / garnish']];
   window.LAST=window.LAST||{};
-  const html=ROWS.map(([a,b,label])=>{const slice=SLOTS18.slice(a,b); return `<div class="srow"><div class="rlabel">${label}</div><div class="rcards ${slice.length<6?'short':''}">${slice.map(slotBar).join('')}</div></div>`;}).join('');
+  let html=ROWS.map(([tier,label])=>{const row=DISPLAY.filter(x=>x.sz===tier&&!x.open); return row.length?`<div class="srow"><div class="rlabel">${label}</div><div class="rcards">${row.map(slotBar).join('')}</div></div>`:'';}).join('');
+  html+=`<div class="srow"><div class="rlabel">Open</div><div class="rcards">${OPEN.map(slotBar).join('')}</div></div>`;
   const slotsKey=html.replace(/--l:[0-9.]+/g,'--l:0');
   const el=document.getElementById('g-all');
-  if(LAST['g-all']!==slotsKey){el.innerHTML=html; LAST['g-all']=slotsKey;} else {const bars=el.querySelectorAll('.bar i'); SLOTS18.forEach((x,i)=>{if(bars[i]&&!x.open) bars[i].style.setProperty('--l',x.held?0:x.l);});}
+  if(LAST['g-all']!==slotsKey){el.innerHTML=html; LAST['g-all']=slotsKey;} else {const bars=el.querySelectorAll('.bar i'); DISPLAY.forEach((x,i)=>{if(bars[i]&&!x.open) bars[i].style.setProperty('--l',x.held?0:x.l);});}
   document.getElementById('clock').textContent=clock(NOW);
 }
 render();

@@ -10,46 +10,63 @@ Slot-map variant: `lunch-rush-light-slots.html` — same panel, status card
 redrawn as the 18-slot machine layout below instead of grouped-by-category.
 
 ## Machine layout (one shape, everywhere)
-Locked 2026-09-18, revised twice same day (diamond, then this — one row
-per category). The machine has **18 physical dispenser slots**, numbered
-1–18, always in this fixed order and **one row per category**, labeled:
-- Row **Proteins** (2): 1 Chicken · 2 Beef.
-- Row **Bases** (2): 3 Rice · 4 Quinoa.
-- Row **Vegetables** (6): 5 Beans · 6 Corn · 7 Pico · 8 Lettuce · 9 Cilantro · 10 Lime.
-- Row **Sauces** (4): 11 Guac · 12 Verde · 13 Chipotle · 14 Roja.
-- Row **Dairy** (2): 15 Cheese · 16 Sour Cream.
-- Row **Open** (2): 17 open (swing) · 18 open (swing).
+Locked 2026-09-18, revised three times same day (diamond → one row per
+category → this, sized by real dispenser hardware). The machine has **18
+physical dispenser slots**, numbered 1–18, always in this fixed order.
+**Row 1 is the 4 mains.** Every row after that is one **dispenser-size
+tier**, left-justified, down to Open last:
+- Row **Large · hopper** (4): 1 Chicken · 2 Beef · 3 Rice · 4 Quinoa. Auger
+  / steam-table dispensers — the most volume per bowl, sized biggest.
+- Row **Medium · bin** (6): 5 Beans · 6 Corn · 7 Pico · 8 Lettuce ·
+  9 Cilantro · 15 Cheese. Scoop-dispensed produce and cheese.
+- Row **Small · squeeze / garnish** (6): 10 Lime · 11 Guac · 12 Verde ·
+  13 Chipotle · 14 Roja · 16 Sour Cream. Squeeze bottles and pinch
+  garnish — smallest footprint, most of them fit one row with room left.
+- Row **Open** (2): 17 · 18, both small-tier until something's added,
+  labeled "+ Add", not "OPEN" — an open slot is an action, not a status.
 
 Every screen that draws the machine's slots — the worker panel's status
 card, the manager console's machine detail (when built), `recipe-
-development.html`'s rack — draws this exact list, in these exact six
-labeled rows, as the same numbered-slot primitive: a `#N` badge, a
-hot/cold dot (amber = hot-held, blue = cold-held, gray = open swing), then
-the name. Never merge or reorder the category rows, resize some slots
-bigger than others, or invent a different diagram per screen. **One
-physical object gets one visual representation** — recognizable at a
-glance whichever screen it's on, same shape in landscape and portrait
-alike. Per-context detail layers on top of that shape (the worker panel
-adds a photo, percent and refill countdown; recipe development adds
-edit/remove controls) but the 6 rows, their labels, order and numbering
-never change.
+development.html`'s rack — draws this exact list, in these exact four
+rows, as the same numbered-slot primitive: a `#N` badge, a hot/cold dot
+(amber = hot-held, blue = cold-held, gray = open swing), then the name.
+Never merge or reorder the tier rows, size a slot off-tier, center a row
+instead of left-justifying it, or invent a different diagram per screen.
+**One physical object gets one visual representation** — recognizable at
+a glance whichever screen it's on, same shape in landscape and portrait
+alike. Per-context detail layers on top (the worker panel adds a photo,
+percent and refill countdown; recipe development adds edit/remove
+controls) but the 4 rows, their labels, order, numbering and *relative*
+sizing never change.
 
-Implementation: each row is `<label><cards>` — a fixed-width label
-followed by a flex row of cards sized to the widest category (Vegetables,
-6): `(100% - 5×gap) / 6`. Shorter rows (2 or 4 cards) center within that
-same per-card width rather than stretching to fill, so every card is the
-same size everywhere. Gotcha hit and fixed while building this: a
-percentage-based photo gutter (`padding-left: calc(var(--phw) + Npx)`) on
-a flex item with a `calc()` flex-basis resolves against the flex
-*container's* width in Chromium, not the item's own — it must be a fixed
-px value on these cards, not `--phw`'s percentage.
+Sizing: card **width and height** both scale by tier (large hopper is
+visibly bigger in both dimensions, not just wider) — width via
+`flex-basis` percentage (L 22% / M 14% / S 11%, tuned so all 6 Small-tier
+names fit one line or wrap to two without truncating — 8% was tried first
+and clipped "Chipotle"/"Sour Cream" to illegible fragments, caught and
+fixed same session), height via a fixed value per tier. Rows are
+left-justified (`justify-content:flex-start`, `flex-wrap:wrap`), never
+centered or stretched to fill — a short tier row is allowed to leave
+empty space on the right, that's the hardware talking, not a layout bug.
+
+Two gotchas hit and fixed while building this, both worth not
+rediscovering:
+- A percentage-based photo gutter (`padding-left: calc(var(--phw) +
+  Npx)`) on a flex item with a `calc()` flex-basis resolves its
+  percentage against the flex *container's* width in Chromium, not the
+  item's own. Cards briefly ballooned to ~300px. Fix: a fixed-px gutter
+  on these cards (`--sphw`), not `--phw`'s percentage.
+- The "long name wraps" rule (`.long`, for names ≥8 chars) needs
+  `overflow-wrap: break-word` too — "Chipotle" is one word with no space
+  to break at, so `white-space:normal` alone still overflowed the card
+  edge instead of wrapping.
 
 Files on the slot-map layout: `recipe-development.html` (the rack),
-`lunch-rush-light-slots.html` (worker panel — identical category-row shape
-in both orientations, only the card size/font scales). `lunch-rush-
-light.html` and `lunch-rush-hoppers.html` still use the older grouped-by-
-category layout in **Boxes** below (visually similar in spirit, but not on
-this shared numbered-slot contract) — kept as-is, not migrated.
+`lunch-rush-light-slots.html` (worker panel — identical shape in both
+orientations, only card size/font scales). `lunch-rush-light.html` and
+`lunch-rush-hoppers.html` still use the older grouped-by-category layout
+in **Boxes** below (visually similar in spirit, but not on this shared
+numbered-slot contract) — kept as-is, not migrated.
 
 ## Brand
 - Name: **Bowl-O-Matic 5000** (hyphens, capital O). Mark: `logo.svg` — a solid hot yellow-green circle, no outline, with the icon
