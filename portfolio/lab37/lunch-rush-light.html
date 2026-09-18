@@ -448,6 +448,32 @@ body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSys
 
 /* portrait: mains fill their row (no void); brand */
 @media(orientation:portrait){.row1{align-items:stretch}.row1 .grp{align-content:stretch;grid-template-rows:auto minmax(0,1fr)}.big .bar{height:auto;min-height:0}}
+
+/* SHORTER: every box 20% less tall, dairy is one box tall, leftover height goes to the alert */
+body{grid-template-rows:auto auto minmax(0,1fr) auto auto}
+.hoppers{grid-template-rows:auto auto;align-content:start;gap:10px;min-height:0}
+.row1,.row2{align-items:start}
+.grp,.row1 .grp,.row2 .grp{grid-template-rows:auto auto;align-content:start}
+.big .bar{height:16vh;min-height:0;max-height:none}
+.tops{grid-auto-rows:auto}
+.tops .bar{height:10.5vh;min-height:0;max-height:none;padding:4px 14px}
+.alert{align-self:center;max-height:150px;min-height:0}
+.nums{border-radius:0}
+@media(orientation:portrait){
+  .big .bar{height:16vh}
+  .tops .bar{height:37px;flex-direction:row;align-items:center;justify-content:space-between;gap:10px;padding:0 12px}
+  .tops .bar .n{font-size:18px}.tops .bar .v{font-size:17px}
+  .row2{grid-template-columns:2fr 1fr;grid-template-rows:auto auto;gap:8px 10px}
+  .row2 .grp:first-child{grid-column:1/-1}
+  .tops.veg{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .tops.sau{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .tops.dai{grid-template-columns:1fr}
+  .alert{max-height:300px}
+}
+/* freed height spreads evenly between sections instead of pooling around the alert */
+body{grid-template-rows:auto auto auto auto auto;align-content:space-between}
+.alert{align-self:auto}
+@media(orientation:landscape){.big .bar{gap:8px}.big .bar .n{font-size:clamp(20px,2.6vh,26px)}}
 </style>
 <link rel="stylesheet" href="glove.css"></head>
 <body>
