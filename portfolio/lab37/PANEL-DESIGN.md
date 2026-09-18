@@ -67,10 +67,14 @@ Size hierarchy still reads clearly without ever leaving a ragged trailing
 gap: a row with only 4 cards (Hot Grain Hopper) divides that same full
 width four ways, so each card is wider than a Sauce Dispenser card
 sharing that width eight ways — the tier's width emerges from its own
-bay count, it isn't set directly. Height is still an explicit value per
-tier (large hopper is visibly taller too, not just wider). An earlier
-version fixed each tier's width to a percentage (L 22% / M 14% / S 11%)
-and left-justified rows with unfilled space on the right — rejected for
+bay count, it isn't set directly. **Height is the same for every card,
+every tier** (`9.5vh` landscape, `80px` portrait) — width is the only
+thing that varies, so a 4-bay row and an 8-bay row still read as one
+consistent grid, not three differently-scaled ones. An earlier version
+also varied height per tier (large hopper taller, not just wider) —
+replaced same session for a cleaner, more consistent grid. A still-
+earlier version fixed each tier's width to a percentage (L 22% / M 14% /
+S 11%) and left-justified rows with unfilled space on the right — rejected for
 not reading as one aligned grid; full-width `flex:1` replaced it same
 session.
 
