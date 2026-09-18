@@ -608,13 +608,55 @@ html:not([data-photo="0"]) .tops .bar .v{font-size:16px}
 @media(orientation:landscape){.top .si{padding:0 8px;gap:5px;font-size:15px}.top .sys{padding:0 2px}}
 
 @media(orientation:landscape){.top .sys{flex-wrap:wrap;row-gap:0;padding:2px;min-height:0}.top .si{min-height:42px}}
+
+/* FINESSE PASS: craft details only, no layout changes */
+html{-webkit-text-size-adjust:100%}
+body{touch-action:manipulation;-webkit-user-select:none;user-select:none;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+/* numbers that tick must not jitter */
+#clock,#speedv,#expv,.big .bar .m b,.tops .bar .v,.num b,.next .t,.si span{font-variant-numeric:tabular-nums}
+/* uppercase names breathe; no negative tracking on caps */
+.big .bar .n,.tops .bar .n{letter-spacing:.01em}
+/* one hierarchy for labels: section labels lead, group labels follow */
+.sec{font-size:16px;letter-spacing:2.2px;color:var(--ink)}
+.sec::after{opacity:.6}
+.glabel{font-size:14px;letter-spacing:1.6px;font-weight:700;opacity:.85}
+/* the refill time is the second thought in a small bar */
+.tops .bar .v small{opacity:.78;font-weight:600}
+.big .bar .m span{opacity:.9}
+/* the clock never truncates in the title bar */
+.band .when{overflow:visible;text-overflow:clip;flex:0 0 auto}
+@media(orientation:landscape){.band .when{font-size:17px}}
+/* photo edge: a hairline between picture and panel; photos are never smeared */
+.ph{background-repeat:no-repeat;box-shadow:inset -1px 0 0 rgba(0,0,0,.12)}
+/* state changes ease instead of snapping */
+.bar{transition:background-color .35s ease,box-shadow .35s ease,color .35s ease}
+.bar i{transition:width .6s cubic-bezier(.2,.7,.2,1),background-color .35s ease}
+/* touch feedback on every tappable surface */
+.bar,.go,.alert .more button,.si{transition-property:transform,background-color,box-shadow,color;transition-duration:.12s,.35s,.35s,.35s}
+.bar:active{transform:scale(.985)}
+.go:active{transform:translateY(2px)}
+.go{transition:transform .08s ease,box-shadow .08s ease}
+/* even rhythm: same gap inside groups as between the two hopper rows */
+.big{gap:12px}.tops{gap:10px}
+html[data-photo="0"] .big .bar .m span br{display:none}
+
+/* light: the dark machine strip needs no line above it; hairlines stay hairlines */
+.top .sys{border-top:0}
+.bar{box-shadow:0 1px 2px rgba(0,0,0,.05),0 0 0 1px rgba(0,0,0,.05)}
+.bar.low,.bar.now{box-shadow:none}.bar.now{box-shadow:inset 0 0 0 3px var(--hot)}
+.top{box-shadow:0 1px 2px rgba(0,0,0,.04),0 0 0 1px rgba(0,0,0,.04)}
+.ph{box-shadow:inset -1px 0 0 rgba(0,0,0,.08)}
+
+/* landscape: the clock stands alone (day lives in the peak note); machine line tightens on smaller iPads */
+@media(orientation:landscape){.band .when .day{display:none}.band .when{min-width:0}}
+@media(orientation:landscape) and (max-width:1200px){.top .si{font-size:14px;padding:0 7px;gap:5px}}
 </style>
 <link rel="stylesheet" href="glove.css"></head>
 <body>
   <section class="top">
   <header class="band">
     <a class="where" href="manager-fleet.html" style="color:inherit;text-decoration:none">‹ BOWL MAKER 5000 <span>UPTOWN · LUNCH RUSH</span></a>
-    <div class="when">THU <span id="clock">12:18</span> <span class="peak">PEAK 12:30–12:50</span></div>
+    <div class="when"><span class="day">THU</span> <span id="clock">12:18</span> <span class="peak">PEAK 12:30–12:50</span></div>
     <div class="stat"><b id="speedv">38</b><span>BOWLS / 10 MIN</span><i>▲</i></div>
     <div class="stat"><b id="expv">214</b><span>TO GO</span></div>
   </header>
@@ -673,7 +715,7 @@ function render(){
   const img=x=>'https://commons.wikimedia.org/wiki/Special:FilePath/'+encodeURIComponent(IMG[x.n.toLowerCase()]||'')+'?width=400';
   const ph=x=>`<div class="ph" style="background-image:url('${img(x)}')"></div>`;
   {const p=new URLSearchParams(location.search).get('photo'); const w=p===null?25:(parseInt(p,10)||0); document.documentElement.style.setProperty('--phw',w+'%'); document.documentElement.dataset.photo=w;}
-  const bigBar=x=>`<div class="bar ${st(x)} ${x.just?'just':''}" ${x.held?'':`onclick="openSheet('refill:${x.n}')"`}>${ph(x)}<i style="--l:${x.held?0:x.l}"></i><div class="n">${x.n}</div><div class="m"><b>${x.held?'HELD':Math.round(x.l)+'%'}</b><span>${x.held?'not dispensing':x.just?'REFILLED · '+x.just:mn(x)+' MIN · REFILL '+refillClock(x)}</span></div></div>`;
+  const bigBar=x=>`<div class="bar ${st(x)} ${x.just?'just':''}" ${x.held?'':`onclick="openSheet('refill:${x.n}')"`}>${ph(x)}<i style="--l:${x.held?0:x.l}"></i><div class="n">${x.n}</div><div class="m"><b>${x.held?'HELD':Math.round(x.l)+'%'}</b><span>${x.held?'not dispensing':x.just?'REFILLED · '+x.just:mn(x)+' MIN<br>REFILL '+refillClock(x)}</span></div></div>`;
   const smallBar=x=>{const z=st(x);return `<div class="bar ${z} ${x.just?'just':''}" onclick="openSheet('refill:${x.n}')">${ph(x)}<i style="--l:${x.l}"></i><div class="n">${x.n}</div><div class="v">${x.just?'REFILLED · '+x.just:Math.round(x.l)+'%<small> · '+refillClock(x)+'</small>'}</div></div>`;};
   document.getElementById('g-prot').innerHTML=H.filter(x=>x.g==='prot').map(bigBar).join('');
   document.getElementById('g-base').innerHTML=H.filter(x=>x.g==='base').map(bigBar).join('');
