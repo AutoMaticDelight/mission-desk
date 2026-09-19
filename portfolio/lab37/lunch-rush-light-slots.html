@@ -1037,6 +1037,14 @@ body{grid-template-rows:auto minmax(0,1fr) auto;align-content:stretch}
 .slots .bar .photo .head .temp,.slots .bar.hot .photo .head .temp,.slots .bar.cold .photo .head .temp{position:absolute;left:0;right:0;bottom:3px;text-align:center;font-size:clamp(22px,3.2vh,34px);line-height:1;letter-spacing:-.02em}
 .slots .bar .photo .head .temp small{font-size:14px;margin-left:8px;vertical-align:middle}
 @media(orientation:portrait){.slots .bar .photo .head .temp,.slots .bar.hot .photo .head .temp,.slots .bar.cold .photo .head .temp{font-size:24px}}
+/* BIN NUMBER: a solid badge in the card's top-left corner, over everything. Recipe tag moves to the photo's top-right. */
+.slots .bar>.bin{position:absolute;top:6px;left:6px;z-index:5;background:#1c1c1e;color:#fff;font-size:13px;font-weight:900;line-height:1;padding:5px 7px;border-radius:7px;letter-spacing:.2px;font-variant-numeric:tabular-nums}
+.slots .bar.low>.bin,.slots .bar.now>.bin{background:#fff;color:#111}
+.slots .bar.held>.bin{background:#8e8e93}
+.slots .bar.open>.bin{background:#d8dde6;color:#6b7280}
+.slots .bar .rc-tag{left:auto;right:6px;top:6px}
+.slots .bar .n{padding:8px 34px 0}
+@media(orientation:portrait){.slots .bar .n{padding:8px 30px 0}.slots .bar>.bin{font-size:12px;padding:4px 6px}}
 </style>
 <link rel="stylesheet" href="glove.css"></head>
 <body>
@@ -1139,11 +1147,13 @@ function render(){
   ALL.forEach((x,i)=>{x._slot=i+1});
   // APPLE CARD: name band on top (the one glanceable fact), full-bleed photo below, captioned.
   const slotBar=x=>{
-    if(x.open) return `<div class="bar slot sz-${x.sz} open"><span class="head"><span>#${x._slot}</span></span><div class="n">+ Add</div></div>`;
+    const bin=`<span class="bin">#${x._slot}</span>`;
+    if(x.open) return `<div class="bar slot sz-${x.sz} open">${bin}<div class="n">+ Add</div></div>`;
     const tOK=tempOK(x);
-    const badge=`<span class="head"><span class="bin">#${x._slot}</span><span class="temp">${x.t}°F${tOK?'':'<small>ALERT</small>'}</span></span>`;
+    const badge=`<span class="head"><span class="temp">${x.t}°F${tOK?'':'<small>ALERT</small>'}</span></span>`;
     const z=st(x);
     return `<div class="bar slot sz-${x.sz} ${temp(x)} ${z} ${tOK?'':'talert'} ${x.just?'just':''}" ${x.held?'':`onclick="openSheet('refill:${x.n}')"`}>
+      ${bin}
       <div class="n">${x.n}</div>
       <div class="v">${x.held?'HELD<small> · not dispensing</small>':`${lbs(x)}/${FULL[x.sz]} lbs<small> · ${Math.round(x.l)}% left${x.just?' · REFILLED':z==='now'?' · SCRAPE IT':''}</small>`}</div>
       <div class="track"><i style="--l:${x.held?0:x.l}"></i></div>
