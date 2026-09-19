@@ -1031,6 +1031,12 @@ body{grid-template-rows:auto minmax(0,1fr) auto;align-content:stretch}
   .slots .bar .photo .head .temp{font-size:18px}
   .slots .sz-L .n{font-size:19px}
 }
+/* TEMP: centered on the photo's lower edge, larger. Bin number stays small in the top-right corner. */
+.slots .bar .photo .head{top:0;right:0;bottom:0;left:0;display:block;pointer-events:none;gap:0}
+.slots .bar .photo .head .bin{position:absolute;top:5px;right:8px}
+.slots .bar .photo .head .temp,.slots .bar.hot .photo .head .temp,.slots .bar.cold .photo .head .temp{position:absolute;left:0;right:0;bottom:3px;text-align:center;font-size:clamp(22px,3.2vh,34px);line-height:1;letter-spacing:-.02em}
+.slots .bar .photo .head .temp small{font-size:14px;margin-left:8px;vertical-align:middle}
+@media(orientation:portrait){.slots .bar .photo .head .temp,.slots .bar.hot .photo .head .temp,.slots .bar.cold .photo .head .temp{font-size:24px}}
 </style>
 <link rel="stylesheet" href="glove.css"></head>
 <body>
