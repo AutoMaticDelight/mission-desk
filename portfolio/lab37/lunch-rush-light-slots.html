@@ -1189,6 +1189,10 @@ body{grid-template-rows:auto minmax(0,1fr) auto;align-content:stretch}
 .slots .bar.slot.sz-S .meter .note{display:none}
 @media(orientation:portrait){.slots .bar.slot.sz-M .meter .note{display:none}}
 .slots .bar .meter>i{height:auto;border-radius:0}
+/* sauce row titles: bigger, with air above the meter (Bryan, 2026-09-19) */
+@media(orientation:landscape) and (min-width:1201px){.slots .bar.slot.sz-S .n{font-size:18px;padding:30px 4px 6px;letter-spacing:-.01em}}
+@media(orientation:landscape) and (max-width:1200px) and (min-height:801px){.slots .bar.slot.sz-S .n{font-size:15px;padding:26px 4px 3px}}
+@media(orientation:portrait){.slots .bar.slot.sz-S .n{font-size:14px;padding:27px 3px 3px}}
 </style>
 <link rel="stylesheet" href="glove.css"></head>
 <body>
