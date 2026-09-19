@@ -24,6 +24,7 @@ on day one" and to be shown on screen share.
   - `photos.html` — review sheet of all 16 ingredient photos as the panel crops them
   - `lunch-rush-light-slots.html` — the **18-slot worker panel** (the one being refined 2026-09-19: meter, temps, badges)
   - `recipe-controller.html` — the **Recipe Controller** (2026-09-19): bowl build-sequence drawing, portions, machine, send
+  - `picnic.html` / `picnic-guest.html` — the **Picnic** group order (set the mix, or let everyone pick via SMS/email) and the guest's phone page
   - `PANEL-DESIGN.md` — the **locked** design rules (read before touching UI)
   - `logo.svg`, `img/README.md` (photo stash), `index.html` (29 screens)
 - Options: `?photo=25|50|0` (photo width), `?look=flat` (light panel alt), `?autoplay`.

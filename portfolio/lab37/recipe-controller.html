@@ -215,6 +215,21 @@ main{grid-template-columns:minmax(0,.95fr) minmax(0,1.25fr) minmax(0,1.35fr)}
 @media(orientation:landscape) and (max-width:1200px){.seg button{min-height:40px;padding:0 9px;font-size:14px}.row.choice{padding-left:6px}}
 .row.choice{grid-template-columns:auto auto;justify-content:space-between}
 .row.choice .nm{display:none}
+/* mix: the choice rows preview a variant and show its count; the picnic link sits in the recipe row */
+.seg button{display:inline-flex;align-items:baseline;gap:6px}
+.seg button small{font-size:13px;font-weight:800;opacity:.75;font-variant-numeric:tabular-nums}
+.seg button.on small{color:var(--hot);opacity:1}
+.seg button.zero{opacity:.45}
+.recipe .picnic{flex:none;display:inline-flex;align-items:center;height:32px;padding:0 12px;border-radius:9px;background:var(--dock);color:#fff;font-size:14px;font-weight:800;text-decoration:none;white-space:nowrap}
+.sec small{white-space:nowrap}
+body{grid-template-columns:minmax(0,1fr)}
+@media(orientation:portrait){body{display:block}}
+/* choice rows fit: the segment and the stepper share the row without pushing the + off the card */
+.row.choice{grid-template-columns:minmax(0,1fr) auto;gap:8px}
+.row.choice .seg{min-width:0;overflow:hidden}
+.seg button{padding:0 10px;font-size:14px;min-width:0}
+.row.choice .step b{min-width:58px}
+@media(orientation:landscape) and (max-width:1200px){.seg button{padding:0 8px;font-size:13px;gap:4px}.row.choice .step b{min-width:52px;font-size:19px}}
 </style></head>
 <body>
 <section class="top">
@@ -228,7 +243,8 @@ main{grid-template-columns:minmax(0,.95fr) minmax(0,1.25fr) minmax(0,1.35fr)}
     <span class="lbl">Recipe</span>
     <input class="cust" id="m-cust" value="Salesforce" aria-label="Customer">
     <input class="id" id="m-id" value="SF-0912" aria-label="Recipe ID">
-    <span class="meta"><input class="short num" id="m-bowls" type="number" min="1" max="500" value="50" aria-label="Bowls"> bowls · <input id="m-where" value="Salesforce Tower · 45F" aria-label="Where"> · due <input class="short" id="m-due" value="12:30" aria-label="Due"></span>
+    <span class="meta"><b id="mixLine">25 Chicken · 25 Beef · 38 Rice · 12 Quinoa</b> · <input id="m-where" value="Salesforce Tower · 45F" aria-label="Where"> · due <input class="short" id="m-due" value="12:30" aria-label="Due"></span>
+    <a class="picnic" href="picnic.html">Picnic order →</a>
     <span class="status" id="status"><i></i><span id="statusT">Ready for the line</span></span>
   </div>
 </section>
@@ -299,48 +315,62 @@ const STATION_S=.5;    // seconds the belt spends indexing to the next station
 const DISPENSE=.25;    // dispensers run in parallel down the belt; per-oz time is a fraction of a serial pour
 const BELT_BOWLS_10MIN=40; // the line's target pace
 
+/* THE MIX: what the orderer (or each guest, via the Picnic page) chose — one meat and one base per bowl, counted up.
+   ½ · ½ is a per-bowl choice a person makes, not a recipe setting. The controller reads the mix and programs the machine from it. */
+let PICNIC=null; try{PICNIC=JSON.parse(localStorage.getItem('bom-picnic')||'null');}catch(e){}
 const PRESETS={
-  sf:{id:'SF-0912',cust:'Salesforce',bowls:50,where:'Salesforce Tower · 45F',due:'12:30',choice:{base:'half',prot:'Chicken'},goz:{base:6,prot:4},sel:{Beans:2,Pico:2,Lettuce:1.5,Cilantro:.25,Chipotle:1,Roja:1,Cheese:1,'Sour Cream':1}},
-  new:{id:'DRAFT-01',cust:'New customer',bowls:10,where:'In-store',due:'1:15',choice:{base:'Rice',prot:'half'},goz:{base:6,prot:4},sel:{Corn:2,Verde:1}},
+  sf:{id:'SF-0912',cust:'Salesforce',where:'Salesforce Tower · 45F',due:'12:30',mix:{meat:{Chicken:25,half:0,Beef:25},base:{Rice:38,Quinoa:12}},goz:{base:6,prot:4},sel:{Beans:2,Pico:2,Lettuce:1.5,Cilantro:.25,Chipotle:1,Roja:1,Cheese:1,'Sour Cream':1}},
+  new:{id:'DRAFT-01',cust:'New customer',where:'In-store',due:'1:15',mix:{meat:{Chicken:6,half:2,Beef:2},base:{Rice:10,Quinoa:0}},goz:{base:6,prot:4},sel:{Corn:2,Verde:1}},
 };
-let CHOICE={...PRESETS.sf.choice}, GOZ={...PRESETS.sf.goz}, SEL={...PRESETS.sf.sel};
+if(PICNIC&&PICNIC.meat){PRESETS.sf.mix={meat:PICNIC.meat,base:PICNIC.base}; PRESETS.sf.due=PICNIC.due||PRESETS.sf.due;}
+let MIX=JSON.parse(JSON.stringify(PRESETS.sf.mix)), GOZ={...PRESETS.sf.goz}, SEL={...PRESETS.sf.sel};
+let VIEW={meat:null,base:null}; // which variant the bowl drawing shows
+const topKey=o=>Object.keys(o).sort((a,b)=>o[b]-o[a])[0];
+function syncView(){ if(!VIEW.meat||!MIX.meat[VIEW.meat]) VIEW.meat=topKey(MIX.meat); if(!VIEW.base||!MIX.base[VIEW.base]) VIEW.base=topKey(MIX.base); }
+const CHOICE={}; // kept for the group definitions below
 const byName=n=>SLOTS.find(s=>s.n===n);
 const groupSlots=g=>SLOTS.filter(s=>s.n&&s.g===g);
 // what's in the bowl, in build order. A choice group yields one entry with one or two parts (½ · ½).
 function inBowl(){
+  syncView();
   const out=[];
   ORDER.forEach(g=>{
     if(CHOICE_GROUPS[g]){
-      const c=CHOICE[g]; if(!c) return;
+      const c=g==='base'?VIEW.base:VIEW.meat; if(!c) return;
       const parts=c==='half'?groupSlots(g).map(s=>({s,oz:GOZ[g]/2})):(byName(c)?[{s:byName(c),oz:GOZ[g]}]:[]);
       if(parts.length) out.push({g,oz:GOZ[g],parts,half:c==='half'});
     } else groupSlots(g).filter(s=>SEL[s.n]).forEach(s=>out.push({g,oz:SEL[s.n],parts:[{s,oz:SEL[s.n]}]}));
   });
   return out;
 }
+const mixCount=(g,k)=>g==='base'?(MIX.base[k]||0):(MIX.meat[k]||0);
+// pounds each hopper must hold for the whole batch, from the mix and the group portion
+function hopperLb(s){
+  if(s.g==='prot'){const m=MIX.meat; return ((m[s.n]||0)*GOZ.prot+(m.half||0)*GOZ.prot/2)/16;}
+  if(s.g==='base'){return ((MIX.base[s.n]||0)*GOZ.base)/16;}
+  return (SEL[s.n]||0)*bowls()/16;
+}
 const key=x=>x.n.toLowerCase().replace(/\s+/g,'-');
 const img=s=>'https://commons.wikimedia.org/wiki/Special:FilePath/'+encodeURIComponent(s.img)+'?width=200';
 const ph=s=>`<img class="ph" alt="" src="img/${key(s)}.jpg" onerror="this.onerror=null;this.src='${img(s)}'">`;
 const fmt=v=>(Math.round(v*4)/4).toString();
-const bowls=()=>Math.max(1,parseInt(document.getElementById('m-bowls').value,10)||1);
+const bowls=()=>Math.max(1,Object.values(MIX.meat).reduce((a,b)=>a+b,0));
 const entryName=e=>e.half?e.parts.map(p=>'½ '+p.s.n).join(' · '):e.parts[0].s.n;
 
 function loadPreset(k){
   const p=PRESETS[k];
-  document.getElementById('m-id').value=p.id; document.getElementById('m-cust').value=p.cust; document.getElementById('m-bowls').value=p.bowls;
+  document.getElementById('m-id').value=p.id; document.getElementById('m-cust').value=p.cust;
   document.getElementById('m-where').value=p.where; document.getElementById('m-due').value=p.due;
-  CHOICE={...p.choice}; GOZ={...p.goz}; SEL={...p.sel};
+  MIX=JSON.parse(JSON.stringify(p.mix)); GOZ={...p.goz}; SEL={...p.sel}; VIEW={meat:null,base:null};
   document.getElementById('p-sf').classList.toggle('on',k==='sf'); document.getElementById('p-new').classList.toggle('on',k==='new');
   render();
 }
-function pick(g,v){ CHOICE[g]=v; render(); }
+function pick(g,v){ if(g==='base') VIEW.base=v; else VIEW.meat=v; render(); }
 // tapping a hopper on the machine: the other one alone → ½ · ½; a half → the other alone; the lone one → nothing (a blocker, on purpose)
 function toggle(n){
   const s=byName(n); if(!s) return;
-  if(CHOICE_GROUPS[s.g]){
-    const g=s.g, c=CHOICE[g], other=groupSlots(g).find(x=>x.n!==n);
-    if(!c) CHOICE[g]=n; else if(c===n) CHOICE[g]=null; else if(c==='half') CHOICE[g]=other?other.n:null; else CHOICE[g]='half';
-    render(); return;
+  if(CHOICE_GROUPS[s.g]){ // a hopper in the mix: tapping it previews that variant. The mix itself is the orderer's, set on the Picnic page.
+    if(mixCount(s.g,s.n)>0) pick(s.g,s.n); return;
   }
   if(SEL[n]) delete SEL[n]; else SEL[n]=s.oz; render();
 }
@@ -356,17 +386,20 @@ function calc(){
   const secs=parts.reduce((a,p)=>a+p.oz*p.s.spo*DISPENSE+STATION_S,0)+4; // +4 s: bowl drop, seal
   const per10=Math.floor(600/secs);
   const top=items.filter(e=>!CHOICE_GROUPS[e.g]).length;
-  const hoppers=parts.map(p=>{const lb=p.oz*nB/16; return {s:p.s,oz:p.oz,lb,need:Math.ceil(lb/FULL_LB[p.s.sz])};});
+  const hoppers=groupSlots('prot').concat(groupSlots('base'),parts.map(p=>p.s).filter(s=>!CHOICE_GROUPS[s.g])).map(s=>{const lb=hopperLb(s); return {s,oz:parts.find(p=>p.s===s)?.oz||0,lb,need:Math.ceil(lb/FULL_LB[s.sz])};}).filter(h=>h.lb>0);
   const refills=hoppers.filter(h=>h.need>1);
   const baseE=items.find(e=>e.g==='base'), protE=items.find(e=>e.g==='prot');
+  const mixMeat=Object.entries(MIX.meat).filter(([k,v])=>v).map(([k,v])=>`${v} ${k==='half'?'½·½':k}`).join(' · ');
+  const mixBase=Object.entries(MIX.base).filter(([k,v])=>v).map(([k,v])=>`${v} ${k}`).join(' · ');
+  const baseSum=Object.values(MIX.base).reduce((a,b)=>a+b,0);
   const checks=[
-    {ok:!!baseE,t:baseE?`Base · ${entryName(baseE)}`:`Pick a base — Rice, Quinoa, or ½ · ½`,k:baseE?`${fmt(baseE.oz)} oz`:`none`},
-    {ok:!!protE,t:protE?`Protein · ${entryName(protE)}`:`Pick a protein — Chicken, Beef, or ½ · ½`,k:protE?`${fmt(protE.oz)} oz`:`none`},
+    {ok:nB>0,t:`Meat · ${mixMeat||'none'}`,k:`${fmt(GOZ.prot)} oz each`},
+    {ok:baseSum===nB,warn:baseSum!==nB&&baseSum>0,t:`Base · ${mixBase||'none'}${baseSum!==nB?' · '+baseSum+' of '+nB+' bowls':''}`,k:`${fmt(GOZ.base)} oz each`},
     {ok:top<=LIMITS.topping,t:`Toppings`,k:`${top} / ${LIMITS.topping}`},
     {ok:per10>=BELT_BOWLS_10MIN,warn:per10<BELT_BOWLS_10MIN&&per10>=BELT_BOWLS_10MIN*.8,t:`Belt pace · ${secs.toFixed(0)} s per bowl`,k:`${per10} / ${BELT_BOWLS_10MIN} per 10 min`},
     {ok:refills.length===0,warn:refills.length>0,t:refills.length?`Refill mid-batch: ${refills.map(h=>h.s.n+' ×'+h.need).join(', ')}`:`Every hopper holds the whole batch`,k:`${nB} bowls`},
   ];
-  if(parts.some(p=>p.s.n==='Quinoa')) checks.push({ok:false,warn:true,t:`Quinoa is held at Uptown · Bowl 02 · its bowls wait`,k:`held`});
+  if(MIX.base.Quinoa>0) checks.push({ok:false,warn:true,t:`Quinoa is held at Uptown · Bowl 02 · ${MIX.base.Quinoa} bowls wait`,k:`held`});
   return {items,parts,nB,ozBowl,cost,secs,per10,top,hoppers,checks,allOk:checks.every(c=>c.ok||c.warn)};
 }
 
@@ -411,12 +444,12 @@ function renderBowl(c){
 function renderPortions(c){
   let seq=0, html='';
   ['base','prot'].forEach(g=>{
-    const opts=groupSlots(g), cur=CHOICE[g], e=c.items.find(x=>x.g===g);
+    const opts=groupSlots(g), cur=g==='base'?VIEW.base:VIEW.meat, e=c.items.find(x=>x.g===g);
     if(e) seq++;
-    const lb=e?e.parts.map(p=>{const h=c.hoppers.find(h=>h.s===p.s);return `${p.s.n} ${h.lb.toFixed(1)} lb${h.need>1?' · '+h.need+' hoppers':''}`;}).join(' · '):'nothing picked';
+    const seg=(v,txt)=>{const n=mixCount(g,v); return `<button class="${cur===v?'on':''} ${n?'':'zero'}" onclick="pick('${g}','${v}')">${txt}<small>${n}</small></button>`;};
     html+=`<div class="row choice ${e?'':'off'}">${e?`<span class="seqn">${seq}</span>`:''}
-      <div class="seg"><button class="${cur===opts[0].n?'on':''}" onclick="pick('${g}','${opts[0].n}')">${opts[0].n}</button><button class="${cur==='half'?'on':''}" onclick="pick('${g}','half')">½ · ½</button><button class="${cur===opts[1].n?'on':''}" onclick="pick('${g}','${opts[1].n}')">${opts[1].n}</button></div>
-      <div class="nm"><b>${CHOICE_GROUPS[g].label}${e?' · '+entryName(e):''}</b><small>${lb}</small></div>
+      <div class="seg">${seg(opts[0].n,opts[0].n)}${g==='prot'?seg('half','½ · ½'):''}${seg(opts[1].n,opts[1].n)}</div>
+      <div class="nm"><b>${CHOICE_GROUPS[g].label}${e?' · '+entryName(e):''}</b><small>${e?e.parts.map(p=>{const h=c.hoppers.find(h=>h.s===p.s);return h?`${p.s.n} ${h.lb.toFixed(1)} lb`:p.s.n;}).join(' · '):''}</small></div>
       <span class="step"><button onclick="bumpGroup('${g}',-1)" aria-label="less">−</button><b class="num">${fmt(GOZ[g])}<small>oz</small></b><button onclick="bumpGroup('${g}',1)" aria-label="more">+</button></span></div>`;
   });
   c.items.filter(e=>!CHOICE_GROUPS[e.g]).forEach(e=>{seq++; const s=e.parts[0].s, v=e.oz, h=c.hoppers.find(h=>h.s===s);
@@ -436,13 +469,14 @@ function renderMachine(c){
     const row=SLOTS.filter(s=>s.sz===tier); const used=row.filter(s=>s.n).length;
     html+=`<div class="srow sz-${tier}"><div class="rheader"><b>${label}</b><span>${used}/${row.length}${used===row.length?' · full':''}</span><span>${cap}</span></div><div class="rcards">${row.map(s=>{
       if(!s.n) return `<div class="slot open"><span class="bin">#${s.slot}</span><span class="dot"></span><div class="nm">+ Add</div></div>`;
-      const oz=ozOf(s.n), on=oz>0, half=on&&CHOICE_GROUPS[s.g]&&CHOICE[s.g]==='half';
-      return `<div class="slot ${s.t} ${on?'in':''}" onclick="toggle('${s.n}')"><span class="bin">#${s.slot}</span><span class="dot"></span><div class="nm">${half?'½ ':''}${s.n}</div><div class="oz num">${on?fmt(oz)+' oz':'—'}</div></div>`;
+      const cnt=CHOICE_GROUPS[s.g]?mixCount(s.g,s.n)+(s.g==='prot'?(MIX.meat.half||0):0):0;
+      const on=CHOICE_GROUPS[s.g]?cnt>0:ozOf(s.n)>0; const h=c.hoppers.find(h=>h.s===s);
+      return `<div class="slot ${s.t} ${on?'in':''}" onclick="toggle('${s.n}')"><span class="bin">#${s.slot}</span><span class="dot"></span><div class="nm">${s.n}</div><div class="oz num">${on?(CHOICE_GROUPS[s.g]?h.lb.toFixed(1)+' lb':fmt(ozOf(s.n))+' oz'):'—'}</div></div>`;
     }).join('')}</div></div>`;
   });
   html+=`<div class="checks">${c.checks.map(k=>`<div class="check ${k.ok?'':(k.warn?'warn':'bad')}"><i>${k.ok?'✓':'!'}</i><span class="t">${k.t}</span><span class="k">${k.k}</span></div>`).join('')}</div>`;
   document.getElementById('machine').innerHTML=html;
-  document.getElementById('machSub').textContent=`${c.parts.length} of 18 slots in this recipe`;
+  document.getElementById('machSub').textContent=`${c.hoppers.length} of 18 slots in this order`;
 }
 
 /* ---------- DOCK ---------- */
@@ -457,12 +491,13 @@ function renderDock(c){
   document.getElementById('goS').textContent=`${c.nB} bowls → Uptown · Bowl 01 · due ${document.getElementById('m-due').value}`;
   document.getElementById('go').disabled=!!bad;
   document.getElementById('bowlsStat').textContent=c.nB;
+  document.getElementById('mixLine').textContent=[...Object.entries(MIX.meat).filter(([k,v])=>v).map(([k,v])=>`${v} ${k==='half'?'½·½':k}`),...Object.entries(MIX.base).filter(([k,v])=>v).map(([k,v])=>`${v} ${k}`)].join(' · ');
 }
 function render(){ const c=calc(); renderBowl(c); renderPortions(c); renderMachine(c); renderDock(c); }
 function note(t,s){ toastTitle.textContent=t; toastText.textContent=s||''; toast.classList.add('show'); setTimeout(()=>toast.classList.remove('show'),3200); }
 function testBowl(){ const c=calc(); note(`Test bowl queued · ${c.secs.toFixed(0)} s`, c.items.map((e,i)=>`${i+1} ${entryName(e)} ${fmt(e.oz)} oz`).join(' · ')); }
 function send(){ const c=calc(); if(!c.allOk) return; note(`${document.getElementById('m-id').value} sent to the line`, `${c.nB} bowls · Uptown · Bowl 01 · ${c.per10} per 10 min`); }
-['m-bowls','m-due','m-cust','m-id','m-where'].forEach(id=>document.getElementById(id).addEventListener('input',render));
+['m-due','m-cust','m-id','m-where'].forEach(id=>document.getElementById(id).addEventListener('input',render));
 render();
 /* clock: same simulated lunch clock as the panel */
 let NOW=12*60+18,SEC=0; setInterval(()=>{SEC+=6;if(SEC>=60){SEC-=60;NOW++;const h=Math.floor(NOW/60),m=NOW%60;document.getElementById('clock').textContent=(h>12?h-12:h)+':'+String(m).padStart(2,'0');}},1000);

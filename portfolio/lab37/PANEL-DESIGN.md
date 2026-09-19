@@ -297,6 +297,27 @@ type, top lockup and dark dock as the worker panel. Three stations:
 Each ingredient carries portion default, max, cost/oz and dispense s/oz;
 critical thresholds live on the worker panel, not here.
 
+**The order model (Bryan, 2026-09-19).** The orderer picks **one meat —
+Beef, Chicken, or ½ · ½ — and one base** per bowl. ½ · ½ is a per-bowl
+choice a person makes, never a recipe setting. A group order is a **mix**
+of those choices, counted up (25 Chicken · 25 Beef · 38 Rice · 12 Quinoa);
+the Recipe Controller reads the mix, previews one variant in the bowl
+drawing, and sizes every hopper from the counts.
+
+## Picnic (`picnic.html` + `picnic-guest.html`, 2026-09-19)
+The group order. One company, N bowls, one due time. Two modes:
+- **Set the mix** — the orderer sets meat and base counts on two split
+  bars with a glove stepper under every segment (stepping one segment
+  takes from the largest other, so it always sums to N), and the sauces
+  everyone gets. No invites.
+- **Let everyone pick** — every guest gets an email/SMS link to the
+  **guest page** (phone, thumbs only: name, meat, base, amount, sauces,
+  LOCK IT IN). The organizer watches the picks come in (31 of 50, 19
+  pending, reminder, cutoff 11:45), sets the default bowl for anyone who
+  doesn't answer, and can fill the pending with it.
+Either way the tally is what the machine builds; SEND MIX TO CONTROLLER
+hands it to the Recipe Controller (localStorage `bom-picnic`).
+
 - `?look=flat` on the light panel: white cells, no lift (comparison only).
 - Manager console (`manager-fleet.html`) is separate: Apple-clean light,
   white store boxes, green status lights, 100% = on plan.
