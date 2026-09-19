@@ -230,6 +230,13 @@ body{grid-template-columns:minmax(0,1fr)}
 .seg button{padding:0 10px;font-size:14px;min-width:0}
 .row.choice .step b{min-width:58px}
 @media(orientation:landscape) and (max-width:1200px){.seg button{padding:0 8px;font-size:13px;gap:4px}.row.choice .step b{min-width:52px;font-size:19px}}
+/* ON STATE = the alert color (Bryan, 2026-09-19): hot lime with ink, not black */
+.seg button.on{background:var(--hot);color:#111}
+.seg button.on small{color:#111;opacity:.75}
+.slot.in{background:var(--hot);color:#111;box-shadow:inset 0 0 0 3px #9fbf00}
+.slot.in .bin{background:#111;color:var(--hot)}
+.slot.in .oz{color:#3a4a00}
+.presets button.on{background:var(--hot);color:#111;box-shadow:none}
 </style></head>
 <body>
 <section class="top">

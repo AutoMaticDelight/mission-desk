@@ -134,6 +134,9 @@ main{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1.2fr) minmax(
 .seg button{width:100%;height:44px}
 body{grid-template-columns:minmax(0,1fr)}
 @media(orientation:portrait){body{display:block}}
+/* ON STATE = the alert color (Bryan, 2026-09-19): hot lime with ink, not black */
+.mode button.on{background:var(--hot);color:#111}
+.chip.on{background:var(--hot);color:#111;border-color:#9fbf00}
 </style></head>
 <body>
 <section class="top">
