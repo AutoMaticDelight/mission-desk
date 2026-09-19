@@ -206,6 +206,15 @@ main{grid-template-columns:minmax(0,.95fr) minmax(0,1.25fr) minmax(0,1.35fr)}
   .srow.sz-S .rcards{flex-wrap:wrap}.srow.sz-S .slot{flex:1 1 calc(25% - 6px)}
   .slot{height:64px}
 }
+/* CHOICE ROWS: base and protein are a pick — Rice · ½·½ · Quinoa — with one stepper for the group's total */
+.row.choice{grid-template-columns:auto minmax(0,1fr) auto;min-height:64px;padding:6px 6px 6px 8px}
+.seg{display:inline-flex;background:#eef0f4;border-radius:12px;padding:3px;gap:3px}
+.seg button{border:0;background:transparent;border-radius:9px;min-height:44px;padding:0 12px;font-size:15px;font-weight:800;color:var(--dim);white-space:nowrap}
+.seg button.on{background:var(--dock);color:#fff}
+.row.choice .nm b{font-size:15px}
+@media(orientation:landscape) and (max-width:1200px){.seg button{min-height:40px;padding:0 9px;font-size:14px}.row.choice{padding-left:6px}}
+.row.choice{grid-template-columns:auto auto;justify-content:space-between}
+.row.choice .nm{display:none}
 </style></head>
 <body>
 <section class="top">
@@ -281,57 +290,84 @@ const SLOTS=[
 const STEP={L:1,M:.5,S:.25};
 const GROUP={base:'Base',prot:'Protein',veg:'Vegetables',sau:'Sauce',dai:'Dairy'};
 const GCOL={base:'var(--base)',prot:'var(--prot)',veg:'var(--veg)',sau:'var(--sau)',dai:'var(--dai)'};
+const ALT={Rice:'#e6d3a3',Quinoa:'#d9c08a',Chicken:'#d5976b',Beef:'#a8674a'}; // the two halves of a combo read as two colors
 const GINK={base:'#6b5a2a',prot:'#fff',veg:'#fff',sau:'#fff',dai:'#6b6252'};
 const ORDER=['base','prot','veg','sau','dai']; // the robot builds bottom-up: base, protein, vegetables, sauce, dairy
-const LIMITS={prot:[1,2],base:[1,2],topping:8};
+const CHOICE_GROUPS={base:{label:'Base',max:10},prot:{label:'Protein',max:8}}; // one pick, or ½ · ½
+const LIMITS={topping:8};
 const STATION_S=.5;    // seconds the belt spends indexing to the next station
 const DISPENSE=.25;    // dispensers run in parallel down the belt; per-oz time is a fraction of a serial pour
 const BELT_BOWLS_10MIN=40; // the line's target pace
 
 const PRESETS={
-  sf:{id:'SF-0912',cust:'Salesforce',bowls:50,where:'Salesforce Tower · 45F',due:'12:30',sel:{Chicken:4,Rice:6,Quinoa:6,Beans:2,Pico:2,Lettuce:1.5,Cilantro:.25,Chipotle:1,Roja:1,Cheese:1,'Sour Cream':1}},
-  new:{id:'DRAFT-01',cust:'New customer',bowls:10,where:'In-store',due:'1:15',sel:{Chicken:4,Rice:6,Corn:2,Verde:1}},
+  sf:{id:'SF-0912',cust:'Salesforce',bowls:50,where:'Salesforce Tower · 45F',due:'12:30',choice:{base:'half',prot:'Chicken'},goz:{base:6,prot:4},sel:{Beans:2,Pico:2,Lettuce:1.5,Cilantro:.25,Chipotle:1,Roja:1,Cheese:1,'Sour Cream':1}},
+  new:{id:'DRAFT-01',cust:'New customer',bowls:10,where:'In-store',due:'1:15',choice:{base:'Rice',prot:'half'},goz:{base:6,prot:4},sel:{Corn:2,Verde:1}},
 };
-let SEL={...PRESETS.sf.sel};
+let CHOICE={...PRESETS.sf.choice}, GOZ={...PRESETS.sf.goz}, SEL={...PRESETS.sf.sel};
 const byName=n=>SLOTS.find(s=>s.n===n);
-const inBowl=()=>ORDER.flatMap(g=>SLOTS.filter(s=>s.n&&s.g===g&&SEL[s.n]));
+const groupSlots=g=>SLOTS.filter(s=>s.n&&s.g===g);
+// what's in the bowl, in build order. A choice group yields one entry with one or two parts (½ · ½).
+function inBowl(){
+  const out=[];
+  ORDER.forEach(g=>{
+    if(CHOICE_GROUPS[g]){
+      const c=CHOICE[g]; if(!c) return;
+      const parts=c==='half'?groupSlots(g).map(s=>({s,oz:GOZ[g]/2})):(byName(c)?[{s:byName(c),oz:GOZ[g]}]:[]);
+      if(parts.length) out.push({g,oz:GOZ[g],parts,half:c==='half'});
+    } else groupSlots(g).filter(s=>SEL[s.n]).forEach(s=>out.push({g,oz:SEL[s.n],parts:[{s,oz:SEL[s.n]}]}));
+  });
+  return out;
+}
 const key=x=>x.n.toLowerCase().replace(/\s+/g,'-');
 const img=s=>'https://commons.wikimedia.org/wiki/Special:FilePath/'+encodeURIComponent(s.img)+'?width=200';
 const ph=s=>`<img class="ph" alt="" src="img/${key(s)}.jpg" onerror="this.onerror=null;this.src='${img(s)}'">`;
 const fmt=v=>(Math.round(v*4)/4).toString();
 const bowls=()=>Math.max(1,parseInt(document.getElementById('m-bowls').value,10)||1);
+const entryName=e=>e.half?e.parts.map(p=>'½ '+p.s.n).join(' · '):e.parts[0].s.n;
 
 function loadPreset(k){
   const p=PRESETS[k];
   document.getElementById('m-id').value=p.id; document.getElementById('m-cust').value=p.cust; document.getElementById('m-bowls').value=p.bowls;
   document.getElementById('m-where').value=p.where; document.getElementById('m-due').value=p.due;
-  SEL={...p.sel};
+  CHOICE={...p.choice}; GOZ={...p.goz}; SEL={...p.sel};
   document.getElementById('p-sf').classList.toggle('on',k==='sf'); document.getElementById('p-new').classList.toggle('on',k==='new');
   render();
 }
-function toggle(n){ const s=byName(n); if(!s) return; if(SEL[n]) delete SEL[n]; else SEL[n]=s.oz; render(); }
+function pick(g,v){ CHOICE[g]=v; render(); }
+// tapping a hopper on the machine: the other one alone → ½ · ½; a half → the other alone; the lone one → nothing (a blocker, on purpose)
+function toggle(n){
+  const s=byName(n); if(!s) return;
+  if(CHOICE_GROUPS[s.g]){
+    const g=s.g, c=CHOICE[g], other=groupSlots(g).find(x=>x.n!==n);
+    if(!c) CHOICE[g]=n; else if(c===n) CHOICE[g]=null; else if(c==='half') CHOICE[g]=other?other.n:null; else CHOICE[g]='half';
+    render(); return;
+  }
+  if(SEL[n]) delete SEL[n]; else SEL[n]=s.oz; render();
+}
 function bump(n,d){ const s=byName(n); const v=Math.min(s.max,Math.max(STEP[s.sz],(SEL[n]||0)+d*STEP[s.sz])); SEL[n]=+v.toFixed(2); render(); }
+function bumpGroup(g,d){ GOZ[g]=Math.min(CHOICE_GROUPS[g].max,Math.max(1,GOZ[g]+d)); render(); }
 
 /* ---------- FEASIBILITY: computed live from portions × bowls against the hardware ---------- */
 function calc(){
   const items=inBowl(), nB=bowls();
-  const ozBowl=items.reduce((a,s)=>a+SEL[s.n],0);
-  const cost=items.reduce((a,s)=>a+SEL[s.n]*s.cost,0);
-  const secs=items.reduce((a,s)=>a+SEL[s.n]*s.spo*DISPENSE+STATION_S,0)+4; // +4 s: bowl drop, seal
+  const parts=items.flatMap(e=>e.parts);
+  const ozBowl=items.reduce((a,e)=>a+e.oz,0);
+  const cost=parts.reduce((a,p)=>a+p.oz*p.s.cost,0);
+  const secs=parts.reduce((a,p)=>a+p.oz*p.s.spo*DISPENSE+STATION_S,0)+4; // +4 s: bowl drop, seal
   const per10=Math.floor(600/secs);
-  const prot=items.filter(s=>s.g==='prot').length, base=items.filter(s=>s.g==='base').length, top=items.filter(s=>!['prot','base'].includes(s.g)).length;
-  const hoppers=items.map(s=>{const lb=SEL[s.n]*nB/16; return {s,lb,need:Math.ceil(lb/FULL_LB[s.sz])};});
+  const top=items.filter(e=>!CHOICE_GROUPS[e.g]).length;
+  const hoppers=parts.map(p=>{const lb=p.oz*nB/16; return {s:p.s,oz:p.oz,lb,need:Math.ceil(lb/FULL_LB[p.s.sz])};});
   const refills=hoppers.filter(h=>h.need>1);
+  const baseE=items.find(e=>e.g==='base'), protE=items.find(e=>e.g==='prot');
   const checks=[
-    {ok:prot>=LIMITS.prot[0]&&prot<=LIMITS.prot[1],t:`Proteins`,k:`${prot} · allows 1–2`},
-    {ok:base>=LIMITS.base[0]&&base<=LIMITS.base[1],t:`Bases`,k:`${base} · allows 1–2`},
+    {ok:!!baseE,t:baseE?`Base · ${entryName(baseE)}`:`Pick a base — Rice, Quinoa, or ½ · ½`,k:baseE?`${fmt(baseE.oz)} oz`:`none`},
+    {ok:!!protE,t:protE?`Protein · ${entryName(protE)}`:`Pick a protein — Chicken, Beef, or ½ · ½`,k:protE?`${fmt(protE.oz)} oz`:`none`},
     {ok:top<=LIMITS.topping,t:`Toppings`,k:`${top} / ${LIMITS.topping}`},
     {ok:per10>=BELT_BOWLS_10MIN,warn:per10<BELT_BOWLS_10MIN&&per10>=BELT_BOWLS_10MIN*.8,t:`Belt pace · ${secs.toFixed(0)} s per bowl`,k:`${per10} / ${BELT_BOWLS_10MIN} per 10 min`},
     {ok:refills.length===0,warn:refills.length>0,t:refills.length?`Refill mid-batch: ${refills.map(h=>h.s.n+' ×'+h.need).join(', ')}`:`Every hopper holds the whole batch`,k:`${nB} bowls`},
   ];
-  const held=items.find(s=>s.n==='Quinoa');
-  if(held) checks.push({ok:false,warn:true,t:`Quinoa is held at Uptown · Bowl 02 · its bowls wait`,k:`held`});
-  return {items,nB,ozBowl,cost,secs,per10,prot,base,top,hoppers,checks,allOk:checks.every(c=>c.ok||c.warn)};
+  if(parts.some(p=>p.s.n==='Quinoa')) checks.push({ok:false,warn:true,t:`Quinoa is held at Uptown · Bowl 02 · its bowls wait`,k:`held`});
+  return {items,parts,nB,ozBowl,cost,secs,per10,top,hoppers,checks,allOk:checks.every(c=>c.ok||c.warn)};
 }
 
 /* ---------- STATION 1: the bowl as a build-sequence drawing ---------- */
@@ -339,18 +375,25 @@ function renderBowl(c){
   const W=420,H=560, bowlTop=30, bowlBot=540, cx=210, rTop=196, rBot=112;
   const total=Math.max(1,c.ozBowl);
   const inner=bowlBot-bowlTop-10, minH=30;
-  const raw=c.items.map(s=>({s,h:inner*(SEL[s.n]/total)}));
-  // every layer gets at least minH so its label fits; the rest of the height is shared by weight
-  const fixed=raw.filter(l=>l.h<minH).length*minH, free=Math.max(0,inner-fixed), freeOz=raw.filter(l=>l.h>=minH).reduce((a,l)=>a+SEL[l.s.n],0);
-  const layers=raw.map(l=>({s:l.s,h:l.h<minH?minH:free*(SEL[l.s.n]/Math.max(.01,freeOz))}));
+  const raw=c.items.map(e=>({e,h:inner*(e.oz/total)}));
+  const fixed=raw.filter(l=>l.h<minH).length*minH, free=Math.max(0,inner-fixed), freeOz=raw.filter(l=>l.h>=minH).reduce((a,l)=>a+l.e.oz,0);
+  const layers=raw.map(l=>({e:l.e,h:l.h<minH?minH:free*(l.e.oz/Math.max(.01,freeOz))}));
   let y=bowlBot-6, parts='', seq=0;
   const w=yy=>rTop-(rTop-rBot)*((yy-bowlTop)/(bowlBot-bowlTop)); // half-width at a given y — wide at the rim, narrow at the base
   layers.forEach(l=>{
     seq++;
-    const yTop=y-l.h, wT=w(yTop), wB=w(y), ym=yTop+l.h/2, wM=w(ym);
-    parts+=`<path d="M${cx-wB} ${y} L${cx-wT} ${yTop} L${cx+wT} ${yTop} L${cx+wB} ${y} Z" fill="${GCOL[l.s.g]}" stroke="rgba(0,0,0,.14)" stroke-width="1"/>`;
+    const e=l.e, yTop=y-l.h, wT=w(yTop), wB=w(y), ym=yTop+l.h/2, wM=w(ym), ink=GINK[e.g];
+    if(e.half){
+      const [p1,p2]=e.parts;
+      parts+=`<path d="M${cx-wB} ${y} L${cx-wT} ${yTop} L${cx} ${yTop} L${cx} ${y} Z" fill="${ALT[p1.s.n]||GCOL[e.g]}" stroke="rgba(0,0,0,.14)"/><path d="M${cx} ${y} L${cx} ${yTop} L${cx+wT} ${yTop} L${cx+wB} ${y} Z" fill="${ALT[p2.s.n]||GCOL[e.g]}" stroke="rgba(0,0,0,.14)"/>`;
+      parts+=`<line x1="${cx}" y1="${yTop}" x2="${cx}" y2="${y}" stroke="rgba(0,0,0,.35)" stroke-width="2" stroke-dasharray="4 4"/>`;
+      parts+=`<text class="layer-lbl" x="${cx-wM+44}" y="${ym+5}" fill="${ink}">${p1.s.n}</text><text class="layer-oz" x="${cx-10}" y="${ym+5}" text-anchor="end" fill="${ink}">${fmt(p1.oz)}</text>`;
+      parts+=`<text class="layer-lbl" x="${cx+12}" y="${ym+5}" fill="${ink}">${p2.s.n}</text><text class="layer-oz" x="${cx+wM-14}" y="${ym+5}" text-anchor="end" fill="${ink}">${fmt(p2.oz)} oz</text>`;
+    } else {
+      parts+=`<path d="M${cx-wB} ${y} L${cx-wT} ${yTop} L${cx+wT} ${yTop} L${cx+wB} ${y} Z" fill="${ALT[e.parts[0].s.n]||GCOL[e.g]}" stroke="rgba(0,0,0,.14)" stroke-width="1"/>`;
+      parts+=`<text class="layer-lbl" x="${cx-wM+44}" y="${ym+5}" fill="${ink}">${e.parts[0].s.n}</text><text class="layer-oz" x="${cx+wM-14}" y="${ym+5}" text-anchor="end" fill="${ink}">${fmt(e.oz)} oz</text>`;
+    }
     parts+=`<rect x="${cx-wM+12}" y="${ym-11}" width="24" height="22" rx="7" fill="rgba(0,0,0,.6)"/><text class="seq" x="${cx-wM+24}" y="${ym+4}" text-anchor="middle">${seq}</text>`;
-    parts+=`<text class="layer-lbl" x="${cx-wM+44}" y="${ym+5}" fill="${GINK[l.s.g]}">${l.s.n}</text><text class="layer-oz" x="${cx+wM-14}" y="${ym+5}" text-anchor="end" fill="${GINK[l.s.g]}">${fmt(SEL[l.s.n])} oz</text>`;
     y=yTop;
   });
   const bowl=`<path d="M${cx-rTop} ${bowlTop} L${cx-rBot} ${bowlBot-8} Q${cx-rBot} ${bowlBot} ${cx-rBot+8} ${bowlBot} L${cx+rBot-8} ${bowlBot} Q${cx+rBot} ${bowlBot} ${cx+rBot} ${bowlBot-8} L${cx+rTop} ${bowlTop}" fill="none" stroke="#1c1c1e" stroke-width="3" stroke-linejoin="round"/>
@@ -364,31 +407,42 @@ function renderBowl(c){
     <div class="tot"><b class="num">$${c.cost.toFixed(2)}</b><span>food cost</span></div>`;
 }
 
-/* ---------- STATION 2: portions on glove buttons, in build order ---------- */
+/* ---------- STATION 2: portions. Base and protein are a pick (or ½ · ½) with one stepper; toppings are rows. ---------- */
 function renderPortions(c){
-  let seq=0;
-  document.getElementById('portions').innerHTML=c.items.map(s=>{seq++; const v=SEL[s.n]; const h=c.hoppers.find(h=>h.s===s);
-    return `<div class="row"><span class="seqn">${seq}</span>${ph(s)}
+  let seq=0, html='';
+  ['base','prot'].forEach(g=>{
+    const opts=groupSlots(g), cur=CHOICE[g], e=c.items.find(x=>x.g===g);
+    if(e) seq++;
+    const lb=e?e.parts.map(p=>{const h=c.hoppers.find(h=>h.s===p.s);return `${p.s.n} ${h.lb.toFixed(1)} lb${h.need>1?' · '+h.need+' hoppers':''}`;}).join(' · '):'nothing picked';
+    html+=`<div class="row choice ${e?'':'off'}">${e?`<span class="seqn">${seq}</span>`:''}
+      <div class="seg"><button class="${cur===opts[0].n?'on':''}" onclick="pick('${g}','${opts[0].n}')">${opts[0].n}</button><button class="${cur==='half'?'on':''}" onclick="pick('${g}','half')">½ · ½</button><button class="${cur===opts[1].n?'on':''}" onclick="pick('${g}','${opts[1].n}')">${opts[1].n}</button></div>
+      <div class="nm"><b>${CHOICE_GROUPS[g].label}${e?' · '+entryName(e):''}</b><small>${lb}</small></div>
+      <span class="step"><button onclick="bumpGroup('${g}',-1)" aria-label="less">−</button><b class="num">${fmt(GOZ[g])}<small>oz</small></b><button onclick="bumpGroup('${g}',1)" aria-label="more">+</button></span></div>`;
+  });
+  c.items.filter(e=>!CHOICE_GROUPS[e.g]).forEach(e=>{seq++; const s=e.parts[0].s, v=e.oz, h=c.hoppers.find(h=>h.s===s);
+    html+=`<div class="row"><span class="seqn">${seq}</span>${ph(s)}
       <div class="nm"><b>${s.n}</b><div class="bar" style="--g:${GCOL[s.g]};--p:${v/s.max*100}"><i></i></div><small>${GROUP[s.g]} · ${h.lb.toFixed(1)} lb for ${c.nB} bowls${h.need>1?' · '+h.need+' hoppers':''}</small></div>
       <span class="step"><button onclick="bump('${s.n}',-1)" aria-label="less">−</button><b class="num">${fmt(v)}<small>oz</small></b><button onclick="bump('${s.n}',1)" aria-label="more">+</button></span></div>`;
-  }).join('')||'<div class="row off"><div class="nm" style="padding:8px 10px"><b>Nothing in the bowl</b><small>Tap a slot on the machine to add it</small></div></div>';
+  });
+  document.getElementById('portions').innerHTML=html;
   document.getElementById('portSub').textContent=`${c.items.length} in the bowl · per bowl · oz`;
 }
 
 /* ---------- STATION 3: the machine, lit where the recipe touches it, plus feasibility ---------- */
 function renderMachine(c){
+  const ozOf=n=>{const p=c.parts.find(p=>p.s.n===n);return p?p.oz:0;};
   let html='';
   TIERS.forEach(([tier,label,cap])=>{
     const row=SLOTS.filter(s=>s.sz===tier); const used=row.filter(s=>s.n).length;
     html+=`<div class="srow sz-${tier}"><div class="rheader"><b>${label}</b><span>${used}/${row.length}${used===row.length?' · full':''}</span><span>${cap}</span></div><div class="rcards">${row.map(s=>{
       if(!s.n) return `<div class="slot open"><span class="bin">#${s.slot}</span><span class="dot"></span><div class="nm">+ Add</div></div>`;
-      const on=!!SEL[s.n];
-      return `<div class="slot ${s.t} ${on?'in':''}" onclick="toggle('${s.n}')"><span class="bin">#${s.slot}</span><span class="dot"></span><div class="nm">${s.n}</div><div class="oz num">${on?fmt(SEL[s.n])+' oz':'—'}</div></div>`;
+      const oz=ozOf(s.n), on=oz>0, half=on&&CHOICE_GROUPS[s.g]&&CHOICE[s.g]==='half';
+      return `<div class="slot ${s.t} ${on?'in':''}" onclick="toggle('${s.n}')"><span class="bin">#${s.slot}</span><span class="dot"></span><div class="nm">${half?'½ ':''}${s.n}</div><div class="oz num">${on?fmt(oz)+' oz':'—'}</div></div>`;
     }).join('')}</div></div>`;
   });
   html+=`<div class="checks">${c.checks.map(k=>`<div class="check ${k.ok?'':(k.warn?'warn':'bad')}"><i>${k.ok?'✓':'!'}</i><span class="t">${k.t}</span><span class="k">${k.k}</span></div>`).join('')}</div>`;
   document.getElementById('machine').innerHTML=html;
-  document.getElementById('machSub').textContent=`${c.items.length} of 18 slots in this recipe`;
+  document.getElementById('machSub').textContent=`${c.parts.length} of 18 slots in this recipe`;
 }
 
 /* ---------- DOCK ---------- */
@@ -406,7 +460,7 @@ function renderDock(c){
 }
 function render(){ const c=calc(); renderBowl(c); renderPortions(c); renderMachine(c); renderDock(c); }
 function note(t,s){ toastTitle.textContent=t; toastText.textContent=s||''; toast.classList.add('show'); setTimeout(()=>toast.classList.remove('show'),3200); }
-function testBowl(){ const c=calc(); note(`Test bowl queued · ${c.secs.toFixed(0)} s`, c.items.map((s,i)=>`${i+1} ${s.n} ${fmt(SEL[s.n])} oz`).join(' · ')); }
+function testBowl(){ const c=calc(); note(`Test bowl queued · ${c.secs.toFixed(0)} s`, c.items.map((e,i)=>`${i+1} ${entryName(e)} ${fmt(e.oz)} oz`).join(' · ')); }
 function send(){ const c=calc(); if(!c.allOk) return; note(`${document.getElementById('m-id').value} sent to the line`, `${c.nB} bowls · Uptown · Bowl 01 · ${c.per10} per 10 min`); }
 ['m-bowls','m-due','m-cust','m-id','m-where'].forEach(id=>document.getElementById(id).addEventListener('input',render));
 render();
