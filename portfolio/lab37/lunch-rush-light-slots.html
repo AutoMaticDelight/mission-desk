@@ -938,6 +938,54 @@ html[data-photo="0"] .bar .rc-tag{left:auto;right:8px}
   .slots .bar .head{font-size:9px;top:5px;right:5px}
   .slots .bar .v{font-size:11px}
 }
+/* TALLER PHOTOS (Bryan, 2026-09-19): the photo band was a 10px sliver because every card was a fixed 9.5vh and the
+   name + quantity bands ate it. Cards are fluid now: the three tier rows share the status card's full height, the
+   text bands are as short as the floors allow, the legend rides the label line, and the photo takes everything left. */
+.hoppers{position:relative;grid-template-rows:auto minmax(0,1fr);align-content:stretch;padding:10px 16px 14px}
+.hoppers .legend{position:absolute;top:10px;right:16px;padding:2px 0 2px 12px;background:#e2e7f1;font-size:13px}
+.slots{display:grid;grid-template-rows:repeat(3,minmax(0,1fr));gap:10px;min-height:0;align-content:stretch}
+.srow{gap:4px;min-height:0}
+.rcards{flex:1 1 auto;min-height:0}
+.slots .bar{height:auto;min-height:0;max-height:none}
+.slots .bar .n{padding:16px 8px 0}
+.slots .bar .v{padding:0 6px 4px}
+.slots .bar .photo{flex:1 1 auto;min-height:28px}
+.slots .bar.open .n{flex:1}
+.actions .sec{padding-top:8px;padding-bottom:4px}
+@media(orientation:portrait){
+  .hoppers{grid-template-rows:auto minmax(0,1fr);align-content:stretch;padding:8px 10px 10px}
+  .hoppers .legend{top:8px;right:10px}
+  .slots{gap:8px}
+  .slots .bar{height:auto}
+  .slots .bar .n{padding:14px 6px 0}
+}
+/* spare height goes INTO the status card (the photos), not between it and the dock */
+body{grid-template-rows:auto minmax(0,1fr) auto;align-content:stretch}
+.hoppers{align-self:stretch;min-height:0}
+.actions{align-self:end}
+@media(orientation:landscape) and (max-height:800px){.slots .bar .photo{min-height:20px}.hoppers{padding:8px 14px 10px}.slots{gap:8px}}
+/* every spare pixel above and below goes to the photos: tighter label rows, paddings and gaps, same shapes */
+.top .recipe{min-height:36px}
+.actions .sec{padding-top:6px;padding-bottom:2px}
+.actions .alert{padding-top:10px;padding-bottom:10px}
+.alert .more{margin-top:4px}.alert .more button{min-height:50px}
+.actions .next{padding-top:8px;padding-bottom:8px}
+.hoppers{margin-top:12px}
+.hoppers .sec{margin-bottom:-2px}
+.rheader{line-height:1.1}
+@media(orientation:landscape){
+  .top .si{min-height:38px}
+  .slots{gap:8px}
+}
+@media(orientation:portrait){
+  .top .si{padding:3px 8px}
+  .actions .next{grid-template-columns:auto minmax(0,1fr) minmax(0,1fr);row-gap:0;padding-top:8px;padding-bottom:8px}
+  .next .lbl{grid-column:auto;border-right:2px solid rgba(255,255,255,.16);padding:0 10px 0 0}
+  .next .task:nth-child(n+4){display:none}
+  .actions .alert{gap:8px}
+  .go{min-height:64px}
+  .alert .more button{min-height:52px}
+}
 </style>
 <link rel="stylesheet" href="glove.css"></head>
 <body>
