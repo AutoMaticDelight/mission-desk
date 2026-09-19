@@ -1194,6 +1194,13 @@ body{grid-template-rows:auto minmax(0,1fr) auto;align-content:stretch}
 @media(orientation:landscape) and (max-width:1200px) and (min-height:801px){.slots .bar.slot.sz-S .n{font-size:15px;padding:26px 4px 3px}}
 @media(orientation:portrait){.slots .bar.slot.sz-S .n{font-size:14px;padding:27px 3px 3px}}
 @media(orientation:landscape) and (max-width:1200px) and (min-height:801px){.slots .bar.slot.sz-S .n{padding:28px 4px 1px}.slots .bar.slot.sz-S .photo{min-height:30px}}
+/* BIN BADGE (Bryan, 2026-09-19): larger, tucked all the way into the card's top-left radius — a tab cut into the card */
+.slots .bar>.bin{top:0;left:0;font-size:15px;line-height:1;padding:7px 11px 7px 10px;border-radius:18px 0 12px 0;letter-spacing:.3px;box-shadow:1px 1px 0 rgba(0,0,0,.08)}
+.slots .bar.low>.bin,.slots .bar.now>.bin{box-shadow:1px 1px 0 rgba(255,255,255,.12)}
+.slots .bar.open>.bin{box-shadow:none}
+@media(orientation:portrait){.slots .bar>.bin{font-size:14px;padding:6px 9px 6px 8px;border-radius:18px 0 10px 0}}
+@media(orientation:landscape) and (max-height:800px){.slots .bar>.bin{font-size:12px;padding:4px 7px 4px 6px;border-radius:18px 0 8px 0}}
+@media(orientation:landscape) and (max-width:1200px) and (min-height:801px){.slots .bar>.bin{padding:6px 10px 6px 9px}.slots .bar.slot.sz-S .n{padding:29px 4px 0}}
 </style>
 <link rel="stylesheet" href="glove.css"></head>
 <body>
