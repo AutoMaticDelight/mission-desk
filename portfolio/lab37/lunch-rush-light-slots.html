@@ -1012,6 +1012,25 @@ body{grid-template-rows:auto minmax(0,1fr) auto;align-content:stretch}
   .slots .bar .n{font-size:14px}
   .slots .sz-L .n{font-size:18px}
 }
+/* PHOTO = HALF THE CARD (Bryan, 2026-09-19): name and weight centered in the top half, the track between, the photo
+   is the bottom half. TEMPERATURE: large but calm — white, outlined, no color — while it is in range; out of range it
+   goes hot lime with the word ALERT and the card takes the same lime ring as "needs you now". */
+.slots .bar .photo{flex:0 0 50%;min-height:0}
+.slots .bar .n{margin-top:auto;padding-top:4px}
+.slots .bar .v{margin-bottom:auto}
+.slots .bar .photo .head{gap:8px;align-items:baseline;top:5px;right:8px;-webkit-text-stroke:2.5px rgba(0,0,0,.55);text-shadow:0 1px 3px rgba(0,0,0,.45)}
+.slots .bar .photo .head .bin{font-size:13px;font-weight:800;opacity:.95}
+.slots .bar .photo .head .temp,.slots .bar.hot .photo .head .temp,.slots .bar.cold .photo .head .temp{font-size:20px;font-weight:900;color:#fff;letter-spacing:-.01em}
+.slots .bar .photo .head .temp small{font-size:13px;letter-spacing:.8px;margin-left:6px;font-weight:900}
+.slots .bar.talert .photo .head .temp,.slots .bar.talert.hot .photo .head .temp,.slots .bar.talert.cold .photo .head .temp{color:var(--hot);-webkit-text-stroke:3px rgba(0,0,0,.85)}
+.slots .bar.talert{box-shadow:inset 0 0 0 3px var(--hot)}
+.slots .bar.talert.held .ph{opacity:.55}
+.slots .sz-L .n{font-size:22px}
+.slots .sz-L .v{font-size:14px}
+@media(orientation:portrait){
+  .slots .bar .photo .head .temp{font-size:18px}
+  .slots .sz-L .n{font-size:19px}
+}
 </style>
 <link rel="stylesheet" href="glove.css"></head>
 <body>
@@ -1047,8 +1066,9 @@ body{grid-template-rows:auto minmax(0,1fr) auto;align-content:stretch}
 let NOW=12*60+18, SEC=0;
 const PEAK=[12*60+30,12*60+50];
 // sz: dispenser hardware size — L large hopper (auger/steam-table), M medium bin (scoop), S small squeeze/garnish
-const H=[{n:'Chicken',g:'prot',sz:'L',l:64,b:2.1,src:'reach-in 1'},{n:'Beef',g:'prot',sz:'L',l:17,b:2.8,src:'walk-in'},{n:'Rice',g:'base',sz:'L',l:41,b:2.9,src:'cooker 2'},{n:'Quinoa',g:'base',sz:'L',l:0,b:1.2,held:1,src:'dry store'}];
-const C=[{n:'Beans',g:'veg',sz:'M',l:70,b:1.5},{n:'Corn',g:'veg',sz:'M',l:35,b:1.6},{n:'Pico',g:'veg',sz:'M',l:22,b:1.9},{n:'Lettuce',g:'veg',sz:'M',l:48,b:1.3},{n:'Cilantro',g:'veg',sz:'M',l:52,b:.8},{n:'Lime',g:'veg',sz:'S',l:90,b:.5},{n:'Guac',g:'sau',sz:'S',l:15,b:1.7},{n:'Verde',g:'sau',sz:'S',l:73,b:.9},{n:'Chipotle',g:'sau',sz:'S',l:30,b:1.1},{n:'Roja',g:'sau',sz:'S',l:66,b:1},{n:'Cheese',g:'dai',sz:'M',l:80,b:1.4},{n:'Sour Cream',g:'dai',sz:'S',l:58,b:1.2}];
+// t: the bin's live dispensing temperature. Hot-held range 140–165°F, cold-held 34–41°F; outside it the bin alerts.
+const H=[{n:'Chicken',g:'prot',sz:'L',l:64,b:2.1,t:152,src:'reach-in 1'},{n:'Beef',g:'prot',sz:'L',l:17,b:2.8,t:148,src:'walk-in'},{n:'Rice',g:'base',sz:'L',l:41,b:2.9,t:161,src:'cooker 2'},{n:'Quinoa',g:'base',sz:'L',l:0,b:1.2,t:131,held:1,src:'dry store'}];
+const C=[{n:'Beans',g:'veg',sz:'M',l:70,b:1.5,t:37},{n:'Corn',g:'veg',sz:'M',l:35,b:1.6,t:38},{n:'Pico',g:'veg',sz:'M',l:22,b:1.9,t:36},{n:'Lettuce',g:'veg',sz:'M',l:48,b:1.3,t:35},{n:'Cilantro',g:'veg',sz:'M',l:52,b:.8,t:37},{n:'Lime',g:'veg',sz:'S',l:90,b:.5,t:39},{n:'Guac',g:'sau',sz:'S',l:15,b:1.7,t:36},{n:'Verde',g:'sau',sz:'S',l:73,b:.9,t:38},{n:'Chipotle',g:'sau',sz:'S',l:30,b:1.1,t:40},{n:'Roja',g:'sau',sz:'S',l:66,b:1,t:37},{n:'Cheese',g:'dai',sz:'M',l:80,b:1.4,t:36},{n:'Sour Cream',g:'dai',sz:'S',l:58,b:1.2,t:38}];
 const ALL=[...H,...C];
 const pace=t=> t<PEAK[0]?1.0 : t<PEAK[1]?1.35 : t<13*60+10?1.0 : 0.6;
 const clock=t=>{const h=Math.floor(t/60),m=t%60;return (h>12?h-12:h)+':'+String(m).padStart(2,'0');};
@@ -1108,14 +1128,16 @@ function render(){
   // dispenser hardware (PANEL-DESIGN.md "Machine layout"). Row 1 is the 4 mains; then one
   // left-justified row per size tier; then Open.
   const temp=x=>(x.g==='prot'||x.g==='base')?'hot':'cold';
-  const TEMP_F={hot:140,cold:38}; // FDA hot-hold floor / cold-hold ceiling — real numbers, not placeholders
+  const RANGE={hot:[140,165],cold:[34,41]}; // hot-hold floor / cold-hold ceiling — real numbers, not placeholders
+  const tempOK=x=>{const r=RANGE[temp(x)];return x.t>=r[0]&&x.t<=r[1];};
   ALL.forEach((x,i)=>{x._slot=i+1});
   // APPLE CARD: name band on top (the one glanceable fact), full-bleed photo below, captioned.
   const slotBar=x=>{
-    const badge=`<span class="head"><span>#${x._slot}</span><span class="temp">${TEMP_F[temp(x)]}°F</span></span>`;
-    if(x.open) return `<div class="bar slot sz-${x.sz} open">${badge}<div class="n">+ Add</div></div>`;
+    if(x.open) return `<div class="bar slot sz-${x.sz} open"><span class="head"><span>#${x._slot}</span></span><div class="n">+ Add</div></div>`;
+    const tOK=tempOK(x);
+    const badge=`<span class="head"><span class="bin">#${x._slot}</span><span class="temp">${x.t}°F${tOK?'':'<small>ALERT</small>'}</span></span>`;
     const z=st(x);
-    return `<div class="bar slot sz-${x.sz} ${temp(x)} ${z} ${x.just?'just':''}" ${x.held?'':`onclick="openSheet('refill:${x.n}')"`}>
+    return `<div class="bar slot sz-${x.sz} ${temp(x)} ${z} ${tOK?'':'talert'} ${x.just?'just':''}" ${x.held?'':`onclick="openSheet('refill:${x.n}')"`}>
       <div class="n">${x.n}</div>
       <div class="v">${x.held?'HELD':lbs(x)+' lb'}<small> · ${x.held?'not dispensing':x.just?'REFILLED':z==='now'?'SCRAPE IT':refillClock(x)}</small></div>
       <div class="track"><i style="--l:${x.held?0:x.l}"></i></div>

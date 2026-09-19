@@ -3,6 +3,20 @@
 Locked by Bryan, 2026-09-18. These are decisions, not suggestions. Reskin within
 them; do not undo them without Bryan saying so.
 
+**What this is (Bryan, 2026-09-19):** not a desktop app, not a web page. It is
+the critical engagement screen for the **human in the middle** operating the
+food computer. Everything on it is read at a glance from a step back, with
+gloves on, mid-rush. Big, calm, unmistakable; an alert is the one loud thing.
+
+## Slot card (2026-09-19)
+- The photo is the **bottom half** of the card; name and weight are centered
+  in the top half; the track sits between them, touching the photo.
+- Bin number and **temperature** ride the photo's top-right corner in outlined
+  white. Temperature is large but calm while it is in range (hot-held
+  140–165°F, cold-held 34–41°F). Out of range it goes hot lime with the word
+  ALERT and the card takes the same lime ring as "needs you now".
+- Titles: row one 22px, every other row 16px; weights 13–14px.
+
 Files: `lunch-rush-hoppers.html` (dark), `lunch-rush-light.html` (light).
 Tokens, live states and rules as a page: `design-system.html`.
 Both share structure and JS; only the color layer differs.
