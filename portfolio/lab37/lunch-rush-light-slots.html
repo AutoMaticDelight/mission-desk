@@ -1209,6 +1209,25 @@ body{grid-template-rows:auto minmax(0,1fr) auto;align-content:stretch}
 .slots .bar .photo .head .bin{display:none}
 /* recipe tag: photo's bottom-right corner, clear of the temperature */
 .slots .bar .rc-tag{top:auto;bottom:5px;right:6px;left:auto}
+/* TITLE BAND (Bryan, 2026-09-19): a real band, not a strip — the title sits centered in it with air, badge beside it */
+.slots .bar.slot.sz-L .n{min-height:46px;padding:6px 10px 6px;align-items:center;font-size:23px}
+.slots .bar.slot.sz-M .n{min-height:42px;padding:6px 8px 6px;align-items:center;font-size:17px}
+.slots .bar .photo{min-height:34px}
+@media(orientation:landscape) and (max-width:1200px){
+  .slots .bar.slot.sz-L .n{min-height:42px;font-size:21px}
+  .slots .bar.slot.sz-M .n{min-height:38px;font-size:16px}
+  .slots .bar .photo{min-height:30px}
+}
+@media(orientation:landscape) and (max-height:800px){
+  .slots .bar.slot.sz-L .n{min-height:32px;padding:3px 8px;font-size:18px}
+  .slots .bar.slot.sz-M .n{min-height:28px;padding:3px 6px;font-size:15px}
+  .slots .bar .photo{min-height:24px}
+}
+@media(orientation:portrait){
+  .slots .bar.slot.sz-L .n{min-height:40px;font-size:19px}
+  .slots .bar.slot.sz-M .n{min-height:36px;font-size:15px;padding-left:30px}
+}
+@media(orientation:portrait){.slots .bar.slot.sz-M .n{padding-left:46px;padding-right:6px}}
 </style>
 <link rel="stylesheet" href="glove.css"></head>
 <body>
