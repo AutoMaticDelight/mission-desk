@@ -1109,6 +1109,23 @@ body{grid-template-rows:auto minmax(0,1fr) auto;align-content:stretch}
   .slots .sz-S .v .pct{font-size:24px}
   .slots .sz-S .photo{min-height:36px}
 }
+/* NO WEIGHT (Bryan, 2026-09-19): the card says "64% left" and nothing else. One row, every tier, every screen. */
+.slots .bar.slot .v{flex-direction:row;gap:6px;align-items:baseline;justify-content:center;padding:0 4px 4px;white-space:nowrap}
+.slots .bar .v .lbl{font-size:13px;font-weight:700;opacity:.85;letter-spacing:.2px}
+.slots .bar.slot .v .pct{font-size:clamp(26px,3.8vh,40px)}
+.slots .bar.slot.sz-S .n{padding:4px 4px 0 30px;font-size:14px}
+@media(orientation:landscape) and (min-width:1201px){.slots .bar.slot.sz-S .n{font-size:16px;padding-left:36px}}
+@media(orientation:landscape) and (max-height:800px){.slots .bar.slot .v .pct{font-size:22px}}
+@media(orientation:portrait){
+  .slots .bar.slot.sz-S .n{padding:28px 3px 0;font-size:13px}
+  .slots .bar.slot .v .pct{font-size:24px}
+  .slots .bar.slot.sz-S .v .pct{font-size:22px}
+  .slots .bar.slot.sz-L .v .pct{font-size:30px}
+}
+/* sauce row: the number row never wraps; on narrow sauce cards the note yields to the card's own alert state */
+.slots .bar.slot .v{flex-wrap:nowrap}
+@media(orientation:landscape) and (max-width:1200px){.slots .bar.slot.sz-S .n{font-size:13px;padding-left:28px}.slots .bar.slot.sz-S .v .note{display:none}}
+@media(orientation:portrait){.slots .bar.slot.sz-S .v .note{display:none}}
 </style>
 <link rel="stylesheet" href="glove.css"></head>
 <body>
@@ -1219,7 +1236,7 @@ function render(){
     return `<div class="bar slot sz-${x.sz} ${temp(x)} ${z} ${tOK?'':'talert'} ${x.just?'just':''}" ${x.held?'':`onclick="openSheet('refill:${x.n}')"`}>
       ${bin}
       <div class="n">${x.n}</div>
-      <div class="v">${x.held?'<b class="pct">HELD</b><small class="note">not dispensing</small>':`${x.just?'<small class="note">REFILLED</small>':z==='now'?'<small class="note">SCRAPE IT</small>':`<small class="w">${lbs(x)}/${FULL[x.sz]} lbs</small>`}<b class="pct">${Math.round(x.l)}%</b>`}</div>
+      <div class="v">${x.held?'<b class="pct">HELD</b><small class="note">not dispensing</small>':`<b class="pct">${Math.round(x.l)}%</b>${x.just?'<small class="note">REFILLED</small>':z==='now'?'<small class="note">SCRAPE IT</small>':'<small class="lbl">left</small>'}`}</div>
       <div class="track"><i style="--l:${x.held?0:x.l}"></i></div>
       <div class="photo">${ph(x)}${badge}${inRecipe(x)?'<em class="rc-tag">SF</em>':''}</div>
     </div>`;
