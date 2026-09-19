@@ -1168,6 +1168,26 @@ body{grid-template-rows:auto minmax(0,1fr) auto;align-content:stretch}
 @media(orientation:landscape) and (max-height:800px){.slots .bar.slot.sz-S .n{padding-left:41px;padding-right:2px;letter-spacing:-.06em}}
 /* just the number (Bryan, 2026-09-19): no "left" */
 .slots .bar .v .lbl{display:none}
+/* METER (Bryan, 2026-09-19): the progress bar and the percent are one thing — a thick bar filling left to right in green,
+   amber when low, hot lime when critical, with the number over the bar's left edge. Critical is per item (crit/low in the
+   data): a fast-burning main alerts at 30%, a slow garnish at 10%. The bar sits flush against the photo. */
+.slots .bar .meter{position:relative;flex:0 0 auto;height:36px;background:#e3e7ee;overflow:hidden;display:flex;align-items:center;gap:8px;padding:0 10px;margin-top:auto}
+.slots .bar .meter>i{position:absolute;left:0;top:0;bottom:0;width:calc(var(--l,0)*1%);background:var(--ok);transition:width .6s cubic-bezier(.2,.7,.2,1),background-color .35s ease}
+.slots .bar.low .meter>i{background:var(--low)}
+.slots .bar.now .meter>i{background:var(--hot)}
+.slots .bar.low .meter,.slots .bar.now .meter{background:rgba(255,255,255,.16)}
+.slots .bar .meter .pct{position:relative;z-index:1;font-size:27px;font-weight:900;line-height:1;letter-spacing:-.03em;color:#fff;paint-order:stroke fill;-webkit-text-stroke:2.5px rgba(0,0,0,.55);text-shadow:0 1px 2px rgba(0,0,0,.35);font-variant-numeric:tabular-nums}
+.slots .bar .meter .note{position:relative;z-index:1;margin-left:auto;font-size:13px;font-weight:900;letter-spacing:.4px;color:#fff;paint-order:stroke fill;-webkit-text-stroke:2px rgba(0,0,0,.5);white-space:nowrap}
+.slots .bar.held .meter{background:#d3d8e2}
+.slots .bar.held .meter .pct{font-size:18px;color:#5b6474;-webkit-text-stroke:0;text-shadow:none}
+.slots .bar.held .meter .note{color:#5b6474;-webkit-text-stroke:0;font-weight:700}
+.slots .bar .n{margin-top:auto;margin-bottom:auto}
+.slots .bar.held .meter>i{display:none}
+@media(orientation:landscape) and (max-width:1200px){.slots .bar .meter{height:30px;padding:0 8px}.slots .bar .meter .pct{font-size:23px}}
+@media(orientation:landscape) and (max-height:800px){.slots .bar .meter{height:24px;padding:0 6px}.slots .bar .meter .pct{font-size:18px;-webkit-text-stroke:2px rgba(0,0,0,.55)}.slots .bar .meter .note{display:none}}
+@media(orientation:portrait){.slots .bar .meter{height:28px;padding:0 8px}.slots .bar .meter .pct{font-size:21px}.slots .bar.slot.sz-S .meter .note{display:none}}
+.slots .bar.slot.sz-S .meter .note{display:none}
+@media(orientation:portrait){.slots .bar.slot.sz-M .meter .note{display:none}}
 </style>
 <link rel="stylesheet" href="glove.css"></head>
 <body>
@@ -1204,8 +1224,9 @@ let NOW=12*60+18, SEC=0;
 const PEAK=[12*60+30,12*60+50];
 // sz: dispenser hardware size — L large hopper (auger/steam-table), M medium bin (scoop), S small squeeze/garnish
 // t: the bin's live dispensing temperature. Hot-held range 140–165°F, cold-held 34–41°F; outside it the bin alerts.
-const H=[{n:'Chicken',g:'prot',sz:'L',l:64,b:2.1,t:152,src:'reach-in 1'},{n:'Beef',g:'prot',sz:'L',l:17,b:2.8,t:148,src:'walk-in'},{n:'Rice',g:'base',sz:'L',l:41,b:2.9,t:161,src:'cooker 2'},{n:'Quinoa',g:'base',sz:'L',l:0,b:1.2,t:131,held:1,src:'dry store'}];
-const C=[{n:'Beans',g:'veg',sz:'M',l:70,b:1.5,t:37},{n:'Corn',g:'veg',sz:'M',l:35,b:1.6,t:38},{n:'Pico',g:'veg',sz:'M',l:22,b:1.9,t:36},{n:'Lettuce',g:'veg',sz:'M',l:48,b:1.3,t:35},{n:'Cilantro',g:'veg',sz:'M',l:52,b:.8,t:37},{n:'Lime',g:'veg',sz:'S',l:90,b:.5,t:39},{n:'Guac',g:'sau',sz:'S',l:15,b:1.7,t:36},{n:'Verde',g:'sau',sz:'S',l:73,b:.9,t:38},{n:'Chipotle',g:'sau',sz:'S',l:30,b:1.1,t:40},{n:'Roja',g:'sau',sz:'S',l:66,b:1,t:37},{n:'Cheese',g:'dai',sz:'M',l:80,b:1.4,t:36},{n:'Sour Cream',g:'dai',sz:'S',l:58,b:1.2,t:38}];
+// crit / low: the percent at which THIS item goes critical (hot lime) or low (amber). Differs per item: fast burners alert earlier than slow garnish.
+const H=[{n:'Chicken',g:'prot',sz:'L',l:64,b:2.1,t:152,crit:30,low:50,src:'reach-in 1'},{n:'Beef',g:'prot',sz:'L',l:17,b:2.8,t:148,crit:30,low:50,src:'walk-in'},{n:'Rice',g:'base',sz:'L',l:41,b:2.9,t:161,crit:25,low:45,src:'cooker 2'},{n:'Quinoa',g:'base',sz:'L',l:0,b:1.2,t:131,crit:25,low:40,held:1,src:'dry store'}];
+const C=[{n:'Beans',g:'veg',sz:'M',l:70,b:1.5,t:37,crit:20,low:35},{n:'Corn',g:'veg',sz:'M',l:35,b:1.6,t:38,crit:20,low:40},{n:'Pico',g:'veg',sz:'M',l:22,b:1.9,t:36,crit:25,low:40},{n:'Lettuce',g:'veg',sz:'M',l:48,b:1.3,t:35,crit:20,low:35},{n:'Cilantro',g:'veg',sz:'M',l:52,b:.8,t:37,crit:15,low:30},{n:'Lime',g:'veg',sz:'S',l:90,b:.5,t:39,crit:10,low:20},{n:'Guac',g:'sau',sz:'S',l:15,b:1.7,t:36,crit:25,low:40},{n:'Verde',g:'sau',sz:'S',l:73,b:.9,t:38,crit:15,low:30},{n:'Chipotle',g:'sau',sz:'S',l:30,b:1.1,t:40,crit:15,low:35},{n:'Roja',g:'sau',sz:'S',l:66,b:1,t:37,crit:15,low:30},{n:'Cheese',g:'dai',sz:'M',l:80,b:1.4,t:36,crit:20,low:35},{n:'Sour Cream',g:'dai',sz:'S',l:58,b:1.2,t:38,crit:20,low:35}];
 const ALL=[...H,...C];
 const pace=t=> t<PEAK[0]?1.0 : t<PEAK[1]?1.35 : t<13*60+10?1.0 : 0.6;
 const clock=t=>{const h=Math.floor(t/60),m=t%60;return (h>12?h-12:h)+':'+String(m).padStart(2,'0');};
@@ -1218,7 +1239,7 @@ function refillClock(x){ if(x.held) return null; const m=refillMin(x); return m>
 // that gets thrown away. That physical floor is what drives "now," not a minutes-left guess.
 const FULL={L:20,M:8,S:2};
 const lbs=x=>+(x.l/100*FULL[x.sz]).toFixed(1);
-const mn=x=>Math.max(0,Math.round(x.l/x.b)), st=x=>x.held?'held':x.l<25?'now':x.l<40?'low':'ok';
+const mn=x=>Math.max(0,Math.round(x.l/x.b)), st=x=>x.held?'held':x.l<(x.crit??25)?'now':x.l<(x.low??40)?'low':'ok';
 function nextUp(){const all=ALL.filter(x=>!x.held).map(x=>({x,t:refillClock(x),z:st(x),m:refillMin(x)})).sort((a,b)=>a.m-b.m).slice(0,4);document.getElementById('next').innerHTML='<div class="lbl">Next up</div>'+all.map(a=>`<div class="task ${a.z}"><b>${a.t}</b><span>${a.x.n}${a.x.src?' · '+a.x.src:''}</span></div>`).join('');}
 const M=[{n:'Bowl 01',s:'run',st:'Running',k:'14',l:'in queue',hr:134,sec:27},{n:'Bowl 02',s:'held',st:'Held',k:'7',l:'rerouting',hr:0,sec:0,sub:'HELD · quinoa'},{n:'Chicken 2',s:'run',st:'Running',k:'12',l:'slots open',hr:150,sec:24}];
 function machines(){
@@ -1278,8 +1299,7 @@ function render(){
     return `<div class="bar slot sz-${x.sz} ${temp(x)} ${z} ${tOK?'':'talert'} ${x.just?'just':''}" ${x.held?'':`onclick="openSheet('refill:${x.n}')"`}>
       ${bin}
       <div class="n">${x.n}</div>
-      <div class="v">${x.held?'<b class="pct">HELD</b><small class="note">not dispensing</small>':`<b class="pct">${Math.round(x.l)}%</b>${x.just?'<small class="note">REFILLED</small>':z==='now'?'<small class="note">SCRAPE IT</small>':'<small class="lbl">left</small>'}`}</div>
-      <div class="track"><i style="--l:${x.held?0:x.l}"></i></div>
+      <div class="meter"><i style="--l:${x.held?0:x.l}"></i>${x.held?'<b class="pct">HELD</b><small class="note">not dispensing</small>':`<b class="pct">${Math.round(x.l)}%</b>${x.just?'<small class="note">REFILLED</small>':z==='now'?'<small class="note">SCRAPE IT</small>':''}`}</div>
       <div class="photo">${ph(x)}${badge}${inRecipe(x)?'<em class="rc-tag">SF</em>':''}</div>
     </div>`;
   };

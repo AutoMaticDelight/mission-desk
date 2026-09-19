@@ -15,7 +15,17 @@ gloves on, mid-rush. Big, calm, unmistakable; an alert is the one loud thing.
   white. Temperature is large but calm while it is in range (hot-held
   140–165°F, cold-held 34–41°F). Out of range it goes hot lime with the word
   ALERT and the card takes the same lime ring as "needs you now".
-- Titles: row one 22px, every other row 16px; weights 13–14px.
+- Titles: row one 22px, every other row 16px.
+- **Meter (2026-09-19):** the progress bar and the percent are one thing. A
+  thick bar (36px on the 12.9-inch, 30 on the 11-inch, 24 on the 9.7-inch,
+  28 in portrait) fills left to right in green, amber when low, hot lime when
+  critical, with the percent in outlined white over the bar's left edge and
+  SCRAPE IT / REFILLED on its right (hidden on the narrow sauce cards, where
+  the dark card and the lime bar carry it). No weight, no word after the
+  number. The bar sits flush against the photo.
+- **Critical is per item.** Each ingredient carries `crit` and `low` (the
+  percent at which it goes hot lime / amber). A fast-burning main alerts at
+  30%, a slow garnish at 10%. Never one global threshold.
 
 Files: `lunch-rush-hoppers.html` (dark), `lunch-rush-light.html` (light).
 Tokens, live states and rules as a page: `design-system.html`.
