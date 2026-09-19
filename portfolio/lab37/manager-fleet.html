@@ -55,8 +55,9 @@ h2 b{color:var(--ink);font-weight:600}
 .card .go{grid-column:1/-1;grid-row:3;font-size:14px;font-weight:600;color:var(--blue);margin-top:4px}
 .card .thr{grid-column:1/-1;grid-row:3;display:flex;justify-content:space-between;align-items:baseline;border-top:1px solid var(--line);padding-top:8px;margin-top:6px;font-size:14px;color:var(--ink2)}
 .card .thr b{font-weight:600;color:var(--ink);font-size:15px}
-.now{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
-.watch{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+/* the section grids go by id: the cards carry .now/.watch too, and a class rule here would turn every card into a 2- or 3-column grid */
+#now{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+#watch{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
 /* on-plan field */
 .fine{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));grid-auto-rows:auto;gap:12px;min-height:0;align-content:start}
 .chip{background:var(--card);border-radius:14px;padding:12px 16px 10px;display:grid;grid-template-columns:minmax(0,1fr) max-content;grid-template-rows:auto auto;column-gap:10px;row-gap:6px;align-items:baseline;min-width:0;box-shadow:0 1px 2px rgba(0,0,0,.04),0 0 0 1px rgba(0,0,0,.03)}
@@ -72,7 +73,7 @@ h2 b{color:var(--ink);font-weight:600}
   .band{flex-wrap:wrap;row-gap:6px;padding:12px 18px}
   .when{margin-right:0;flex:1 1 100%;margin-left:0}
   .stat{padding:0 14px 0 0;border-left:0}
-  .now{grid-template-columns:1fr 1fr;gap:10px}.watch{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+  #now{grid-template-columns:1fr 1fr;gap:10px}#watch{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
   .card{padding:12px 14px;column-gap:10px}.card .nm{font-size:18px}.card .k b{font-size:32px}.card .what{font-size:14px}.card .thr{font-size:13px}
   .fine{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
   .chip{padding:10px 12px 8px}.chip .nm{font-size:16px}.chip .p{font-size:20px}
@@ -98,6 +99,68 @@ h2 b{color:var(--ink);font-weight:600}
 .where{display:inline-flex;align-items:center;gap:10px}.where .logo{width:28px;height:28px;flex:none;color:#1d1d1f}
 
 .card .what .run{display:block;margin-top:4px;font-size:14px;color:var(--ink2);font-weight:600;font-variant-numeric:tabular-nums}
+/* PHONE: the console gets opened on an iPhone too. The page scrolls; every card is one column; nothing clips. */
+@media(max-width:500px){
+  html,body{height:auto}
+  body{display:flex;flex-direction:column;min-height:100vh;overflow:visible;overflow-x:hidden;gap:14px;padding:12px 12px 16px}
+  .band{display:grid;grid-template-columns:1fr 1fr;gap:6px 12px;padding:12px 16px;min-height:0}
+  .where{grid-column:1/-1;font-size:20px;white-space:normal;flex-wrap:wrap;gap:6px 8px}
+  .where span{font-size:14px}
+  .when{grid-column:1/-1;margin:0;font-size:14px;white-space:normal}
+  .stat{padding:0;border-left:0;gap:6px}
+  .stat b{font-size:24px}.stat span{font-size:13px}
+  section{display:block;min-height:0}
+  section h2{margin-bottom:8px}
+  #now,#watch{grid-template-columns:1fr;gap:10px}
+  .card{padding:12px 14px;column-gap:12px}
+  .card .nm{white-space:normal;line-height:1.1}
+  .card .nm small{display:inline}
+  .card.watch{grid-template-columns:minmax(0,1fr) max-content;grid-template-rows:auto auto auto}
+  .card.watch .k{grid-column:2;grid-row:1/3;text-align:right;margin:0}
+  .card.watch .k b{display:block;font-size:32px;margin:0}.card.watch .k span{display:block}
+  .card.watch .thr{grid-row:3}
+  .card .k b{font-size:32px}.card .k span{font-size:13px}
+  .fine{grid-template-columns:1fr 1fr;gap:10px;grid-auto-rows:auto;align-content:start}
+  .chip{padding:10px 12px 8px;align-content:start}.chip .nm{font-size:15px}.chip .p{font-size:20px}
+  .chip .thr{font-size:13px;flex-wrap:wrap;gap:2px 8px}.chip .thr b{font-size:14px}.chip .thr em{font-size:13px}
+}
+/* phone in landscape: the page scrolls; the header wraps instead of running off the screen */
+@media(orientation:landscape) and (max-height:500px){
+  html,body{height:auto}
+  body{display:flex;flex-direction:column;min-height:100vh;overflow:visible;overflow-x:hidden;gap:14px;padding:12px 16px 16px}
+  .band{flex-wrap:wrap;row-gap:6px;min-height:0;padding:10px 16px}
+  .when{margin-right:auto}
+  .stat{padding:0 14px 0 0;border-left:0}
+  .stat b{font-size:24px}.stat span{font-size:13px}
+  section{display:block;min-height:0}
+  section h2{margin-bottom:8px}
+  #now{grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:10px}#watch{grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px}
+  .card.watch{grid-template-columns:minmax(0,1fr) max-content;grid-template-rows:auto auto auto}
+  .card.watch .k{grid-column:2;grid-row:1/3;text-align:right;margin:0}.card.watch .k b{display:block;font-size:30px}.card.watch .k span{display:block}.card.watch .thr{grid-row:3}
+  .card{padding:12px 14px}.card .nm{white-space:normal;line-height:1.1}
+  .card .nm small{display:none}
+  .fine{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;grid-auto-rows:auto;align-content:start}
+  .chip{align-content:start;min-height:0;overflow:visible;padding:10px 12px 8px}
+}
+/* narrow phones: one on-plan chip per row, so no store name is ever cut */
+@media(max-width:400px){.fine{grid-template-columns:1fr}}
+/* header never runs off the screen: below 1400px wide it is two rows — name and clock, then the five numbers */
+@media(orientation:landscape) and (max-width:1400px) and (min-height:501px){
+  .band{display:grid;grid-template-columns:repeat(5,auto);justify-content:start;column-gap:0;row-gap:6px;padding:10px 20px}
+  .where{grid-column:1/3}
+  .when{grid-column:3/-1;margin:0 0 0 14px}
+  .stat{grid-row:2}
+  .when+.stat{border-left:0;padding-left:0}
+}
+/* short landscape (9.7-inch iPad): the on-plan field shares the leftover height, so the last row is never cut off */
+@media(orientation:landscape) and (max-height:800px){
+  .card{padding:10px 14px}
+  .fine{grid-auto-rows:minmax(0,1fr);align-content:stretch}
+  .chip{min-height:0;overflow:hidden;align-content:center;padding:8px 14px 6px;row-gap:4px}
+  .chip .thr{padding-top:4px}
+}
+/* 9.7-inch iPad landscape: four on-plan chips per row, so store names stay whole */
+@media(orientation:landscape) and (max-width:1100px) and (min-height:501px){.fine{grid-template-columns:repeat(4,minmax(0,1fr))}}
 </style></head>
 <body>
   <header class="band">

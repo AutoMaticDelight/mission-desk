@@ -239,8 +239,24 @@ numbered-slot contract) — kept as-is, not migrated.
   tappable surface, eased state changes.
 - Verified sizes: 1024×768, 1180×820, 1366×1024 landscape; 820×1180 portrait.
   Short landscape screens (≤800px tall) compact box heights automatically.
+- Phone (2026-09-19): the link gets opened on an iPhone, so both worker
+  panels and the manager console carry a phone layer at the end of their
+  `<style>`. Portrait phone (≤500px wide): the page scrolls, the top lockup
+  compacts (day and peak note hidden, stats on their own row), the status
+  card stacks one group per row with two boxes across, the actions dock
+  is one column and stays hooked to the bottom on phones ≥750px tall.
+  Landscape phone (≤500px tall): the page scrolls and boxes take fixed
+  heights instead of a share of the screen. iPad sizes are untouched by
+  these rules (they are gated on width ≤500 or height ≤500). Verified:
+  393×852, 430×932, 375×667 portrait; 852×393, 667×375 landscape.
+  Readability floors (body ≥14, labels ≥13, buttons ≥48pt) still hold.
 
 ## Alternate looks
 - `?look=flat` on the light panel: white cells, no lift (comparison only).
 - Manager console (`manager-fleet.html`) is separate: Apple-clean light,
   white store boxes, green status lights, 100% = on plan.
+  Its section grids are addressed by id (`#now`, `#watch`), never by class:
+  the store cards carry `.now` / `.watch` too, and a class rule turns every
+  card into a 2- or 3-column grid (that was why store names truncated —
+  fixed 2026-09-19). Below 1400px wide the header is two rows (name and
+  clock, then the five numbers); it no longer runs off the right edge.

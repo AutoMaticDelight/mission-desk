@@ -883,6 +883,122 @@ html[data-photo="0"] .bar .rc-tag{left:auto;right:8px}
 .ph{object-fit:cover;display:block}
 
 .ph{height:100%;width:var(--phw);object-fit:cover}
+/* PHONE: the panel is an iPad HMI, but the link gets opened on an iPhone. Nothing clips, nothing overlaps.
+   Portrait phone (≤500px wide): the page scrolls; the top lockup stays compact; the status card stacks one group per row;
+   the actions dock stays hooked to the bottom on tall phones. Landscape phone (≤500px tall): the page scrolls, boxes keep a fixed
+   height instead of a share of a height that isn't there. Body ≥14px, labels ≥13px, buttons ≥48pt still hold. */
+@media(max-width:500px){
+  html,body{height:auto}
+  body{display:flex;flex-direction:column;min-height:100vh;min-height:100dvh;overflow:visible;overflow-x:hidden;gap:10px;padding:0 12px 0}
+  .top{margin:0 -12px;border-radius:0}
+  .top .band{display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-rows:auto auto;align-items:center;gap:6px 10px;padding:10px 16px 8px;min-height:0}
+  .band .where{grid-column:1;grid-row:1;display:flex;flex-wrap:wrap;align-items:center;gap:2px 6px;font-size:18px;white-space:normal;overflow:visible;line-height:1.1}
+  .band .where .logo{width:34px;height:34px;margin:0 2px 0 0}
+  .band .where span{flex:1 1 100%;margin:0 0 0 52px;font-size:14px;letter-spacing:.04em;white-space:nowrap}
+  .band .when{grid-column:2;grid-row:1;align-self:start;font-size:17px;margin:0;padding-top:8px}
+  .band .when .peak,.band .when .day{display:none}
+  .band .stat{grid-row:2;border-left:0;padding-left:0;gap:6px}
+  .band .stat{grid-column:1;justify-content:flex-start}.band .stat+.stat{grid-column:2;justify-content:flex-end}
+  .band .stat b{font-size:28px}.band .stat span{font-size:14px;letter-spacing:.3px}.band .stat i{font-size:16px}
+  .recipe{grid-template-columns:auto minmax(0,1fr) auto;column-gap:10px;padding:6px 16px 8px}
+  .recipe .rc-id{display:none}
+  .recipe .rc-who b{font-size:17px}
+  .recipe .rc-prog{padding:0 10px;height:28px;line-height:28px}
+  .recipe .rc-prog b{font-size:18px}.recipe .rc-prog span{font-size:13px}.recipe .rc-prog em{font-size:13px;margin-left:6px}
+  .recipe .rc-meta{font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .top .sys{display:flex;flex-wrap:wrap;justify-content:flex-start;gap:0;padding:4px 8px 6px;min-height:0;border-radius:0}
+  .sys .lbl{display:none}
+  .top .si{flex:0 0 auto;min-width:max-content;min-height:30px;padding:0 8px;gap:6px;font-size:14px;border-right:0;justify-content:flex-start}
+  /* status: one group per row, so every name and number has room */
+  .hoppers{margin:0;padding:10px 12px 12px;min-height:0;overflow:visible}
+  .hoppers .sec{font-size:14px;letter-spacing:1.8px}
+  .row1{grid-template-columns:1fr;gap:8px;align-items:start}
+  .row2,html:not([data-photo="0"]) .row2,html[data-photo="50"] .row2{grid-template-columns:1fr;grid-template-rows:auto auto auto;gap:8px}
+  .row2 .grp:first-child,html:not([data-photo="0"]) .row2 .grp:first-child{grid-column:auto}
+  .grp,.row1 .grp,.row2 .grp{grid-template-rows:auto auto;gap:4px}
+  .glabel{font-size:13px;letter-spacing:1.4px}
+  .big{grid-template-columns:1fr 1fr;gap:8px}
+  .big .bar,html:not([data-photo="0"]) .big .bar,html[data-photo="50"] .big .bar{height:84px;min-height:0;max-height:none;flex-direction:column;align-items:flex-start;justify-content:center;gap:0;padding:6px 10px 6px calc(var(--phw) + 10px)}
+  .big .bar .n,html[data-photo="50"] .big .bar .n{font-size:16px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%}
+  .big .bar .m{text-align:left}
+  .big .bar .m b,html[data-photo="50"] .big .bar .m b,.bar.held .m b,html[data-photo="50"] .bar.held .m b{font-size:24px;line-height:1}
+  .big .bar .m span,html[data-photo="50"] .big .bar .m span{font-size:13px;line-height:1.15;margin-top:2px;white-space:normal}
+  html:not([data-photo="0"]) .tops.veg,html[data-photo="0"] .tops.veg,.tops.sau,.tops.dai{grid-template-columns:1fr 1fr}
+  .tops{gap:8px;grid-auto-rows:auto}
+  html:not([data-photo="0"]) .hoppers .tops .bar,html[data-photo="0"] .hoppers .tops .bar,html[data-photo="50"] .tops.sau .bar,html[data-photo="50"] .tops.dai .bar{height:48px;min-height:0;max-height:none;flex-direction:column;align-items:flex-start;justify-content:center;gap:1px;padding:2px 8px 2px calc(var(--phw) + 8px)}
+  html:not([data-photo="0"]) .hoppers .tops .bar .n,html[data-photo="0"] .hoppers .tops .bar .n,html:not([data-photo="0"]) .tops.sau .bar .n,html:not([data-photo="0"]) .tops.dai .bar .n,html[data-photo="50"] .tops.sau .bar .n,html[data-photo="50"] .tops.dai .bar .n{font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+  html:not([data-photo="0"]) .hoppers .tops .bar .v,html[data-photo="0"] .hoppers .tops .bar .v,html:not([data-photo="0"]) .tops.sau .bar .v,html:not([data-photo="0"]) .tops.dai .bar .v,html[data-photo="50"] .tops.sau .bar .v,html[data-photo="50"] .tops.dai .bar .v{font-size:14px}
+  .tops .bar.long .n{font-size:15px}.tops .bar.long .v small{display:inline}
+  .bar .rc-tag{font-size:13px;padding:3px 5px;top:4px;left:4px}
+  /* actions dock: compact, one column, hooked to the bottom */
+  .actions{margin:auto -12px 0;align-self:stretch;padding-bottom:max(0px,env(safe-area-inset-bottom));min-height:0}
+  .actions .sec{padding:8px 16px 4px;font-size:14px;letter-spacing:1.8px}
+  .actions .alert{grid-template-columns:minmax(0,1fr);grid-template-rows:auto auto auto auto;gap:8px;padding:8px 16px 10px 14px;border-left-width:8px;max-height:none}
+  .ahead{font-size:18px;column-gap:10px;row-gap:2px}
+  .ahead small{font-size:14px;white-space:normal;overflow:visible;text-overflow:clip}
+  .ahead i{width:12px;height:12px;box-shadow:0 0 0 4px rgba(255,122,26,.28)}
+  .nums{display:flex;justify-content:center;align-items:flex-start;gap:14px;padding:0;text-align:center}
+  .num{flex:1 1 0;min-width:0}
+  .num:nth-child(2) b{font-size:32px}.num:nth-child(2) span{font-size:14px}
+  .num:not(:nth-child(2)) b{font-size:22px}.num:not(:nth-child(2)) span{font-size:13px}
+  .num span{white-space:normal;line-height:1.15}
+  .alert .more{flex-wrap:nowrap;gap:8px;margin-top:0}
+  .alert .more button{flex:1 1 0;min-height:48px;font-size:15px;padding:0 8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .go{min-height:56px;height:auto;padding:8px 44px 8px 14px;gap:2px;grid-template-columns:minmax(0,1fr);justify-items:start;text-align:left}
+  .go .t{font-size:20px;line-height:1}.go .s{font-size:14px}.go .a{font-size:26px;right:12px}
+  .actions .next{display:grid;grid-template-columns:auto minmax(0,1fr) minmax(0,1fr);gap:10px;padding:8px 16px 8px;row-gap:0}
+  .next .lbl{grid-column:auto;font-size:13px;letter-spacing:.8px;padding:0 8px 0 0;border-right:2px solid rgba(255,255,255,.16)}
+  .next .task:nth-child(n+4){display:none}
+  .task b{font-size:20px}.task span{font-size:14px}
+}
+/* tall phones: the dock stays on screen while the status card scrolls under it */
+@media(max-width:500px) and (min-height:750px){
+  .actions{position:sticky;bottom:0;z-index:3}
+}
+/* phone in landscape: no height to share, so boxes take fixed heights and the page scrolls */
+@media(orientation:landscape) and (max-height:500px){
+  html,body{height:auto}
+  body{display:flex;flex-direction:column;min-height:100vh;overflow:visible;overflow-x:hidden;gap:10px;padding:0 12px 0}
+  .top{margin:0 -12px;border-radius:0}
+  .top .band{padding:8px 16px;min-height:0;gap:12px}
+  .band .where{flex-wrap:wrap;white-space:normal;overflow:visible;font-size:19px;line-height:1.1;gap:2px 6px}
+  .band .where .logo{width:34px;height:34px}
+  .band .where span{flex:1 1 100%;margin:0 0 0 52px;font-size:14px;letter-spacing:.04em}
+  .band .stat b{font-size:28px}.band .stat span{font-size:14px}
+  .recipe{padding:0 16px;gap:10px}
+  .recipe .rc-items,.recipe .rc-next{display:none}
+  .recipe .rc-meta{flex:1 1 auto}
+  .top .sys{padding:2px 8px}
+  .top .si{min-height:30px;font-size:14px;padding:0 8px}
+  .hoppers{margin:0;padding:10px 12px 12px;overflow:visible;min-height:0}
+  .row1{grid-template-columns:1fr 1fr;gap:8px}
+  .row2{grid-template-columns:1fr;gap:8px}
+  .big{gap:8px}
+  .big .bar,html:not([data-photo="0"]) .big .bar{height:84px;min-height:0;max-height:none;padding:6px 10px 6px calc(var(--phw) + 10px)}
+  .big .bar .n{font-size:16px}.big .bar .m b{font-size:24px;line-height:1}.bar.held .m b{font-size:24px}.big .bar .m span{font-size:13px;line-height:1.15;margin-top:2px}
+  .tops.veg{grid-template-columns:repeat(3,minmax(0,1fr))}.tops.sau{grid-template-columns:repeat(4,minmax(0,1fr))}.tops.dai{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .tops{gap:8px}
+  html:not([data-photo="0"]) .hoppers .tops .bar,html[data-photo="0"] .hoppers .tops .bar{height:48px;min-height:0;max-height:none;padding:2px 8px 2px calc(var(--phw) + 8px)}
+  html:not([data-photo="0"]) .hoppers .tops .bar .n,html[data-photo="0"] .hoppers .tops .bar .n{font-size:15px}
+  html:not([data-photo="0"]) .hoppers .tops .bar .v,html[data-photo="0"] .hoppers .tops .bar .v{font-size:14px}
+  .tops .bar.long .n{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .actions{margin:0 -12px 0;align-self:stretch;position:static}
+  .actions .sec{padding:8px 16px 4px;font-size:14px}
+  .actions .alert{padding:8px 16px 10px 14px;gap:0 14px;border-left-width:8px;max-height:none;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr) minmax(200px,26%)}
+  .ahead{font-size:18px}.ahead small{font-size:14px}
+  .num:nth-child(2) b{font-size:30px}.num:nth-child(2) span{font-size:14px}
+  .num:not(:nth-child(2)) b{font-size:22px}.num:not(:nth-child(2)) span{font-size:13px}
+  .alert .more button{min-height:48px;font-size:15px;padding:0 10px}
+  .go{min-height:64px;padding:8px 40px 8px 14px}.go .t{font-size:20px}.go .s{font-size:14px}.go .a{font-size:26px;right:12px}
+  .actions .next{padding:8px 16px}
+  .task b{font-size:20px}.task span{font-size:14px}
+}
+/* narrow phones (SE, mini): the title stays on one line beside the clock */
+@media(max-width:380px){
+  .band .where{font-size:16px}
+  .band .where .logo{width:30px;height:30px}
+  .band .where span{margin-left:46px;font-size:13px}
+}
 </style>
 <link rel="stylesheet" href="glove.css"></head>
 <body>
