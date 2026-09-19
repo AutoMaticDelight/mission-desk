@@ -1228,6 +1228,10 @@ body{grid-template-rows:auto minmax(0,1fr) auto;align-content:stretch}
   .slots .bar.slot.sz-M .n{min-height:36px;font-size:15px;padding-left:30px}
 }
 @media(orientation:portrait){.slots .bar.slot.sz-M .n{padding-left:46px;padding-right:6px}}
+/* TEMP: centered in the photo both ways, 20% larger (Bryan, 2026-09-19) */
+.slots .bar .photo .head .temp,.slots .bar.hot .photo .head .temp,.slots .bar.cold .photo .head .temp{top:50%;bottom:auto;transform:translateY(-50%);font-size:clamp(26px,3.6vh,41px)}
+@media(orientation:landscape) and (max-height:800px){.slots .bar .photo .head .temp,.slots .bar.hot .photo .head .temp,.slots .bar.cold .photo .head .temp{font-size:24px}.slots .bar.slot.sz-S .photo .head .temp,.slots .bar.slot.sz-S.hot .photo .head .temp,.slots .bar.slot.sz-S.cold .photo .head .temp{font-size:22px}}
+@media(orientation:portrait){.slots .bar .photo .head .temp,.slots .bar.hot .photo .head .temp,.slots .bar.cold .photo .head .temp{font-size:26px}}
 </style>
 <link rel="stylesheet" href="glove.css"></head>
 <body>
