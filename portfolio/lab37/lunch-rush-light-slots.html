@@ -1126,6 +1126,10 @@ body{grid-template-rows:auto minmax(0,1fr) auto;align-content:stretch}
 .slots .bar.slot .v{flex-wrap:nowrap}
 @media(orientation:landscape) and (max-width:1200px){.slots .bar.slot.sz-S .n{font-size:13px;padding-left:28px}.slots .bar.slot.sz-S .v .note{display:none}}
 @media(orientation:portrait){.slots .bar.slot.sz-S .v .note{display:none}}
+/* a bin at the floor: SCRAPE IT sits on its own line under the number; the 9.7-inch iPad has no room for the line and the dark card + lime ring carry it */
+.slots .bar.slot.now .v,.slots .bar.slot.just .v{flex-wrap:wrap;row-gap:0}
+.slots .bar.slot .v .note{flex:0 0 100%;text-align:center;line-height:1.1}
+@media(orientation:landscape) and (max-height:800px){.slots .bar.slot .v .note{display:none}}
 </style>
 <link rel="stylesheet" href="glove.css"></head>
 <body>
