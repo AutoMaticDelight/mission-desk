@@ -986,6 +986,32 @@ body{grid-template-rows:auto minmax(0,1fr) auto;align-content:stretch}
   .go{min-height:64px}
   .alert .more button{min-height:52px}
 }
+/* BADGE ON THE PHOTO (Bryan, 2026-09-19): bin number and temperature sit on the photo's top-right corner in outlined
+   white — readable over any picture — so the name band no longer has to clear them and the photo grows by that much.
+   Row one (Hot Grain Hopper) titles are bigger: the four mains are the first thing a worker reads. */
+.slots .bar .photo .head{position:absolute;top:6px;right:7px;bottom:auto;left:auto;z-index:3;opacity:1;gap:6px;font-size:13px;font-weight:900;letter-spacing:.2px;color:#fff;
+  paint-order:stroke fill;-webkit-text-stroke:3px rgba(0,0,0,.72);text-shadow:0 1px 2px rgba(0,0,0,.5)}
+.slots .bar .photo .head .temp{color:#fff}
+.slots .bar.hot .photo .head .temp{color:#ffc44d}
+.slots .bar.cold .photo .head .temp{color:#8fd0ff}
+.slots .bar.held .photo .head{opacity:.9}
+.slots .bar .n{padding:7px 8px 0}
+.slots .sz-L .n{font-size:18px;letter-spacing:-.01em}
+.slots .sz-L .v{font-size:14px}
+.slots .bar .photo{min-height:34px}
+@media(orientation:portrait){
+  .slots .bar .n{padding:6px 6px 0}
+  .slots .sz-L .n{font-size:17px}
+  .slots .sz-L .v{font-size:13px}
+}
+/* all titles a little larger (Bryan, 2026-09-19) */
+.slots .bar .n{font-size:16px}
+.slots .sz-L .n{font-size:20px}
+.slots .bar .v{font-size:13px}
+@media(orientation:portrait){
+  .slots .bar .n{font-size:14px}
+  .slots .sz-L .n{font-size:18px}
+}
 </style>
 <link rel="stylesheet" href="glove.css"></head>
 <body>
@@ -1068,12 +1094,15 @@ function recipeRow(){
 function render(){
   nextUp(); recipeRow();
   // PHOTOS: Wikimedia Commons, hotlinked via Special:FilePath (browser loads them). ?photo=25|50|0
-  const IMG={"chicken": "Grilled_Chicken_Breasts_(28905381261).jpg", "beef": "Shredded_Steak_with_Peppers,_Onions_and_Tomatoes_(Ropa_Vieja).jpg", "rice": "Bowl_of_white_rice_02.jpg", "quinoa": "Quinoa_cuit.JPG", "beans": "Black_bean,_frijol_negro,_feijão_preto_1.jpg", "corn": "Up_close_image_of_corn.jpg", "pico": "Mmm..._Pico_de_Gallo_(5923456035).jpg", "lettuce": "Romaine_lettuce.jpg", "cilantro": "Coriander_01.jpg", "lime": "Lime_-_whole_and_halved.jpg", "guac": "Guacamole_bowl.jpg", "verde": "SALSA_VERDE.jpg", "chipotle": "Chipotlesenadobo.jpg", "roja": "Bowl_of_salsa.jpg", "sour cream": "Sour_Cream.jpg", "cheese": "Fine_Microplane_Grating_Hard_Cheese.jpg"};
-  const img=x=>'https://commons.wikimedia.org/wiki/Special:FilePath/'+encodeURIComponent(IMG[x.n.toLowerCase()]||'')+'?width=400';
+  const IMG={"chicken": "Grilled_Chicken_Breasts_(28905381261).jpg", "beef": "Shredded_Steak_with_Peppers,_Onions_and_Tomatoes_(Ropa_Vieja).jpg", "rice": "Bowl_of_white_rice_02.jpg", "quinoa": "Quinoa_cuit.JPG", "beans": "Black_bean,_frijol_negro,_feijão_preto_1.jpg", "corn": "Up_close_image_of_corn.jpg", "pico": "Mmm..._Pico_de_Gallo_(5923456035).jpg", "lettuce": "Romaine_lettuce.jpg", "cilantro": "Coriander_01.jpg", "lime": "Lime_-_whole_and_halved.jpg", "guac": ["Guacamole_IMGP1303.jpg", "Guacamole.jpg", "Guacamole_bowl.jpg"], "verde": "SALSA_VERDE.jpg", "chipotle": "Chipotlesenadobo.jpg", "roja": "Bowl_of_salsa.jpg", "sour cream": "Sour_Cream.jpg", "cheese": "Fine_Microplane_Grating_Hard_Cheese.jpg"};
+  // an entry can be a list of Commons file names: the browser walks it until one loads
+  const cands=x=>[].concat(IMG[x.n.toLowerCase()]||[]).map(f=>'https://commons.wikimedia.org/wiki/Special:FilePath/'+encodeURIComponent(f)+'?width=400');
+  const img=x=>cands(x)[0]||'';
   const key=x=>x.n.toLowerCase().replace(/\s+/g,'-');
   // PHOTO STASH: img/<key>.jpg in this folder wins; if it is missing the browser falls back to the Commons photo
-  window.SRC=window.SRC||{}; window.phFail=function(el,k,fallback){SRC[k]=fallback; el.onerror=null; el.src=fallback;};
-  const ph=x=>{const k=key(x); const src=SRC[k]||`img/${k}.jpg`; return `<img class="ph" alt="" decoding="sync" src="${src}" ${SRC[k]?'':`onerror="phFail(this,'${k}','${img(x)}')"`}>`;};
+  window.SRC=window.SRC||{}; window.CANDS=window.CANDS||{};
+  window.phFail=function(el,k){const list=CANDS[k]||[]; const i=list.indexOf(el.getAttribute('src'))+1; const next=list[i]; if(!next){el.onerror=null;return;} SRC[k]=next; el.src=next;};
+  const ph=x=>{const k=key(x); CANDS[k]=cands(x); const src=SRC[k]||`img/${k}.jpg`; return `<img class="ph" alt="" decoding="sync" src="${src}" ${SRC[k]&&SRC[k]===CANDS[k][CANDS[k].length-1]?'':`onerror="phFail(this,'${k}')"`}>`;};
   {const p=new URLSearchParams(location.search).get('photo'); const w=p===null?25:(parseInt(p,10)||0); document.documentElement.style.setProperty('--phw',w+'%'); document.documentElement.dataset.photo=w; const lk=new URLSearchParams(location.search).get('look'); if(lk) document.documentElement.dataset.look=lk;}
   // SLOT MAP: same #1-18 numbering as recipe-development.html's machine rack, sized by real
   // dispenser hardware (PANEL-DESIGN.md "Machine layout"). Row 1 is the 4 mains; then one
@@ -1087,11 +1116,10 @@ function render(){
     if(x.open) return `<div class="bar slot sz-${x.sz} open">${badge}<div class="n">+ Add</div></div>`;
     const z=st(x);
     return `<div class="bar slot sz-${x.sz} ${temp(x)} ${z} ${x.just?'just':''}" ${x.held?'':`onclick="openSheet('refill:${x.n}')"`}>
-      ${badge}
       <div class="n">${x.n}</div>
       <div class="v">${x.held?'HELD':lbs(x)+' lb'}<small> · ${x.held?'not dispensing':x.just?'REFILLED':z==='now'?'SCRAPE IT':refillClock(x)}</small></div>
       <div class="track"><i style="--l:${x.held?0:x.l}"></i></div>
-      <div class="photo">${ph(x)}${inRecipe(x)?'<em class="rc-tag">SF</em>':''}</div>
+      <div class="photo">${ph(x)}${badge}${inRecipe(x)?'<em class="rc-tag">SF</em>':''}</div>
     </div>`;
   };
   // DISPLAY: reordered by size tier (L, then M, then S — the 2 open bays live inside the S row,
