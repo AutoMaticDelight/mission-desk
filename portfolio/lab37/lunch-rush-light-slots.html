@@ -1139,7 +1139,7 @@ function render(){
     const z=st(x);
     return `<div class="bar slot sz-${x.sz} ${temp(x)} ${z} ${tOK?'':'talert'} ${x.just?'just':''}" ${x.held?'':`onclick="openSheet('refill:${x.n}')"`}>
       <div class="n">${x.n}</div>
-      <div class="v">${x.held?'HELD':lbs(x)+' lb'}<small> · ${x.held?'not dispensing':x.just?'REFILLED':z==='now'?'SCRAPE IT':refillClock(x)}</small></div>
+      <div class="v">${x.held?'HELD<small> · not dispensing</small>':`${lbs(x)}/${FULL[x.sz]} lbs<small> · ${Math.round(x.l)}% left${x.just?' · REFILLED':z==='now'?' · SCRAPE IT':''}</small>`}</div>
       <div class="track"><i style="--l:${x.held?0:x.l}"></i></div>
       <div class="photo">${ph(x)}${badge}${inRecipe(x)?'<em class="rc-tag">SF</em>':''}</div>
     </div>`;
