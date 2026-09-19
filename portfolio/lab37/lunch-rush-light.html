@@ -937,7 +937,8 @@ const M=[{n:'Bowl 01',s:'run',st:'Running',k:'14',l:'in queue',hr:134,sec:27},{n
 function machines(){
   const st=m=>m.s==='run'?'':m.s==='held'?'bad':m.s==='clean'?'warn':'off';
   const word=m=>m.s==='run'?(m.k+(m.l==='in queue'?' queued':m.l==='slots open'?' open':' '+m.l)):m.s==='held'?((m.sub||'HELD').startsWith('DOOR')?'door open':'held'):m.s==='clean'?(m.k+' min clean'):'off';
-  const q=ALL.find(x=>x.n==='Quinoa'); const disp=q&&q.held?['warn','17/18']:['',''];
+  // 18 dispenser slots on the machine; one per loaded ingredient; the line reads running/loaded while any is held
+  const SLOTS=18, loaded=ALL.length, heldN=ALL.filter(x=>x.held).length; const disp=heldN?['warn',`${loaded-heldN}/${loaded}`]:['',`${loaded}/${SLOTS}`];
   const items=M.map(m=>[st(m),m.n,word(m)]).concat([['','Conveyor',''],[disp[0],'Dispensers',disp[1]],['','Sealer',''],['','Pickup',''],['','Payments',''],['','Network','']]);
   document.getElementById('machines').innerHTML='<span class="lbl">System</span>'+items.map(a=>`<span class="si ${a[0]}"><i></i><b>${a[1]}</b>${a[2]?`<span>${a[2]}</span>`:''}</span>`).join('');
 }

@@ -203,6 +203,10 @@ numbered-slot contract) — kept as-is, not migrated.
 - Progress ticks with the line's speed; when the batch completes the next job
   takes over. Manager's store card shows the running recipe in one line.
 
+## Slots
+- The machine has **18 dispenser slots**; 16 are loaded (one per ingredient), 2 open.
+  Machine line shows running/loaded while any hopper is held, else loaded/18.
+
 ## Boxes
 - Every box carries a photo of its ingredient on the left: 25% width by
   default (`?photo=50` half, `?photo=0` none). Photos hotlink Wikimedia

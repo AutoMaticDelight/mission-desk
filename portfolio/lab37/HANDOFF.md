@@ -60,6 +60,10 @@ Next Up). Spare height opens only between status and actions.
 Proteins: Chicken, Beef · Bases: Rice, Quinoa (held) · Vegetables: Beans, Corn,
 Pico, Lettuce, Cilantro, Lime · Sauces: Guac, Verde, Chipotle, Roja · Dairy:
 Cheese, Sour Cream. (Crema was removed — it duplicated Sour Cream.)
+**Dispensers: 18 slots on the machine, 16 loaded (one per ingredient), 2 open.** The
+machine line reads running/loaded while anything is held (`15/16` with quinoa held)
+and `16/18` when all are running. Adding an ingredient = adding a hopper box + a
+photo key; the count updates itself.
 
 ## Photos — the unfinished part
 The sandbox that builds this can reach **GitHub only** (Wikimedia, Unsplash, Pexels,
