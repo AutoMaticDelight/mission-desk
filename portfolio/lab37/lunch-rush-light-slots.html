@@ -1134,6 +1134,28 @@ body{grid-template-rows:auto minmax(0,1fr) auto;align-content:stretch}
 @media(orientation:landscape) and (max-width:1200px){.slots .bar.slot .v .note{display:none}}
 /* two-digit badges are wider: the sauce row's name and number clear the badge on the 11-inch iPad */
 @media(orientation:landscape) and (max-width:1200px) and (min-height:801px){.slots .bar.slot.sz-S .n{padding:14px 4px 0 40px}}
+/* the name row is never shorter than the badge, so the number row always starts below the badge's bottom edge */
+.slots .bar .n{min-height:30px;display:flex;align-items:flex-end;justify-content:center;padding-top:6px;box-sizing:border-box}
+.slots .bar.slot.sz-S .n{min-height:30px}
+@media(orientation:landscape) and (max-height:800px){
+  .slots .bar>.bin{font-size:12px;padding:3px 5px}
+  .slots .bar .n{min-height:25px;padding-top:3px}
+  .slots .bar.slot .v .pct{font-size:20px}
+  .slots .bar .photo{min-height:28px}
+}
+/* sauce row in landscape: name under the badge row (as in portrait); on the 9.7-inch iPad it sits beside the badge, left-aligned */
+@media(orientation:landscape) and (min-height:801px){
+  .slots .bar.slot.sz-S .n{padding:28px 4px 0;min-height:0;justify-content:center}
+}
+@media(orientation:landscape) and (max-width:1200px) and (min-height:801px){
+  .slots .bar.slot.sz-S .n{font-size:13px}
+  .slots .bar.slot.sz-S .photo{min-height:33px}
+  .slots .bar.slot.sz-S .v .pct{font-size:24px}
+}
+@media(orientation:landscape) and (max-height:800px){
+  .slots .bar.slot.sz-S .n{justify-content:flex-start;padding:3px 4px 0 40px;min-height:25px}
+  .slots .bar.slot.sz-S .photo .head .temp,.slots .bar.slot.sz-S.hot .photo .head .temp,.slots .bar.slot.sz-S.cold .photo .head .temp{font-size:18px;bottom:3px}
+}
 </style>
 <link rel="stylesheet" href="glove.css"></head>
 <body>
