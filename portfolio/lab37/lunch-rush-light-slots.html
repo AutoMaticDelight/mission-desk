@@ -1201,6 +1201,12 @@ body{grid-template-rows:auto minmax(0,1fr) auto;align-content:stretch}
 @media(orientation:portrait){.slots .bar>.bin{font-size:14px;padding:6px 9px 6px 8px;border-radius:18px 0 10px 0}}
 @media(orientation:landscape) and (max-height:800px){.slots .bar>.bin{font-size:12px;padding:4px 7px 4px 6px;border-radius:18px 0 8px 0}}
 @media(orientation:landscape) and (max-width:1200px) and (min-height:801px){.slots .bar>.bin{padding:6px 10px 6px 9px}.slots .bar.slot.sz-S .n{padding:29px 4px 0}}
+/* ORDER (Bryan, 2026-09-19): title, then the photo with the temperature just under the title, the meter along the bottom edge */
+.slots .bar .n{order:1;margin:0}
+.slots .bar .photo{order:2;flex:1 1 auto}
+.slots .bar .meter{order:3;margin-top:0}
+.slots .bar .photo .head .temp,.slots .bar.hot .photo .head .temp,.slots .bar.cold .photo .head .temp{top:4px;bottom:auto}
+.slots .bar .photo .head .bin{display:none}
 </style>
 <link rel="stylesheet" href="glove.css"></head>
 <body>
