@@ -1101,6 +1101,14 @@ body{grid-template-rows:auto minmax(0,1fr) auto;align-content:stretch}
   .slots .bar .photo .head .temp,.slots .bar.hot .photo .head .temp,.slots .bar.cold .photo .head .temp{font-size:20px;bottom:2px}
 }
 @media(orientation:landscape) and (max-height:800px){.slots .sz-S .v .note{display:none}}
+/* 11-inch iPad landscape, sauce row: name under the badge row, weight yields to the big percent, photo keeps 36px */
+@media(orientation:landscape) and (max-width:1200px) and (min-height:801px){
+  .slots .sz-S .n{padding:24px 3px 0;font-size:14px}
+  .slots .sz-S .v{flex-direction:row;padding:0 3px 3px}
+  .slots .sz-S .v .w{display:none}
+  .slots .sz-S .v .pct{font-size:24px}
+  .slots .sz-S .photo{min-height:36px}
+}
 </style>
 <link rel="stylesheet" href="glove.css"></head>
 <body>
