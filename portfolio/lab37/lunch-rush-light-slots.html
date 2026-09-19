@@ -1045,6 +1045,62 @@ body{grid-template-rows:auto minmax(0,1fr) auto;align-content:stretch}
 .slots .bar .rc-tag{left:auto;right:6px;top:6px}
 .slots .bar .n{padding:8px 34px 0}
 @media(orientation:portrait){.slots .bar .n{padding:8px 30px 0}.slots .bar>.bin{font-size:12px;padding:4px 6px}}
+/* PERCENT LEFT IS THE BIG NUMBER (Bryan, 2026-09-19): scannable from across the room. Weight sits small before it.
+   Name and numbers stack against the track, below the bin badge's row; the photo gives back a little on short screens. */
+.slots .bar .photo{flex:0 1 50%;min-height:30px}
+.slots .bar .n{margin-top:auto;padding:4px 6px 0;line-height:1.1}
+.slots .bar .v{margin-bottom:0;display:flex;align-items:baseline;justify-content:center;gap:7px;flex-wrap:wrap;line-height:1;padding:2px 6px 5px}
+.slots .bar .v .pct{font-size:clamp(26px,3.8vh,40px);font-weight:900;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.slots .bar .v small{font-size:13px;font-weight:700;opacity:.9}
+.slots .bar .v .note{letter-spacing:.4px}
+.slots .bar.held .v .pct{font-size:clamp(20px,2.8vh,28px)}
+.slots .sz-S .n{padding-left:36px;padding-right:6px}
+@media(orientation:portrait){
+  .slots .bar .n{padding:4px 4px 0}
+  .slots .sz-M .n,.slots .sz-S .n{padding-left:30px;padding-right:4px}
+  .slots .sz-S .v{flex-direction:column;gap:1px;align-items:center}
+  .slots .bar .v .pct{font-size:24px}
+  .slots .sz-L .v .pct{font-size:30px}
+}
+/* the photo never collapses under the numbers; the temperature always fits it; narrow cards stack under the badge row */
+.slots .bar .photo{min-height:40px}
+.slots .bar .photo .head .temp,.slots .bar.hot .photo .head .temp,.slots .bar.cold .photo .head .temp{font-size:clamp(22px,3vh,34px)}
+.slots .bar .v{white-space:nowrap}
+@media(orientation:landscape) and (max-width:1200px){.slots .sz-S .n{font-size:15px;padding-left:32px}.slots .bar .v .pct{font-size:clamp(24px,3.2vh,32px)}}
+@media(orientation:portrait){
+  .slots .sz-S .n{padding:26px 3px 0;font-size:14px}
+  .slots .sz-S .v{flex-direction:column;gap:0;padding-bottom:3px}
+  .slots .sz-S .v .pct{font-size:22px}
+  .slots .bar .photo .head .temp,.slots .bar.hot .photo .head .temp,.slots .bar.cold .photo .head .temp{font-size:22px}
+}
+/* tier-by-tier fit: the sauce row is the narrowest and shortest budget on every screen */
+.slots .bar .n{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.slots .sz-L .n{white-space:normal}
+@media(orientation:landscape) and (max-width:1200px){
+  .slots .sz-S .n{font-size:14px;padding:4px 4px 0 30px}
+  .slots .sz-S .v{flex-direction:column;gap:0;padding:0 4px 3px}
+  .slots .sz-S .v .pct{font-size:26px}
+}
+@media(orientation:landscape) and (max-height:800px){
+  .slots .bar .photo{min-height:34px}
+  .slots .bar .v .pct{font-size:22px}
+  .slots .sz-S .v .w{display:none}
+  .slots .sz-S .v{flex-direction:row}
+  .slots .bar .photo .head .temp,.slots .bar.hot .photo .head .temp,.slots .bar.cold .photo .head .temp{font-size:22px}
+}
+@media(orientation:portrait){
+  .slots .sz-S .n{font-size:13px;padding:24px 3px 0}
+  .slots .sz-S .v .pct{font-size:22px}
+  .slots .sz-S .v small{font-size:12px}
+}
+@media(orientation:landscape) and (max-height:800px){
+  .slots .sz-L .n{font-size:18px}
+  .slots .bar .n{padding-top:2px}
+  .slots .bar .v{padding:0 4px 3px}
+  .slots .bar .photo{min-height:30px}
+  .slots .bar .photo .head .temp,.slots .bar.hot .photo .head .temp,.slots .bar.cold .photo .head .temp{font-size:20px;bottom:2px}
+}
+@media(orientation:landscape) and (max-height:800px){.slots .sz-S .v .note{display:none}}
 </style>
 <link rel="stylesheet" href="glove.css"></head>
 <body>
@@ -1155,7 +1211,7 @@ function render(){
     return `<div class="bar slot sz-${x.sz} ${temp(x)} ${z} ${tOK?'':'talert'} ${x.just?'just':''}" ${x.held?'':`onclick="openSheet('refill:${x.n}')"`}>
       ${bin}
       <div class="n">${x.n}</div>
-      <div class="v">${x.held?'HELD<small> · not dispensing</small>':`${lbs(x)}/${FULL[x.sz]} lbs<small> · ${Math.round(x.l)}% left${x.just?' · REFILLED':z==='now'?' · SCRAPE IT':''}</small>`}</div>
+      <div class="v">${x.held?'<b class="pct">HELD</b><small class="note">not dispensing</small>':`${x.just?'<small class="note">REFILLED</small>':z==='now'?'<small class="note">SCRAPE IT</small>':`<small class="w">${lbs(x)}/${FULL[x.sz]} lbs</small>`}<b class="pct">${Math.round(x.l)}%</b>`}</div>
       <div class="track"><i style="--l:${x.held?0:x.l}"></i></div>
       <div class="photo">${ph(x)}${badge}${inRecipe(x)?'<em class="rc-tag">SF</em>':''}</div>
     </div>`;
