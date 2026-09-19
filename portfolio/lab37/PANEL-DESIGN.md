@@ -275,7 +275,28 @@ numbered-slot contract) — kept as-is, not migrated.
   393×852, 430×932, 375×667 portrait; 852×393, 667×375 landscape.
   Readability floors (body ≥14, labels ≥13, buttons ≥48pt) still hold.
 
-## Alternate looks
+## Recipe Controller (`recipe-controller.html`, 2026-09-19)
+The screen a recipe engineer stands at to program the machine. Same tokens,
+type, top lockup and dark dock as the worker panel. Three stations:
+- **The bowl** — a build-sequence drawing: the bowl in cross-section, one
+  layer per ingredient in the order the robot dispenses (base, protein,
+  vegetables, sauce, dairy), each layer's height by its portion, numbered
+  badge + name + oz on the layer. Totals under it: oz per bowl, build time,
+  food cost.
+- **Portions** — one row per ingredient in build order: photo, name, portion
+  bar against its max, lb needed for the batch (and hoppers if >1), a − / +
+  glove stepper (48pt) in the tier's step (1 oz hopper, ½ oz bin, ¼ oz
+  sauce).
+- **Machine** — the locked 18-slot primitive, dark + lime ring where the
+  recipe touches it, tap to add/remove; then the live checks: protein and
+  base limits, toppings ≤8, belt pace (bowls per 10 min vs the line's 40),
+  hoppers that need a mid-batch refill, held bins.
+- **Dock** — status, Run 1 test bowl / Save draft, the hero number (bowls
+  per 10 min at this recipe), batch size, line time, SEND TO LINE. A warning
+  never blocks Send; a blocker (limits) does.
+Each ingredient carries portion default, max, cost/oz and dispense s/oz;
+critical thresholds live on the worker panel, not here.
+
 - `?look=flat` on the light panel: white cells, no lift (comparison only).
 - Manager console (`manager-fleet.html`) is separate: Apple-clean light,
   white store boxes, green status lights, 100% = on plan.

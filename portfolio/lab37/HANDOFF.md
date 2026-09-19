@@ -22,6 +22,8 @@ on day one" and to be shown on screen share.
   - `design-system.html` — tokens, live states, components, rules, CSS + JSON export
   - `prep.html` — interview prep (about you, call plan, keywords, say-this, panels)
   - `photos.html` — review sheet of all 16 ingredient photos as the panel crops them
+  - `lunch-rush-light-slots.html` — the **18-slot worker panel** (the one being refined 2026-09-19: meter, temps, badges)
+  - `recipe-controller.html` — the **Recipe Controller** (2026-09-19): bowl build-sequence drawing, portions, machine, send
   - `PANEL-DESIGN.md` — the **locked** design rules (read before touching UI)
   - `logo.svg`, `img/README.md` (photo stash), `index.html` (29 screens)
 - Options: `?photo=25|50|0` (photo width), `?look=flat` (light panel alt), `?autoplay`.
