@@ -1307,7 +1307,7 @@ function render(){
     const bin=`<span class="bin">#${x._slot}</span>`;
     if(x.open) return `<div class="bar slot sz-${x.sz} open">${bin}<div class="n">+ Add</div></div>`;
     const tOK=tempOK(x);
-    const badge=`<span class="head"><span class="temp">${x.t}°F${tOK?'':'<small>ALERT</small>'}</span></span>`;
+    const badge=`<span class="head"><span class="temp">${x.t}°${tOK?'':'<small>ALERT</small>'}</span></span>`;
     const z=st(x);
     return `<div class="bar slot sz-${x.sz} ${temp(x)} ${z} ${tOK?'':'talert'} ${x.just?'just':''}" ${x.held?'':`onclick="openSheet('refill:${x.n}')"`}>
       ${bin}
