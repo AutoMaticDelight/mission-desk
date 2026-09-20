@@ -1294,6 +1294,12 @@ body{grid-template-rows:auto minmax(0,1fr) auto;align-content:stretch}
 .slots .bar.now .meter>i{background:var(--hot)}
 .slots .bar .meter{background:#e6e9ee}
 .slots .bar.low .meter,.slots .bar.now .meter{background:rgba(255,255,255,.16)}
+/* SQUARE SIDES + SAUCES (Bryan, 2026-09-20): the two lower rows keep their half of the panel and stay edge to
+   edge, but split that height by their card width — six across gets 4 parts, eight across gets 3 — so a
+   Loose-Scoop Bin card and a Sauce Dispenser card both come out square instead of one wide, one tall. */
+@media(orientation:landscape){
+  .slots{grid-template-rows:minmax(0,1fr) minmax(0,1.143fr) minmax(0,.857fr)}
+}
 </style>
 <link rel="stylesheet" href="glove.css"></head>
 <body>

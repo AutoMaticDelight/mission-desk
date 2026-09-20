@@ -40,6 +40,11 @@ Both share structure and JS; only the color layer differs.
 Slot-map variant: `lunch-rush-light-slots.html` — same panel, status card
 redrawn as the 18-slot machine layout below instead of grouped-by-category.
 
+**Square sides and sauces (2026-09-20).** The two lower rows keep their share of the panel and run edge to
+edge, but split that height by card width: the 6-across Loose-Scoop row gets 4 parts, the 8-across Sauce row
+gets 3. On the 12.9" iPad both tiers land at 1:1 (`grid-template-rows: 1fr 1.143fr .857fr`, landscape only).
+Mains keep their height. Shorter landscape screens get as square as the height allows; portrait is unchanged.
+
 ## Machine layout (one shape, everywhere)
 Locked 2026-09-18, revised three times same day (diamond → one row per
 category → this, sized by real dispenser hardware). The machine has **18
