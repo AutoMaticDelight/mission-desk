@@ -16,6 +16,13 @@ gloves on, mid-rush. Big, calm, unmistakable; an alert is the one loud thing.
   140–165°F, cold-held 34–41°F). Out of range it goes hot lime with the word
   ALERT and the card takes the same lime ring as "needs you now".
 - Titles: row one 22px, every other row 16px.
+- **Bin badge fills the header (2026-09-20).** The title band is a grid:
+  badge | name | spacer. The badge is a full-height block on the left of
+  the band (dark, white number; inverted on dark cards); the name is
+  centered in the middle column with a spacer the badge's width on the
+  right, so it is centered on the card, not just in the leftover. Widths
+  per tier and size (52 / 44 / 38px, smaller on the 11-inch and 9.7-inch
+  and in portrait). Open bays use the same band.
 - **Meter (2026-09-19):** the progress bar and the percent are one thing. A
   thick bar (36px on the 12.9-inch, 30 on the 11-inch, 24 on the 9.7-inch,
   28 in portrait) fills left to right in green, amber when low, hot lime when

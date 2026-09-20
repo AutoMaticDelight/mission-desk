@@ -1232,6 +1232,61 @@ body{grid-template-rows:auto minmax(0,1fr) auto;align-content:stretch}
 .slots .bar .photo .head .temp,.slots .bar.hot .photo .head .temp,.slots .bar.cold .photo .head .temp{top:50%;bottom:auto;transform:translateY(-50%);font-size:clamp(26px,3.6vh,41px)}
 @media(orientation:landscape) and (max-height:800px){.slots .bar .photo .head .temp,.slots .bar.hot .photo .head .temp,.slots .bar.cold .photo .head .temp{font-size:24px}.slots .bar.slot.sz-S .photo .head .temp,.slots .bar.slot.sz-S.hot .photo .head .temp,.slots .bar.slot.sz-S.cold .photo .head .temp{font-size:22px}}
 @media(orientation:portrait){.slots .bar .photo .head .temp,.slots .bar.hot .photo .head .temp,.slots .bar.cold .photo .head .temp{font-size:26px}}
+/* BIN FILLS THE HEADER (Bryan, 2026-09-20): the badge is a full-height block on the left of the title band; the title is
+   centered in what's left, with a matching gutter on the right so it is truly centered on the card. */
+.slots .bar.slot .n{display:flex;align-items:stretch;padding:0;overflow:hidden}
+.slots .bar.slot .n>.bin{position:static;flex:none;width:52px;display:grid;place-items:center;padding:0;border-radius:0;font-size:16px;box-shadow:none}
+.slots .bar.slot .n>span:not(.bin){flex:1 1 auto;min-width:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:4px 52px 4px 6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.slots .bar.slot.sz-S .n{min-height:36px;padding:0}
+.slots .bar.slot.sz-S .n>span:not(.bin){padding:2px 44px 2px 4px}
+.slots .bar.slot.sz-S .n>.bin{width:44px;font-size:14px}
+@media(orientation:landscape) and (max-width:1200px){
+  .slots .bar.slot .n>.bin{width:44px;font-size:14px}.slots .bar.slot .n>span:not(.bin){padding:3px 44px 3px 4px}
+  .slots .bar.slot.sz-S .n{min-height:30px;padding:0}.slots .bar.slot.sz-S .n>.bin{width:38px;font-size:12px}.slots .bar.slot.sz-S .n>span:not(.bin){padding:2px 38px 2px 3px}
+}
+@media(orientation:landscape) and (max-height:800px){
+  .slots .bar.slot .n>.bin{width:38px;font-size:12px}.slots .bar.slot .n>span:not(.bin){padding:2px 38px 2px 3px}
+  .slots .bar.slot.sz-S .n{min-height:26px}
+}
+@media(orientation:portrait){
+  .slots .bar.slot .n>.bin{width:42px;font-size:13px}.slots .bar.slot .n>span:not(.bin){padding:3px 42px 3px 4px}
+  .slots .bar.slot.sz-S .n{min-height:30px;padding:0}.slots .bar.slot.sz-S .n>.bin{width:34px;font-size:12px}.slots .bar.slot.sz-S .n>span:not(.bin){padding:2px 34px 2px 3px;font-size:13px}
+  .slots .bar.slot.sz-M .n>span:not(.bin){padding-left:4px}
+}
+/* title band as a grid: badge | name | spacer the badge's width — true centering, and it shrinks with the card */
+.slots .bar.slot{--binw:52px}
+.slots .bar.slot .n{display:grid;grid-template-columns:var(--binw) minmax(0,1fr) var(--binw);align-items:stretch;padding:0;min-width:0}
+.slots .bar.slot .n>.bin{grid-column:1;width:auto;position:static;flex:none;display:grid;place-items:center;padding:0;border-radius:0;box-shadow:none}
+.slots .bar.slot .n>span:not(.bin){grid-column:2;min-width:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:4px 4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:none}
+.slots .bar.slot .n>span:not(.bin){display:block;line-height:1.1;align-self:center}
+.slots .bar.slot.open .n{background:transparent}
+.slots .bar.slot.open .n>.bin{color:#8b93a3;background:#e6eaf0}
+.slots .bar.slot.sz-S{--binw:44px}
+@media(orientation:landscape) and (max-width:1200px){.slots .bar.slot{--binw:42px}.slots .bar.slot.sz-S{--binw:36px}}
+@media(orientation:landscape) and (max-height:800px){.slots .bar.slot{--binw:36px}.slots .bar.slot.sz-S{--binw:32px}}
+@media(orientation:portrait){.slots .bar.slot{--binw:38px}.slots .bar.slot.sz-M{--binw:34px}.slots .bar.slot.sz-S{--binw:30px}.slots .bar.slot.sz-S .n>.bin{font-size:11px}}
+/* the grid band wins over every earlier per-tier padding rule */
+.slots .bar.slot.sz-L .n>span:not(.bin),.slots .bar.slot.sz-M .n>span:not(.bin),.slots .bar.slot.sz-S .n>span:not(.bin){padding:3px 3px;font-size:inherit}
+.slots .bar.slot.sz-S .n>span:not(.bin){font-size:15px}
+.slots .bar.slot.sz-S .n{min-height:34px}
+@media(orientation:landscape) and (max-width:1200px){.slots .bar.slot.sz-S .n>span:not(.bin){font-size:14px}.slots .bar.slot.sz-S .n{min-height:30px}}
+@media(orientation:landscape) and (max-height:800px){.slots .bar.slot .n{min-height:28px}.slots .bar.slot.sz-L .n{min-height:30px}.slots .bar.slot.sz-S .n{min-height:26px}.slots .bar.slot.sz-L .n>span:not(.bin),.slots .bar.slot.sz-M .n>span:not(.bin),.slots .bar.slot.sz-S .n>span:not(.bin){padding:1px 2px}.slots .bar.slot.sz-S .n>span:not(.bin){font-size:13px}}
+@media(orientation:portrait){.slots .bar.slot.sz-M .n>span:not(.bin){padding:2px 3px;font-size:14px}.slots .bar.slot.sz-S .n>span:not(.bin){padding:2px 2px;font-size:13px}.slots .bar.slot.sz-S .n{min-height:30px}}
+.slots .bar.slot.sz-L .n,.slots .bar.slot.sz-M .n,.slots .bar.slot.sz-S .n{padding:0}
+.slots .bar.slot.sz-S{--binw:38px}
+.slots .bar.slot.sz-S .n>span:not(.bin){font-size:14px;letter-spacing:-.01em}
+@media(orientation:landscape) and (max-width:1200px){.slots .bar.slot.sz-S{--binw:34px}.slots .bar.slot.sz-S .n>span:not(.bin){font-size:13px}}
+@media(orientation:portrait){.slots .bar.slot{--binw:36px}.slots .bar.slot.sz-M{--binw:32px}.slots .bar.slot.sz-S{--binw:28px}}
+/* open bay: "+ Add" centered on the whole card; the bin number stays a quiet block at the left */
+.slots .bar.slot.open .n{display:block;position:relative;flex:1;min-height:0}
+.slots .bar.slot.open .n>.bin{position:absolute;top:0;left:0;bottom:0;width:var(--binw);height:auto}
+.slots .bar.slot.open .n>span:not(.bin){position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:0;font-size:18px;color:#8b93a3}
+/* narrow sauce cards: the spacer column yields before the name does */
+@media(orientation:landscape) and (max-width:1200px){.slots .bar.slot.sz-S .n{grid-template-columns:var(--binw) minmax(0,1fr) 6px}.slots .bar.slot.sz-S .n>span:not(.bin){letter-spacing:-.02em}}
+@media(orientation:landscape) and (max-height:800px){.slots .bar.slot.sz-S .n{grid-template-columns:var(--binw) minmax(0,1fr) 4px}}
+@media(orientation:portrait){.slots .bar.slot.sz-M .n,.slots .bar.slot.sz-S .n{grid-template-columns:var(--binw) minmax(0,1fr) 4px}.slots .bar.slot.sz-S .n>span:not(.bin){font-size:12px;letter-spacing:-.02em}.slots .bar.slot.sz-M .n>span:not(.bin){font-size:13px}.slots .bar.slot.open .n>span:not(.bin){font-size:14px}}
+/* the one long sauce name: two lines rather than an ellipsis */
+.slots .bar.slot.sz-S .n>span:not(.bin){white-space:normal;line-height:1.02;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;align-self:center}
 </style>
 <link rel="stylesheet" href="glove.css"></head>
 <body>
@@ -1336,13 +1391,12 @@ function render(){
   // APPLE CARD: name band on top (the one glanceable fact), full-bleed photo below, captioned.
   const slotBar=x=>{
     const bin=`<span class="bin">#${x._slot}</span>`;
-    if(x.open) return `<div class="bar slot sz-${x.sz} open">${bin}<div class="n">+ Add</div></div>`;
+    if(x.open) return `<div class="bar slot sz-${x.sz} open"><div class="n">${bin}<span>+ Add</span></div></div>`;
     const tOK=tempOK(x);
     const badge=`<span class="head"><span class="temp">${x.t}°${tOK?'':'<small>ALERT</small>'}</span></span>`;
     const z=st(x);
     return `<div class="bar slot sz-${x.sz} ${temp(x)} ${z} ${tOK?'':'talert'} ${x.just?'just':''}" ${x.held?'':`onclick="openSheet('refill:${x.n}')"`}>
-      ${bin}
-      <div class="n">${x.n}</div>
+      <div class="n">${bin}<span>${x.n}</span></div>
       <div class="meter"><i style="--l:${x.held?0:x.l}"></i>${x.held?'<b class="pct">HELD</b><small class="note">not dispensing</small>':`<b class="pct">${Math.round(x.l)}%</b>${x.just?'<small class="note">REFILLED</small>':z==='now'?'<small class="note">SCRAPE IT</small>':''}`}</div>
       <div class="photo">${ph(x)}${badge}${inRecipe(x)?'<em class="rc-tag">SF</em>':''}</div>
     </div>`;
