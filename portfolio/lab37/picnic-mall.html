@@ -1258,6 +1258,30 @@ body{grid-template-rows:auto minmax(0,1fr) auto;align-content:stretch}
 .srow .rcards{flex:none}
 .slots .bar{flex:1 1 0}
 .srow.row-M .rcards .bar{flex:1 1 calc(16.666% - 14px)}
+/* compact so all five lines fit on the 12.9-inch; names clear the badge on every row */
+.slots{gap:6px}
+.srow{gap:2px}.rcards{gap:10px}
+.rheader b{font-size:12px}.rheader span{font-size:11px}
+.slots .bar{border-radius:14px}
+.slots .bar>.bin{font-size:13px;padding:5px 9px 5px 8px;border-radius:14px 0 10px 0}
+.slots .bar .n{padding-left:44px;padding-right:8px}
+.slots .bar.slot.sz-L .n{min-height:34px;font-size:17px}
+.slots .bar.slot.sz-M .n{min-height:30px;font-size:14px;padding-left:40px;padding-right:6px}
+.slots .bar.slot.sz-S .n{min-height:30px;font-size:14px;padding:4px 6px 0 40px}
+.slots .bar .photo{min-height:30px;flex:0 1 34px}
+.slots .bar .meter{height:26px;padding:0 8px}.slots .bar .meter .pct{font-size:20px}.slots .bar .meter .note{font-size:12px}
+.slots .bar .photo .head .temp,.slots .bar.hot .photo .head .temp,.slots .bar.cold .photo .head .temp{font-size:20px}
+.slots .bar .rc-tag{font-size:11px;padding:2px 4px;bottom:3px;right:4px}
+.hoppers{padding:8px 14px 10px}
+@media(orientation:landscape) and (max-width:1200px){
+  .rcards{gap:8px}
+  .slots .bar .n{padding-left:40px}
+  .slots .bar.slot.sz-L .n{min-height:30px;font-size:15px}
+  .slots .bar.slot.sz-M .n,.slots .bar.slot.sz-S .n{min-height:28px;font-size:13px;padding-left:38px}
+  .slots .bar .photo{min-height:26px;flex-basis:28px}
+  .slots .bar .meter{height:24px}.slots .bar .meter .pct{font-size:18px}
+  .slots .bar .photo .head .temp,.slots .bar.hot .photo .head .temp,.slots .bar.cold .photo .head .temp{font-size:18px}
+}
 </style>
 <link rel="stylesheet" href="glove.css"></head>
 <body>
