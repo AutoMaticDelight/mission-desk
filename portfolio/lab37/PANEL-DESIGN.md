@@ -77,6 +77,10 @@ bar index drifted one card after it and the fills jumped up and down), and a tic
 full redraw. Row headers are the one word (Protein, Base, Sides, Sauces), no count or capacity. Fine-state
 green on this page is Apple system green `#34c759`; amber and lime unchanged.
 
+**Picnic Mall variant: fill only (`picnic-mall-nopct.html`, 2026-09-20).** The gravity page with the last three
+rows — Base, Sides, Sauces — showing the level as the fill alone, no number. Protein keeps its percent. HELD still
+shows as a word.
+
 ## Machine layout (one shape, everywhere)
 Locked 2026-09-18, revised three times same day (diamond → one row per
 category → this, sized by real dispenser hardware). The machine has **18
