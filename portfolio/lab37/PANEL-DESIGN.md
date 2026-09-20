@@ -60,7 +60,8 @@ or lime), the rest is white (dark on low/critical cards), and the bin badge, nam
 **Picnic Mall variant: twelve squares (`picnic-mall-squares.html`, 2026-09-20).** All 12 sides in one row,
 each card a square (`aspect-ratio:1`), still the bar: bin number as a small tag at the top, name centered,
 percent under it, type sized to fill the square. The sauce cards stack the same way (tag, name, percent).
-Hoppers take the height the second sides line gave back.
+Hoppers take the height the second sides line gave back. Row headers are 2x (26px tier name, 20px count) on
+the 12.9"; they scale to 20/15 on 11" and 15/12 at 1024 wide, where four rows plus twelve squares leave no more.
 
 ## Machine layout (one shape, everywhere)
 Locked 2026-09-18, revised three times same day (diamond → one row per

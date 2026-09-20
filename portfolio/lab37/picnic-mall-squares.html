@@ -1568,6 +1568,59 @@ body{grid-template-rows:auto minmax(0,1fr) auto;align-content:stretch}
 /* the stacked sauce band needs a floor on shorter screens; the hoppers give it up */
 @media(orientation:landscape) and (max-width:1200px){.srow.row-S{flex:4 1 0;min-height:70px}.srow.row-S .rcards{min-height:0}}
 @media(orientation:landscape) and (max-width:1100px){.srow.row-S{min-height:60px}}
+/* ROW HEADERS 2x (Bryan, 2026-09-20): the tier name and its count read from across the room */
+.rheader{gap:14px;padding:2px 2px 4px;line-height:1}
+.rheader b{font-size:26px;letter-spacing:.2px;opacity:.8}
+.rheader span{font-size:20px;opacity:.55}
+.rheader span.full{opacity:.85}
+@media(orientation:landscape) and (max-width:1200px){.rheader b{font-size:22px}.rheader span{font-size:16px}}
+@media(orientation:landscape) and (max-width:1100px){.rheader{padding:0 2px 2px}.rheader b{font-size:18px}.rheader span{font-size:14px}}
+@media(orientation:portrait){.rheader b{font-size:20px}.rheader span{font-size:15px}}
+/* 11" sizes: the taller headers come out of the hoppers, never the stacked bands */
+@media(orientation:landscape) and (max-width:1200px){
+  .rheader{padding:0 2px 2px}.rheader b{font-size:20px}.rheader span{font-size:15px}
+  .srow.row-S{min-height:80px}
+  .srow.row-P .bar .photo,.srow.row-B .bar .photo{min-height:16px}
+}
+@media(orientation:landscape) and (max-width:1100px){
+  .rheader{padding:0 2px 1px}.rheader b{font-size:17px}.rheader span{font-size:13px}
+  .srow.row-S{min-height:66px}
+  .srow.row-S .bar.slot.sz-S .n{padding:11px 2px 2px;gap:0}
+  .srow.row-S .bar.slot.sz-S .n>.bin{font-size:9px;top:2px}
+  .srow.row-S .bar.slot.sz-S .n>span:not(.bin){font-size:11px;-webkit-line-clamp:1}
+  .srow.row-S .bar.slot.sz-S .n>.tp{font-size:17px}
+  .srow.row-P .bar .photo,.srow.row-B .bar .photo{min-height:12px}
+  .srow.row-P .bar.slot.sz-L .n,.srow.row-B .bar.slot.sz-L .n{min-height:26px}
+  .srow.row-P .bar.slot .n>.tp,.srow.row-B .bar.slot .n>.tp{font-size:17px}
+}
+@media(orientation:landscape) and (max-width:1200px){.srow.row-P .bar.slot.sz-L .n,.srow.row-B .bar.slot.sz-L .n{min-height:34px}}
+@media(orientation:landscape) and (max-width:1100px){.srow.row-P .bar.slot.sz-L .n,.srow.row-B .bar.slot.sz-L .n{min-height:28px}.srow.row-P .bar.slot .n>span:not(.bin),.srow.row-B .bar.slot .n>span:not(.bin){font-size:14px}}
+@media(orientation:landscape) and (max-width:1100px){
+  .srow.row-S{min-height:56px}
+  .srow.row-S .bar.slot.sz-S .n{padding:10px 2px 1px}
+  .srow.row-P .bar.slot .n>span:not(.bin),.srow.row-B .bar.slot .n>span:not(.bin){font-size:13px;-webkit-line-clamp:1;white-space:nowrap;letter-spacing:-.02em}
+  .srow.row-P .bar.slot.sz-L .n,.srow.row-B .bar.slot.sz-L .n{min-height:24px}
+  .srow.row-P .bar.slot .n>.tp,.srow.row-B .bar.slot .n>.tp{font-size:16px}
+  .srow.row-P .bar .meter,.srow.row-B .bar .meter{height:8px}
+}
+/* 1024 wide: four rows plus twelve squares do not leave room for 2x headers — they scale to 1.25x here,
+   the sauce floor counts its header, and the hopper band is the two short lines it can afford */
+@media(orientation:landscape) and (max-width:1100px){
+  .rheader{padding:0 2px 1px}.rheader b{font-size:15px}.rheader span{font-size:12px}
+  .srow.row-S{min-height:74px}
+  .srow.row-P .bar.slot.sz-L .n,.srow.row-B .bar.slot.sz-L .n{min-height:0}
+  .srow.row-P .bar.slot .n>span:not(.bin),.srow.row-B .bar.slot .n>span:not(.bin){font-size:12px;line-height:1.05;padding:1px 2px 0}
+  .srow.row-P .bar.slot .n>.tp,.srow.row-B .bar.slot .n>.tp{font-size:15px;padding:0 2px 1px}
+  .srow.row-P .bar .photo,.srow.row-B .bar .photo{min-height:10px}
+}
+@media(orientation:landscape) and (max-width:1100px){
+  .srow.row-S{min-height:66px}
+  .srow.row-P .bar .photo,.srow.row-B .bar .photo{min-height:8px}
+  .srow.row-P .bar .meter,.srow.row-B .bar .meter{height:6px}
+  .srow.row-P .bar.slot .n>span:not(.bin),.srow.row-B .bar.slot .n>span:not(.bin){padding-top:0}
+  .srow.row-P .bar.slot .n>.tp,.srow.row-B .bar.slot .n>.tp{padding-bottom:0}
+}
+@media(orientation:landscape) and (min-width:1201px){.srow.row-S{min-height:110px}}
 </style>
 <link rel="stylesheet" href="glove.css"></head>
 <body>
