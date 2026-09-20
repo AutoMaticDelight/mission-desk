@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Bowl-O-Matic 5000 - Picnic</title>
+<link rel="icon" href="logo.svg" type="image/svg+xml">
+<style>
+/* PICNIC. A group order: one company, N bowls, one due time. The orderer either SETS THE MIX (25 chicken, 25 beef…)
+   or LETS EVERYONE PICK — each guest gets an email/SMS link and builds their own bowl (name, meat, base, amount, sauces).
+   Either way the result is the mix the Recipe Controller programs the machine from. Same tokens, lockups and dock. */
+:root{--bg:#f2f2f7;--card:#e2e7f1;--line:#d6dbe6;--ink:#1d1d1f;--dim:#6e6e73;--hot:#c8f000;--ok:#34c759;--low:#ff9f0a;--dock:#1c1c1e;
+  --chicken:#d5976b;--beef:#a8674a;--half:#c07f5a;--rice:#e6d3a3;--quinoa:#d0b273;--blue:#0a84ff}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;margin:0}
+body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text",Inter,"Helvetica Neue",Helvetica,Arial,sans-serif;font-weight:600;-webkit-font-smoothing:antialiased;touch-action:manipulation;-webkit-user-select:none;user-select:none;
+  display:grid;grid-template-rows:auto minmax(0,1fr) auto;height:100vh;overflow:hidden}
+b,strong{font-weight:800}.num{font-variant-numeric:tabular-nums}button{font:inherit;color:inherit;cursor:pointer}
+.top{background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.05),0 0 0 1px rgba(0,0,0,.05);padding-top:max(0px,env(safe-area-inset-top))}
+.band{display:grid;grid-template-columns:auto minmax(0,1fr) auto auto;align-items:center;gap:20px;padding:10px 40px;min-height:64px}
+.where{display:inline-flex;align-items:center;gap:10px;font-size:26px;font-weight:800;letter-spacing:-.02em;white-space:nowrap;color:var(--ink);text-decoration:none}
+.where .logo{width:44px;height:44px;flex:none;margin-right:4px}.where span{color:#1f8a3c;margin-left:6px}
+.mode{display:flex;gap:6px;justify-self:start;background:#eef0f4;padding:4px;border-radius:14px}
+.mode button{border:0;background:transparent;border-radius:10px;min-height:48px;padding:0 18px;font-size:17px;font-weight:800;color:var(--dim)}
+.mode button.on{background:var(--dock);color:#fff}
+.when{font-size:17px;color:var(--dim);white-space:nowrap}.when span{color:var(--ink);margin-left:8px}
+.stat{display:flex;align-items:baseline;gap:8px;white-space:nowrap;border-left:2px solid var(--line);padding-left:20px}
+.stat b{font-size:40px;letter-spacing:-.05em;line-height:.9}.stat span{font-size:15px;letter-spacing:.6px;color:var(--dim);text-transform:uppercase}
+.event{display:flex;align-items:center;gap:14px;padding:0 40px;min-height:44px;border-top:1px solid var(--line);font-size:16px;font-weight:700;white-space:nowrap;overflow:hidden}
+.event .lbl{font-size:13px;letter-spacing:1.6px;text-transform:uppercase;font-weight:800;opacity:.75}
+.event b{font-size:19px}.event .meta{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;opacity:.85;font-weight:600}
+.event .status{display:inline-flex;align-items:center;gap:8px;height:30px;padding:0 12px;border-radius:8px;background:#eef0f4;font-size:14px;font-weight:800}
+.event .status i{width:10px;height:10px;border-radius:50%;background:var(--ok)}.event .status.warn i{background:var(--low)}
+
+main{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1.2fr) minmax(0,1fr);gap:16px;padding:16px 20px 0;min-height:0}
+.station{background:var(--card);border-radius:18px;box-shadow:0 0 0 1px rgba(40,60,100,.11);padding:12px 16px 14px;display:grid;grid-template-rows:auto minmax(0,1fr);gap:10px;min-height:0;min-width:0}
+.sec{display:flex;align-items:center;gap:12px;font-size:16px;letter-spacing:2.2px;text-transform:uppercase;font-weight:800;color:#1c2740;white-space:nowrap;min-width:0}
+.sec::after{content:'';flex:1;height:2px;background:#c7d0e0;min-width:12px}.sec small{font-size:13px;letter-spacing:1px;color:#56627a;font-weight:700;overflow:hidden;text-overflow:ellipsis}
+.body{min-height:0;overflow:hidden;min-width:0;display:flex;flex-direction:column;gap:10px}
+
+/* THE MIX: two split bars, meat and base, with a glove stepper under every segment */
+.split{background:#fff;border-radius:16px;padding:12px 12px 10px;box-shadow:0 1px 2px rgba(0,0,0,.05),0 0 0 1px rgba(40,60,100,.08)}
+.split h3{margin:0 0 8px;font-size:14px;letter-spacing:1.4px;text-transform:uppercase;color:var(--dim);display:flex;justify-content:space-between}
+.split h3 b{color:var(--ink);letter-spacing:0;text-transform:none;font-size:15px}
+.bar{display:flex;height:44px;border-radius:12px;overflow:hidden;background:#eef0f4}
+.bar i{display:flex;align-items:center;justify-content:center;font-style:normal;font-size:18px;font-weight:900;color:#fff;letter-spacing:-.02em;min-width:0;overflow:hidden;white-space:nowrap;transition:flex .3s;paint-order:stroke fill;-webkit-text-stroke:2px rgba(0,0,0,.3)}
+.segs{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:8px;margin-top:8px}
+.seg{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:4px;background:#f4f6fa;border-radius:12px;padding:4px}
+.seg .n{text-align:center;min-width:0}
+.seg .n b{display:block;font-size:24px;letter-spacing:-.03em;line-height:1;font-variant-numeric:tabular-nums}
+.seg .n span{display:block;font-size:13px;color:var(--dim);font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:3px}
+.seg button{width:44px;height:44px;border-radius:10px;border:2px solid #cfd6e2;background:#fff;font-size:24px;font-weight:800;line-height:1;display:grid;place-items:center;padding:0}
+.seg button:active{background:#e6eaf1}
+.sauces{background:#fff;border-radius:16px;padding:12px;box-shadow:0 1px 2px rgba(0,0,0,.05),0 0 0 1px rgba(40,60,100,.08)}
+.sauces h3{margin:0 0 8px;font-size:14px;letter-spacing:1.4px;text-transform:uppercase;color:var(--dim)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:2px solid #cfd6e2;background:#fff;border-radius:12px;min-height:44px;padding:0 14px;font-size:15px;font-weight:800;display:inline-flex;align-items:center;gap:8px}
+.chip.on{background:var(--dock);color:#fff;border-color:var(--dock)}
+.chip small{font-weight:700;opacity:.7}
+.note{font-size:14px;color:var(--dim);line-height:1.35;font-weight:600}
+
+/* PEOPLE: invites out, picks in */
+.invite{background:#fff;border-radius:16px;padding:12px 14px;box-shadow:0 1px 2px rgba(0,0,0,.05),0 0 0 1px rgba(40,60,100,.08);display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px 14px;align-items:center}
+.invite .msg{grid-column:1/-1;background:#f4f6fa;border-radius:12px;padding:10px 12px;font-size:14px;line-height:1.4;font-weight:600;color:#3a3a3c}
+.invite .msg a{color:var(--blue);font-weight:800;text-decoration:none}
+.invite .k{font-size:15px}.invite .k b{font-size:22px;letter-spacing:-.02em;margin-right:6px}
+.invite button{min-height:48px;padding:0 18px;border-radius:12px;border:0;background:var(--dock);color:#fff;font-size:16px;font-weight:800;white-space:nowrap}
+.progress{background:#fff;border-radius:16px;padding:12px 14px;box-shadow:0 1px 2px rgba(0,0,0,.05),0 0 0 1px rgba(40,60,100,.08)}
+.progress .big{display:flex;align-items:baseline;gap:10px}
+.progress .big b{font-size:40px;letter-spacing:-.05em;line-height:1}
+.progress .big span{font-size:15px;color:var(--dim);font-weight:700}
+.progress .track{height:10px;border-radius:5px;background:#eef0f4;overflow:hidden;margin:10px 0 6px}
+.progress .track i{display:block;height:100%;background:var(--ok);width:calc(var(--p,0)*1%);transition:width .4s}
+.progress small{font-size:13px;color:var(--dim);font-weight:700}
+.guests{min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:5px;-webkit-mask-image:linear-gradient(180deg,#000 calc(100% - 24px),transparent);mask-image:linear-gradient(180deg,#000 calc(100% - 24px),transparent);padding-bottom:6px}
+.g{display:grid;grid-template-columns:36px minmax(0,1fr) auto;align-items:center;gap:10px;background:#fff;border-radius:12px;padding:6px 10px 6px 6px;box-shadow:0 0 0 1px rgba(40,60,100,.08);min-height:48px}
+.g .av{width:36px;height:36px;border-radius:10px;background:var(--dock);color:#fff;display:grid;place-items:center;font-size:14px;font-weight:900}
+.g.pending .av{background:#d6dbe6;color:#6e6e73}
+.g .who b{display:block;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.g .who small{display:block;font-size:13px;color:var(--dim);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px}
+.g .st{font-size:13px;font-weight:800;padding:4px 8px;border-radius:7px;background:#e7f8ec;color:#1f8a3c;white-space:nowrap}
+.g.pending .st{background:#fff3df;color:#9a5b00}
+
+/* TALLY: what the picks add up to */
+.tally{display:flex;flex-direction:column;gap:8px}
+.t{background:#fff;border-radius:14px;padding:10px 12px 9px;box-shadow:0 0 0 1px rgba(40,60,100,.08)}
+.t h4{margin:0 0 6px;font-size:13px;letter-spacing:1.2px;text-transform:uppercase;color:var(--dim);display:flex;justify-content:space-between}
+.t h4 span{letter-spacing:0;text-transform:none;font-weight:700}
+.trow{display:grid;grid-template-columns:96px minmax(0,1fr) 44px;align-items:center;gap:8px;font-size:15px;margin-top:4px}
+.trow .tb{height:12px;border-radius:6px;background:#eef0f4;overflow:hidden}
+.trow .tb i{display:block;height:100%;background:var(--c,#6dbb5e);width:calc(var(--p,0)*1%);transition:width .4s}
+.trow b{text-align:right;font-variant-numeric:tabular-nums}
+.rule{font-size:14px;color:var(--dim);font-weight:600;line-height:1.35}
+.rule b{color:var(--ink)}
+
+/* DOCK */
+.dock{background:var(--dock);color:#fff;margin-top:16px;padding:0 40px max(12px,env(safe-area-inset-bottom));display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr) clamp(260px,28%,360px);gap:0 24px;align-items:center}
+.dock .sec{grid-column:1/-1;color:#fff;padding:8px 0 4px}.dock .sec::after{background:rgba(255,255,255,.35)}
+.dock .head{display:grid;grid-template-columns:auto minmax(0,1fr);column-gap:12px;row-gap:2px;align-items:center;font-size:24px;letter-spacing:-.02em;font-weight:800;line-height:1.05;padding:6px 0 10px}
+.dock .head i{width:14px;height:14px;border-radius:50%;background:var(--ok);box-shadow:0 0 0 6px rgba(52,199,89,.25)}
+.dock .head.warn i{background:#ff7a1a;box-shadow:0 0 0 6px rgba(255,122,26,.28)}
+.dock .head small{grid-column:2;font-size:16px;color:#a1a1a6;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dock .more{display:flex;gap:10px}
+.dock .more button{flex:1 1 0;min-height:56px;padding:0 16px;border:2px solid rgba(255,255,255,.45);border-radius:14px;background:rgba(255,255,255,.06);color:#fff;font-size:18px;font-weight:800;white-space:nowrap}
+.dock .nums{display:grid;grid-template-columns:1fr 1fr;justify-items:center;align-content:center;column-gap:22px;row-gap:4px;text-align:center;border-left:2px solid rgba(255,255,255,.16);border-right:2px solid rgba(255,255,255,.16);padding:6px 20px;align-self:stretch}
+.dock .n{display:flex;flex-direction:column;align-items:center}.dock .n b{font-size:24px;letter-spacing:-.04em;line-height:1}.dock .n span{font-size:14px;color:#a1a1a6;white-space:nowrap;margin-top:3px;font-weight:700}
+.dock .n.hero{grid-column:1/-1;order:-1}.dock .n.hero b{font-size:44px}.dock .n.hero span{font-size:16px}
+.go{border:0;border-radius:18px;background:var(--hot);color:#111;min-height:96px;padding:12px 52px 12px 20px;display:grid;grid-template-rows:auto auto;align-content:center;justify-items:start;text-align:left;gap:6px;position:relative;box-shadow:0 3px 0 #8fb000;align-self:stretch;margin:8px 0;text-decoration:none}
+.go .t{font-size:28px;letter-spacing:-.04em;line-height:.95;font-weight:900}.go .s{font-size:16px;color:rgba(0,0,0,.72);font-weight:700}
+.go .a{position:absolute;right:16px;top:50%;transform:translateY(-50%);font-size:36px;font-weight:900}
+.go:active{transform:translateY(2px);box-shadow:0 1px 0 #8fb000}
+.toast{position:fixed;left:0;right:0;top:0;z-index:20;background:#132018;color:var(--hot);padding:22px 40px;display:none;text-align:center}
+.toast.show{display:block}.toast b{display:block;font-size:30px;letter-spacing:-.03em}.toast span{display:block;font-size:18px;color:#e6f3e9;margin-top:6px}
+[hidden]{display:none!important}
+
+@media(orientation:landscape) and (max-width:1200px){
+  .band{padding:8px 24px;gap:14px}.where{font-size:22px}.where .logo{width:38px;height:38px}.stat b{font-size:34px}
+  .event{padding:0 24px}main{padding:12px 16px 0;gap:12px}.station{padding:10px 12px 12px}
+  .seg .n b{font-size:20px}.seg button{width:40px;height:40px}.mode button{min-height:42px;padding:0 12px;font-size:15px}
+  .dock{padding-left:24px;padding-right:24px}.dock .n.hero b{font-size:38px}.go{min-height:84px}.go .t{font-size:24px}
+}
+@media(orientation:portrait){
+  body{height:auto;overflow:auto;display:block}
+  .band{grid-template-columns:minmax(0,1fr) auto;grid-template-rows:auto auto;padding:10px 24px;gap:8px 14px}
+  .mode{grid-column:1/-1;justify-self:stretch}.mode button{flex:1}.stat{grid-row:1;grid-column:2}.when{display:none}
+  .event{padding:6px 24px;flex-wrap:wrap;min-height:0}
+  main{grid-template-columns:1fr;padding:12px 16px 0}.station{grid-template-rows:auto auto}.body{overflow:visible}
+  .guests{max-height:420px}
+  .dock{position:sticky;bottom:0;grid-template-columns:1fr;padding:0 24px max(12px,env(safe-area-inset-bottom));z-index:3}
+  .dock .nums{border:0;padding:4px 0;display:flex;justify-content:center;gap:24px}.dock .n.hero b{font-size:36px}.go{min-height:72px}
+}
+.seg{grid-template-columns:1fr 1fr;grid-template-rows:auto auto;gap:4px;padding:6px 6px 6px}
+.seg .n{grid-column:1/-1;padding:2px 0 4px}
+.seg button{width:100%;height:44px}
+body{grid-template-columns:minmax(0,1fr)}
+@media(orientation:portrait){body{display:block}}
+/* ON STATE = the alert color (Bryan, 2026-09-19): hot lime with ink, not black */
+.mode button.on{background:var(--hot);color:#111}
+.chip.on{background:var(--hot);color:#111;border-color:#9fbf00}
+</style></head>
+<body>
+<section class="top">
+  <header class="band">
+    <a class="where" href="recipe-controller.html"><svg class="logo" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="20" fill="#c8f000"/><g transform="translate(20 20.6) scale(.62) translate(-20 -21)"><circle cx="20" cy="11.5" r="6.5" fill="#0b120e"/><path d="M4.5 21.5h31a1.5 1.5 0 0 1 1.5 1.6C36.2 30.6 29 36.5 20 36.5S3.8 30.6 3 23.1a1.5 1.5 0 0 1 1.5-1.6z" fill="#0b120e"/></g></svg>BOWL-O-MATIC 5000 <span>PICNIC</span></a>
+    <div class="mode"><button id="m-mix" class="on" onclick="setMode('mix')">Set the mix</button><button id="m-pick" onclick="setMode('pick')">Let everyone pick</button></div>
+    <div class="when">THU <span id="clock">12:18</span></div>
+    <div class="stat"><b class="num" id="bowlsStat">50</b><span>bowls</span></div>
+  </header>
+  <div class="event">
+    <span class="lbl">Order</span><b>Salesforce</b><span class="meta">SF-0912 · 50 people · Salesforce Tower · 45F · Wed 09-12-26 · 12:30 meeting</span>
+    <span class="status" id="status"><i></i><span id="statusT">Mix set</span></span>
+  </div>
+</section>
+
+<main>
+  <section class="station">
+    <div class="sec">The mix <small id="mixSub">what the 50 bowls are</small></div>
+    <div class="body" id="mixBody"></div>
+  </section>
+  <section class="station">
+    <div class="sec">People <small id="peopleSub"></small></div>
+    <div class="body" id="peopleBody"></div>
+  </section>
+  <section class="station">
+    <div class="sec">Tally <small id="tallySub">what the machine will build</small></div>
+    <div class="body tally" id="tallyBody"></div>
+  </section>
+</main>
+
+<section class="dock">
+  <div class="sec">Send</div>
+  <div>
+    <div class="head" id="dockHead"><i></i><span id="dockT">Mix set · 50 bowls</span><small id="dockS">25 Chicken · 25 Beef · 38 Rice · 12 Quinoa</small></div>
+    <div class="more"><button onclick="preview()">Preview a guest's page</button><button onclick="fillRest()">Fill unanswered with the default</button></div>
+  </div>
+  <div class="nums" id="dockNums"></div>
+  <a class="go" id="go" href="recipe-controller.html" onclick="return sendMix()"><div class="t">SEND MIX TO CONTROLLER</div><div class="s" id="goS">50 bowls · due 12:30</div><div class="a">→</div></a>
+</section>
+<div class="toast" id="toast"><b id="toastTitle"></b><span id="toastText"></span></div>
+
+<script>
+const N=50, DUE='12:30';
+const MEATS=[['Chicken','var(--chicken)'],['half','var(--half)'],['Beef','var(--beef)']], BASES=[['Rice','var(--rice)'],['Quinoa','var(--quinoa)']];
+const SAUCES=['Chipotle','Roja','Verde','Guac'];
+const label=k=>k==='half'?'½ · ½':k;
+let MODE='mix';
+let MIX={meat:{Chicken:25,half:0,Beef:25},base:{Rice:38,Quinoa:12},sauces:{Chipotle:true,Roja:true,Verde:false,Guac:false}};
+const DEFAULT={meat:'Chicken',base:'Rice',sauces:['Chipotle'],amount:'Regular'};
+/* guests: the 50 people on the Salesforce list. 31 have picked (simulated replies over the morning); 19 are pending. */
+const NAMES='Maya Chen,Jordan Lee,Priya Patel,Sam Ortiz,Ava Nguyen,Liam Park,Noah Kim,Sofia Rossi,Ethan Brown,Isla Murphy,Lucas Silva,Mia Cohen,Owen Davis,Zoe Wright,Leo Garcia,Ella Turner,Aria Singh,Kai Tanaka,Nora Hall,Theo Adams,Ivy Bennett,Max Fischer,Ruby Scott,Eli Moreno,Luna Perez,Finn Walsh,Ada Lopez,Jude Carter,Cleo Ward,Ezra Young,Mila Ross,Ash Kumar,Remy Blake,Sage Ellis,Nico Reyes,Tess Grant,Beau Hayes,Wren Cole,Dev Shah,Faye Lin,Gus Ford,Hana Sato,Ike Bell,Jia Wu,Kip Reed,Lou Marsh,Mo Diaz,Nia Fox,Oli Hart,Pia Voss'.split(',');
+const PICKS=[['Chicken','Rice',['Chipotle'],'Regular'],['Beef','Quinoa',['Roja','Guac'],'Big'],['half','Rice',['Verde'],'Regular'],['Chicken','Rice',['Chipotle','Guac'],'Regular'],['Beef','Rice',['Roja'],'Big'],['Chicken','Quinoa',['Verde'],'Regular'],['Beef','Rice',['Chipotle'],'Regular'],['half','Quinoa',['Guac'],'Big'],['Chicken','Rice',[],'Regular'],['Beef','Rice',['Roja','Verde'],'Regular']];
+const GUESTS=NAMES.map((n,i)=>{const p=PICKS[(i*7)%PICKS.length]; const picked=i<31; return {n,picked,meat:picked?p[0]:null,base:picked?p[1]:null,sauces:picked?p[2]:[],amount:picked?p[3]:null,at:picked?`11:${String(2+i).padStart(2,'0')}`:null};});
+
+function setMode(m){MODE=m;document.getElementById('m-mix').classList.toggle('on',m==='mix');document.getElementById('m-pick').classList.toggle('on',m==='pick');render();}
+/* stepping a segment takes from (or gives to) the biggest other segment, so the group always sums to N */
+function bump(group,k,d){
+  const g=MIX[group]; const keys=Object.keys(g);
+  if(d>0){ const from=keys.filter(x=>x!==k).sort((a,b)=>g[b]-g[a])[0]; if(g[from]<=0) return; g[from]--; g[k]++; }
+  else { if(g[k]<=0) return; const to=keys.filter(x=>x!==k).sort((a,b)=>g[b]-g[a])[0]; g[k]--; g[to]++; }
+  render();
+}
+function toggleSauce(s){MIX.sauces[s]=!MIX.sauces[s];render();}
+/* the tally the machine builds from: in mix mode it's the mix; in pick mode it's the picks plus the default for anyone pending */
+function tally(){
+  const t={meat:{Chicken:0,half:0,Beef:0},base:{Rice:0,Quinoa:0},sauces:{Chipotle:0,Roja:0,Verde:0,Guac:0},big:0,picked:0,pending:0};
+  if(MODE==='mix'){ Object.assign(t.meat,MIX.meat); Object.assign(t.base,MIX.base); SAUCES.forEach(s=>{if(MIX.sauces[s]) t.sauces[s]=N;}); t.picked=N; return t; }
+  GUESTS.forEach(g=>{ if(g.picked){t.picked++; t.meat[g.meat]++; t.base[g.base]++; g.sauces.forEach(s=>t.sauces[s]++); if(g.amount==='Big') t.big++;}
+    else {t.pending++; t.meat[DEFAULT.meat]++; t.base[DEFAULT.base]++; DEFAULT.sauces.forEach(s=>t.sauces[s]++);} });
+  return t;
+}
+function splitHTML(title,group,defs,sub){
+  const g=MIX[group];
+  return `<div class="split"><h3>${title}<b>${defs.map(([k])=>g[k]?`${g[k]} ${label(k)}`:'').filter(Boolean).join(' · ')}</b></h3>
+    <div class="bar">${defs.map(([k,c])=>`<i style="flex:${g[k]};background:${c}">${g[k]?g[k]:''}</i>`).join('')}</div>
+    <div class="segs">${defs.map(([k])=>`<div class="seg"><button onclick="bump('${group}','${k}',-1)">−</button><div class="n"><b class="num">${g[k]}</b><span>${label(k)}</span></div><button onclick="bump('${group}','${k}',1)">+</button></div>`).join('')}</div></div>`;
+}
+function renderMix(){
+  const el=document.getElementById('mixBody');
+  if(MODE==='mix'){
+    el.innerHTML=splitHTML('Meat · one per bowl','meat',MEATS)+splitHTML('Base · one per bowl','base',BASES)+
+      `<div class="sauces"><h3>Sauces · for everyone</h3><div class="chips">${SAUCES.map(s=>`<button class="chip ${MIX.sauces[s]?'on':''}" onclick="toggleSauce('${s}')">${s}</button>`).join('')}</div></div>
+       <div class="note">Every bowl gets the same build. The orderer decides; nobody on the list has to do anything.</div>`;
+    document.getElementById('mixSub').textContent=`the orderer sets it · ${N} bowls`;
+  } else {
+    const t=tally();
+    el.innerHTML=`<div class="sauces"><h3>Default bowl · for anyone who doesn't answer</h3><div class="chips"><span class="chip on">${DEFAULT.meat}</span><span class="chip on">${DEFAULT.base}</span>${DEFAULT.sauces.map(s=>`<span class="chip on">${s}</span>`).join('')}<span class="chip">${DEFAULT.amount}</span></div></div>
+      <div class="split"><h3>Meat · from the picks<b>${MEATS.map(([k])=>`${t.meat[k]} ${label(k)}`).join(' · ')}</b></h3><div class="bar">${MEATS.map(([k,c])=>`<i style="flex:${t.meat[k]};background:${c}">${t.meat[k]||''}</i>`).join('')}</div></div>
+      <div class="split"><h3>Base · from the picks<b>${BASES.map(([k])=>`${t.base[k]} ${k}`).join(' · ')}</b></h3><div class="bar">${BASES.map(([k,c])=>`<i style="flex:${t.base[k]};background:${c}">${t.base[k]||''}</i>`).join('')}</div></div>
+      <div class="note">Each person builds their own bowl from the link — name, meat, base, amount, sauces. The ${t.pending} who haven't answered get the default at 11:45 unless you fill them now.</div>`;
+    document.getElementById('mixSub').textContent=`each guest picks · ${t.picked} of ${N} in`;
+  }
+}
+function renderPeople(){
+  const el=document.getElementById('peopleBody'), t=tally();
+  if(MODE==='mix'){
+    el.innerHTML=`<div class="invite"><div class="msg">No invites needed. ${N} bowls arrive built to the mix — hand them out. Want names on the lids? Switch to <b>Let everyone pick</b>.</div>
+      <div class="k"><b class="num">${N}</b>bowls, no names</div><button onclick="setMode('pick')">Let everyone pick instead</button></div>
+      <div class="note">The mix goes to the Recipe Controller as counts per hopper: ${MIX.meat.Chicken} chicken, ${MIX.meat.Beef} beef${MIX.meat.half?', '+MIX.meat.half+' half-and-half':''}; ${MIX.base.Rice} rice, ${MIX.base.Quinoa} quinoa.</div>`;
+    document.getElementById('peopleSub').textContent='no invites in this mode';
+    return;
+  }
+  el.innerHTML=`<div class="invite"><div class="msg">📱 <b>Salesforce lunch · Wed 12:30.</b> Build your bowl in 20 seconds — meat, base, amount, sauces. <a href="picnic-guest.html?g=Maya%20Chen">bowl.link/sf-0912/maya</a> · Reply STOP to skip; you'll get the default.</div>
+    <div class="k"><b class="num">${N}</b>sent · email + SMS · 10:30</div><button onclick="remind()">Remind the ${t.pending} pending</button></div>
+    <div class="progress"><div class="big"><b class="num">${t.picked}</b><span>of ${N} picked · ${t.pending} pending</span></div><div class="track"><i style="--p:${t.picked/N*100}"></i></div><small>Cutoff 11:45 · after that the default bowl goes in for anyone pending · ${t.big} asked for a big bowl</small></div>
+    <div class="guests">${GUESTS.map(g=>`<div class="g ${g.picked?'':'pending'}"><span class="av">${g.n.split(' ').map(x=>x[0]).join('')}</span><div class="who"><b>${g.n}</b><small>${g.picked?`${label(g.meat)} · ${g.base} · ${g.sauces.length?g.sauces.join(', '):'no sauce'} · ${g.amount}`:'no answer yet · gets the default'}</small></div><span class="st">${g.picked?'Picked '+g.at:'Pending'}</span></div>`).join('')}</div>`;
+  document.getElementById('peopleSub').textContent=`${t.picked} picked · ${t.pending} pending`;
+}
+function renderTally(){
+  const t=tally(), el=document.getElementById('tallyBody');
+  const row=(k,v,c)=>`<div class="trow"><span>${label(k)}</span><div class="tb"><i style="--p:${v/N*100};--c:${c}"></i></div><b class="num">${v}</b></div>`;
+  el.innerHTML=`<div class="t"><h4>Meat<span>${N} bowls</span></h4>${MEATS.map(([k,c])=>row(k,t.meat[k],c)).join('')}</div>
+    <div class="t"><h4>Base<span>${N} bowls</span></h4>${BASES.map(([k,c])=>row(k,t.base[k],c)).join('')}</div>
+    <div class="t"><h4>Sauces<span>bowls with each</span></h4>${SAUCES.map(k=>row(k,t.sauces[k],'#e2643c')).join('')}</div>
+    <div class="rule">${MODE==='mix'?`<b>Hoppers:</b> ${(t.meat.Chicken*4+t.meat.half*2)/16|0} lb chicken, ${(t.meat.Beef*4+t.meat.half*2)/16|0} lb beef, ${(t.base.Rice*6)/16|0} lb rice, ${(t.base.Quinoa*6)/16|0} lb quinoa at the standard portions.`:`<b>${t.pending} pending</b> are counted as the default (${DEFAULT.meat} · ${DEFAULT.base} · ${DEFAULT.sauces.join(', ')}). ${t.big} big bowls add 25% to their portions.`}</div>`;
+  document.getElementById('tallySub').textContent=MODE==='mix'?'what the machine will build':'picks + default for pending';
+}
+function renderDock(){
+  const t=tally();
+  const warn=MODE==='pick'&&t.pending>0;
+  document.getElementById('dockHead').className='head '+(warn?'warn':'');
+  document.getElementById('dockT').textContent=MODE==='mix'?`Mix set · ${N} bowls`:warn?`${t.picked} of ${N} picked · ${t.pending} pending`:`Everyone picked · ${N} bowls`;
+  document.getElementById('dockS').textContent=`${t.meat.Chicken} Chicken · ${t.meat.Beef} Beef${t.meat.half?' · '+t.meat.half+' ½·½':''} · ${t.base.Rice} Rice · ${t.base.Quinoa} Quinoa`;
+  document.getElementById('dockNums').innerHTML=`<div class="n hero"><b class="num">${N}</b><span>bowls · due ${DUE}</span></div><div class="n"><b class="num">${t.picked}</b><span>${MODE==='mix'?'set by the orderer':'picked'}</span></div><div class="n"><b class="num">${MODE==='mix'?0:t.pending}</b><span>pending</span></div>`;
+  document.getElementById('goS').textContent=`${N} bowls · ${t.meat.Chicken}/${t.meat.Beef}${t.meat.half?'/'+t.meat.half:''} meat · ${t.base.Rice}/${t.base.Quinoa} base`;
+  const st=document.getElementById('status'); st.className='status '+(warn?'warn':''); document.getElementById('statusT').textContent=MODE==='mix'?'Mix set':warn?`${t.pending} pending`:'All picked';
+}
+function render(){renderMix();renderPeople();renderTally();renderDock();}
+function note(t,s){toastTitle.textContent=t;toastText.textContent=s||'';toast.classList.add('show');setTimeout(()=>toast.classList.remove('show'),3200);}
+function remind(){note(`Reminder sent to ${tally().pending} people`,'SMS + email · cutoff 11:45');}
+function fillRest(){if(MODE!=='pick'){note('Nothing to fill','In mix mode every bowl is already set');return;} GUESTS.filter(g=>!g.picked).forEach(g=>{g.picked=true;g.meat=DEFAULT.meat;g.base=DEFAULT.base;g.sauces=[...DEFAULT.sauces];g.amount=DEFAULT.amount;g.at='default';}); render(); note('Pending filled with the default','Chicken · Rice · Chipotle');}
+function preview(){location.href='picnic-guest.html?g=Maya%20Chen';}
+function sendMix(){const t=tally(); try{localStorage.setItem('bom-picnic',JSON.stringify({id:'SF-0912',cust:'Salesforce',bowls:N,due:DUE,meat:t.meat,base:t.base,sauces:t.sauces,big:t.big,mode:MODE,at:Date.now()}));}catch(e){} return true;}
+render();
+let NOW=12*60+18,SEC=0; setInterval(()=>{SEC+=6;if(SEC>=60){SEC-=60;NOW++;const h=Math.floor(NOW/60),m=NOW%60;document.getElementById('clock').textContent=(h>12?h-12:h)+':'+String(m).padStart(2,'0');}},1000);
+</script>
+</body></html>

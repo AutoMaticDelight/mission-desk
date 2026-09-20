@@ -3,6 +3,30 @@
 Locked by Bryan, 2026-09-18. These are decisions, not suggestions. Reskin within
 them; do not undo them without Bryan saying so.
 
+**What this is (Bryan, 2026-09-19):** not a desktop app, not a web page. It is
+the critical engagement screen for the **human in the middle** operating the
+food computer. Everything on it is read at a glance from a step back, with
+gloves on, mid-rush. Big, calm, unmistakable; an alert is the one loud thing.
+
+## Slot card (2026-09-19)
+- The photo is the **bottom half** of the card; name and weight are centered
+  in the top half; the track sits between them, touching the photo.
+- Bin number and **temperature** ride the photo's top-right corner in outlined
+  white. Temperature is large but calm while it is in range (hot-held
+  140–165°F, cold-held 34–41°F). Out of range it goes hot lime with the word
+  ALERT and the card takes the same lime ring as "needs you now".
+- Titles: row one 22px, every other row 16px.
+- **Meter (2026-09-19):** the progress bar and the percent are one thing. A
+  thick bar (36px on the 12.9-inch, 30 on the 11-inch, 24 on the 9.7-inch,
+  28 in portrait) fills left to right in green, amber when low, hot lime when
+  critical, with the percent in outlined white over the bar's left edge and
+  SCRAPE IT / REFILLED on its right (hidden on the narrow sauce cards, where
+  the dark card and the lime bar carry it). No weight, no word after the
+  number. The bar sits flush against the photo.
+- **Critical is per item.** Each ingredient carries `crit` and `low` (the
+  percent at which it goes hot lime / amber). A fast-burning main alerts at
+  30%, a slow garnish at 10%. Never one global threshold.
+
 Files: `lunch-rush-hoppers.html` (dark), `lunch-rush-light.html` (light).
 Tokens, live states and rules as a page: `design-system.html`.
 Both share structure and JS; only the color layer differs.
@@ -203,6 +227,10 @@ numbered-slot contract) — kept as-is, not migrated.
 - Progress ticks with the line's speed; when the batch completes the next job
   takes over. Manager's store card shows the running recipe in one line.
 
+## Slots
+- The machine has **18 dispenser slots**; 16 are loaded (one per ingredient), 2 open.
+  Machine line shows running/loaded while any hopper is held, else loaded/18.
+
 ## Boxes
 - Every box carries a photo of its ingredient on the left: 25% width by
   default (`?photo=50` half, `?photo=0` none). Photos hotlink Wikimedia
@@ -235,8 +263,66 @@ numbered-slot contract) — kept as-is, not migrated.
   tappable surface, eased state changes.
 - Verified sizes: 1024×768, 1180×820, 1366×1024 landscape; 820×1180 portrait.
   Short landscape screens (≤800px tall) compact box heights automatically.
+- Phone (2026-09-19): the link gets opened on an iPhone, so both worker
+  panels and the manager console carry a phone layer at the end of their
+  `<style>`. Portrait phone (≤500px wide): the page scrolls, the top lockup
+  compacts (day and peak note hidden, stats on their own row), the status
+  card stacks one group per row with two boxes across, the actions dock
+  is one column and stays hooked to the bottom on phones ≥750px tall.
+  Landscape phone (≤500px tall): the page scrolls and boxes take fixed
+  heights instead of a share of the screen. iPad sizes are untouched by
+  these rules (they are gated on width ≤500 or height ≤500). Verified:
+  393×852, 430×932, 375×667 portrait; 852×393, 667×375 landscape.
+  Readability floors (body ≥14, labels ≥13, buttons ≥48pt) still hold.
 
-## Alternate looks
+## Recipe Controller (`recipe-controller.html`, 2026-09-19)
+The screen a recipe engineer stands at to program the machine. Same tokens,
+type, top lockup and dark dock as the worker panel. Three stations:
+- **The bowl** — a build-sequence drawing: the bowl in cross-section, one
+  layer per ingredient in the order the robot dispenses (base, protein,
+  vegetables, sauce, dairy), each layer's height by its portion, numbered
+  badge + name + oz on the layer. Totals under it: oz per bowl, build time,
+  food cost.
+- **Portions** — one row per ingredient in build order: photo, name, portion
+  bar against its max, lb needed for the batch (and hoppers if >1), a − / +
+  glove stepper (48pt) in the tier's step (1 oz hopper, ½ oz bin, ¼ oz
+  sauce).
+- **Machine** — the locked 18-slot primitive, dark + lime ring where the
+  recipe touches it, tap to add/remove; then the live checks: protein and
+  base limits, toppings ≤8, belt pace (bowls per 10 min vs the line's 40),
+  hoppers that need a mid-batch refill, held bins.
+- **Dock** — status, Run 1 test bowl / Save draft, the hero number (bowls
+  per 10 min at this recipe), batch size, line time, SEND TO LINE. A warning
+  never blocks Send; a blocker (limits) does.
+Each ingredient carries portion default, max, cost/oz and dispense s/oz;
+critical thresholds live on the worker panel, not here.
+
+**The order model (Bryan, 2026-09-19).** The orderer picks **one meat —
+Beef, Chicken, or ½ · ½ — and one base** per bowl. ½ · ½ is a per-bowl
+choice a person makes, never a recipe setting. A group order is a **mix**
+of those choices, counted up (25 Chicken · 25 Beef · 38 Rice · 12 Quinoa);
+the Recipe Controller reads the mix, previews one variant in the bowl
+drawing, and sizes every hopper from the counts.
+
+## Picnic (`picnic.html` + `picnic-guest.html`, 2026-09-19)
+The group order. One company, N bowls, one due time. Two modes:
+- **Set the mix** — the orderer sets meat and base counts on two split
+  bars with a glove stepper under every segment (stepping one segment
+  takes from the largest other, so it always sums to N), and the sauces
+  everyone gets. No invites.
+- **Let everyone pick** — every guest gets an email/SMS link to the
+  **guest page** (phone, thumbs only: name, meat, base, amount, sauces,
+  LOCK IT IN). The organizer watches the picks come in (31 of 50, 19
+  pending, reminder, cutoff 11:45), sets the default bowl for anyone who
+  doesn't answer, and can fill the pending with it.
+Either way the tally is what the machine builds; SEND MIX TO CONTROLLER
+hands it to the Recipe Controller (localStorage `bom-picnic`).
+
 - `?look=flat` on the light panel: white cells, no lift (comparison only).
 - Manager console (`manager-fleet.html`) is separate: Apple-clean light,
   white store boxes, green status lights, 100% = on plan.
+  Its section grids are addressed by id (`#now`, `#watch`), never by class:
+  the store cards carry `.now` / `.watch` too, and a class rule turns every
+  card into a 2- or 3-column grid (that was why store names truncated —
+  fixed 2026-09-19). Below 1400px wide the header is two rows (name and
+  clock, then the five numbers); it no longer runs off the right edge.

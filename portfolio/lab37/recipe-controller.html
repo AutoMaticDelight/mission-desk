@@ -1,0 +1,512 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Bowl-O-Matic 5000 - Recipe Controller</title>
+<link rel="icon" href="logo.svg" type="image/svg+xml">
+<style>
+/* RECIPE CONTROLLER. Not a form. The screen a recipe engineer stands at to program the machine:
+   the bowl as a build-sequence drawing, portions on glove buttons, the 18-slot machine lit where the recipe touches it,
+   feasibility computed live (hoppers, belt time, limits), one lime button to send it to the line.
+   Same tokens, type and dock as the worker panel. Light. */
+:root{--bg:#f2f2f7;--panel:#fff;--card:#e2e7f1;--line:#d6dbe6;--ink:#1d1d1f;--dim:#6e6e73;--hot:#c8f000;--ok:#34c759;--low:#ff9f0a;--dock:#1c1c1e;
+  --base:#e6d3a3;--prot:#c8845a;--veg:#6dbb5e;--sau:#e2643c;--dai:#f3eee3;--amber:#ff9f0a;--blue:#0a84ff}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;margin:0}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text",Inter,"Helvetica Neue",Helvetica,Arial,sans-serif;font-weight:600;
+  -webkit-font-smoothing:antialiased;touch-action:manipulation;-webkit-user-select:none;user-select:none;
+  display:grid;grid-template-rows:auto minmax(0,1fr) auto;height:100vh;overflow:hidden}
+b,strong{font-weight:800}
+.num{font-variant-numeric:tabular-nums}
+button{font:inherit;color:inherit;cursor:pointer}
+
+/* TOP LOCKUP: same as the panels, edge to edge, flush top */
+.top{background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.05),0 0 0 1px rgba(0,0,0,.05);padding-top:max(0px,env(safe-area-inset-top))}
+.band{display:grid;grid-template-columns:auto minmax(0,1fr) auto auto;align-items:center;gap:20px;padding:10px 40px;min-height:64px}
+.where{display:inline-flex;align-items:center;gap:10px;font-size:26px;font-weight:800;letter-spacing:-.02em;white-space:nowrap;color:var(--ink);text-decoration:none}
+.where .logo{width:44px;height:44px;flex:none;margin-right:4px}
+.where span{color:#1f8a3c;margin-left:6px}
+.presets{display:flex;gap:6px;justify-self:start;background:#eef0f4;padding:4px;border-radius:14px}
+.presets button{border:0;background:transparent;border-radius:10px;min-height:44px;padding:0 16px;font-size:16px;font-weight:700;color:var(--dim)}
+.presets button.on{background:#fff;color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.08),0 0 0 1px rgba(0,0,0,.05)}
+.when{font-size:17px;color:var(--dim);white-space:nowrap}
+.when span{color:var(--ink);margin-left:8px}
+.stat{display:flex;align-items:baseline;gap:8px;white-space:nowrap;border-left:2px solid var(--line);padding-left:20px}
+.stat b{font-size:40px;letter-spacing:-.05em;line-height:.9}
+.stat span{font-size:15px;letter-spacing:.6px;color:var(--dim);text-transform:uppercase}
+.recipe{display:flex;align-items:center;gap:14px;padding:0 40px;min-height:44px;border-top:1px solid var(--line);font-size:16px;font-weight:700;white-space:nowrap;overflow:hidden}
+.recipe .lbl{font-size:13px;letter-spacing:1.6px;text-transform:uppercase;font-weight:800;opacity:.75;flex:none}
+.recipe input{font:inherit;font-weight:800;font-size:19px;border:0;background:transparent;color:var(--ink);min-width:0;padding:4px 0;letter-spacing:-.01em;-webkit-user-select:text;user-select:text}
+.recipe input.id{width:110px;font-size:14px;letter-spacing:.8px;font-weight:700;opacity:.7;font-variant-numeric:tabular-nums}
+.recipe input.cust{width:200px}
+.recipe .meta{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;opacity:.85;font-weight:600}
+.recipe .meta input{font-size:16px;font-weight:600;width:150px}
+.recipe .meta input.short{width:60px}
+.recipe .status{flex:none;display:inline-flex;align-items:center;gap:8px;height:30px;padding:0 12px;border-radius:8px;background:#eef0f4;font-size:14px;font-weight:800;letter-spacing:.3px}
+.recipe .status i{width:10px;height:10px;border-radius:50%;background:var(--ok)}
+.recipe .status.bad i{background:var(--hot);box-shadow:0 0 0 3px rgba(200,240,0,.3)}
+
+/* THREE STATIONS */
+main{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1.25fr) minmax(0,1.3fr);gap:16px;padding:16px 20px 0;min-height:0}
+.station{background:var(--card);border-radius:18px;box-shadow:0 0 0 1px rgba(40,60,100,.11);padding:12px 16px 14px;display:grid;grid-template-rows:auto minmax(0,1fr);gap:8px;min-height:0;min-width:0}
+.sec{display:flex;align-items:center;gap:12px;font-size:16px;letter-spacing:2.2px;text-transform:uppercase;font-weight:800;color:#1c2740}
+.sec::after{content:'';flex:1;height:2px;background:#c7d0e0}
+.sec small{font-size:13px;letter-spacing:1px;color:#56627a;font-weight:700}
+.body{min-height:0;overflow:hidden;display:grid;min-width:0}
+
+/* STATION 1: THE BOWL — build-sequence drawing */
+.bowl{display:grid;grid-template-rows:minmax(0,1fr) auto;gap:10px;min-height:0}
+.bowl svg{width:100%;height:100%;display:block}
+.bowl .layer-lbl{font-size:15px;font-weight:800}
+.bowl .layer-oz{font-size:14px;font-weight:800;font-variant-numeric:tabular-nums}
+.bowl .seq{font-size:12px;font-weight:900;fill:#fff}
+.totals{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.tot{background:#fff;border-radius:14px;padding:10px 12px 9px;box-shadow:0 1px 2px rgba(0,0,0,.05),0 0 0 1px rgba(40,60,100,.08);min-width:0}
+.tot b{display:block;font-size:30px;letter-spacing:-.04em;line-height:1;font-variant-numeric:tabular-nums}
+.tot b small{font-size:15px;color:var(--dim);letter-spacing:0;margin-left:2px}
+.tot span{display:block;font-size:13px;letter-spacing:1px;text-transform:uppercase;color:var(--dim);margin-top:5px;font-weight:700}
+.tot.warn b{color:#9a5b00}
+
+/* STATION 2: PORTIONS — one row per ingredient in the bowl, glove buttons */
+.portions{display:flex;flex-direction:column;gap:6px;min-height:0;overflow:hidden}
+.row{display:grid;grid-template-columns:44px minmax(0,1fr) auto;align-items:center;gap:10px;background:#fff;border-radius:14px;padding:5px 6px 5px 5px;box-shadow:0 1px 2px rgba(0,0,0,.05),0 0 0 1px rgba(40,60,100,.08);min-height:56px}
+.row .ph{width:44px;height:44px;border-radius:10px;object-fit:cover;background:#dfe3e8;display:block}
+.row .nm{min-width:0}
+.row .nm b{display:block;font-size:16px;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.row .nm .bar{position:relative;height:6px;border-radius:3px;background:#e6eaf1;margin-top:6px;overflow:hidden}
+.row .nm .bar i{position:absolute;left:0;top:0;bottom:0;background:var(--g,#6dbb5e);width:calc(var(--p,0)*1%);transition:width .25s}
+.row .nm small{display:block;font-size:13px;color:var(--dim);margin-top:4px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.step{display:inline-flex;align-items:center;gap:2px}
+.step button{width:48px;height:48px;border-radius:12px;border:2px solid #cfd6e2;background:#fff;font-size:26px;font-weight:800;line-height:1;display:grid;place-items:center;padding:0}
+.step button:active{background:#e6eaf1}
+.step b{min-width:76px;text-align:center;font-size:22px;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.step b small{font-size:13px;color:var(--dim);letter-spacing:0;margin-left:2px}
+.row.off{opacity:.55}
+.row .x{width:48px;height:48px;border-radius:12px;border:2px solid #cfd6e2;background:#fff;font-size:18px;display:grid;place-items:center;color:var(--dim);padding:0}
+.seqn{width:22px;height:22px;border-radius:7px;background:var(--dock);color:#fff;font-size:12px;font-weight:900;display:grid;place-items:center;position:absolute;left:-4px;top:-4px}
+.row{position:relative}
+
+/* STATION 3: THE MACHINE — the locked 18-slot primitive, lit where the recipe touches it */
+.machine{display:grid;grid-template-rows:auto auto auto minmax(0,1fr);gap:8px;min-height:0}
+.srow{display:flex;flex-direction:column;gap:3px;min-height:0}
+.rheader{display:flex;align-items:baseline;gap:10px;padding:0 2px;line-height:1.1}
+.rheader b{font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:.4px;opacity:.68}
+.rheader span{font-size:12px;font-weight:700;opacity:.5}
+.rcards{display:flex;gap:8px;min-width:0}
+.slot{flex:1 1 0;min-width:0;height:64px;border-radius:14px;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.05),0 0 0 1px rgba(40,60,100,.09);position:relative;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:4px 4px 4px;cursor:pointer;transition:box-shadow .2s,background .2s,transform .12s}
+.slot:active{transform:scale(.97)}
+.slot .bin{position:absolute;top:0;left:0;font-size:11px;font-weight:900;line-height:1;padding:4px 6px 4px 5px;border-radius:14px 0 8px 0;background:var(--dock);color:#fff;letter-spacing:.2px;font-variant-numeric:tabular-nums}
+.slot .dot{position:absolute;top:6px;right:6px;width:8px;height:8px;border-radius:50%;background:#8e8e93}
+.slot.hot .dot{background:var(--amber)}.slot.cold .dot{background:var(--blue)}
+.slot .nm{font-size:14px;font-weight:800;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;padding:0 2px;margin-top:8px}
+.slot .oz{font-size:13px;font-weight:700;color:var(--dim);font-variant-numeric:tabular-nums}
+.slot.in{background:var(--dock);color:#fff;box-shadow:inset 0 0 0 3px var(--hot)}
+.slot.in .bin{background:#fff;color:#111}
+.slot.in .oz{color:var(--hot)}
+.slot.open{background:#eef1f6;box-shadow:inset 0 0 0 2px #d6dbe6;color:var(--dim)}
+.slot.open .nm{font-weight:800}
+.slot.open .bin{background:#d8dde6;color:#6b7280}
+.checks{min-height:0;overflow:hidden;display:flex;flex-direction:column;gap:6px;margin-top:2px}
+.check{display:grid;grid-template-columns:22px minmax(0,1fr) auto;align-items:center;gap:10px;background:#fff;border-radius:12px;padding:8px 12px;box-shadow:0 0 0 1px rgba(40,60,100,.08);font-size:14px;line-height:1.25;min-width:0}
+.check i{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font-style:normal;font-size:13px;font-weight:900;background:var(--ok);color:#fff}
+.check.bad i{background:var(--hot);color:#111}
+.check.warn i{background:var(--low);color:#1a1200}
+.check .t{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.check .k{font-size:16px;font-weight:800;font-variant-numeric:tabular-nums;white-space:nowrap}
+.check.bad .k{color:#5a6b00}
+.check.warn .k{color:#9a5b00}
+
+/* DOCK: same dark dock as the panels, hooked to the bottom */
+.dock{background:var(--dock);color:#fff;margin-top:16px;padding:0 40px max(12px,env(safe-area-inset-bottom));display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr) clamp(240px,26%,340px);gap:0 24px;align-items:center}
+.dock .sec{grid-column:1/-1;color:#fff;padding:8px 0 4px}
+.dock .sec::after{background:rgba(255,255,255,.35)}
+.dock .head{display:grid;grid-template-columns:auto minmax(0,1fr);column-gap:12px;row-gap:2px;align-items:center;font-size:24px;letter-spacing:-.02em;font-weight:800;line-height:1.05;padding:6px 0 10px}
+.dock .head i{width:14px;height:14px;border-radius:50%;background:#ff7a1a;box-shadow:0 0 0 6px rgba(255,122,26,.28)}
+.dock .head.ok i{background:var(--ok);box-shadow:0 0 0 6px rgba(52,199,89,.25)}
+.dock .head small{grid-column:2;font-size:16px;color:#a1a1a6;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dock .more{display:flex;gap:10px;margin-top:2px}
+.dock .more button{flex:1 1 0;min-height:56px;padding:0 16px;border:2px solid rgba(255,255,255,.45);border-radius:14px;background:rgba(255,255,255,.06);color:#fff;font-size:18px;font-weight:800;white-space:nowrap}
+.dock .more button:active{background:rgba(255,255,255,.18)}
+.dock .nums{display:grid;grid-template-columns:1fr 1fr;justify-items:center;align-content:center;column-gap:22px;row-gap:4px;text-align:center;border-left:2px solid rgba(255,255,255,.16);border-right:2px solid rgba(255,255,255,.16);padding:6px 20px;align-self:stretch}
+.dock .n{display:flex;flex-direction:column;align-items:center;min-width:0}
+.dock .n b{font-size:24px;letter-spacing:-.04em;line-height:1;font-variant-numeric:tabular-nums}
+.dock .n span{font-size:14px;color:#a1a1a6;white-space:nowrap;margin-top:3px;font-weight:700}
+.dock .n.hero{grid-column:1/-1;order:-1}
+.dock .n.hero b{font-size:44px}
+.dock .n.hero span{font-size:16px}
+.go{border:0;border-radius:18px;background:var(--hot);color:#111;min-height:96px;padding:12px 52px 12px 20px;display:grid;grid-template-rows:auto auto;align-content:center;justify-items:start;text-align:left;gap:6px;position:relative;box-shadow:0 3px 0 #8fb000;align-self:stretch;margin:8px 0}
+.go .t{font-size:30px;letter-spacing:-.04em;line-height:.95;font-weight:900}
+.go .s{font-size:16px;color:rgba(0,0,0,.72);font-weight:700}
+.go .a{position:absolute;right:16px;top:50%;transform:translateY(-50%);font-size:36px;font-weight:900}
+.go:active{transform:translateY(2px);box-shadow:0 1px 0 #8fb000}
+.go[disabled]{background:#3a3a3c;color:#a1a1a6;box-shadow:none;cursor:default}
+.go[disabled] .s{color:#a1a1a6}
+
+/* toast */
+.toast{position:fixed;left:0;right:0;top:0;z-index:20;background:#132018;color:var(--hot);padding:22px 40px;display:none;text-align:center}
+.toast.show{display:block}.toast b{display:block;font-size:30px;letter-spacing:-.03em}.toast span{display:block;font-size:18px;color:#e6f3e9;margin-top:6px}
+
+@media(orientation:landscape) and (max-width:1200px){
+  .band{padding:8px 24px;gap:14px}.where{font-size:22px}.where .logo{width:38px;height:38px}
+  .presets button{min-height:40px;padding:0 12px;font-size:15px}
+  .stat b{font-size:34px}
+  .recipe{padding:0 24px}.recipe input.cust{width:160px}
+  main{padding:12px 16px 0;gap:12px}
+  .station{padding:10px 12px 12px}
+  .row{min-height:52px}.step button,.row .x{width:44px;height:44px}.step b{min-width:66px;font-size:20px}
+  .slot{height:56px}.slot .nm{font-size:13px}
+  .tot b{font-size:26px}
+  .dock{padding-left:24px;padding-right:24px}.dock .n.hero b{font-size:38px}.go{min-height:84px}.go .t{font-size:26px}
+}
+@media(orientation:landscape) and (max-height:800px){
+  .row{min-height:48px}.step button,.row .x{width:42px;height:42px}
+  .slot{height:50px}.check{padding:6px 10px}
+  .dock .head{font-size:20px}.dock .more button{min-height:48px}.go{min-height:76px;margin:6px 0}
+}
+@media(orientation:portrait){
+  body{height:auto;overflow:auto;display:block}
+  .band{grid-template-columns:minmax(0,1fr) auto;grid-template-rows:auto auto;padding:10px 24px;gap:8px 14px}
+  .presets{grid-column:1/-1;justify-self:stretch}
+  .stat{grid-row:1;grid-column:2}
+  .when{display:none}
+  .recipe{padding:6px 24px;flex-wrap:wrap;min-height:0}
+  main{grid-template-columns:1fr;padding:12px 16px 0}
+  .station{grid-template-rows:auto auto}
+  .bowl{grid-template-rows:360px auto}
+  .checks{overflow:visible}
+  .dock{position:sticky;bottom:0;grid-template-columns:1fr;padding:0 24px max(12px,env(safe-area-inset-bottom));z-index:3}
+  .dock .nums{border:0;padding:4px 0;display:flex;justify-content:center;gap:24px}
+  .dock .n.hero b{font-size:36px}
+  .go{min-height:72px}
+}
+/* fit: columns never push each other; the portion list scrolls inside its station; the header inputs read as text */
+main{grid-template-columns:minmax(0,.95fr) minmax(0,1.25fr) minmax(0,1.35fr)}
+.machine>*,.rcards>*,.srow,.checks,.check{min-width:0}
+.slot{overflow:hidden}
+.portions{overflow-y:auto;overscroll-behavior:contain;padding-bottom:4px;-webkit-mask-image:linear-gradient(180deg,#000 calc(100% - 28px),transparent);mask-image:linear-gradient(180deg,#000 calc(100% - 28px),transparent)}
+.row{flex:none}
+.recipe input.short{width:46px;text-align:right}
+.recipe .meta input{width:190px}
+@media(orientation:portrait){.portions{overflow:visible;-webkit-mask-image:none;mask-image:none}}
+/* fit pass 2 */
+.sec{white-space:nowrap;min-width:0}.sec small{overflow:hidden;text-overflow:ellipsis;min-width:0}.sec::after{min-width:12px}
+.recipe input.short{width:36px}.recipe #m-due{width:54px;text-align:left}
+.bowl .layer-lbl{font-size:16px}.bowl .layer-oz{font-size:15px}
+@media(orientation:landscape) and (max-width:1200px){
+  .srow.sz-S .rcards{flex-wrap:wrap}.srow.sz-S .slot{flex:1 1 calc(25% - 6px)}
+  .sec{font-size:14px;letter-spacing:1.8px}
+}
+@media(orientation:portrait){
+  main{grid-template-columns:1fr}
+  .station{grid-template-rows:auto auto}
+  .body{overflow:visible}
+  .bowl{grid-template-rows:440px auto}
+  .srow.sz-S .rcards{flex-wrap:wrap}.srow.sz-S .slot{flex:1 1 calc(25% - 6px)}
+  .slot{height:64px}
+}
+/* CHOICE ROWS: base and protein are a pick — Rice · ½·½ · Quinoa — with one stepper for the group's total */
+.row.choice{grid-template-columns:auto minmax(0,1fr) auto;min-height:64px;padding:6px 6px 6px 8px}
+.seg{display:inline-flex;background:#eef0f4;border-radius:12px;padding:3px;gap:3px}
+.seg button{border:0;background:transparent;border-radius:9px;min-height:44px;padding:0 12px;font-size:15px;font-weight:800;color:var(--dim);white-space:nowrap}
+.seg button.on{background:var(--dock);color:#fff}
+.row.choice .nm b{font-size:15px}
+@media(orientation:landscape) and (max-width:1200px){.seg button{min-height:40px;padding:0 9px;font-size:14px}.row.choice{padding-left:6px}}
+.row.choice{grid-template-columns:auto auto;justify-content:space-between}
+.row.choice .nm{display:none}
+/* mix: the choice rows preview a variant and show its count; the picnic link sits in the recipe row */
+.seg button{display:inline-flex;align-items:baseline;gap:6px}
+.seg button small{font-size:13px;font-weight:800;opacity:.75;font-variant-numeric:tabular-nums}
+.seg button.on small{color:var(--hot);opacity:1}
+.seg button.zero{opacity:.45}
+.recipe .picnic{flex:none;display:inline-flex;align-items:center;height:32px;padding:0 12px;border-radius:9px;background:var(--dock);color:#fff;font-size:14px;font-weight:800;text-decoration:none;white-space:nowrap}
+.sec small{white-space:nowrap}
+body{grid-template-columns:minmax(0,1fr)}
+@media(orientation:portrait){body{display:block}}
+/* choice rows fit: the segment and the stepper share the row without pushing the + off the card */
+.row.choice{grid-template-columns:minmax(0,1fr) auto;gap:8px}
+.row.choice .seg{min-width:0;overflow:hidden}
+.seg button{padding:0 10px;font-size:14px;min-width:0}
+.row.choice .step b{min-width:58px}
+@media(orientation:landscape) and (max-width:1200px){.seg button{padding:0 8px;font-size:13px;gap:4px}.row.choice .step b{min-width:52px;font-size:19px}}
+/* ON STATE = the alert color (Bryan, 2026-09-19): hot lime with ink, not black */
+.seg button.on{background:var(--hot);color:#111}
+.seg button.on small{color:#111;opacity:.75}
+.slot.in{background:var(--hot);color:#111;box-shadow:inset 0 0 0 3px #9fbf00}
+.slot.in .bin{background:#111;color:var(--hot)}
+.slot.in .oz{color:#3a4a00}
+.presets button.on{background:var(--hot);color:#111;box-shadow:none}
+</style></head>
+<body>
+<section class="top">
+  <header class="band">
+    <a class="where" href="lunch-rush-light-slots.html"><svg class="logo" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="20" fill="#c8f000"/><g transform="translate(20 20.6) scale(.62) translate(-20 -21)"><circle cx="20" cy="11.5" r="6.5" fill="#0b120e"/><path d="M4.5 21.5h31a1.5 1.5 0 0 1 1.5 1.6C36.2 30.6 29 36.5 20 36.5S3.8 30.6 3 23.1a1.5 1.5 0 0 1 1.5-1.6z" fill="#0b120e"/></g></svg>BOWL-O-MATIC 5000 <span>RECIPE CONTROLLER</span></a>
+    <div class="presets"><button id="p-sf" class="on" onclick="loadPreset('sf')">SF-0912 · Salesforce</button><button id="p-new" onclick="loadPreset('new')">New draft</button></div>
+    <div class="when">THU <span id="clock">12:18</span></div>
+    <div class="stat"><b class="num" id="bowlsStat">50</b><span>bowls</span></div>
+  </header>
+  <div class="recipe">
+    <span class="lbl">Recipe</span>
+    <input class="cust" id="m-cust" value="Salesforce" aria-label="Customer">
+    <input class="id" id="m-id" value="SF-0912" aria-label="Recipe ID">
+    <span class="meta"><b id="mixLine">25 Chicken · 25 Beef · 38 Rice · 12 Quinoa</b> · <input id="m-where" value="Salesforce Tower · 45F" aria-label="Where"> · due <input class="short" id="m-due" value="12:30" aria-label="Due"></span>
+    <a class="picnic" href="picnic.html">Picnic order →</a>
+    <span class="status" id="status"><i></i><span id="statusT">Ready for the line</span></span>
+  </div>
+</section>
+
+<main>
+  <section class="station">
+    <div class="sec">The bowl <small id="bowlSub">build sequence · bottom up</small></div>
+    <div class="body bowl"><svg id="bowlSvg" viewBox="0 0 420 360" preserveAspectRatio="xMidYMid meet"></svg>
+      <div class="totals" id="totals"></div>
+    </div>
+  </section>
+
+  <section class="station">
+    <div class="sec">Portions <small id="portSub">per bowl · oz</small></div>
+    <div class="body portions" id="portions"></div>
+  </section>
+
+  <section class="station">
+    <div class="sec">Machine <small id="machSub">18 slots · lit where this recipe touches</small></div>
+    <div class="body machine" id="machine"></div>
+  </section>
+</main>
+
+<section class="dock">
+  <div class="sec">Send</div>
+  <div>
+    <div class="head ok" id="dockHead"><i></i><span id="dockT">Ready for the line</span><small id="dockS">Every check passes</small></div>
+    <div class="more"><button onclick="testBowl()">Run 1 test bowl</button><button onclick="note('Draft saved · '+document.getElementById('m-id').value,'Recipe controller')">Save draft</button></div>
+  </div>
+  <div class="nums" id="dockNums"></div>
+  <button class="go" id="go" onclick="send()"><div class="t">SEND TO LINE</div><div class="s" id="goS">50 bowls → Uptown · Bowl 01</div><div class="a">→</div></button>
+</section>
+<div class="toast" id="toast"><b id="toastTitle"></b><span id="toastText"></span></div>
+
+<script>
+/* ---------- THE MACHINE: 18 physical slots, same numbering and tiers as the worker panel ---------- */
+const TIERS=[['L','Hot Grain Hopper','≈ 2.5 gal · 20 lb'],['M','Loose-Scoop Bin','≈ 175 in³ · 8 lb'],['S','Sauce Dispenser','≈ 32 oz · 2 lb']];
+const FULL_LB={L:20,M:8,S:2};
+// per-ingredient: group, tier, temp, default portion (oz), max portion, cost per oz, dispense seconds per oz
+const SLOTS=[
+ {slot:1,n:'Chicken',g:'prot',sz:'L',t:'hot',oz:4,max:8,cost:.45,spo:.9,img:'Grilled_Chicken_Breasts_(28905381261).jpg'},
+ {slot:2,n:'Beef',g:'prot',sz:'L',t:'hot',oz:4,max:8,cost:.55,spo:.9,img:'Shredded_Steak_with_Peppers,_Onions_and_Tomatoes_(Ropa_Vieja).jpg'},
+ {slot:3,n:'Rice',g:'base',sz:'L',t:'hot',oz:6,max:10,cost:.08,spo:.8,img:'Bowl_of_white_rice_02.jpg'},
+ {slot:4,n:'Quinoa',g:'base',sz:'L',t:'hot',oz:6,max:10,cost:.18,spo:.8,img:'Quinoa_cuit.JPG'},
+ {slot:5,n:'Beans',g:'veg',sz:'M',t:'cold',oz:2,max:4,cost:.10,spo:1.1,img:'Black_bean,_frijol_negro,_feijão_preto_1.jpg'},
+ {slot:6,n:'Corn',g:'veg',sz:'M',t:'cold',oz:2,max:4,cost:.12,spo:1.1,img:'Up_close_image_of_corn.jpg'},
+ {slot:7,n:'Pico',g:'veg',sz:'M',t:'cold',oz:2,max:4,cost:.20,spo:1.2,img:'Mmm..._Pico_de_Gallo_(5923456035).jpg'},
+ {slot:8,n:'Lettuce',g:'veg',sz:'M',t:'cold',oz:1.5,max:3,cost:.15,spo:1.3,img:'Romaine_lettuce.jpg'},
+ {slot:9,n:'Cilantro',g:'veg',sz:'M',t:'cold',oz:.25,max:1,cost:.40,spo:1.5,img:'Coriander_01.jpg'},
+ {slot:10,n:'Lime',g:'veg',sz:'S',t:'cold',oz:.25,max:1,cost:.30,spo:1.5,img:'Lime_-_whole_and_halved.jpg'},
+ {slot:11,n:'Guac',g:'sau',sz:'S',t:'cold',oz:1.5,max:3,cost:.60,spo:1.4,img:'Guacamole_IMGP1303.jpg'},
+ {slot:12,n:'Verde',g:'sau',sz:'S',t:'cold',oz:1,max:2,cost:.25,spo:1.2,img:'SALSA_VERDE.jpg'},
+ {slot:13,n:'Chipotle',g:'sau',sz:'S',t:'cold',oz:1,max:2,cost:.25,spo:1.2,img:'Chipotlesenadobo.jpg'},
+ {slot:14,n:'Roja',g:'sau',sz:'S',t:'cold',oz:1,max:2,cost:.25,spo:1.2,img:'Bowl_of_salsa.jpg'},
+ {slot:15,n:'Cheese',g:'dai',sz:'M',t:'cold',oz:1,max:2,cost:.35,spo:1.3,img:'Fine_Microplane_Grating_Hard_Cheese.jpg'},
+ {slot:16,n:'Sour Cream',g:'dai',sz:'S',t:'cold',oz:1,max:2,cost:.20,spo:1.4,img:'Sour_Cream.jpg'},
+ {slot:17,n:null,sz:'S',t:'swing'},{slot:18,n:null,sz:'S',t:'swing'},
+];
+const STEP={L:1,M:.5,S:.25};
+const GROUP={base:'Base',prot:'Protein',veg:'Vegetables',sau:'Sauce',dai:'Dairy'};
+const GCOL={base:'var(--base)',prot:'var(--prot)',veg:'var(--veg)',sau:'var(--sau)',dai:'var(--dai)'};
+const ALT={Rice:'#e6d3a3',Quinoa:'#d9c08a',Chicken:'#d5976b',Beef:'#a8674a'}; // the two halves of a combo read as two colors
+const GINK={base:'#6b5a2a',prot:'#fff',veg:'#fff',sau:'#fff',dai:'#6b6252'};
+const ORDER=['base','prot','veg','sau','dai']; // the robot builds bottom-up: base, protein, vegetables, sauce, dairy
+const CHOICE_GROUPS={base:{label:'Base',max:10},prot:{label:'Protein',max:8}}; // one pick, or ½ · ½
+const LIMITS={topping:8};
+const STATION_S=.5;    // seconds the belt spends indexing to the next station
+const DISPENSE=.25;    // dispensers run in parallel down the belt; per-oz time is a fraction of a serial pour
+const BELT_BOWLS_10MIN=40; // the line's target pace
+
+/* THE MIX: what the orderer (or each guest, via the Picnic page) chose — one meat and one base per bowl, counted up.
+   ½ · ½ is a per-bowl choice a person makes, not a recipe setting. The controller reads the mix and programs the machine from it. */
+let PICNIC=null; try{PICNIC=JSON.parse(localStorage.getItem('bom-picnic')||'null');}catch(e){}
+const PRESETS={
+  sf:{id:'SF-0912',cust:'Salesforce',where:'Salesforce Tower · 45F',due:'12:30',mix:{meat:{Chicken:25,half:0,Beef:25},base:{Rice:38,Quinoa:12}},goz:{base:6,prot:4},sel:{Beans:2,Pico:2,Lettuce:1.5,Cilantro:.25,Chipotle:1,Roja:1,Cheese:1,'Sour Cream':1}},
+  new:{id:'DRAFT-01',cust:'New customer',where:'In-store',due:'1:15',mix:{meat:{Chicken:6,half:2,Beef:2},base:{Rice:10,Quinoa:0}},goz:{base:6,prot:4},sel:{Corn:2,Verde:1}},
+};
+if(PICNIC&&PICNIC.meat){PRESETS.sf.mix={meat:PICNIC.meat,base:PICNIC.base}; PRESETS.sf.due=PICNIC.due||PRESETS.sf.due;}
+let MIX=JSON.parse(JSON.stringify(PRESETS.sf.mix)), GOZ={...PRESETS.sf.goz}, SEL={...PRESETS.sf.sel};
+let VIEW={meat:null,base:null}; // which variant the bowl drawing shows
+const topKey=o=>Object.keys(o).sort((a,b)=>o[b]-o[a])[0];
+function syncView(){ if(!VIEW.meat||!MIX.meat[VIEW.meat]) VIEW.meat=topKey(MIX.meat); if(!VIEW.base||!MIX.base[VIEW.base]) VIEW.base=topKey(MIX.base); }
+const CHOICE={}; // kept for the group definitions below
+const byName=n=>SLOTS.find(s=>s.n===n);
+const groupSlots=g=>SLOTS.filter(s=>s.n&&s.g===g);
+// what's in the bowl, in build order. A choice group yields one entry with one or two parts (½ · ½).
+function inBowl(){
+  syncView();
+  const out=[];
+  ORDER.forEach(g=>{
+    if(CHOICE_GROUPS[g]){
+      const c=g==='base'?VIEW.base:VIEW.meat; if(!c) return;
+      const parts=c==='half'?groupSlots(g).map(s=>({s,oz:GOZ[g]/2})):(byName(c)?[{s:byName(c),oz:GOZ[g]}]:[]);
+      if(parts.length) out.push({g,oz:GOZ[g],parts,half:c==='half'});
+    } else groupSlots(g).filter(s=>SEL[s.n]).forEach(s=>out.push({g,oz:SEL[s.n],parts:[{s,oz:SEL[s.n]}]}));
+  });
+  return out;
+}
+const mixCount=(g,k)=>g==='base'?(MIX.base[k]||0):(MIX.meat[k]||0);
+// pounds each hopper must hold for the whole batch, from the mix and the group portion
+function hopperLb(s){
+  if(s.g==='prot'){const m=MIX.meat; return ((m[s.n]||0)*GOZ.prot+(m.half||0)*GOZ.prot/2)/16;}
+  if(s.g==='base'){return ((MIX.base[s.n]||0)*GOZ.base)/16;}
+  return (SEL[s.n]||0)*bowls()/16;
+}
+const key=x=>x.n.toLowerCase().replace(/\s+/g,'-');
+const img=s=>'https://commons.wikimedia.org/wiki/Special:FilePath/'+encodeURIComponent(s.img)+'?width=200';
+const ph=s=>`<img class="ph" alt="" src="img/${key(s)}.jpg" onerror="this.onerror=null;this.src='${img(s)}'">`;
+const fmt=v=>(Math.round(v*4)/4).toString();
+const bowls=()=>Math.max(1,Object.values(MIX.meat).reduce((a,b)=>a+b,0));
+const entryName=e=>e.half?e.parts.map(p=>'½ '+p.s.n).join(' · '):e.parts[0].s.n;
+
+function loadPreset(k){
+  const p=PRESETS[k];
+  document.getElementById('m-id').value=p.id; document.getElementById('m-cust').value=p.cust;
+  document.getElementById('m-where').value=p.where; document.getElementById('m-due').value=p.due;
+  MIX=JSON.parse(JSON.stringify(p.mix)); GOZ={...p.goz}; SEL={...p.sel}; VIEW={meat:null,base:null};
+  document.getElementById('p-sf').classList.toggle('on',k==='sf'); document.getElementById('p-new').classList.toggle('on',k==='new');
+  render();
+}
+function pick(g,v){ if(g==='base') VIEW.base=v; else VIEW.meat=v; render(); }
+// tapping a hopper on the machine: the other one alone → ½ · ½; a half → the other alone; the lone one → nothing (a blocker, on purpose)
+function toggle(n){
+  const s=byName(n); if(!s) return;
+  if(CHOICE_GROUPS[s.g]){ // a hopper in the mix: tapping it previews that variant. The mix itself is the orderer's, set on the Picnic page.
+    if(mixCount(s.g,s.n)>0) pick(s.g,s.n); return;
+  }
+  if(SEL[n]) delete SEL[n]; else SEL[n]=s.oz; render();
+}
+function bump(n,d){ const s=byName(n); const v=Math.min(s.max,Math.max(STEP[s.sz],(SEL[n]||0)+d*STEP[s.sz])); SEL[n]=+v.toFixed(2); render(); }
+function bumpGroup(g,d){ GOZ[g]=Math.min(CHOICE_GROUPS[g].max,Math.max(1,GOZ[g]+d)); render(); }
+
+/* ---------- FEASIBILITY: computed live from portions × bowls against the hardware ---------- */
+function calc(){
+  const items=inBowl(), nB=bowls();
+  const parts=items.flatMap(e=>e.parts);
+  const ozBowl=items.reduce((a,e)=>a+e.oz,0);
+  const cost=parts.reduce((a,p)=>a+p.oz*p.s.cost,0);
+  const secs=parts.reduce((a,p)=>a+p.oz*p.s.spo*DISPENSE+STATION_S,0)+4; // +4 s: bowl drop, seal
+  const per10=Math.floor(600/secs);
+  const top=items.filter(e=>!CHOICE_GROUPS[e.g]).length;
+  const hoppers=groupSlots('prot').concat(groupSlots('base'),parts.map(p=>p.s).filter(s=>!CHOICE_GROUPS[s.g])).map(s=>{const lb=hopperLb(s); return {s,oz:parts.find(p=>p.s===s)?.oz||0,lb,need:Math.ceil(lb/FULL_LB[s.sz])};}).filter(h=>h.lb>0);
+  const refills=hoppers.filter(h=>h.need>1);
+  const baseE=items.find(e=>e.g==='base'), protE=items.find(e=>e.g==='prot');
+  const mixMeat=Object.entries(MIX.meat).filter(([k,v])=>v).map(([k,v])=>`${v} ${k==='half'?'½·½':k}`).join(' · ');
+  const mixBase=Object.entries(MIX.base).filter(([k,v])=>v).map(([k,v])=>`${v} ${k}`).join(' · ');
+  const baseSum=Object.values(MIX.base).reduce((a,b)=>a+b,0);
+  const checks=[
+    {ok:nB>0,t:`Meat · ${mixMeat||'none'}`,k:`${fmt(GOZ.prot)} oz each`},
+    {ok:baseSum===nB,warn:baseSum!==nB&&baseSum>0,t:`Base · ${mixBase||'none'}${baseSum!==nB?' · '+baseSum+' of '+nB+' bowls':''}`,k:`${fmt(GOZ.base)} oz each`},
+    {ok:top<=LIMITS.topping,t:`Toppings`,k:`${top} / ${LIMITS.topping}`},
+    {ok:per10>=BELT_BOWLS_10MIN,warn:per10<BELT_BOWLS_10MIN&&per10>=BELT_BOWLS_10MIN*.8,t:`Belt pace · ${secs.toFixed(0)} s per bowl`,k:`${per10} / ${BELT_BOWLS_10MIN} per 10 min`},
+    {ok:refills.length===0,warn:refills.length>0,t:refills.length?`Refill mid-batch: ${refills.map(h=>h.s.n+' ×'+h.need).join(', ')}`:`Every hopper holds the whole batch`,k:`${nB} bowls`},
+  ];
+  if(MIX.base.Quinoa>0) checks.push({ok:false,warn:true,t:`Quinoa is held at Uptown · Bowl 02 · ${MIX.base.Quinoa} bowls wait`,k:`held`});
+  return {items,parts,nB,ozBowl,cost,secs,per10,top,hoppers,checks,allOk:checks.every(c=>c.ok||c.warn)};
+}
+
+/* ---------- STATION 1: the bowl as a build-sequence drawing ---------- */
+function renderBowl(c){
+  const W=420,H=560, bowlTop=30, bowlBot=540, cx=210, rTop=196, rBot=112;
+  const total=Math.max(1,c.ozBowl);
+  const inner=bowlBot-bowlTop-10, minH=30;
+  const raw=c.items.map(e=>({e,h:inner*(e.oz/total)}));
+  const fixed=raw.filter(l=>l.h<minH).length*minH, free=Math.max(0,inner-fixed), freeOz=raw.filter(l=>l.h>=minH).reduce((a,l)=>a+l.e.oz,0);
+  const layers=raw.map(l=>({e:l.e,h:l.h<minH?minH:free*(l.e.oz/Math.max(.01,freeOz))}));
+  let y=bowlBot-6, parts='', seq=0;
+  const w=yy=>rTop-(rTop-rBot)*((yy-bowlTop)/(bowlBot-bowlTop)); // half-width at a given y — wide at the rim, narrow at the base
+  layers.forEach(l=>{
+    seq++;
+    const e=l.e, yTop=y-l.h, wT=w(yTop), wB=w(y), ym=yTop+l.h/2, wM=w(ym), ink=GINK[e.g];
+    if(e.half){
+      const [p1,p2]=e.parts;
+      parts+=`<path d="M${cx-wB} ${y} L${cx-wT} ${yTop} L${cx} ${yTop} L${cx} ${y} Z" fill="${ALT[p1.s.n]||GCOL[e.g]}" stroke="rgba(0,0,0,.14)"/><path d="M${cx} ${y} L${cx} ${yTop} L${cx+wT} ${yTop} L${cx+wB} ${y} Z" fill="${ALT[p2.s.n]||GCOL[e.g]}" stroke="rgba(0,0,0,.14)"/>`;
+      parts+=`<line x1="${cx}" y1="${yTop}" x2="${cx}" y2="${y}" stroke="rgba(0,0,0,.35)" stroke-width="2" stroke-dasharray="4 4"/>`;
+      parts+=`<text class="layer-lbl" x="${cx-wM+44}" y="${ym+5}" fill="${ink}">${p1.s.n}</text><text class="layer-oz" x="${cx-10}" y="${ym+5}" text-anchor="end" fill="${ink}">${fmt(p1.oz)}</text>`;
+      parts+=`<text class="layer-lbl" x="${cx+12}" y="${ym+5}" fill="${ink}">${p2.s.n}</text><text class="layer-oz" x="${cx+wM-14}" y="${ym+5}" text-anchor="end" fill="${ink}">${fmt(p2.oz)} oz</text>`;
+    } else {
+      parts+=`<path d="M${cx-wB} ${y} L${cx-wT} ${yTop} L${cx+wT} ${yTop} L${cx+wB} ${y} Z" fill="${ALT[e.parts[0].s.n]||GCOL[e.g]}" stroke="rgba(0,0,0,.14)" stroke-width="1"/>`;
+      parts+=`<text class="layer-lbl" x="${cx-wM+44}" y="${ym+5}" fill="${ink}">${e.parts[0].s.n}</text><text class="layer-oz" x="${cx+wM-14}" y="${ym+5}" text-anchor="end" fill="${ink}">${fmt(e.oz)} oz</text>`;
+    }
+    parts+=`<rect x="${cx-wM+12}" y="${ym-11}" width="24" height="22" rx="7" fill="rgba(0,0,0,.6)"/><text class="seq" x="${cx-wM+24}" y="${ym+4}" text-anchor="middle">${seq}</text>`;
+    y=yTop;
+  });
+  const bowl=`<path d="M${cx-rTop} ${bowlTop} L${cx-rBot} ${bowlBot-8} Q${cx-rBot} ${bowlBot} ${cx-rBot+8} ${bowlBot} L${cx+rBot-8} ${bowlBot} Q${cx+rBot} ${bowlBot} ${cx+rBot} ${bowlBot-8} L${cx+rTop} ${bowlTop}" fill="none" stroke="#1c1c1e" stroke-width="3" stroke-linejoin="round"/>
+    <line x1="${cx-rTop-14}" y1="${bowlTop}" x2="${cx+rTop+14}" y2="${bowlTop}" stroke="#1c1c1e" stroke-width="3" stroke-linecap="round"/>`;
+  document.getElementById('bowlSvg').setAttribute('viewBox',`0 0 ${W} ${H}`);
+  document.getElementById('bowlSvg').innerHTML=`<defs><clipPath id="bc"><path d="M${cx-rTop} ${bowlTop} L${cx-rBot} ${bowlBot} L${cx+rBot} ${bowlBot} L${cx+rTop} ${bowlTop} Z"/></clipPath></defs><g clip-path="url(#bc)">${parts}</g>${bowl}`;
+  document.getElementById('bowlSub').textContent=`${c.items.length} steps · bottom up`;
+  document.getElementById('totals').innerHTML=`
+    <div class="tot"><b class="num">${fmt(c.ozBowl)}<small>oz</small></b><span>per bowl</span></div>
+    <div class="tot ${c.per10<BELT_BOWLS_10MIN?'warn':''}"><b class="num">${c.secs.toFixed(0)}<small>s</small></b><span>build time</span></div>
+    <div class="tot"><b class="num">$${c.cost.toFixed(2)}</b><span>food cost</span></div>`;
+}
+
+/* ---------- STATION 2: portions. Base and protein are a pick (or ½ · ½) with one stepper; toppings are rows. ---------- */
+function renderPortions(c){
+  let seq=0, html='';
+  ['base','prot'].forEach(g=>{
+    const opts=groupSlots(g), cur=g==='base'?VIEW.base:VIEW.meat, e=c.items.find(x=>x.g===g);
+    if(e) seq++;
+    const seg=(v,txt)=>{const n=mixCount(g,v); return `<button class="${cur===v?'on':''} ${n?'':'zero'}" onclick="pick('${g}','${v}')">${txt}<small>${n}</small></button>`;};
+    html+=`<div class="row choice ${e?'':'off'}">${e?`<span class="seqn">${seq}</span>`:''}
+      <div class="seg">${seg(opts[0].n,opts[0].n)}${g==='prot'?seg('half','½ · ½'):''}${seg(opts[1].n,opts[1].n)}</div>
+      <div class="nm"><b>${CHOICE_GROUPS[g].label}${e?' · '+entryName(e):''}</b><small>${e?e.parts.map(p=>{const h=c.hoppers.find(h=>h.s===p.s);return h?`${p.s.n} ${h.lb.toFixed(1)} lb`:p.s.n;}).join(' · '):''}</small></div>
+      <span class="step"><button onclick="bumpGroup('${g}',-1)" aria-label="less">−</button><b class="num">${fmt(GOZ[g])}<small>oz</small></b><button onclick="bumpGroup('${g}',1)" aria-label="more">+</button></span></div>`;
+  });
+  c.items.filter(e=>!CHOICE_GROUPS[e.g]).forEach(e=>{seq++; const s=e.parts[0].s, v=e.oz, h=c.hoppers.find(h=>h.s===s);
+    html+=`<div class="row"><span class="seqn">${seq}</span>${ph(s)}
+      <div class="nm"><b>${s.n}</b><div class="bar" style="--g:${GCOL[s.g]};--p:${v/s.max*100}"><i></i></div><small>${GROUP[s.g]} · ${h.lb.toFixed(1)} lb for ${c.nB} bowls${h.need>1?' · '+h.need+' hoppers':''}</small></div>
+      <span class="step"><button onclick="bump('${s.n}',-1)" aria-label="less">−</button><b class="num">${fmt(v)}<small>oz</small></b><button onclick="bump('${s.n}',1)" aria-label="more">+</button></span></div>`;
+  });
+  document.getElementById('portions').innerHTML=html;
+  document.getElementById('portSub').textContent=`${c.items.length} in the bowl · per bowl · oz`;
+}
+
+/* ---------- STATION 3: the machine, lit where the recipe touches it, plus feasibility ---------- */
+function renderMachine(c){
+  const ozOf=n=>{const p=c.parts.find(p=>p.s.n===n);return p?p.oz:0;};
+  let html='';
+  TIERS.forEach(([tier,label,cap])=>{
+    const row=SLOTS.filter(s=>s.sz===tier); const used=row.filter(s=>s.n).length;
+    html+=`<div class="srow sz-${tier}"><div class="rheader"><b>${label}</b><span>${used}/${row.length}${used===row.length?' · full':''}</span><span>${cap}</span></div><div class="rcards">${row.map(s=>{
+      if(!s.n) return `<div class="slot open"><span class="bin">#${s.slot}</span><span class="dot"></span><div class="nm">+ Add</div></div>`;
+      const cnt=CHOICE_GROUPS[s.g]?mixCount(s.g,s.n)+(s.g==='prot'?(MIX.meat.half||0):0):0;
+      const on=CHOICE_GROUPS[s.g]?cnt>0:ozOf(s.n)>0; const h=c.hoppers.find(h=>h.s===s);
+      return `<div class="slot ${s.t} ${on?'in':''}" onclick="toggle('${s.n}')"><span class="bin">#${s.slot}</span><span class="dot"></span><div class="nm">${s.n}</div><div class="oz num">${on?(CHOICE_GROUPS[s.g]?h.lb.toFixed(1)+' lb':fmt(ozOf(s.n))+' oz'):'—'}</div></div>`;
+    }).join('')}</div></div>`;
+  });
+  html+=`<div class="checks">${c.checks.map(k=>`<div class="check ${k.ok?'':(k.warn?'warn':'bad')}"><i>${k.ok?'✓':'!'}</i><span class="t">${k.t}</span><span class="k">${k.k}</span></div>`).join('')}</div>`;
+  document.getElementById('machine').innerHTML=html;
+  document.getElementById('machSub').textContent=`${c.hoppers.length} of 18 slots in this order`;
+}
+
+/* ---------- DOCK ---------- */
+function renderDock(c){
+  const bad=c.checks.filter(k=>!k.ok&&!k.warn).length, warn=c.checks.filter(k=>k.warn).length;
+  const head=document.getElementById('dockHead');
+  head.className='head '+(bad?'':'ok');
+  document.getElementById('dockT').textContent=bad?`Not yet · ${bad} blocker${bad>1?'s':''}`:warn?`Ready · ${warn} warning${warn>1?'s':''}`:'Ready for the line';
+  document.getElementById('dockS').textContent=bad?c.checks.find(k=>!k.ok&&!k.warn).t:warn?c.checks.find(k=>k.warn).t:'Every check passes';
+  const st=document.getElementById('status'); st.className='status '+(bad?'bad':''); document.getElementById('statusT').textContent=bad?'Blocked':warn?'Ready · check warnings':'Ready for the line';
+  document.getElementById('dockNums').innerHTML=`<div class="n hero"><b class="num">${c.per10}</b><span>bowls / 10 min at this recipe</span></div><div class="n"><b class="num">${c.nB}</b><span>bowls in batch</span></div><div class="n"><b class="num">${Math.ceil(c.nB*c.secs/60)} min</b><span>line time</span></div>`;
+  document.getElementById('goS').textContent=`${c.nB} bowls → Uptown · Bowl 01 · due ${document.getElementById('m-due').value}`;
+  document.getElementById('go').disabled=!!bad;
+  document.getElementById('bowlsStat').textContent=c.nB;
+  document.getElementById('mixLine').textContent=[...Object.entries(MIX.meat).filter(([k,v])=>v).map(([k,v])=>`${v} ${k==='half'?'½·½':k}`),...Object.entries(MIX.base).filter(([k,v])=>v).map(([k,v])=>`${v} ${k}`)].join(' · ');
+}
+function render(){ const c=calc(); renderBowl(c); renderPortions(c); renderMachine(c); renderDock(c); }
+function note(t,s){ toastTitle.textContent=t; toastText.textContent=s||''; toast.classList.add('show'); setTimeout(()=>toast.classList.remove('show'),3200); }
+function testBowl(){ const c=calc(); note(`Test bowl queued · ${c.secs.toFixed(0)} s`, c.items.map((e,i)=>`${i+1} ${entryName(e)} ${fmt(e.oz)} oz`).join(' · ')); }
+function send(){ const c=calc(); if(!c.allOk) return; note(`${document.getElementById('m-id').value} sent to the line`, `${c.nB} bowls · Uptown · Bowl 01 · ${c.per10} per 10 min`); }
+['m-due','m-cust','m-id','m-where'].forEach(id=>document.getElementById(id).addEventListener('input',render));
+render();
+/* clock: same simulated lunch clock as the panel */
+let NOW=12*60+18,SEC=0; setInterval(()=>{SEC+=6;if(SEC>=60){SEC-=60;NOW++;const h=Math.floor(NOW/60),m=NOW%60;document.getElementById('clock').textContent=(h>12?h-12:h)+':'+String(m).padStart(2,'0');}},1000);
+</script>
+</body></html>
