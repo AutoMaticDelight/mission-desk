@@ -57,6 +57,10 @@ sides and sauce cards are tall enough to read across the room, name and percent 
 rows there is no strip under the band: the fill rises through the full card height from the left (sage, amber
 or lime), the rest is white (dark on low/critical cards), and the bin badge, name and percent sit on top.
 
+**Picnic Mall variant: twelve squares (`picnic-mall-squares.html`, 2026-09-20).** All 12 sides in one row,
+each card a square (`aspect-ratio:1`), still the bar: bin number as a small tag at the top, name centered,
+percent under it. Hoppers take the height the second sides line gave back; the sauce row is unchanged.
+
 ## Machine layout (one shape, everywhere)
 Locked 2026-09-18, revised three times same day (diamond → one row per
 category → this, sized by real dispenser hardware). The machine has **18
