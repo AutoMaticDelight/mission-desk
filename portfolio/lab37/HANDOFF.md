@@ -27,6 +27,7 @@ on day one" and to be shown on screen share.
   - `recipe-controller.html` — the **Recipe Controller** (2026-09-19): bowl build-sequence drawing, portions, machine, send
   - `picnic.html` / `picnic-guest.html` — the **Picnic** group order (set the mix, or let everyone pick via SMS/email) and the guest's phone page
   - `picnic-mall.html` — the **Picnic Mall edition** of the worker panel: 30 slots, the whole Picnic menu, order queue (breaks the 18-slot rule on purpose)
+  - `picnic-mall-bars.html` — Picnic Mall variant (2026-09-20): in the sides and sauce rows the **card is the bar** — full-height fill, words on top
   - `picnic-kiosk.html` — the **kiosk / register**: Square-Register layout (rail · tabs · photo-tile grid · ticket · Pay), landscape 14×24; reference photo `refs/square-pos-favorites.jpg` (read-only refs from Bryan's Mac session)
   - `PANEL-DESIGN.md` — the **locked** design rules (read before touching UI)
   - `logo.svg`, `img/README.md` (photo stash), `index.html` (29 screens)

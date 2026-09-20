@@ -53,6 +53,10 @@ the name. The 18-slot panel keeps its number on the meter. Row heights: every ro
 (hoppers 5 · 5, sides 7 across two equal grid lines, sauces 3.5), so the two hopper rows sit lower and the
 sides and sauce cards are tall enough to read across the room, name and percent centered in the band.
 
+**Picnic Mall variant: the card is the bar (`picnic-mall-bars.html`, 2026-09-20).** In the sides and sauce
+rows there is no strip under the band: the fill rises through the full card height from the left (sage, amber
+or lime), the rest is white (dark on low/critical cards), and the bin badge, name and percent sit on top.
+
 ## Machine layout (one shape, everywhere)
 Locked 2026-09-18, revised three times same day (diamond → one row per
 category → this, sized by real dispenser hardware). The machine has **18
