@@ -74,7 +74,8 @@ is the size of a protein bin. A hopper that is that low — held at empty, or cr
 its white header: hot lime band, dark words (the sides and sauce bins already say it with the fill).
 Simulation: levels only drain; the fast level update walks the cards, not the bars (an open bay has no bar, so a
 bar index drifted one card after it and the fills jumped up and down), and a ticking percent no longer forces a
-full redraw.
+full redraw. Row headers are the one word (Protein, Base, Sides, Sauces), no count or capacity. Fine-state
+green on this page is Apple system green `#34c759`; amber and lime unchanged.
 
 ## Machine layout (one shape, everywhere)
 Locked 2026-09-18, revised three times same day (diamond → one row per
