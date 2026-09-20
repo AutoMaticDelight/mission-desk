@@ -1524,6 +1524,50 @@ body{grid-template-rows:auto minmax(0,1fr) auto;align-content:stretch}
 .srow.row-M .bar.slot.sz-M .n>.tp{flex:none;position:static;display:block;font-size:22px;line-height:1;padding:0;text-align:center;grid-column:auto;grid-row:auto}
 @media(orientation:landscape) and (max-width:1200px){.srow.row-M .bar.slot.sz-M .n{padding:13px 2px 3px;gap:2px}.srow.row-M .bar.slot.sz-M .n>.bin{font-size:10px;top:3px}.srow.row-M .bar.slot.sz-M .n>span:not(.bin){font-size:11px}.srow.row-M .bar.slot.sz-M .n>.tp{font-size:17px}}
 @media(orientation:landscape) and (max-width:1100px){.srow.row-M .bar.slot.sz-M .n{padding:12px 2px 2px;gap:1px}.srow.row-M .bar.slot.sz-M .n>span:not(.bin){font-size:10px}.srow.row-M .bar.slot.sz-M .n>.tp{font-size:15px}}
+/* FILL THE SPACE (Bryan, 2026-09-20): the words fill the square — bigger name and percent, tighter padding;
+   the sauce cards get the same treatment for their taller band. */
+.srow.row-M .bar.slot.sz-M .n{padding:15px 2px 3px;gap:2px}
+.srow.row-M .bar.slot.sz-M .n>.bin{font-size:12px;top:3px}
+.srow.row-M .bar.slot.sz-M .n>span:not(.bin){font-size:15px;line-height:1;letter-spacing:-.02em}
+.srow.row-M .bar.slot.sz-M .n>.tp{font-size:30px;letter-spacing:-.04em}
+.srow.row-S .bar.slot .n>span:not(.bin){font-size:17px;line-height:1.02}
+.srow.row-S .bar.slot .n>.tp{font-size:27px;letter-spacing:-.04em}
+.srow.row-S .bar.slot{--binw:42px}
+@media(orientation:landscape) and (max-width:1200px){
+  .srow.row-M .bar.slot.sz-M .n{padding:13px 2px 2px;gap:1px}
+  .srow.row-M .bar.slot.sz-M .n>.bin{font-size:10px;top:2px}
+  .srow.row-M .bar.slot.sz-M .n>span:not(.bin){font-size:12px}
+  .srow.row-M .bar.slot.sz-M .n>.tp{font-size:24px}
+  .srow.row-S .bar.slot .n>span:not(.bin){font-size:14px}
+  .srow.row-S .bar.slot .n>.tp{font-size:20px}
+  .srow.row-S .bar.slot{--binw:34px}
+}
+@media(orientation:landscape) and (max-width:1100px){
+  .srow.row-M .bar.slot.sz-M .n>span:not(.bin){font-size:11px}
+  .srow.row-M .bar.slot.sz-M .n>.tp{font-size:20px}
+  .srow.row-S .bar.slot .n>span:not(.bin){font-size:13px}
+  .srow.row-S .bar.slot .n>.tp{font-size:18px}
+}
+/* sauce cards are tall now, so they stack like the squares: bin tag on top, name, percent under it — nothing side by side */
+.srow.row-S .bar.slot.sz-S .n{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:15px 3px 3px;min-height:0;height:100%;position:relative;grid-template-columns:none}
+.srow.row-S .bar.slot.sz-S .n>.bin{position:absolute;top:3px;left:0;right:0;width:auto;height:auto;display:block;padding:0;font-size:12px;line-height:1;text-align:center;opacity:.7;background:transparent;grid-column:auto;grid-row:auto}
+.srow.row-S .bar.slot.sz-S .n>span:not(.bin){flex:none;position:static;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:16px;line-height:1.05;padding:0;text-align:center;align-self:auto;width:100%;letter-spacing:-.02em}
+.srow.row-S .bar.slot.sz-S .n>.tp{flex:none;position:static;display:block;font-size:28px;line-height:1;padding:0;text-align:center;letter-spacing:-.04em;grid-column:auto;grid-row:auto}
+.srow.row-S .bar.slot.sz-S.open .n{display:block}
+.srow.row-M .bar.slot.sz-M .n>span:not(.bin){line-height:1.05}
+@media(orientation:landscape) and (max-width:1200px){
+  .srow.row-S .bar.slot.sz-S .n{padding:12px 2px 2px;gap:1px}
+  .srow.row-S .bar.slot.sz-S .n>.bin{font-size:10px;top:2px}
+  .srow.row-S .bar.slot.sz-S .n>span:not(.bin){font-size:13px}
+  .srow.row-S .bar.slot.sz-S .n>.tp{font-size:21px}
+}
+@media(orientation:landscape) and (max-width:1100px){
+  .srow.row-S .bar.slot.sz-S .n>span:not(.bin){font-size:11px}
+  .srow.row-S .bar.slot.sz-S .n>.tp{font-size:17px}
+}
+/* the stacked sauce band needs a floor on shorter screens; the hoppers give it up */
+@media(orientation:landscape) and (max-width:1200px){.srow.row-S{flex:4 1 0;min-height:70px}.srow.row-S .rcards{min-height:0}}
+@media(orientation:landscape) and (max-width:1100px){.srow.row-S{min-height:60px}}
 </style>
 <link rel="stylesheet" href="glove.css"></head>
 <body>
