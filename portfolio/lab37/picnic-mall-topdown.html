@@ -1679,6 +1679,10 @@ body{grid-template-rows:auto minmax(0,1fr) auto;align-content:stretch}
 @media(orientation:landscape) and (max-width:1200px){.srow.row-B .rcards{gap:8px}}
 /* LABEL ONLY (Bryan, 2026-09-20): the row header is the one word — Protein, Base, Sides, Sauces — no count, no capacity */
 .rheader span{display:none}
+/* APPLE GREEN (Bryan, 2026-09-20): the fine state is iOS system green, not sage — amber and lime unchanged */
+.slots .bar .meter>i{background:#34c759}
+.slots .bar.low .meter>i{background:var(--low)}
+.slots .bar.now .meter>i{background:var(--hot)}
 </style>
 <link rel="stylesheet" href="glove.css"></head>
 <body>
