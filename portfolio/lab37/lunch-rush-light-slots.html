@@ -1288,6 +1288,12 @@ body{grid-template-rows:auto minmax(0,1fr) auto;align-content:stretch}
 /* the one long sauce name: two lines rather than an ellipsis */
 .slots .bar.slot.sz-S .n>span:not(.bin){white-space:normal;line-height:1.02;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;align-self:center}
 .slots .bar.slot.open .n>span:not(.bin){display:flex;align-items:center;justify-content:center;text-align:center;-webkit-line-clamp:none;white-space:nowrap}
+/* CALMER GREEN (Bryan, 2026-09-20): the "fine" meter is a muted sage, not the iOS system green; amber and lime stay loud */
+.slots .bar .meter>i{background:#8fbf8a}
+.slots .bar.low .meter>i{background:var(--low)}
+.slots .bar.now .meter>i{background:var(--hot)}
+.slots .bar .meter{background:#e6e9ee}
+.slots .bar.low .meter,.slots .bar.now .meter{background:rgba(255,255,255,.16)}
 </style>
 <link rel="stylesheet" href="glove.css"></head>
 <body>

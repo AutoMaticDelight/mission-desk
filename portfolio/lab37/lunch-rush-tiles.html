@@ -1282,6 +1282,13 @@ body{grid-template-rows:auto minmax(0,1fr) auto;align-content:stretch}
 .slots .bar.slot.sz-S .n{font-size:16px}
 .slots .bar .meter .note{bottom:16px;left:0}
 @media(orientation:landscape) and (max-width:1200px){.slots .bar.slot.sz-S .n{font-size:15px;letter-spacing:-.02em}}
+/* CALMER GREEN (Bryan, 2026-09-20): the "fine" meter is a muted sage, not the iOS system green; amber and lime stay loud */
+.slots .bar .meter>i{background:#8fbf8a}
+.slots .bar.low .meter>i{background:var(--low)}
+.slots .bar.now .meter>i{background:var(--hot)}
+.slots .bar .meter{background:#e6e9ee}
+.slots .bar.low .meter,.slots .bar.now .meter{background:rgba(255,255,255,.16)}
+.slots .bar .meter,.slots .bar.low .meter,.slots .bar.now .meter,.slots .bar.held .meter{background:#d6d6d2}
 </style>
 <link rel="stylesheet" href="glove.css"></head>
 <body>
