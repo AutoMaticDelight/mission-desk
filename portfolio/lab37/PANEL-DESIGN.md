@@ -49,7 +49,9 @@ Mains keep their height. Shorter landscape screens get as square as the height a
 sits in the title band, right-aligned opposite the bin badge (`badge | name | percent`), and the meter under
 it is a thin fill line with no number. The number takes the card's text color; only the bar carries the
 state color. On 11" landscape and portrait the percent drops to a second line of the band, centered under
-the name. The 18-slot panel keeps its number on the meter.
+the name. The 18-slot panel keeps its number on the meter. Row heights: every row is a share of the panel
+(hoppers 5 · 5, sides 7 across two equal grid lines, sauces 3.5), so the two hopper rows sit lower and the
+sides and sauce cards are tall enough to read across the room, name and percent centered in the band.
 
 ## Machine layout (one shape, everywhere)
 Locked 2026-09-18, revised three times same day (diamond → one row per
