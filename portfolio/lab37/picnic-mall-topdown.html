@@ -1677,6 +1677,8 @@ body{grid-template-rows:auto minmax(0,1fr) auto;align-content:stretch}
 .srow.row-B .rcards{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px;align-items:stretch}
 .srow.row-B .rcards .bar{flex:none;width:auto;min-width:0}
 @media(orientation:landscape) and (max-width:1200px){.srow.row-B .rcards{gap:8px}}
+/* LABEL ONLY (Bryan, 2026-09-20): the row header is the one word — Protein, Base, Sides, Sauces — no count, no capacity */
+.rheader span{display:none}
 </style>
 <link rel="stylesheet" href="glove.css"></head>
 <body>
@@ -1838,7 +1840,7 @@ function render(){
   // update below, or the two would drift out of sync.
   // 30 physical slots in 4 rows. Open bays: #6 in the protein hopper row, #30 in the sauce row.
   const OPEN=[{open:1,row:'P',sz:'L',_slot:6},{open:1,row:'S',sz:'S',_slot:30}];
-  const ROWS=[['P','Protein Hopper','≈ 2.5 gal'],['B','Base Hopper','≈ 2.5 gal'],['M','Sides Bin','≈ 175 in³'],['S','Sauce Dispenser','≈ 32 oz']];
+  const ROWS=[['P','Protein','≈ 2.5 gal'],['B','Base','≈ 2.5 gal'],['M','Sides','≈ 175 in³'],['S','Sauces','≈ 32 oz']];
   const DISPLAY=ROWS.flatMap(([r])=>[...ALL.filter(x=>x.row===r),...OPEN.filter(x=>x.row===r)]);
   window.LAST=window.LAST||{};
   const html=ROWS.map(([tier,label,cap])=>{
