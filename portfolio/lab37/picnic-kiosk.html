@@ -105,6 +105,9 @@ b{font-weight:800}.num{font-variant-numeric:tabular-nums}
 .pay{width:calc(100% - 56px);display:flex;align-items:center;justify-content:center}
 .tile .n{white-space:normal;overflow:visible;padding-right:86px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .tile .n small{white-space:nowrap}
+.tile .n{display:block;overflow:visible;-webkit-line-clamp:none;padding-right:16px}
+.tile .n .t{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;padding-right:78px;line-height:1.12}
+.tile .n small{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:4px}
 </style></head>
 <body>
 <nav class="rail">
@@ -173,7 +176,7 @@ function renderGrid(){
   const list=TAB==='fav'?ITEMS.slice(0,16):ITEMS.filter(i=>i.tab===TAB);
   let html='';
   list.forEach((it,i)=>{
-    html+=`<button class="tile" onclick="tap('${it.id}')"><span class="n">${it.n}<small>${it.sub}</small></span><span class="pr num">${money(it.p).replace('.00','')}</span>${im(it.key,it.c)}</button>`;
+    html+=`<button class="tile" onclick="tap('${it.id}')"><span class="n"><span class="t">${it.n}</span><small>${it.sub}</small></span><span class="pr num">${money(it.p).replace('.00','')}</span>${im(it.key,it.c)}</button>`;
     if(TAB==='fav'&&(i%4===3)&&CATS[(i-3)/4]){const c=CATS[(i-3)/4];html+=`<button class="tile ${c[2]}" onclick="cat('${c[1]}')"><span class="n">${c[0]}</span></button>`;}
   });
   g.innerHTML=html;
