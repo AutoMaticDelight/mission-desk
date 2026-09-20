@@ -1637,6 +1637,37 @@ body{grid-template-rows:auto minmax(0,1fr) auto;align-content:stretch}
 @media(orientation:landscape) and (max-width:1200px){.srow.row-M .rcards{gap:8px}.srow.row-P,.srow.row-B{flex:6.5 1 0}.srow.row-M{flex:5.5 1 0}}
 @media(orientation:landscape) and (max-width:1100px){.srow.row-M .bar.slot.sz-M .n>span:not(.bin){-webkit-line-clamp:1;white-space:nowrap;letter-spacing:-.03em}}
 @media(orientation:landscape) and (max-width:1100px){.srow.row-M .bar.slot.sz-M .n>span:not(.bin){font-size:10px;letter-spacing:-.04em;padding:0 1px}}
+/* SAUCES = SIDES, LEFT-JUSTIFIED (Bryan, 2026-09-20): the sauce row uses the same 12-column grid and the same row share
+   as the sides, so a sauce bin is the exact size of a side bin; seven of them sit left, the rest of the row is empty.
+   No "+ Add" bays on the floor panel (they belong to the recipe builder): the protein row keeps its 6-column width
+   with five bins left-justified. */
+.bar.slot.open{display:none}
+.srow.row-P .rcards{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px;align-items:stretch}
+.srow.row-P .rcards .bar{flex:none;width:auto;min-width:0}
+.srow.row-S{flex:6 1 0;min-height:0}
+.srow.row-S .rcards{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));grid-auto-rows:minmax(0,1fr);gap:10px;flex:1 1 auto;min-height:0;align-items:stretch}
+.srow.row-S .rcards .bar{flex:none;width:auto;min-width:0;height:auto}
+.srow.row-S .bar.slot{--binw:0px}
+.srow.row-S .bar.slot.sz-S .n{padding:15px 2px 3px;gap:2px}
+.srow.row-S .bar.slot.sz-S .n>.bin{font-size:12px;top:3px}
+.srow.row-S .bar.slot.sz-S .n>span:not(.bin){font-size:15px;line-height:1.05;letter-spacing:-.02em}
+.srow.row-S .bar.slot.sz-S .n>.tp{font-size:30px;letter-spacing:-.04em}
+@media(orientation:landscape) and (max-width:1200px){
+  .srow.row-P .rcards,.srow.row-S .rcards{gap:8px}
+  .srow.row-S{flex:5.5 1 0;min-height:0}
+  .srow.row-S .bar.slot.sz-S .n{padding:13px 2px 2px;gap:1px}
+  .srow.row-S .bar.slot.sz-S .n>.bin{font-size:10px;top:2px}
+  .srow.row-S .bar.slot.sz-S .n>span:not(.bin){font-size:12px}
+  .srow.row-S .bar.slot.sz-S .n>.tp{font-size:24px}
+}
+@media(orientation:landscape) and (max-width:1100px){
+  .srow.row-S{min-height:0}
+  .srow.row-S .bar.slot.sz-S .n{padding:11px 1px 2px;gap:1px}
+  .srow.row-S .bar.slot.sz-S .n>.bin{font-size:9px}
+  .srow.row-S .bar.slot.sz-S .n>span:not(.bin){font-size:10px;letter-spacing:-.04em;-webkit-line-clamp:1;white-space:nowrap}
+  .srow.row-S .bar.slot.sz-S .n>.tp{font-size:20px}
+}
+@media(orientation:landscape) and (min-width:1201px){.srow.row-S{min-height:0}}
 </style>
 <link rel="stylesheet" href="glove.css"></head>
 <body>

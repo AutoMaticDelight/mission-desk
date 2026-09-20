@@ -66,7 +66,10 @@ the 12.9"; they scale to 20/15 on 11" and 15/12 at 1024 wide, where four rows pl
 **Picnic Mall variant: gravity (`picnic-mall-topdown.html`, 2026-09-20).** The squares page with the sides
 and sauce fill as a tank level: it sits on the bottom edge, its height is what is left, white above it as it
 drains. Gravity, never a fill hanging from the top. The twelve bins are not capped at a square here: the
-sides row takes an equal share with each hopper row (6 · 6 · 6 · 4) and the bins stretch to fill it, same gaps.
+sides row takes an equal share with each hopper row and the bins stretch to fill it, same gaps. Sauce bins are the
+exact size of side bins (same 12-column grid, same row share: 6 · 6 · 6 · 6), seven of them left-justified with the
+rest of the row empty. No "+ Add" bays on the floor panel — open bays belong to the recipe builder — so the protein
+row keeps its 6-column width with five bins left-justified.
 
 ## Machine layout (one shape, everywhere)
 Locked 2026-09-18, revised three times same day (diamond → one row per
