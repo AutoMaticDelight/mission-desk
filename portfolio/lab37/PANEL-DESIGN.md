@@ -69,7 +69,12 @@ drains. Gravity, never a fill hanging from the top. The twelve bins are not capp
 sides row takes an equal share with each hopper row and the bins stretch to fill it, same gaps. Sauce bins are the
 exact size of side bins (same 12-column grid, same row share: 6 · 6 · 6 · 6), seven of them left-justified with the
 rest of the row empty. No "+ Add" bays on the floor panel — open bays belong to the recipe builder — so the protein
-row keeps its 6-column width with five bins left-justified.
+row keeps its 6-column width with five bins left-justified, and the base row sits on the same grid, so a base bin
+is the size of a protein bin. A hopper that is that low — held at empty, or critical — carries the alert color in
+its white header: hot lime band, dark words (the sides and sauce bins already say it with the fill).
+Simulation: levels only drain; the fast level update walks the cards, not the bars (an open bay has no bar, so a
+bar index drifted one card after it and the fills jumped up and down), and a ticking percent no longer forces a
+full redraw.
 
 ## Machine layout (one shape, everywhere)
 Locked 2026-09-18, revised three times same day (diamond → one row per

@@ -1645,9 +1645,14 @@ function render(){
     const used=row.filter(x=>!x.open).length, full=used===row.length;
     return `<div class="srow row-${tier}"><div class="rheader"><b>${label}</b><span class="${full?'full':''}">${used}/${row.length}${full?' · full':''}</span><span>Holds ${cap}</span></div><div class="rcards">${row.map(slotBar).join('')}</div></div>`;
   }).join('');
-  const slotsKey=html.replace(/--l:[0-9.]+/g,'--l:0');
+  const slotsKey=html.replace(/--l:[0-9.]+/g,'--l:0').replace(/>\d+%</g,'>0%<');
   const el=document.getElementById('g-all');
-  if(LAST['g-all']!==slotsKey){el.innerHTML=html; LAST['g-all']=slotsKey;} else {const bars=el.querySelectorAll('.bar i'); DISPLAY.forEach((x,i)=>{if(bars[i]&&!x.open) bars[i].style.setProperty('--l',x.held?0:x.l);});}
+  if(LAST['g-all']!==slotsKey){el.innerHTML=html; LAST['g-all']=slotsKey;} else {
+    // fast path: walk the cards, not the bars — an open bay has no bar, so a bar index drifts one card after it
+    const cards=el.querySelectorAll('.bar.slot');
+    DISPLAY.forEach((x,i)=>{const c=cards[i]; if(!c||x.open) return; const b=c.querySelector('.meter>i'); if(b) b.style.setProperty('--l',x.held?0:x.l);
+      if(!x.held){const t=Math.round(x.l)+'%'; c.querySelectorAll('.tp,.meter .pct').forEach(e=>{if(e.textContent!==t) e.textContent=t;});}});
+  }
   document.getElementById('clock').textContent=clock(NOW);
 }
 render();

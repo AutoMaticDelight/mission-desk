@@ -1668,6 +1668,15 @@ body{grid-template-rows:auto minmax(0,1fr) auto;align-content:stretch}
   .srow.row-S .bar.slot.sz-S .n>.tp{font-size:20px}
 }
 @media(orientation:landscape) and (min-width:1201px){.srow.row-S{min-height:0}}
+/* ALERT HEADER (Bryan, 2026-09-20): a hopper that is that low — held at empty, or critical — carries the alert color
+   in its white header area: hot lime band, dark words. Sides and sauce bins already show it as the fill. */
+.srow.row-P .bar.slot.held .n,.srow.row-B .bar.slot.held .n,.srow.row-P .bar.slot.now .n,.srow.row-B .bar.slot.now .n{background:var(--hot);color:#1c1c1e}
+.srow.row-P .bar.slot.held .n>*,.srow.row-B .bar.slot.held .n>*,.srow.row-P .bar.slot.now .n>*,.srow.row-B .bar.slot.now .n>*{color:#1c1c1e;opacity:1}
+.srow.row-P .bar.slot.held .n>.bin,.srow.row-B .bar.slot.held .n>.bin,.srow.row-P .bar.slot.now .n>.bin,.srow.row-B .bar.slot.now .n>.bin{background:transparent}
+/* BASES = PROTEINS: the base row sits on the same 6-column grid, four bins left-justified */
+.srow.row-B .rcards{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px;align-items:stretch}
+.srow.row-B .rcards .bar{flex:none;width:auto;min-width:0}
+@media(orientation:landscape) and (max-width:1200px){.srow.row-B .rcards{gap:8px}}
 </style>
 <link rel="stylesheet" href="glove.css"></head>
 <body>
@@ -1837,9 +1846,14 @@ function render(){
     const used=row.filter(x=>!x.open).length, full=used===row.length;
     return `<div class="srow row-${tier}"><div class="rheader"><b>${label}</b><span class="${full?'full':''}">${used}/${row.length}${full?' · full':''}</span><span>Holds ${cap}</span></div><div class="rcards">${row.map(slotBar).join('')}</div></div>`;
   }).join('');
-  const slotsKey=html.replace(/--l:[0-9.]+/g,'--l:0');
+  const slotsKey=html.replace(/--l:[0-9.]+/g,'--l:0').replace(/>\d+%</g,'>0%<');
   const el=document.getElementById('g-all');
-  if(LAST['g-all']!==slotsKey){el.innerHTML=html; LAST['g-all']=slotsKey;} else {const bars=el.querySelectorAll('.bar i'); DISPLAY.forEach((x,i)=>{if(bars[i]&&!x.open) bars[i].style.setProperty('--l',x.held?0:x.l);});}
+  if(LAST['g-all']!==slotsKey){el.innerHTML=html; LAST['g-all']=slotsKey;} else {
+    // fast path: walk the cards, not the bars — an open bay has no bar, so a bar index drifts one card after it
+    const cards=el.querySelectorAll('.bar.slot');
+    DISPLAY.forEach((x,i)=>{const c=cards[i]; if(!c||x.open) return; const b=c.querySelector('.meter>i'); if(b) b.style.setProperty('--l',x.held?0:x.l);
+      if(!x.held){const t=Math.round(x.l)+'%'; c.querySelectorAll('.tp,.meter .pct').forEach(e=>{if(e.textContent!==t) e.textContent=t;});}});
+  }
   document.getElementById('clock').textContent=clock(NOW);
 }
 render();
