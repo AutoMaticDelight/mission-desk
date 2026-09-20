@@ -63,6 +63,10 @@ percent under it, type sized to fill the square. The sauce cards stack the same 
 Hoppers take the height the second sides line gave back. Row headers are 2x (26px tier name, 20px count) on
 the 12.9"; they scale to 20/15 on 11" and 15/12 at 1024 wide, where four rows plus twelve squares leave no more.
 
+**Picnic Mall variant: top down (`picnic-mall-topdown.html`, 2026-09-20).** The squares page with the sides
+and sauce fill running vertically: anchored to the top edge, height = level, white below. One rule flips it to
+a bottom-up tank level (`top:auto;bottom:0`) if that reads truer on the floor.
+
 ## Machine layout (one shape, everywhere)
 Locked 2026-09-18, revised three times same day (diamond → one row per
 category → this, sized by real dispenser hardware). The machine has **18
