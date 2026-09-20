@@ -45,6 +45,12 @@ edge, but split that height by card width: the 6-across Loose-Scoop row gets 4 p
 gets 3. On the 12.9" iPad both tiers land at 1:1 (`grid-template-rows: 1fr 1.143fr .857fr`, landscape only).
 Mains keep their height. Shorter landscape screens get as square as the height allows; portrait is unchanged.
 
+**Picnic Mall: percent on the title row (2026-09-20, all rows).** On the 30-slot edition the level number
+sits in the title band, right-aligned opposite the bin badge (`badge | name | percent`), and the meter under
+it is a thin fill line with no number. The number takes the card's text color; only the bar carries the
+state color. On 11" landscape and portrait the percent drops to a second line of the band, centered under
+the name. The 18-slot panel keeps its number on the meter.
+
 ## Machine layout (one shape, everywhere)
 Locked 2026-09-18, revised three times same day (diamond → one row per
 category → this, sized by real dispenser hardware). The machine has **18

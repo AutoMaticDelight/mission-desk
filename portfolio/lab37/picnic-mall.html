@@ -1405,6 +1405,48 @@ body{grid-template-rows:auto minmax(0,1fr) auto;align-content:stretch}
 .slots .bar.now .meter>i{background:var(--hot)}
 .slots .bar .meter{background:#e6e9ee}
 .slots .bar.low .meter,.slots .bar.now .meter{background:rgba(255,255,255,.16)}
+/* PERCENT ON THE TITLE ROW (Bryan, 2026-09-20, all rows): the level number sits in the title band, right-aligned,
+   opposite the bin badge — badge | name | percent — and the meter under it becomes a thin fill line. Card text
+   color carries the number (white on the dark low/critical cards); the bar alone carries the state color. */
+.slots .bar.slot .n{grid-template-columns:var(--binw) minmax(0,1fr) minmax(var(--binw),auto)}
+.slots .bar.slot .n>.tp{grid-column:3;display:flex;align-items:center;justify-content:flex-end;padding:0 8px 0 4px;font-weight:900;font-variant-numeric:tabular-nums;letter-spacing:-.02em;line-height:1;white-space:nowrap;color:inherit}
+.srow.row-P .bar.slot .n>.tp,.srow.row-B .bar.slot .n>.tp{font-size:26px}
+.srow.row-M .bar.slot .n>.tp,.srow.row-S .bar.slot .n>.tp{font-size:19px;padding-right:6px}
+.slots .bar.slot.held .n>.tp{font-size:14px;letter-spacing:.3px;opacity:.7}
+.slots .bar .meter .pct{display:none}
+.slots .bar.slot .meter{height:12px;padding:0 10px;justify-content:flex-end}
+.srow.row-M .bar .meter,.srow.row-S .bar .meter{height:10px;padding:0}
+.slots .bar .meter .note{font-size:11px;letter-spacing:.3px;line-height:1;-webkit-text-stroke:0;text-shadow:none;color:#1c1c1e}
+.slots .bar.low .meter .note,.slots .bar.now .meter .note{color:#fff}
+.srow.row-M .bar .meter .note,.srow.row-S .bar .meter .note{display:none}
+.srow.row-P .bar.slot.sz-L .n,.srow.row-B .bar.slot.sz-L .n{min-height:46px}
+@media(orientation:landscape) and (max-width:1200px){
+  .srow.row-P .bar.slot .n>.tp,.srow.row-B .bar.slot .n>.tp{font-size:21px}
+  .srow.row-M .bar.slot .n>.tp,.srow.row-S .bar.slot .n>.tp{font-size:16px;padding-right:4px}
+  .slots .bar.slot .meter{height:10px}.srow.row-M .bar .meter,.srow.row-S .bar .meter{height:8px}
+}
+@media(orientation:landscape) and (max-height:800px){.srow.row-P .bar.slot .n>.tp,.srow.row-B .bar.slot .n>.tp{font-size:19px}.srow.row-M .bar.slot .n>.tp,.srow.row-S .bar.slot .n>.tp{font-size:14px}}
+@media(orientation:portrait){.srow.row-P .bar.slot .n>.tp,.srow.row-B .bar.slot .n>.tp{font-size:18px;padding-right:5px}.srow.row-M .bar.slot .n>.tp,.srow.row-S .bar.slot .n>.tp{font-size:14px;padding-right:4px}}
+/* narrow tiers earlier dropped the spacer column to 6/4px — the percent column wins that back */
+@media(orientation:landscape) and (max-width:1200px){.slots .bar.slot.sz-S .n{grid-template-columns:var(--binw) minmax(0,1fr) auto}}
+@media(orientation:landscape) and (max-height:800px){.slots .bar.slot.sz-S .n{grid-template-columns:var(--binw) minmax(0,1fr) auto}}
+@media(orientation:portrait){.slots .bar.slot.sz-M .n,.slots .bar.slot.sz-S .n{grid-template-columns:var(--binw) minmax(0,1fr) auto}}
+/* six-across protein row: the percent yields a size so "Cauliflower" stays one whole word */
+.srow.row-P .bar.slot .n>.tp{font-size:22px;padding:0 6px 0 2px}
+.srow.row-P .bar.slot .n>span:not(.bin){font-size:18px}
+@media(orientation:landscape) and (max-width:1200px){.srow.row-P .bar.slot .n>.tp{font-size:18px;padding:0 4px 0 2px}.srow.row-P .bar.slot .n>span:not(.bin){font-size:15px}}
+/* small screens (11" landscape at 1024 wide, and portrait): no room for badge | name | percent on one line,
+   so the percent drops to a second line of the same band, centered under the name — still in the title, never clipped */
+@media(orientation:landscape) and (max-width:1100px),(orientation:portrait){
+  .slots .bar.slot .n{grid-template-columns:var(--binw) minmax(0,1fr);grid-template-rows:auto auto}
+  .slots .bar.slot .n>.bin{grid-row:1/3}
+  .slots .bar.slot .n>span:not(.bin){grid-column:2;grid-row:1;align-self:end;padding-bottom:0}
+  .slots .bar.slot .n>.tp{grid-column:2;grid-row:2;justify-content:center;padding:0 2px 3px;align-self:start}
+  .srow.row-P .bar.slot .n>.tp,.srow.row-B .bar.slot .n>.tp{font-size:20px}
+  .srow.row-M .bar.slot .n>.tp,.srow.row-S .bar.slot .n>.tp{font-size:15px}
+  .slots .bar.slot.sz-S .n,.slots .bar.slot.sz-M .n{grid-template-columns:var(--binw) minmax(0,1fr)}
+  .slots .bar.slot.open .n{display:block}
+}
 </style>
 <link rel="stylesheet" href="glove.css"></head>
 <body>
@@ -1555,7 +1597,7 @@ function render(){
     const badge=`<span class="head"><span class="temp">${x.t}°${tOK?'':'<small>ALERT</small>'}</span></span>`;
     const z=st(x);
     return `<div class="bar slot sz-${x.sz} ${temp(x)} ${z} ${tOK?'':'talert'} ${x.just?'just':''}" ${x.held?'':`onclick="openSheet('refill:${x.n}')"`}>
-      <div class="n">${bin}<span>${x.n}</span></div>
+      <div class="n">${bin}<span>${x.n}</span><b class="tp">${x.held?'HELD':Math.round(x.l)+'%'}</b></div>
       <div class="meter"><i style="--l:${x.held?0:x.l}"></i>${x.held?'<b class="pct">HELD</b><small class="note">not dispensing</small>':`<b class="pct">${Math.round(x.l)}%</b>${x.just?'<small class="note">REFILLED</small>':z==='now'?'<small class="note">SCRAPE IT</small>':''}`}</div>
       <div class="photo">${ph(x)}${badge}${inRecipe(x)?'<em class="rc-tag">'+QUEUE[0].id.slice(1)+'</em>':''}</div>
     </div>`;
