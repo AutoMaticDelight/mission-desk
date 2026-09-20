@@ -1624,6 +1624,18 @@ body{grid-template-rows:auto minmax(0,1fr) auto;align-content:stretch}
 /* GRAVITY (Bryan, 2026-09-20, variant): in the sides and sauce cards the fill is a tank level — it sits on the bottom
    edge, its height is what is left, white (or dark) above it as it drains. The words stay on top of it. */
 .srow.row-M .bar .meter>i,.srow.row-S .bar .meter>i{left:0;right:0;top:auto;bottom:0;width:100%;height:calc(var(--l,0)*1%);transition:height .6s cubic-bezier(.2,.7,.2,1),background-color .35s ease}
+/* FILL THE ROW (Bryan, 2026-09-20): the twelve bins are no longer capped at a square — the sides row takes its share
+   of the panel like every other row and the bins stretch to fill it, same 10px gaps as everywhere else. */
+.srow.row-M{flex:7 1 0;min-height:0}
+.srow.row-M .rcards{flex:1 1 auto;min-height:0;gap:10px;grid-auto-rows:minmax(0,1fr)}
+.srow.row-M .rcards .bar{aspect-ratio:auto;height:auto;min-height:0}
+.srow.row-S{flex:4 1 0}
+.srow.row-P,.srow.row-B{flex:5 1 0}
+.srow.row-P,.srow.row-B{flex:6 1 0}
+.srow.row-M{flex:6 1 0}
+.srow.row-S{flex:4 1 0}
+@media(orientation:landscape) and (max-width:1200px){.srow.row-M .rcards{gap:8px}.srow.row-P,.srow.row-B{flex:6.5 1 0}.srow.row-M{flex:5.5 1 0}}
+@media(orientation:landscape) and (max-width:1100px){.srow.row-M .bar.slot.sz-M .n>span:not(.bin){-webkit-line-clamp:1;white-space:nowrap;letter-spacing:-.03em}}
 </style>
 <link rel="stylesheet" href="glove.css"></head>
 <body>
