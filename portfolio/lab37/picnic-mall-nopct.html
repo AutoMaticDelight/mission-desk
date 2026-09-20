@@ -1704,6 +1704,8 @@ body{grid-template-rows:auto minmax(0,1fr) auto;align-content:stretch}
    the bin tag floats in the corner and no longer pushes it down. Row titles stay left. */
 .srow.row-M .bar.slot.sz-M .n,.srow.row-S .bar.slot.sz-S .n{padding:2px 3px;justify-content:center}
 .rheader{justify-content:flex-start;text-align:left}
+.srow.row-M .bar.slot.sz-M .n>.tp,.srow.row-S .bar.slot.sz-S .n>.tp{display:none}
+.srow.row-M .bar.slot.sz-M.held .n>.tp{display:block}
 </style>
 <link rel="stylesheet" href="glove.css"></head>
 <body>
