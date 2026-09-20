@@ -22,6 +22,7 @@ on day one" and to be shown on screen share.
   - `design-system.html` — tokens, live states, components, rules, CSS + JSON export
   - `prep.html` — interview prep (about you, call plan, keywords, say-this, panels)
   - `photos.html` — review sheet of all 16 ingredient photos as the panel crops them
+  - `lunch-rush-tiles.html` — the 18-slot panel with **Square-tile cards** (alternate card anatomy, 2026-09-20)
   - `lunch-rush-light-slots.html` — the **18-slot worker panel** (the one being refined 2026-09-19: meter, temps, badges)
   - `recipe-controller.html` — the **Recipe Controller** (2026-09-19): bowl build-sequence drawing, portions, machine, send
   - `picnic.html` / `picnic-guest.html` — the **Picnic** group order (set the mix, or let everyone pick via SMS/email) and the guest's phone page

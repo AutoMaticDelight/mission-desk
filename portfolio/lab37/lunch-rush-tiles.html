@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Bowl-O-Matic 5000 - Picnic Mall</title>
+<title>Bowl-O-Matic 5000 - Lunch Rush · Tiles</title>
 <link rel="icon" href="logo.svg" type="image/svg+xml">
 <style>
 /* USER PANEL. Not a web page. One iPad screen, portrait or landscape, no scroll.
@@ -1232,96 +1232,61 @@ body{grid-template-rows:auto minmax(0,1fr) auto;align-content:stretch}
 .slots .bar .photo .head .temp,.slots .bar.hot .photo .head .temp,.slots .bar.cold .photo .head .temp{top:50%;bottom:auto;transform:translateY(-50%);font-size:clamp(26px,3.6vh,41px)}
 @media(orientation:landscape) and (max-height:800px){.slots .bar .photo .head .temp,.slots .bar.hot .photo .head .temp,.slots .bar.cold .photo .head .temp{font-size:24px}.slots .bar.slot.sz-S .photo .head .temp,.slots .bar.slot.sz-S.hot .photo .head .temp,.slots .bar.slot.sz-S.cold .photo .head .temp{font-size:22px}}
 @media(orientation:portrait){.slots .bar .photo .head .temp,.slots .bar.hot .photo .head .temp,.slots .bar.cold .photo .head .temp{font-size:26px}}
-/* PICNIC MALL EDITION (Bryan, 2026-09-20): breaks the 18-slot rule on purpose. 30 slots, four rows; the 12-bay sides row
-   wraps to two lines of six; the status card scrolls when the screen is too short for five lines. Everything else is the panel. */
-.where .picnic{font-style:normal;color:#e8532c;font-family:Georgia,"Times New Roman",serif;font-weight:700;letter-spacing:-.01em;text-transform:none;font-size:1.05em}
-.slots{grid-template-rows:auto auto auto auto;align-content:start;overflow-y:auto;overscroll-behavior:contain}
-.srow.row-M .rcards{flex-wrap:wrap}
-.srow.row-M .rcards .bar{flex:1 1 calc(16.666% - 14px);min-width:0}
-.slots .bar{height:auto;min-height:0}
-.slots .bar .photo{min-height:34px;flex:0 1 44px}
-.slots .bar.slot.sz-L .n{min-height:40px;font-size:19px}
-.slots .bar.slot.sz-M .n{min-height:36px;font-size:15px}
-.slots .bar .meter{height:30px}.slots .bar .meter .pct{font-size:23px}
-.slots .bar .photo .head .temp,.slots .bar.hot .photo .head .temp,.slots .bar.cold .photo .head .temp{font-size:24px}
-.hoppers .sec{margin-bottom:0}
+/* TILES (Bryan, 2026-09-20): another way to do the cards, from the Square Register reference (refs/square-pos-favorites.jpg).
+   One quiet grey tile. Title top-left. The photo sits INSIDE the tile with air around it, not full-bleed. Temperature is a small
+   line under the title. Percent is a white pill in the photo's corner. A thin meter along the foot. State is the meter's color and
+   a ring; the tile itself never goes dark. Even gaps everywhere. */
+.hoppers{background:#f4f4f2;box-shadow:none;padding:14px 18px 18px}
+.hoppers .sec{color:var(--ink)}.hoppers .sec::after{background:#e0e0dc}
+.rheader{padding:2px 4px 4px}.rheader b{opacity:.55;letter-spacing:.6px}.rheader span{opacity:.45}
+.slots{gap:14px}.rcards{gap:14px}
+.slots .bar,.slots .bar.low,.slots .bar.now,.slots .bar.held,.slots .bar.open{background:#e9e9e6;color:var(--ink);box-shadow:none;border-radius:16px;transition:box-shadow .3s}
+.slots .bar.now{box-shadow:inset 0 0 0 3px var(--hot)}
+.slots .bar.talert{box-shadow:inset 0 0 0 3px var(--hot)}
+.slots .bar.held{background:#eeeeeb;color:var(--dim)}
+.slots .bar>.bin{background:none;color:var(--dim);font-size:14px;font-weight:700;padding:0;top:12px;left:auto;right:14px;border-radius:0;box-shadow:none;letter-spacing:.2px}
+.slots .bar.low>.bin,.slots .bar.now>.bin,.slots .bar.held>.bin,.slots .bar.open>.bin{background:none;color:var(--dim);box-shadow:none}
+.slots .bar .n,.slots .bar.slot.sz-L .n,.slots .bar.slot.sz-M .n,.slots .bar.slot.sz-S .n{order:1;min-height:0;display:block;text-align:left;padding:12px 44px 0 14px;font-size:18px;font-weight:700;letter-spacing:-.01em;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin:0}
+.slots .bar.slot.sz-L .n{font-size:21px}
+.slots .bar .photo{order:2;flex:1 1 auto;min-height:0;margin:2px 14px 0;background:transparent;overflow:visible}
+.slots .bar .photo .ph{object-fit:contain;padding:6% 8% 0;mix-blend-mode:multiply}
+.slots .bar.held .photo .ph{opacity:.35;filter:grayscale(1)}
+/* temperature: a small line under the title, left, no outline */
+.slots .bar .photo .head{inset:auto;top:-2px;left:0;right:auto;bottom:auto;display:block}
+.slots .bar .photo .head .temp,.slots .bar.hot .photo .head .temp,.slots .bar.cold .photo .head .temp{position:static;transform:none;text-align:left;font-size:15px;font-weight:600;color:var(--dim);-webkit-text-stroke:0;text-shadow:none;letter-spacing:0;line-height:1}
+.slots .bar.talert .photo .head .temp,.slots .bar.talert.hot .photo .head .temp,.slots .bar.talert.cold .photo .head .temp{color:#5a6b00;font-weight:800;-webkit-text-stroke:0}
+.slots .bar .photo .head .temp small{font-size:12px;margin-left:4px;letter-spacing:.6px;vertical-align:baseline}
+.slots .bar .photo .head .bin{display:none}
+/* percent: a white pill in the photo's corner; the meter is a thin line along the foot */
+.slots .bar .meter{order:3;height:6px;margin:8px 14px 14px;padding:0;border-radius:3px;background:#d6d6d2;overflow:visible;flex:none}
+.slots .bar .meter>i{border-radius:3px}
+.slots .bar.low .meter,.slots .bar.now .meter,.slots .bar.held .meter{background:#d6d6d2}
+.slots .bar .meter .pct{position:absolute;right:0;bottom:14px;font-size:17px;font-weight:800;color:var(--ink);background:#fff;border-radius:8px;padding:5px 9px;-webkit-text-stroke:0;text-shadow:none;box-shadow:0 1px 3px rgba(0,0,0,.12);line-height:1}
+.slots .bar.low .meter .pct{color:#9a5b00}.slots .bar.now .meter .pct{background:var(--hot);color:#111}
+.slots .bar .meter .note{position:absolute;left:0;bottom:16px;margin:0;font-size:13px;font-weight:800;letter-spacing:.6px;color:#5a6b00;-webkit-text-stroke:0;text-shadow:none}
+.slots .bar.held .meter .pct{background:#e0e0dc;color:var(--dim);font-size:14px}
+.slots .bar.held .meter .note{color:var(--dim)}
+.slots .bar .rc-tag{background:#1c1c1e;color:#fff;top:auto;bottom:-2px;left:0;right:auto;font-size:11px;padding:3px 6px;border-radius:6px}
+.slots .bar.open{box-shadow:inset 0 0 0 2px #dcdcd8;background:#f0f0ed}
+.slots .bar.open .n{text-align:center;padding:0;color:var(--dim)}
+.legend{display:none}
 @media(orientation:landscape) and (max-width:1200px){
-  .slots .bar .photo{min-height:28px;flex-basis:30px}
-  .slots .bar.slot.sz-L .n{min-height:34px;font-size:17px}
-  .slots .bar.slot.sz-M .n{min-height:30px;font-size:14px}
-  .slots .bar .meter{height:26px}.slots .bar .meter .pct{font-size:20px}
-  .slots .bar .photo .head .temp,.slots .bar.hot .photo .head .temp,.slots .bar.cold .photo .head .temp{font-size:20px}
+  .slots .bar .n,.slots .bar.slot.sz-M .n,.slots .bar.slot.sz-S .n{font-size:16px;padding-top:10px}.slots .bar.slot.sz-L .n{font-size:19px}
+  .slots .bar .meter .pct{font-size:15px;padding:4px 7px}
 }
-/* four rows stack and never squeeze: the status card scrolls instead */
-.slots{display:flex;flex-direction:column;gap:10px;align-content:normal}
-.srow{flex:none}
-.srow .rcards{flex:none}
-.slots .bar{flex:1 1 0}
-.srow.row-M .rcards .bar{flex:1 1 calc(16.666% - 14px)}
-/* compact so all five lines fit on the 12.9-inch; names clear the badge on every row */
-.slots{gap:6px}
-.srow{gap:2px}.rcards{gap:10px}
-.rheader b{font-size:12px}.rheader span{font-size:11px}
-.slots .bar{border-radius:14px}
-.slots .bar>.bin{font-size:13px;padding:5px 9px 5px 8px;border-radius:14px 0 10px 0}
-.slots .bar .n{padding-left:44px;padding-right:8px}
-.slots .bar.slot.sz-L .n{min-height:34px;font-size:17px}
-.slots .bar.slot.sz-M .n{min-height:30px;font-size:14px;padding-left:40px;padding-right:6px}
-.slots .bar.slot.sz-S .n{min-height:30px;font-size:14px;padding:4px 6px 0 40px}
-.slots .bar .photo{min-height:30px;flex:0 1 34px}
-.slots .bar .meter{height:26px;padding:0 8px}.slots .bar .meter .pct{font-size:20px}.slots .bar .meter .note{font-size:12px}
-.slots .bar .photo .head .temp,.slots .bar.hot .photo .head .temp,.slots .bar.cold .photo .head .temp{font-size:20px}
-.slots .bar .rc-tag{font-size:11px;padding:2px 4px;bottom:3px;right:4px}
-.hoppers{padding:8px 14px 10px}
-@media(orientation:landscape) and (max-width:1200px){
-  .rcards{gap:8px}
-  .slots .bar .n{padding-left:40px}
-  .slots .bar.slot.sz-L .n{min-height:30px;font-size:15px}
-  .slots .bar.slot.sz-M .n,.slots .bar.slot.sz-S .n{min-height:28px;font-size:13px;padding-left:38px}
-  .slots .bar .photo{min-height:26px;flex-basis:28px}
-  .slots .bar .meter{height:24px}.slots .bar .meter .pct{font-size:18px}
-  .slots .bar .photo .head .temp,.slots .bar.hot .photo .head .temp,.slots .bar.cold .photo .head .temp{font-size:18px}
-}
-/* SIMPLIFY (Bryan, 2026-09-20): mains much larger; sides and sauces drop to name + meter — no photo, no temperature, no tag */
-.slots{gap:10px}
-.srow.row-P,.srow.row-B{flex:1 1 0;min-height:0}
-.srow.row-P .rcards,.srow.row-B .rcards{flex:1 1 auto;min-height:0}
-.srow.row-P .bar,.srow.row-B .bar{height:auto;display:flex}
-.srow.row-P .bar .photo,.srow.row-B .bar .photo{flex:1 1 auto;min-height:60px;max-height:none}
-.srow.row-P .bar.slot.sz-L .n,.srow.row-B .bar.slot.sz-L .n{min-height:44px;font-size:22px}
-.srow.row-P .bar .meter,.srow.row-B .bar .meter{height:34px}.srow.row-P .bar .meter .pct,.srow.row-B .bar .meter .pct{font-size:26px}
-.srow.row-P .bar .photo .head .temp,.srow.row-B .bar .photo .head .temp,.srow.row-P .bar.hot .photo .head .temp,.srow.row-B .bar.hot .photo .head .temp,.srow.row-P .bar.cold .photo .head .temp,.srow.row-B .bar.cold .photo .head .temp{font-size:30px}
-.srow.row-M,.srow.row-S{flex:none}
-.srow.row-M .bar .photo,.srow.row-S .bar .photo,.srow.row-M .bar .rc-tag,.srow.row-S .bar .rc-tag{display:none}
-.srow.row-M .bar,.srow.row-S .bar{height:auto;min-height:0}
-.srow.row-M .bar.slot.sz-M .n,.srow.row-S .bar.slot.sz-S .n{min-height:30px;font-size:15px;padding:6px 6px 0 40px;justify-content:flex-start}
-.srow.row-M .bar .meter,.srow.row-S .bar .meter{height:24px;padding:0 8px}.srow.row-M .bar .meter .pct,.srow.row-S .bar .meter .pct{font-size:18px}
-.srow.row-M .bar .meter .note,.srow.row-S .bar .meter .note{display:none}
-.srow.row-M .rcards .bar{flex:1 1 calc(16.666% - 9px)}
-.srow.row-M .bar>.bin,.srow.row-S .bar>.bin{font-size:12px;padding:4px 7px 4px 6px;border-radius:14px 0 8px 0}
-.rheader{margin-top:2px}
-@media(orientation:landscape) and (max-width:1200px){
-  .srow.row-P .bar.slot.sz-L .n,.srow.row-B .bar.slot.sz-L .n{min-height:36px;font-size:18px}
-  .srow.row-P .bar .meter,.srow.row-B .bar .meter{height:28px}.srow.row-P .bar .meter .pct,.srow.row-B .bar .meter .pct{font-size:22px}
-  .srow.row-M .bar.slot.sz-M .n,.srow.row-S .bar.slot.sz-S .n{font-size:13px;min-height:26px;padding-left:36px}
-  .srow.row-M .bar .meter,.srow.row-S .bar .meter{height:22px}.srow.row-M .bar .meter .pct,.srow.row-S .bar .meter .pct{font-size:16px}
-}
-.srow.row-P .bar.slot.sz-L .n,.srow.row-B .bar.slot.sz-L .n{justify-content:flex-start;text-align:left;padding:6px 10px 6px 50px}
-@media(orientation:landscape) and (max-width:1200px){
-  .srow.row-P .bar .photo,.srow.row-B .bar .photo{min-height:34px}
-  .srow.row-P .bar.slot.sz-L .n,.srow.row-B .bar.slot.sz-L .n{min-height:32px;padding:4px 8px 4px 46px}
-  .srow.row-P .bar .meter,.srow.row-B .bar .meter{height:26px;flex:none}
-  .srow.row-P .bar .photo .head .temp,.srow.row-B .bar .photo .head .temp,.srow.row-P .bar.hot .photo .head .temp,.srow.row-B .bar.hot .photo .head .temp,.srow.row-P .bar.cold .photo .head .temp,.srow.row-B .bar.cold .photo .head .temp{font-size:22px}
-  .srow.row-M .bar.slot.sz-M .n,.srow.row-S .bar.slot.sz-S .n{min-height:24px;padding-top:4px}
-  .srow.row-M .bar .meter,.srow.row-S .bar .meter{height:20px}.srow.row-M .bar .meter .pct,.srow.row-S .bar .meter .pct{font-size:15px}
-  .slots{gap:6px}
-}
+@media(orientation:landscape) and (max-height:800px){.slots .bar .photo .ph{padding:2% 8% 0}.slots .bar .meter{margin:6px 12px 12px}}
+@media(orientation:portrait){.slots .bar .n,.slots .bar.slot.sz-S .n,.slots .bar.slot.sz-M .n{font-size:15px;padding:10px 36px 0 12px}.slots .bar.slot.sz-L .n{font-size:18px}.slots .bar .meter .pct{font-size:14px;padding:4px 7px}.slots .bar .meter .note{display:none}}
+.slots .bar.low .n,.slots .bar.now .n,.slots .bar.low .photo .head .temp,.slots .bar.now .photo .head .temp{color:var(--ink)}
+.slots .bar.now .photo .head .temp{color:var(--ink)}
+.slots .bar .rc-tag{top:12px;bottom:auto;right:44px;left:auto;font-size:11px}
+.slots .bar.slot.sz-S .n{font-size:16px}
+.slots .bar .meter .note{bottom:16px;left:0}
 </style>
 <link rel="stylesheet" href="glove.css"></head>
 <body>
   <section class="top">
   <header class="band">
-    <a class="where" href="manager-fleet.html" style="color:inherit;text-decoration:none">‹ <svg class="logo" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="20" fill="#c8f000"/><g transform="translate(20 20.6) scale(.62) translate(-20 -21)"><circle cx="20" cy="11.5" r="6.5" fill="#0b120e"/><path d="M4.5 21.5h31a1.5 1.5 0 0 1 1.5 1.6C36.2 30.6 29 36.5 20 36.5S3.8 30.6 3 23.1a1.5 1.5 0 0 1 1.5-1.6z" fill="#0b120e"/></g></svg> BOWL-O-MATIC 5000 <span><em class="picnic">Picnic</em> MALL · ADELINE ST</span></a>
+    <a class="where" href="manager-fleet.html" style="color:inherit;text-decoration:none">‹ <svg class="logo" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="20" fill="#c8f000"/><g transform="translate(20 20.6) scale(.62) translate(-20 -21)"><circle cx="20" cy="11.5" r="6.5" fill="#0b120e"/><path d="M4.5 21.5h31a1.5 1.5 0 0 1 1.5 1.6C36.2 30.6 29 36.5 20 36.5S3.8 30.6 3 23.1a1.5 1.5 0 0 1 1.5-1.6z" fill="#0b120e"/></g></svg> BOWL-O-MATIC 5000 <span>UPTOWN · LUNCH RUSH</span></a>
     <div class="when"><span class="day">THU</span> <span id="clock">12:18</span> <span class="peak">PEAK 12:30–12:50</span></div>
     <div class="stat"><b id="speedv">38</b><span>BOWLS / 10 MIN</span><i>▲</i></div>
     <div class="stat"><b id="expv">214</b><span>TO GO</span></div>
@@ -1331,7 +1296,7 @@ body{grid-template-rows:auto minmax(0,1fr) auto;align-content:stretch}
   </section>
 
   <section class="hoppers">
-    <div class="sec">Status · 30 slots</div>
+    <div class="sec">Status · 18 slots</div>
     <div class="slots" id="g-all"></div>
     <div class="legend"><span><i style="background:#ff9f0a"></i>Hot-held</span><span><i style="background:#0a84ff"></i>Cold-held</span><span><i style="background:#8e8e93"></i>Open · swing slot</span></div>
   </section>
@@ -1353,40 +1318,8 @@ const PEAK=[12*60+30,12*60+50];
 // sz: dispenser hardware size — L large hopper (auger/steam-table), M medium bin (scoop), S small squeeze/garnish
 // t: the bin's live dispensing temperature. Hot-held range 140–165°F, cold-held 34–41°F; outside it the bin alerts.
 // crit / low: the percent at which THIS item goes critical (hot lime) or low (amber). Differs per item: fast burners alert earlier than slow garnish.
-// PICNIC MALL: the whole Picnic bowl menu on a 30-slot machine. row = physical row (P protein hopper, B base hopper, M sides bin, S sauce dispenser);
-// sz = card size tier (hoppers read as L). hot = held hot. crit/low per item, as on the 18-slot panel.
-const H=[
- {slot:1,n:'Fried Chicken',g:'prot',row:'P',sz:'L',hot:1,l:58,b:2.4,t:150,crit:30,low:50,src:'fryer 1'},
- {slot:2,n:'BBQ Chicken',g:'prot',row:'P',sz:'L',hot:1,l:44,b:2.1,t:152,crit:30,low:50,src:'grill'},
- {slot:3,n:'BBQ Steak',g:'prot',row:'P',sz:'L',hot:1,l:27,b:1.9,t:148,crit:30,low:45,src:'grill'},
- {slot:4,n:'Tofu',g:'prot',row:'P',sz:'L',hot:1,l:71,b:.9,t:146,crit:25,low:40,src:'oven'},
- {slot:5,n:'Cauliflower',g:'prot',row:'P',sz:'L',hot:1,l:63,b:1.2,t:151,crit:25,low:40,src:'fryer 2'},
- {slot:7,n:'White Rice',g:'base',row:'B',sz:'L',hot:1,l:49,b:2.6,t:161,crit:25,low:45,src:'cooker 1'},
- {slot:8,n:'Power Grains',g:'base',row:'B',sz:'L',hot:1,l:0,b:1.8,t:131,crit:25,low:45,held:1,src:'cooker 2'},
- {slot:9,n:'Cauli Rice',g:'base',row:'B',sz:'L',hot:1,l:66,b:1.1,t:150,crit:20,low:40,src:'steamer'},
- {slot:10,n:'Greens',g:'base',row:'B',sz:'L',hot:0,l:80,b:1.3,t:36,crit:20,low:40,src:'walk-in'},
-];
-const C=[
- {slot:11,n:'Jammy Egg',g:'side',row:'M',sz:'M',hot:0,l:52,b:1.4,t:38,crit:20,low:35},
- {slot:12,n:'Avocado',g:'side',row:'M',sz:'M',hot:0,l:31,b:1.6,t:38,crit:25,low:40},
- {slot:13,n:'Tzatziki',g:'side',row:'M',sz:'M',hot:0,l:74,b:.9,t:37,crit:15,low:30},
- {slot:14,n:'Hummus',g:'side',row:'M',sz:'M',hot:0,l:60,b:.8,t:38,crit:15,low:30},
- {slot:15,n:'Broccoli',g:'side',row:'M',sz:'M',hot:1,l:22,b:1.9,t:146,crit:25,low:40},
- {slot:16,n:'Sweet Potato',g:'side',row:'M',sz:'M',hot:1,l:57,b:1.5,t:148,crit:20,low:35},
- {slot:17,n:'Mushrooms',g:'side',row:'M',sz:'M',hot:1,l:45,b:1.1,t:145,crit:20,low:35},
- {slot:18,n:'Kale Slaw',g:'side',row:'M',sz:'M',hot:0,l:68,b:1.0,t:37,crit:20,low:35},
- {slot:19,n:'Kimchi',g:'side',row:'M',sz:'M',hot:0,l:83,b:.7,t:38,crit:15,low:30},
- {slot:20,n:'Pickled Onion',g:'side',row:'M',sz:'M',hot:0,l:90,b:.5,t:39,crit:10,low:25},
- {slot:21,n:'Greek Salad',g:'side',row:'M',sz:'M',hot:0,l:38,b:1.2,t:37,crit:20,low:40},
- {slot:22,n:'Black Beans',g:'side',row:'M',sz:'M',hot:1,l:64,b:1.3,t:150,crit:20,low:35},
- {slot:23,n:'BBQ',g:'sau',row:'S',sz:'S',hot:0,l:36,b:1.5,t:38,crit:25,low:40},
- {slot:24,n:'Ranch',g:'sau',row:'S',sz:'S',hot:0,l:72,b:.9,t:38,crit:15,low:30},
- {slot:25,n:'Spicy Mayo',g:'sau',row:'S',sz:'S',hot:0,l:55,b:1.0,t:39,crit:15,low:30},
- {slot:26,n:'Tzatziki Sc',g:'sau',row:'S',sz:'S',hot:0,l:61,b:.8,t:38,crit:15,low:30},
- {slot:27,n:'Garlic White',g:'sau',row:'S',sz:'S',hot:0,l:47,b:.7,t:38,crit:15,low:30},
- {slot:28,n:'Hot Sauce',g:'sau',row:'S',sz:'S',hot:0,l:88,b:.4,t:40,crit:10,low:20},
- {slot:29,n:'Tahini',g:'sau',row:'S',sz:'S',hot:0,l:58,b:.6,t:38,crit:15,low:30},
-];
+const H=[{n:'Chicken',g:'prot',sz:'L',l:64,b:2.1,t:152,crit:30,low:50,src:'reach-in 1'},{n:'Beef',g:'prot',sz:'L',l:17,b:2.8,t:148,crit:30,low:50,src:'walk-in'},{n:'Rice',g:'base',sz:'L',l:41,b:2.9,t:161,crit:25,low:45,src:'cooker 2'},{n:'Quinoa',g:'base',sz:'L',l:0,b:1.2,t:131,crit:25,low:40,held:1,src:'dry store'}];
+const C=[{n:'Beans',g:'veg',sz:'M',l:70,b:1.5,t:37,crit:20,low:35},{n:'Corn',g:'veg',sz:'M',l:35,b:1.6,t:38,crit:20,low:40},{n:'Pico',g:'veg',sz:'M',l:22,b:1.9,t:36,crit:25,low:40},{n:'Lettuce',g:'veg',sz:'M',l:48,b:1.3,t:35,crit:20,low:35},{n:'Cilantro',g:'veg',sz:'M',l:52,b:.8,t:37,crit:15,low:30},{n:'Lime',g:'veg',sz:'S',l:90,b:.5,t:39,crit:10,low:20},{n:'Guac',g:'sau',sz:'S',l:15,b:1.7,t:36,crit:25,low:40},{n:'Verde',g:'sau',sz:'S',l:73,b:.9,t:38,crit:15,low:30},{n:'Chipotle',g:'sau',sz:'S',l:30,b:1.1,t:40,crit:15,low:35},{n:'Roja',g:'sau',sz:'S',l:66,b:1,t:37,crit:15,low:30},{n:'Cheese',g:'dai',sz:'M',l:80,b:1.4,t:36,crit:20,low:35},{n:'Sour Cream',g:'dai',sz:'S',l:58,b:1.2,t:38,crit:20,low:35}];
 const ALL=[...H,...C];
 const pace=t=> t<PEAK[0]?1.0 : t<PEAK[1]?1.35 : t<13*60+10?1.0 : 0.6;
 const clock=t=>{const h=Math.floor(t/60),m=t%60;return (h>12?h-12:h)+':'+String(m).padStart(2,'0');};
@@ -1398,50 +1331,41 @@ function refillClock(x){ if(x.held) return null; const m=refillMin(x); return m>
 // cleanly auger'd/pumped out anymore — a worker has to squeegee/scrape it, and what's left after
 // that gets thrown away. That physical floor is what drives "now," not a minutes-left guess.
 const FULL={L:20,M:8,S:2};
-const SLOTS_TOTAL=30;
 const lbs=x=>+(x.l/100*FULL[x.sz]).toFixed(1);
 const mn=x=>Math.max(0,Math.round(x.l/x.b)), st=x=>x.held?'held':x.l<(x.crit??25)?'now':x.l<(x.low??40)?'low':'ok';
 function nextUp(){const all=ALL.filter(x=>!x.held).map(x=>({x,t:refillClock(x),z:st(x),m:refillMin(x)})).sort((a,b)=>a.m-b.m).slice(0,4);document.getElementById('next').innerHTML='<div class="lbl">Next up</div>'+all.map(a=>`<div class="task ${a.z}"><b>${a.t}</b><span>${a.x.n}${a.x.src?' · '+a.x.src:''}</span></div>`).join('');}
-const M=[{n:'Bowl 01',s:'run',st:'Running',k:'14',l:'in queue',hr:134,sec:27},{n:'Bowl 02',s:'held',st:'Held',k:'7',l:'rerouting',hr:0,sec:0,sub:'HELD · grains'},{n:'Chicken 2',s:'run',st:'Running',k:'12',l:'slots open',hr:150,sec:24}];
+const M=[{n:'Bowl 01',s:'run',st:'Running',k:'14',l:'in queue',hr:134,sec:27},{n:'Bowl 02',s:'held',st:'Held',k:'7',l:'rerouting',hr:0,sec:0,sub:'HELD · quinoa'},{n:'Chicken 2',s:'run',st:'Running',k:'12',l:'slots open',hr:150,sec:24}];
 function machines(){
   const st=m=>m.s==='run'?'':m.s==='held'?'bad':m.s==='clean'?'warn':'off';
   const word=m=>m.s==='run'?(m.k+(m.l==='in queue'?' queued':m.l==='slots open'?' open':' '+m.l)):m.s==='held'?((m.sub||'HELD').startsWith('DOOR')?'door open':'held'):m.s==='clean'?(m.k+' min clean'):'off';
-  const loaded=ALL.length, heldN=ALL.filter(x=>x.held).length; const disp=heldN?['warn',`${loaded-heldN}/${loaded}`]:['',`${loaded}/${SLOTS_TOTAL}`];
+  const q=ALL.find(x=>x.n==='Quinoa'); const disp=q&&q.held?['warn','17/18']:['',''];
   const items=M.map(m=>[st(m),m.n,word(m)]).concat([['','Conveyor',''],[disp[0],'Dispensers',disp[1]],['','Sealer',''],['','Pickup',''],['','Payments',''],['','Network','']]);
   document.getElementById('machines').innerHTML='<span class="lbl">System</span>'+items.map(a=>`<span class="si ${a[0]}"><i></i><b>${a[1]}</b>${a[2]?`<span>${a[2]}</span>`:''}</span>`).join('');
 }
 machines();
 
 /* ---------- RECIPE: the job the line is running. One customer, N bowls, a due time, a fixed set of hoppers. ---------- */
-/* ---------- ORDERS: à la carte from the Picnic app. The line builds one order at a time; the queue is the job. ---------- */
-const QUEUE=[
- {id:'#4412',bowl:'Fried Chicken Bowl',mods:'Power Grains · Jammy Egg, Broccoli, Kimchi · BBQ · +Avocado',items:['Fried Chicken','Power Grains','Jammy Egg','Broccoli','Kimchi','BBQ','Avocado'],pick:'12:24',who:'Maya C.'},
- {id:'#4413',bowl:'Steak Bowl',mods:'White Rice · Sweet Potato, Greek Salad, Black Beans · Ranch',items:['BBQ Steak','White Rice','Sweet Potato','Greek Salad','Black Beans','Ranch'],pick:'12:26',who:'Jordan L.'},
- {id:'#4414',bowl:'Tofu Bowl',mods:'Greens · Hummus, Kale Slaw, Pickled Onion · Tahini',items:['Tofu','Greens','Hummus','Kale Slaw','Pickled Onion','Tahini'],pick:'12:27',who:'Priya P.'},
- {id:'#4415',bowl:'BBQ Chicken Bowl',mods:'Cauli Rice · Mushrooms, Avocado, Tzatziki · Spicy Mayo',items:['BBQ Chicken','Cauli Rice','Mushrooms','Avocado','Tzatziki','Spicy Mayo'],pick:'12:29',who:'Sam O.'},
-];
-const RECIPE={n:14,done:5,acc:0,due:12*60+24,get items(){return QUEUE[0].items;},veg:{n:0,base:null},id:QUEUE[0].id,who:QUEUE[0].bowl};
-const inRecipe=x=>QUEUE[0].items.includes(x.n);
+const RECIPE={id:'SF-0912',who:'Salesforce',where:'Salesforce Tower · 45F',when:'Wed 09-12-26 · 12:30 meeting',due:12*60+30,n:50,done:31,acc:0,
+  items:['Chicken','Rice','Beans','Corn','Guac','Pico','Cheese','Lime'],veg:{n:12,base:'Quinoa'},
+  next:[{who:'À la carte',n:9,note:'walk-in queue'},{who:'Stripe',n:24,note:'due 1:15'}]};
+const inRecipe=x=>RECIPE.items.includes(x.n)||x.n===RECIPE.veg.base;
 function recipeRow(){
   const el=document.getElementById('recipe'); if(!el) return;
-  const o=QUEUE[0], nx=QUEUE[1];
-  const rank={now:0,held:1,low:2,ok:3}; const all=o.items.map(n=>{const x=ALL.find(y=>y.n===n);return {n,s:x?st(x):'ok'};}).sort((a,b)=>rank[a.s]-rank[b.s]);
-  const chips=all.slice(0,4).map(({n,s})=>`<span class="rc-chip ${s}"><i></i>${n}</span>`).join('')+(all.length>4?`<span class="rc-chip more">+${all.length-4}</span>`:'');
+  const rank={now:0,held:1,low:2,ok:3}; const all=RECIPE.items.concat([RECIPE.veg.base]).map(n=>{const x=ALL.find(y=>y.n===n);return {n,s:x?st(x):'ok'};}).sort((a,b)=>rank[a.s]-rank[b.s]);
+  const chips=all.slice(0,4).map(({n,s})=>`<span class="rc-chip ${s}"><i></i>${n}${n===RECIPE.veg.base?' <small>×'+RECIPE.veg.n+' veg</small>':''}</span>`).join('')+(all.length>4?`<span class="rc-chip more">+${all.length-4}</span>`:'');
   const left=RECIPE.n-RECIPE.done, mins=Math.max(0,RECIPE.due-NOW), pct=Math.round(RECIPE.done/RECIPE.n*100);
-  el.innerHTML=`<span class="rc-lbl">Building</span>
-    <span class="rc-who"><b>${o.bowl}</b><span class="rc-id">${o.id} · ${o.who}</span></span>
-    <span class="rc-meta">${o.mods} · <b>pickup ${o.pick}</b></span>
-    <span class="rc-prog"><i style="--p:${pct}%"></i><b>${RECIPE.done}</b><span>/ ${RECIPE.n}</span><em>${left} in queue · ${mins} min</em></span>
+  const nx=RECIPE.next[0];
+  el.innerHTML=`<span class="rc-lbl">Recipe</span>
+    <span class="rc-who"><b>${RECIPE.who}</b><span class="rc-id">${RECIPE.id}</span></span>
+    <span class="rc-meta"><b>${RECIPE.n} bowls</b> · ${RECIPE.where} · ${RECIPE.when}</span>
+    <span class="rc-prog"><i style="--p:${pct}%"></i><b>${RECIPE.done}</b><span>/ ${RECIPE.n}</span><em>${left} left · ${mins} min</em></span>
     <span class="rc-items">${chips}</span>
-    <span class="rc-next">Next <b>${nx.id} ${nx.bowl}</b><small> · pickup ${nx.pick}</small></span>`;
+    <span class="rc-next">Next <b>${nx.who}</b> ×${nx.n}<small> · ${nx.note}</small></span>`;
 }
 function render(){
   nextUp(); recipeRow();
   // PHOTOS: Wikimedia Commons, hotlinked via Special:FilePath (browser loads them). ?photo=25|50|0
-  const IMG={"fried chicken":["Karaage_001.jpg","Fried_chicken_pieces.jpg"],"bbq chicken":["Grilled_Chicken_Breasts_(28905381261).jpg"],"bbq steak":["Shredded_Steak_with_Peppers,_Onions_and_Tomatoes_(Ropa_Vieja).jpg","Bulgogi.jpg"],"tofu":["Tofu_4.jpg","Baked_tofu.jpg"],"cauliflower":["Cauliflower_wings.jpg","Roasted_cauliflower.jpg"],
-    "white rice":["Bowl_of_white_rice_02.jpg"],"power grains":["Quinoa_cuit.JPG","Brown_rice.jpg"],"cauli rice":["Cauliflower_rice.jpg","Riced_cauliflower.jpg"],"greens":["Mixed_greens.jpg","Romaine_lettuce.jpg"],
-    "jammy egg":["Soft_boiled_egg.jpg","Ajitsuke_tamago.jpg"],"avocado":["Avocado_Hass_-_single_and_halved.jpg","Avocado.jpeg"],"tzatziki":["Tzatziki.jpg","Tzatziki_sauce.jpg"],"hummus":["Hummus_from_The_Nile.jpg","Hummus.jpg"],"broccoli":["Roasted_broccoli.jpg","Broccoli_and_cross_section_edit.jpg"],"sweet potato":["Roasted_sweet_potato.jpg","Sweet_potato_fries.jpg"],"mushrooms":["Roasted_mushrooms.jpg","Champignon_mushrooms.jpg"],"kale slaw":["Kale_salad.jpg","Kale-Bundle.jpg"],"kimchi":["Korean_cuisine-Kimchi-08.jpg","Kimchi.jpg"],"pickled onion":["Pickled_red_onions.jpg","Pickled_onions.jpg"],"greek salad":["Greek_Salad.jpg","Greek_salad_(2).jpg"],"black beans":["Black_bean,_frijol_negro,_feijão_preto_1.jpg"],
-    "bbq":["Barbecue_sauce.jpg","BBQ_sauce.jpg"],"ranch":["Ranch_dressing.jpg","Ranch_dressing_bowl.jpg"],"spicy mayo":["Sriracha_mayo.jpg","Mayonnaise_(1).jpg"],"tzatziki sc":["Tzatziki_sauce.jpg","Tzatziki.jpg"],"garlic white":["Toum.jpg","Garlic_sauce.jpg"],"hot sauce":["Hot_sauce.jpg","Sriracha_sauce.jpg"],"tahini":["Tahini.jpg","Tahini_sauce.jpg"]};
+  const IMG={"chicken": "Grilled_Chicken_Breasts_(28905381261).jpg", "beef": "Shredded_Steak_with_Peppers,_Onions_and_Tomatoes_(Ropa_Vieja).jpg", "rice": "Bowl_of_white_rice_02.jpg", "quinoa": "Quinoa_cuit.JPG", "beans": "Black_bean,_frijol_negro,_feijão_preto_1.jpg", "corn": "Up_close_image_of_corn.jpg", "pico": "Mmm..._Pico_de_Gallo_(5923456035).jpg", "lettuce": "Romaine_lettuce.jpg", "cilantro": "Coriander_01.jpg", "lime": "Lime_-_whole_and_halved.jpg", "guac": ["Guacamole_IMGP1303.jpg", "Guacamole.jpg", "Guacamole_bowl.jpg"], "verde": "SALSA_VERDE.jpg", "chipotle": "Chipotlesenadobo.jpg", "roja": "Bowl_of_salsa.jpg", "sour cream": "Sour_Cream.jpg", "cheese": "Fine_Microplane_Grating_Hard_Cheese.jpg"};
   // an entry can be a list of Commons file names: the browser walks it until one loads
   const cands=x=>[].concat(IMG[x.n.toLowerCase()]||[]).map(f=>'https://commons.wikimedia.org/wiki/Special:FilePath/'+encodeURIComponent(f)+'?width=400');
   const img=x=>cands(x)[0]||'';
@@ -1454,10 +1378,10 @@ function render(){
   // SLOT MAP: same #1-18 numbering as recipe-development.html's machine rack, sized by real
   // dispenser hardware (PANEL-DESIGN.md "Machine layout"). Row 1 is the 4 mains; then one
   // left-justified row per size tier; then Open.
-  const temp=x=>x.hot?'hot':'cold';
+  const temp=x=>(x.g==='prot'||x.g==='base')?'hot':'cold';
   const RANGE={hot:[140,165],cold:[34,41]}; // hot-hold floor / cold-hold ceiling — real numbers, not placeholders
   const tempOK=x=>{const r=RANGE[temp(x)];return x.t>=r[0]&&x.t<=r[1];};
-  ALL.forEach(x=>{x._slot=x.slot});
+  ALL.forEach((x,i)=>{x._slot=i+1});
   // APPLE CARD: name band on top (the one glanceable fact), full-bleed photo below, captioned.
   const slotBar=x=>{
     const bin=`<span class="bin">#${x._slot}</span>`;
@@ -1469,22 +1393,23 @@ function render(){
       ${bin}
       <div class="n">${x.n}</div>
       <div class="meter"><i style="--l:${x.held?0:x.l}"></i>${x.held?'<b class="pct">HELD</b><small class="note">not dispensing</small>':`<b class="pct">${Math.round(x.l)}%</b>${x.just?'<small class="note">REFILLED</small>':z==='now'?'<small class="note">SCRAPE IT</small>':''}`}</div>
-      <div class="photo">${ph(x)}${badge}${inRecipe(x)?'<em class="rc-tag">'+QUEUE[0].id.slice(1)+'</em>':''}</div>
+      <div class="photo">${ph(x)}${badge}${inRecipe(x)?'<em class="rc-tag">SF</em>':''}</div>
     </div>`;
   };
   // DISPLAY: reordered by size tier (L, then M, then S — the 2 open bays live inside the S row,
   // not a separate row: they're Sauce Dispenser bays, physically). Array order no longer matches
   // ALL's category order, so build the render sequence once and reuse it for the fast-path --l
   // update below, or the two would drift out of sync.
-  // 30 physical slots in 4 rows. Open bays: #6 in the protein hopper row, #30 in the sauce row.
-  const OPEN=[{open:1,row:'P',sz:'L',_slot:6},{open:1,row:'S',sz:'S',_slot:30}];
-  const ROWS=[['P','Protein Hopper','≈ 2.5 gal'],['B','Base Hopper','≈ 2.5 gal'],['M','Sides Bin','≈ 175 in³'],['S','Sauce Dispenser','≈ 32 oz']];
-  const DISPLAY=ROWS.flatMap(([r])=>[...ALL.filter(x=>x.row===r),...OPEN.filter(x=>x.row===r)]);
+  const OPEN=[{open:1,sz:'S',_slot:17},{open:1,sz:'S',_slot:18}];
+  const DISPLAY=[...ALL.filter(x=>x.sz==='L'),...ALL.filter(x=>x.sz==='M'),...ALL.filter(x=>x.sz==='S'),...OPEN];
+  // capacity is per dispenser (one hopper/bin/bottle), not per row. Counts are fixed hardware —
+  // Hot Grain Hopper and Loose-Scoop Bin are always full; only Sauce Dispenser has open bays.
+  const ROWS=[['L','Hot Grain Hopper','≈ 2.5 gal'],['M','Loose-Scoop Bin','≈ 175 in³'],['S','Sauce Dispenser','≈ 32 oz']];
   window.LAST=window.LAST||{};
   const html=ROWS.map(([tier,label,cap])=>{
-    const row=DISPLAY.filter(x=>x.row===tier);
+    const row=tier==='S'?[...DISPLAY.filter(x=>x.sz==='S'&&!x.open),...OPEN]:DISPLAY.filter(x=>x.sz===tier);
     const used=row.filter(x=>!x.open).length, full=used===row.length;
-    return `<div class="srow row-${tier}"><div class="rheader"><b>${label}</b><span class="${full?'full':''}">${used}/${row.length}${full?' · full':''}</span><span>Holds ${cap}</span></div><div class="rcards">${row.map(slotBar).join('')}</div></div>`;
+    return `<div class="srow"><div class="rheader"><b>${label}</b><span class="${full?'full':''}">${used}/${row.length}${full?' · full':''}</span><span>Holds ${cap}</span></div><div class="rcards">${row.map(slotBar).join('')}</div></div>`;
   }).join('');
   const slotsKey=html.replace(/--l:[0-9.]+/g,'--l:0');
   const el=document.getElementById('g-all');
@@ -1503,17 +1428,17 @@ setInterval(()=>{
   if(RECIPE.done<RECIPE.n){RECIPE.acc+=sp/100; if(RECIPE.acc>=1){RECIPE.done+=1;RECIPE.acc-=1;}} recipeRow();
 },1000);
 /* ---------- SCENE: the shift, one step at a time ---------- */
-const Q=()=>ALL.find(x=>x.n==='Power Grains');
+const Q=()=>ALL.find(x=>x.n==='Quinoa');
 const SCENE={
- reroute:{kind:'',head:'Power grains under-dispensing',sub:'Bowl 02 · held 12:16 · rest running',nums:[['7','orders waiting'],['4 MIN','until late'],['12','slots open at Bowl 2']],btn:'TAP TO START REROUTE',bs:'7 orders → Chicken 2',verbs:[['tech','Send tech'],['engineering','Log + alert Eng.']],
-   sheet:{label:'Reroute',title:'Move 7 orders to Chicken Bowl 2?',text:'Chicken Bowl 2 has 12 open slots. Every affected order lands in the same service window.',effects:[['Guests','All 7 orders stay on time'],['Bowl 02','Power grains stay held. Other recipes keep running']],button:'START REROUTE'},
+ reroute:{kind:'',head:'Quinoa under-dispensing',sub:'Bowl 02 · held 12:16 · rest running',nums:[['7','orders waiting'],['4 MIN','until late'],['12','slots open at Bowl 2']],btn:'TAP TO START REROUTE',bs:'7 orders → Chicken 2',verbs:[['tech','Send tech'],['engineering','Log + alert Eng.']],
+   sheet:{label:'Reroute',title:'Move 7 orders to Chicken Bowl 2?',text:'Chicken Bowl 2 has 12 open slots. Every affected order lands in the same service window.',effects:[['Guests','All 7 orders stay on time'],['Bowl 02','Quinoa stays held. Other recipes keep running']],button:'START REROUTE'},
    done:()=>{ M[1].k='0';M[1].l='waiting';M[1].sub='HELD · rerouted';M[2].k='19';M[2].l='in queue';machines(); note('Reroute started · 7 orders moving to Chicken 2'); go('quickfix'); }},
- quickfix:{kind:'task',head:'Next: quick fix at Bowl 02',sub:'Two steps · about 2 min · orders are safe',nums:[['2','steps'],['2 MIN','at the machine'],['0','orders waiting']],btn:'TAP TO START QUICK FIX',bs:'Open the yellow grains panel',verbs:[['tech','Send tech instead']],
-   sheet:{label:'Quick fix',title:'Start the quick fix?',text:'The machine is safe. Two on-screen steps at Bowl 02.',effects:[['Step 1','Open the yellow grains panel'],['Step 2','Loosen the grains, then run a test portion']],button:'START QUICK FIX'},
+ quickfix:{kind:'task',head:'Next: quick fix at Bowl 02',sub:'Two steps · about 2 min · orders are safe',nums:[['2','steps'],['2 MIN','at the machine'],['0','orders waiting']],btn:'TAP TO START QUICK FIX',bs:'Open the yellow quinoa panel',verbs:[['tech','Send tech instead']],
+   sheet:{label:'Quick fix',title:'Start the quick fix?',text:'The machine is safe. Two on-screen steps at Bowl 02.',effects:[['Step 1','Open the yellow quinoa panel'],['Step 2','Loosen quinoa, then run a test portion']],button:'START QUICK FIX'},
    done:()=>{ note('Quick fix done · test portion on target'); go('release'); }},
- release:{kind:'clear',head:'Power grains test passed',sub:'Bowl 02 · ready to release the hold',nums:[['3','test portions OK'],['0','late orders'],['12','slots at Bowl 2']],btn:'TAP TO RELEASE POWER GRAINS',bs:'Bowl 02 back to all recipes',verbs:[['engineering','Log for Engineering']],
-   sheet:{label:'Release hold',title:'Release power grains at Bowl 02?',text:'Three test portions hit target. The path reopens and Bowl 02 takes orders again.',effects:[['Bowl 02','All recipes running'],['Guests','Nothing rerouted from here on']],button:'RELEASE POWER GRAINS'},
-   done:()=>{ const q=Q(); q.held=0; q.l=100; q.b=1.2; q.just='MAYA'; setTimeout(()=>{q.just=null;render();},6000); M[1].s='run';M[1].st='Running';M[1].k='11';M[1].l='in queue';M[1].hr=128;M[1].sec=28;M[1].sub=null;machines(); note('Power grains released · Bowl 02 running · Maya'); go('clear'); }},
+ release:{kind:'clear',head:'Quinoa test passed',sub:'Bowl 02 · ready to release the hold',nums:[['3','test portions OK'],['0','late orders'],['12','slots at Bowl 2']],btn:'TAP TO RELEASE QUINOA',bs:'Bowl 02 back to all recipes',verbs:[['engineering','Log for Engineering']],
+   sheet:{label:'Release hold',title:'Release quinoa at Bowl 02?',text:'Three test portions hit target. The path reopens and Bowl 02 takes orders again.',effects:[['Bowl 02','All recipes running'],['Guests','Nothing rerouted from here on']],button:'RELEASE QUINOA'},
+   done:()=>{ const q=Q(); q.held=0; q.l=100; q.b=1.2; q.just='MAYA'; setTimeout(()=>{q.just=null;render();},6000); M[1].s='run';M[1].st='Running';M[1].k='11';M[1].l='in queue';M[1].hr=128;M[1].sec=28;M[1].sub=null;machines(); note('Quinoa released · Bowl 02 running · Maya'); go('clear'); }},
  clear:{kind:'clear',head:'All clear',sub:'Everything running',nums:()=>{const n=ALL.filter(x=>!x.held).map(x=>({x,m:refillMin(x)})).sort((a,b)=>a.m-b.m)[0];return [[n?refillClock(n.x):'—',n?'next refill · '+n.x.n:'next refill'],[String(Math.max(0,214-Math.floor((NOW-(12*60+18))*38/10))),'orders to go'],['0','alerts']];},btn:()=>{const n=ALL.filter(x=>!x.held).map(x=>({x,m:refillMin(x)})).sort((a,b)=>a.m-b.m)[0];return n?'TAP WHEN '+n.x.n.toUpperCase()+' IS REFILLED':'ALL CLEAR';},bs:()=>{const n=ALL.filter(x=>!x.held).map(x=>({x,m:refillMin(x)})).sort((a,b)=>a.m-b.m)[0];return n?n.x.n+' · from '+(n.x.src||'the reach-in'):'';},verbs:[['engineering','Log a note']],
    sheet:{label:'Refill',title:'Mark the next refill done?',text:'Confirm at the hopper. Next up updates on its own.',effects:[['Hopper','Back to 100%'],['Service','Keeps dispensing during the swap']],button:'REFILLED'},
    done:()=>{ const n=ALL.filter(x=>!x.held).map(x=>({x,m:refillMin(x)})).sort((a,b)=>a.m-b.m)[0]; if(n) refill(n.x,'you'); }},
@@ -1550,7 +1475,7 @@ function popCheck(){
 }
 /* sheets */
 let selected='';const data={
- tech:{label:'Service task',title:'Send tech to Bowl 02?',text:'The task carries the machine state, recipe, and evidence automatically.',effects:[['Task','Recalibrate power-grains dispenser'],['Timing','Before the next lunch rush']],button:'SEND TECH',done:'Tech dispatched',sub:'The calibration task is ready with the right context.'},
+ tech:{label:'Service task',title:'Send tech to Bowl 02?',text:'The task carries the machine state, recipe, and evidence automatically.',effects:[['Task','Recalibrate quinoa dispenser'],['Timing','Before the next lunch rush']],button:'SEND TECH',done:'Tech dispatched',sub:'The calibration task is ready with the right context.'},
  engineering:{label:'Fleet learning',title:'Log it and alert Engineering?',text:'This event joins the fleet pattern without slowing service.',effects:[['Pattern','14 similar incidents across 4 sites'],['Context','Today’s event is attached automatically']],button:'LOG + ALERT',done:'Logged. Engineering alerted',sub:'This incident is now part of the fleet reliability signal.'}};
 function openSheet(k){selected=k;
   if(k.startsWith('refill:')){const x=ALL.find(a=>a.n===k.slice(7));sheetLabel.textContent='Refill';sheetTitle.textContent=`Mark ${x.n} refilled?`;sheetText.textContent=`${lbs(x)} lb now. Hold to confirm at the hopper. Next up updates on its own.`;effects.innerHTML='<div class="effect"><b>Hopper</b><span>'+x.n+' back to '+FULL[x.sz]+' lb</span></div><div class="effect"><b>Service</b><span>Dispensing keeps running during the swap</span></div>';document.getElementById('confirm').textContent='REFILLED';overlay.classList.add('show');return;}
