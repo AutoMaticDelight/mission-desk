@@ -1700,8 +1700,10 @@ body{grid-template-rows:auto minmax(0,1fr) auto;align-content:stretch}
 .srow.row-M .bar.slot.sz-M .n>span:not(.bin),.srow.row-S .bar.slot.sz-S .n>span:not(.bin){font-size:16px;letter-spacing:-.03em}
 @media(orientation:landscape) and (max-width:1200px){.srow.row-M .bar.slot.sz-M .n>span:not(.bin),.srow.row-S .bar.slot.sz-S .n>span:not(.bin){font-size:13px}}
 @media(orientation:landscape) and (max-width:1100px){.srow.row-M .bar.slot.sz-M .n>span:not(.bin),.srow.row-S .bar.slot.sz-S .n>span:not(.bin){font-size:11px;letter-spacing:-.04em}}
-/* CENTERED ROW TITLES (Bryan, 2026-09-20): Protein, Base, Sides, Sauces sit centered over their row */
-.rheader{justify-content:center;text-align:center}
+/* NAME DEAD-CENTER (Bryan, 2026-09-20): in a side or sauce bin the name is centered top to bottom on the whole bin —
+   the bin tag floats in the corner and no longer pushes it down. Row titles stay left. */
+.srow.row-M .bar.slot.sz-M .n,.srow.row-S .bar.slot.sz-S .n{padding:2px 3px;justify-content:center}
+.rheader{justify-content:flex-start;text-align:left}
 </style>
 <link rel="stylesheet" href="glove.css"></head>
 <body>
