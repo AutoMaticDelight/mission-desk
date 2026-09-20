@@ -1316,6 +1316,14 @@ body{grid-template-rows:auto minmax(0,1fr) auto;align-content:stretch}
   .srow.row-M .bar .meter,.srow.row-S .bar .meter{height:20px}.srow.row-M .bar .meter .pct,.srow.row-S .bar .meter .pct{font-size:15px}
   .slots{gap:6px}
 }
+@media(orientation:landscape) and (max-width:1200px){
+  .srow.row-P .bar .photo,.srow.row-B .bar .photo{min-height:0;flex:1 1 0}
+  .srow.row-P .bar .meter,.srow.row-B .bar .meter{flex:none}
+  .srow.row-M .bar.slot.sz-M .n,.srow.row-S .bar.slot.sz-S .n{min-height:22px;font-size:12px;padding-top:3px}
+  .srow.row-M .bar .meter,.srow.row-S .bar .meter{height:18px}.srow.row-M .bar .meter .pct,.srow.row-S .bar .meter .pct{font-size:14px}
+  .srow.row-M .bar>.bin,.srow.row-S .bar>.bin{font-size:11px;padding:3px 6px 3px 5px}
+  .rheader{line-height:1}
+}
 </style>
 <link rel="stylesheet" href="glove.css"></head>
 <body>
