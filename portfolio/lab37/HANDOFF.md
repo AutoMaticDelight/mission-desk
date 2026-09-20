@@ -1,7 +1,7 @@
 # Bowl-O-Matic 5000 — handoff for a new chat
 
 Paste or upload this file at the start of the next chat. It is everything the next
-session needs to pick up exactly where this one stopped. Written 2026-09-19.
+session needs to pick up exactly where this one stopped. Written 2026-09-19, updated 2026-09-20.
 
 ## Who / why
 Bryan S. Holland (bryan@automaticdelight.com). Recruiter screen with **Kristin
@@ -23,11 +23,11 @@ on day one" and to be shown on screen share.
   - `prep.html` — interview prep (about you, call plan, keywords, say-this, panels)
   - `photos.html` — review sheet of all 16 ingredient photos as the panel crops them
   - `lunch-rush-tiles.html` — the 18-slot panel with **Square-tile cards** (alternate card anatomy, 2026-09-20)
-  - `lunch-rush-light-slots.html` — the **18-slot worker panel** (the one being refined 2026-09-19: meter, temps, badges)
+  - `lunch-rush-light-slots.html` — the **18-slot worker panel** (**the locked one**, refined through 2026-09-20: meter, temps, badges, square rows)
   - `recipe-controller.html` — the **Recipe Controller** (2026-09-19): bowl build-sequence drawing, portions, machine, send
   - `picnic.html` / `picnic-guest.html` — the **Picnic** group order (set the mix, or let everyone pick via SMS/email) and the guest's phone page
   - `picnic-mall.html` — the **Picnic Mall edition** of the worker panel: 30 slots, the whole Picnic menu, order queue (breaks the 18-slot rule on purpose)
-  - `picnic-kiosk.html` — the **kiosk / register**: Square-Register layout (rail · tabs · photo-tile grid · ticket · Pay), landscape 14×24; reference in `refs/`
+  - `picnic-kiosk.html` — the **kiosk / register**: Square-Register layout (rail · tabs · photo-tile grid · ticket · Pay), landscape 14×24; reference photo `refs/square-pos-favorites.jpg` (read-only refs from Bryan's Mac session)
   - `PANEL-DESIGN.md` — the **locked** design rules (read before touching UI)
   - `logo.svg`, `img/README.md` (photo stash), `index.html` (29 screens)
 - Options: `?photo=25|50|0` (photo width), `?look=flat` (light panel alt), `?autoplay`.
@@ -46,7 +46,8 @@ Next Up). Spare height opens only between status and actions.
 
 ## Locked rules (short form — full text in PANEL-DESIGN.md)
 - No red anywhere. Needs-you-now = hot yellow-green (#cfff3e dark / #c8f000 light),
-  same as the action button. Low = amber. Fine = green. Just refilled = green ring.
+  same as the action button. Low = amber. Fine = **muted sage** (`#8fbf8a`, 2026-09-20 —
+  not system green; amber and lime stay loud). Just refilled = green ring.
   Alert status dot = hot orange. On the light panel a low/now box goes **dark with
   bright yellow numbers**.
 - No small text (body ≥14, labels ≥13). Tabular numerals on anything that ticks.
@@ -64,6 +65,22 @@ Next Up). Spare height opens only between status and actions.
   meeting`, 12 veg on quinoa (which is the held hopper — that's why the reroute).
   Hoppers in the recipe carry an `SF` tag on the photo corner. Manager's Uptown card
   shows the running recipe.
+
+## 18-slot panel — the card as it stands (2026-09-20)
+Full rules in PANEL-DESIGN.md; this is the shape to keep:
+- **Title band** (top): the **bin badge fills the whole header height**, flush in the
+  left corner; the **name is centered** in the band, two-line clamp for long names.
+  Open bays show `+ Add` dead-centered. Temperature (no F) sits centered on the
+  photo, outlined white; out of range → lime + `ALERT`. `SF` recipe tag on the corner.
+- **Photo** (middle): ~50% of the card.
+- **Meter** (bottom): one thick bar with the percent over its left edge, no "left"
+  word, no weight. Fine = sage, low = amber, critical = hot lime; low/critical cards
+  go dark. Per-item thresholds (`crit`/`low` in the data) — a sauce is not critical
+  at the same level as a protein. Notes ride the bar: `SCRAPE IT`, `REFILLED`, `HELD`.
+- **Rows**: mains keep their height; the two lower rows split their half **4:3 by
+  card width** (landscape) so sides and sauces are square, edge to edge.
+- Same rules on `lunch-rush-tiles.html` (Square-tile skin) and `picnic-mall.html`
+  (30 slots, sides/sauces simplified with no photo, mains much larger).
 
 ## Ingredients (16)
 Proteins: Chicken, Beef · Bases: Rice, Quinoa (held) · Vegetables: Beans, Corn,
@@ -106,7 +123,12 @@ Photos never flash and always fill their slot (fixed 2026-09-19).
   that clip.
 
 ## Open threads
-1. Photos: replace the weak ones via the stash (see above).
+1. Photos: replace the weak ones via the stash (see above). Picnic Mall and kiosk
+   photos are Commons guesses; real ones go in `img/<key>.jpg`.
+0. **HEIC**: iPhone photos arrive as HEIC and the chat refuses them. The `acts` repo
+   carries a `/heic` skill (`.claude/skills/heic/`, pillow-heif converter) — use it the
+   moment one arrives; never say HEIC can't be read. Convert on the Mac if the upload
+   itself is refused, or drop the file into `refs/` on GitHub as the Mac session did.
 2. Manager console has not had the finesse pass the worker panels got. (2026-09-19:
    its card-grid bug is fixed — store names no longer truncate — and the header no
    longer runs off the screen on iPad; the phone layer is in. It still uses red for
