@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Top down · Bowl-O-Matic 5000 - Picnic Mall</title>
+<title>Gravity · Bowl-O-Matic 5000 - Picnic Mall</title>
 <link rel="icon" href="logo.svg" type="image/svg+xml">
 <style>
 /* USER PANEL. Not a web page. One iPad screen, portrait or landscape, no scroll.
@@ -1621,9 +1621,9 @@ body{grid-template-rows:auto minmax(0,1fr) auto;align-content:stretch}
   .srow.row-P .bar.slot .n>.tp,.srow.row-B .bar.slot .n>.tp{padding-bottom:0}
 }
 @media(orientation:landscape) and (min-width:1201px){.srow.row-S{min-height:110px}}
-/* TOP DOWN (Bryan, 2026-09-20, variant): in the sides and sauce cards the fill runs vertically — anchored to the top
-   edge, its height is the level, white (or dark) below it. The words stay on top of it. */
-.srow.row-M .bar .meter>i,.srow.row-S .bar .meter>i{left:0;right:0;top:0;bottom:auto;width:100%;height:calc(var(--l,0)*1%);transition:height .6s cubic-bezier(.2,.7,.2,1),background-color .35s ease}
+/* GRAVITY (Bryan, 2026-09-20, variant): in the sides and sauce cards the fill is a tank level — it sits on the bottom
+   edge, its height is what is left, white (or dark) above it as it drains. The words stay on top of it. */
+.srow.row-M .bar .meter>i,.srow.row-S .bar .meter>i{left:0;right:0;top:auto;bottom:0;width:100%;height:calc(var(--l,0)*1%);transition:height .6s cubic-bezier(.2,.7,.2,1),background-color .35s ease}
 </style>
 <link rel="stylesheet" href="glove.css"></head>
 <body>
