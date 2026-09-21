@@ -22,6 +22,8 @@ on day one" and to be shown on screen share.
   - `design-system.html` — tokens, live states, components, rules, CSS + JSON export
   - `prep.html` — interview prep (about you, call plan, keywords, say-this, panels)
   - `photos.html` — review sheet of all 16 ingredient photos as the panel crops them
+  - `large.html` — the **large tablet series**: every screen framed live at 1024×1366
+    portrait and 1366×1024 landscape, tap a name to open full size.
   - **Internal tools (one per posting item), shared skin `tools.css`:** `inventory.html`,
     `recipe-builder.html`, `schedule.html`, `training.html` (LMS), `metrics.html`.
     Manager dashboard = `manager-fleet.html`; robot UI = the worker panels.
@@ -139,7 +141,8 @@ Photos never flash and always fill their slot (fixed 2026-09-19).
    itself is refused, or drop the file into `refs/` on GitHub as the Mac session did.
 2. Manager console has not had the finesse pass the worker panels got. The five
    internal tools (v2, `tools.css` + `photos.js`) fit one screen at 1180×820,
-   1024×768 and the 12.9-inch portrait 1024×1366; clock ticks; numbers are static. (2026-09-19:
+   1024×768, and portrait on the 9.7-, 11- and 12.9-inch iPads (820×1180, 834×1194,
+   1024×1366); clock ticks; numbers are static. (2026-09-19:
    its card-grid bug is fixed — store names no longer truncate — and the header no
    longer runs off the screen on iPad; the phone layer is in. It still uses red for
    "needs you now", which the worker panels do not.)
