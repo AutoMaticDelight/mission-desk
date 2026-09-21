@@ -138,7 +138,8 @@ Photos never flash and always fill their slot (fixed 2026-09-19).
    moment one arrives; never say HEIC can't be read. Convert on the Mac if the upload
    itself is refused, or drop the file into `refs/` on GitHub as the Mac session did.
 2. Manager console has not had the finesse pass the worker panels got. The five
-   internal tools are static (no live numbers); they scroll inside their main area. (2026-09-19:
+   internal tools (v2, `tools.css` + `photos.js`) fit one screen at 1180×820,
+   1024×768 and the 12.9-inch portrait 1024×1366; clock ticks; numbers are static. (2026-09-19:
    its card-grid bug is fixed — store names no longer truncate — and the header no
    longer runs off the screen on iPad; the phone layer is in. It still uses red for
    "needs you now", which the worker panels do not.)
