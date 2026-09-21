@@ -153,3 +153,16 @@ main{min-height:0;display:grid;gap:12px;grid-auto-rows:auto;align-content:start;
   .dock .go{min-height:72px}.dock .nums b{font-size:30px}.dock .nums div:first-child b{font-size:34px}
   .band{padding:8px 24px;gap:8px 16px}.stat b{font-size:28px}
 }
+
+/* portrait under 900 wide: taxonomy groups stack; each group runs full width so names never truncate */
+@media(orientation:portrait) and (min-width:760px) and (max-width:900px){
+  .taxo{grid-template-columns:1fr!important}
+  .taxo .grp:nth-child(1) .tops{grid-template-columns:repeat(3,1fr)!important}
+  .taxo .grp:nth-child(2) .tops{grid-template-columns:repeat(4,1fr)!important}
+  .taxo .grp:nth-child(3) .tops{grid-template-columns:repeat(2,1fr)!important}
+  .bxL{height:104px}.bxL .v{font-size:38px}.bxS{height:66px}.bxS .v{font-size:24px}.bxS .n{font-size:16px}
+}
+/* small-box names wrap to two lines in landscape instead of truncating */
+@media(orientation:landscape){.bxS .n{white-space:normal;line-height:1.05;font-size:14px}.bxS{height:76px}.bxS .s{display:none}}
+@media(orientation:landscape) and (max-height:800px){.bxS{height:64px}.bxS .v{font-size:20px}}
+@media(orientation:portrait) and (min-width:901px){.bxS .n{white-space:normal;line-height:1.05}}
