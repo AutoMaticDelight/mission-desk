@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Bowl-O-Matic 5000 - Manager · Tall</title>
+<link rel="icon" href="logo.svg" type="image/svg+xml">
+<style>
+/* MANAGER CONSOLE. Light, quiet, Apple-clean. Every store is a white card with a status light.
+   Three questions in order: who needs me now, what should I watch, is everything else on plan. */
+:root{--bg:#f2f2f7;--card:#ffffff;--ink:#1d1d1f;--ink2:#6e6e73;--ink3:#aeaeb2;--line:#e5e5ea;--sep:#d1d1d6;
+  --green:#34c759;--amber:#ff9f0a;--red:#ff3b30;--blue:#0a84ff;--redink:#c0281f;--amberink:#9a5b00;--greenink:#1f8a3c}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;margin:0}
+body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","SF Pro Display",Inter,"Helvetica Neue",Helvetica,Arial,sans-serif;font-weight:500;-webkit-font-smoothing:antialiased;
+  display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:auto auto auto minmax(0,1fr);gap:16px;padding:16px 20px;height:100vh;overflow:hidden;
+  padding-top:max(16px,env(safe-area-inset-top));padding-bottom:max(16px,env(safe-area-inset-bottom))}
+b{font-weight:700}
+.num{font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+/* header */
+.band{display:flex;align-items:center;gap:0;background:var(--card);border-radius:16px;padding:10px 20px;min-height:64px;box-shadow:0 1px 2px rgba(0,0,0,.04),0 0 0 1px rgba(0,0,0,.03)}
+.where{font-size:22px;font-weight:700;letter-spacing:-.02em;white-space:nowrap;display:flex;align-items:baseline;gap:10px}
+.where span{font-size:16px;font-weight:500;color:var(--ink2)}
+.when{font-size:16px;color:var(--ink2);white-space:nowrap;margin-left:14px;margin-right:auto;font-weight:500}
+.stat{display:flex;align-items:baseline;gap:8px;white-space:nowrap;padding:0 18px;border-left:1px solid var(--sep)}
+.stat:last-child{padding-right:0}
+.stat b{font-size:28px;font-weight:700;letter-spacing:-.03em;line-height:1}
+.stat span{font-size:14px;color:var(--ink2);font-weight:500;letter-spacing:.2px}
+.stat.good b{color:var(--greenink)}.stat.bad b{color:var(--redink)}
+.stat b small{font-size:.6em;color:var(--ink3);font-weight:600}
+/* sections */
+section{display:grid;grid-template-rows:auto minmax(0,1fr);gap:8px;min-height:0}
+h2{margin:0;font-size:14px;font-weight:600;letter-spacing:.2px;color:var(--ink2);display:flex;align-items:center;gap:8px;padding-left:2px}
+h2 i{width:10px;height:10px;border-radius:50%;background:var(--red);display:inline-block}
+h2.w i{background:var(--amber)}h2.f i{background:var(--green)}
+h2 b{color:var(--ink);font-weight:600}
+/* status light */
+.light{width:12px;height:12px;border-radius:50%;background:var(--green);flex:none;box-shadow:0 0 0 3px rgba(52,199,89,.18)}
+.light.red{background:var(--red);box-shadow:0 0 0 3px rgba(255,59,48,.2);animation:pulse 1.6s ease-in-out infinite}
+.light.amber{background:var(--amber);box-shadow:0 0 0 3px rgba(255,159,10,.2)}
+@keyframes pulse{50%{box-shadow:0 0 0 7px rgba(255,59,48,.12)}}
+/* cards */
+.card{background:var(--card);border:0;border-radius:16px;padding:14px 18px;display:grid;grid-template-columns:minmax(0,1fr) max-content;grid-template-rows:auto auto auto;column-gap:18px;row-gap:4px;align-items:start;text-align:left;color:var(--ink);font:inherit;cursor:pointer;min-width:0;box-shadow:0 1px 2px rgba(0,0,0,.04),0 0 0 1px rgba(0,0,0,.03)}
+.card:active{transform:scale(.995)}
+.card .top{display:flex;align-items:center;gap:10px;min-width:0}
+.card .nm{font-size:20px;font-weight:700;letter-spacing:-.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card .nm small{font-size:14px;font-weight:500;color:var(--ink2);margin-left:8px}
+.card .what{grid-column:1;font-size:15px;color:var(--ink2);line-height:1.3;font-weight:500}
+.card.now .what{color:var(--redink)}
+.card.watch .what{color:var(--amberink)}
+.card .k{grid-column:2;grid-row:1/3;text-align:right;white-space:nowrap;align-self:start}
+.card .k b{display:block;font-size:40px;font-weight:700;letter-spacing:-.04em;line-height:.95}
+.card .k span{font-size:13px;color:var(--ink2);font-weight:500;letter-spacing:.3px;text-transform:uppercase}
+.card.now .k b{color:var(--redink)}.card.watch .k b{color:var(--amberink)}
+.card .go{grid-column:1/-1;grid-row:3;font-size:14px;font-weight:600;color:var(--blue);margin-top:4px}
+.card .thr{grid-column:1/-1;grid-row:3;display:flex;justify-content:space-between;align-items:baseline;border-top:1px solid var(--line);padding-top:8px;margin-top:6px;font-size:14px;color:var(--ink2)}
+.card .thr b{font-weight:600;color:var(--ink);font-size:15px}
+/* the section grids go by id: the cards carry .now/.watch too, and a class rule here would turn every card into a 2- or 3-column grid */
+#now{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+#watch{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+/* on-plan field */
+.fine{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));grid-auto-rows:auto;gap:12px;min-height:0;align-content:start}
+.chip{background:var(--card);border-radius:14px;padding:12px 16px 10px;display:grid;grid-template-columns:minmax(0,1fr) max-content;grid-template-rows:auto auto;column-gap:10px;row-gap:6px;align-items:baseline;min-width:0;box-shadow:0 1px 2px rgba(0,0,0,.04),0 0 0 1px rgba(0,0,0,.03)}
+.chip .top{display:flex;align-items:center;gap:9px;min-width:0}
+.chip .nm{font-size:17px;font-weight:600;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chip .p{font-size:22px;font-weight:700;letter-spacing:-.03em;white-space:nowrap}
+.chip .p.down{color:var(--redink)}
+.chip .thr{grid-column:1/-1;display:flex;justify-content:space-between;align-items:baseline;border-top:1px solid var(--line);padding-top:7px;font-size:14px;color:var(--ink2);font-weight:500}
+.chip .thr b{font-weight:600;color:var(--ink);font-size:15px}
+.chip .thr em{font-style:normal;color:var(--ink3);font-size:13px;margin-left:3px}
+@media(orientation:landscape) and (max-height:820px){.chip{padding:10px 14px 8px;row-gap:4px}.chip .thr{padding-top:5px}.card{padding:12px 16px}}
+@media(orientation:portrait){
+  .band{flex-wrap:wrap;row-gap:6px;padding:12px 18px}
+  .when{margin-right:0;flex:1 1 100%;margin-left:0}
+  .stat{padding:0 14px 0 0;border-left:0}
+  #now{grid-template-columns:1fr 1fr;gap:10px}#watch{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+  .card{padding:12px 14px;column-gap:10px}.card .nm{font-size:18px}.card .k b{font-size:32px}.card .what{font-size:14px}.card .thr{font-size:13px}
+  .fine{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+  .chip{padding:10px 12px 8px}.chip .nm{font-size:16px}.chip .p{font-size:20px}
+}
+@media(max-width:600px){body{height:auto;overflow:auto}.fine{grid-template-columns:1fr 1fr}}
+
+/* names never clip: concept steps aside on watch cards when narrow; portrait fills its height */
+@media(max-width:1500px){.card.watch .nm small{display:none}.card.watch .k b{font-size:34px}}
+@media(orientation:portrait){
+  .card .nm small{display:none}.card.watch .k b{font-size:28px}.card .k span{font-size:12px}
+  .fine{align-content:stretch;grid-auto-rows:minmax(0,1fr)}.chip{align-content:center}
+}
+
+/* portrait watch cards stack: name, reason, number, rate. Long store names wrap in landscape. */
+.card.watch .nm{white-space:normal;line-height:1.1}
+@media(orientation:portrait){
+  .card.watch{grid-template-columns:minmax(0,1fr);grid-template-rows:auto auto auto auto}
+  .card.watch .k{grid-column:1;grid-row:3;text-align:left;margin-top:4px}
+  .card.watch .k b{display:inline;font-size:30px;margin-right:8px}.card.watch .k span{display:inline}
+  .card.watch .thr{grid-row:4}
+}
+
+.where{display:inline-flex;align-items:center;gap:10px}.where .logo{width:28px;height:28px;flex:none;color:#1d1d1f}
+
+.card .what .run{display:block;margin-top:4px;font-size:14px;color:var(--ink2);font-weight:600;font-variant-numeric:tabular-nums}
+/* PHONE: the console gets opened on an iPhone too. The page scrolls; every card is one column; nothing clips. */
+@media(max-width:500px){
+  html,body{height:auto}
+  body{display:flex;flex-direction:column;min-height:100vh;overflow:visible;overflow-x:hidden;gap:14px;padding:12px 12px 16px}
+  .band{display:grid;grid-template-columns:1fr 1fr;gap:6px 12px;padding:12px 16px;min-height:0}
+  .where{grid-column:1/-1;font-size:20px;white-space:normal;flex-wrap:wrap;gap:6px 8px}
+  .where span{font-size:14px}
+  .when{grid-column:1/-1;margin:0;font-size:14px;white-space:normal}
+  .stat{padding:0;border-left:0;gap:6px}
+  .stat b{font-size:24px}.stat span{font-size:13px}
+  section{display:block;min-height:0}
+  section h2{margin-bottom:8px}
+  #now,#watch{grid-template-columns:1fr;gap:10px}
+  .card{padding:12px 14px;column-gap:12px}
+  .card .nm{white-space:normal;line-height:1.1}
+  .card .nm small{display:inline}
+  .card.watch{grid-template-columns:minmax(0,1fr) max-content;grid-template-rows:auto auto auto}
+  .card.watch .k{grid-column:2;grid-row:1/3;text-align:right;margin:0}
+  .card.watch .k b{display:block;font-size:32px;margin:0}.card.watch .k span{display:block}
+  .card.watch .thr{grid-row:3}
+  .card .k b{font-size:32px}.card .k span{font-size:13px}
+  .fine{grid-template-columns:1fr 1fr;gap:10px;grid-auto-rows:auto;align-content:start}
+  .chip{padding:10px 12px 8px;align-content:start}.chip .nm{font-size:15px}.chip .p{font-size:20px}
+  .chip .thr{font-size:13px;flex-wrap:wrap;gap:2px 8px}.chip .thr b{font-size:14px}.chip .thr em{font-size:13px}
+}
+/* phone in landscape: the page scrolls; the header wraps instead of running off the screen */
+@media(orientation:landscape) and (max-height:500px){
+  html,body{height:auto}
+  body{display:flex;flex-direction:column;min-height:100vh;overflow:visible;overflow-x:hidden;gap:14px;padding:12px 16px 16px}
+  .band{flex-wrap:wrap;row-gap:6px;min-height:0;padding:10px 16px}
+  .when{margin-right:auto}
+  .stat{padding:0 14px 0 0;border-left:0}
+  .stat b{font-size:24px}.stat span{font-size:13px}
+  section{display:block;min-height:0}
+  section h2{margin-bottom:8px}
+  #now{grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:10px}#watch{grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px}
+  .card.watch{grid-template-columns:minmax(0,1fr) max-content;grid-template-rows:auto auto auto}
+  .card.watch .k{grid-column:2;grid-row:1/3;text-align:right;margin:0}.card.watch .k b{display:block;font-size:30px}.card.watch .k span{display:block}.card.watch .thr{grid-row:3}
+  .card{padding:12px 14px}.card .nm{white-space:normal;line-height:1.1}
+  .card .nm small{display:none}
+  .fine{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;grid-auto-rows:auto;align-content:start}
+  .chip{align-content:start;min-height:0;overflow:visible;padding:10px 12px 8px}
+}
+/* narrow phones: one on-plan chip per row, so no store name is ever cut */
+@media(max-width:400px){.fine{grid-template-columns:1fr}}
+/* header never runs off the screen: below 1400px wide it is two rows — name and clock, then the five numbers */
+@media(orientation:landscape) and (max-width:1400px) and (min-height:501px){
+  .band{display:grid;grid-template-columns:repeat(5,auto);justify-content:start;column-gap:0;row-gap:6px;padding:10px 20px}
+  .where{grid-column:1/3}
+  .when{grid-column:3/-1;margin:0 0 0 14px}
+  .stat{grid-row:2}
+  .when+.stat{border-left:0;padding-left:0}
+}
+/* short landscape (9.7-inch iPad): the on-plan field shares the leftover height, so the last row is never cut off */
+@media(orientation:landscape) and (max-height:800px){
+  .card{padding:10px 14px}
+  .fine{grid-auto-rows:minmax(0,1fr);align-content:stretch}
+  .chip{min-height:0;overflow:hidden;align-content:center;padding:8px 14px 6px;row-gap:4px}
+  .chip .thr{padding-top:4px}
+}
+/* 9.7-inch iPad landscape: four on-plan chips per row, so store names stay whole */
+@media(orientation:landscape) and (max-width:1100px) and (min-height:501px){.fine{grid-template-columns:repeat(4,minmax(0,1fr))}}
+
+/* ===== TALL DISPLAY: one column, fills the height, large ===== */
+body{display:grid;grid-template-rows:auto minmax(0,1fr) minmax(0,1fr) minmax(0,2.2fr) auto!important;height:100vh;overflow:hidden;gap:20px;padding:0 28px 28px;align-content:stretch}
+.band{min-height:120px;padding:16px 36px;border-radius:0;margin:0 -28px;flex-wrap:wrap;gap:12px 28px}.where{font-size:40px}.where .logo{width:64px;height:64px}
+.band .k b,.band b{font-size:42px}.band span,.band small{font-size:20px}
+section{min-height:0;display:grid;grid-template-rows:auto minmax(0,1fr);gap:12px}
+h2{font-size:26px!important;letter-spacing:2.6px}
+#now{grid-template-columns:1fr 1fr!important;gap:18px;min-height:0}#watch{grid-template-columns:1fr 1fr 1fr!important;gap:18px;min-height:0}
+.fine{grid-template-columns:repeat(3,1fr)!important;grid-auto-rows:minmax(0,1fr)!important;gap:16px;min-height:0;align-content:stretch!important}
+.card{padding:22px 26px!important;row-gap:10px!important;min-height:0;align-content:start}
+.card .nm{font-size:40px!important}.card .nm small{font-size:22px!important}.card .what{font-size:26px!important}.card .k b{font-size:80px!important}.card .k span{font-size:22px!important}.card .go{font-size:28px!important;margin-top:auto}.card .run{font-size:22px!important}
+.card .thr{font-size:24px!important}.card .thr b{font-size:34px!important}
+.chip{padding:18px 22px!important;row-gap:8px!important;min-height:0}.chip .nm{font-size:30px!important}.chip .pct,.chip b.num{font-size:44px!important}.chip small,.chip span{font-size:20px!important}
+.light{width:20px!important;height:20px!important}
+
+.ttabs{background:#fff;border-top:1px solid var(--line);padding:20px 44px calc(24px + env(safe-area-inset-bottom));display:grid;grid-template-columns:1fr 1fr 1fr 120px;gap:16px;margin:0 -28px}
+.ttabs a{height:104px;border-radius:26px;display:grid;place-items:center;font-size:32px;font-weight:800;background:#f2f2f7;color:#1d1d1f;text-decoration:none}
+.ttabs a.on{background:#1c1c1e;color:#fff}.ttabs a.bell{font-size:40px;position:relative}.ttabs a.bell em{position:absolute;top:22px;right:26px;width:18px;height:18px;border-radius:50%;background:#c8f000;border:3px solid #fff}
+</style></head>
+<body>
+  <header class="band">
+    <div class="where"><svg class="logo" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="20" fill="#c8f000"/><g transform="translate(20 20.6) scale(.62) translate(-20 -21)"><circle cx="20" cy="11.5" r="6.5" fill="#0b120e"/><path d="M4.5 21.5h31a1.5 1.5 0 0 1 1.5 1.6C36.2 30.6 29 36.5 20 36.5S3.8 30.6 3 23.1a1.5 1.5 0 0 1 1.5-1.6z" fill="#0b120e"/></g></svg> Bowl-O-Matic 5000 <span>All stores</span></div>
+    <div class="when">Thu <span id="clock">12:18</span> · Peak 12:30–12:50</div>
+    <div class="stat"><b id="fleetPace" class="num">3,930</b><span>orders / hr</span></div>
+    <div class="stat good"><b id="fleetPct" class="num">100%</b><span>of plan</span></div>
+    <div class="stat"><b id="toGo" class="num">3,180</b><span>to go</span></div>
+    <div class="stat"><b id="active" class="num">17<small>/20</small></b><span>active</span></div>
+    <div class="stat bad"><b id="needCount" class="num">2</b><span>need you</span></div>
+  </header>
+  <section><h2><i></i>Needs you now</h2><div class="now" id="now"></div></section>
+  <section><h2 class="w"><i></i>Watch · <b id="watchCount"></b> stores</h2><div class="watch" id="watch"></div></section>
+  <section><h2 class="f"><i></i><b id="fineCount"></b> stores on plan · 100% = on plan</h2><div class="fine" id="fine"></div></section>
+<script>
+const S=[
+ {n:'Uptown',c:'Bowls',s:'now',what:'Quinoa under-dispensing · line held 12:16',run:'Recipe SF-0912 · Salesforce ×50 · 31 done · due 12:30',k:7,l:'orders rerouting',go:'Open the Uptown panel',href:'lunch-rush-tall.html',p:0,e:30},
+ {n:'Airport T2',c:'Tacos',s:'now',what:'Door interlock open · line stopped',k:3,l:'orders waiting',go:'Crew paged · 2 min',p:0,e:52},
+ {n:'Midtown',c:'Bowls',s:'watch',what:'Cleaning · back 12:24',k:6,l:'min left',p:0,e:30},
+ {n:'Stadium',c:'Burgers',s:'watch',what:'Patties low · refill 12:33',k:-20,l:'of plan',p:44,e:55},
+ {n:'Campus North',c:'Salads',s:'watch',what:'Greens low · refill 12:29',k:-17,l:'of plan',p:20,e:24},
+ {n:'Harbor',c:'Bowls',i:'Refill 12:41',p:36,e:30},{n:'Old Town',c:'Tacos',i:'12 in queue',p:58,e:52},{n:'Riverside',c:'Salads',i:'Greens 12:38',p:27,e:24},{n:'Tech Park',c:'Bowls',i:'9 in queue',p:33,e:30},{n:'Westgate',c:'Burgers',i:'Peak in 12 min',p:59,e:55},
+ {n:'Union Sq',c:'Bowls',i:'Refill 12:44',p:32,e:30},{n:'Lakeside',c:'Salads',i:'6 in queue',p:25,e:24},{n:'Eastside',c:'Tacos',i:'11 in queue',p:54,e:52},{n:'Civic',c:'Bowls',i:'On plan all day',p:30,e:30},{n:'Southpoint',c:'Burgers',i:'Cleaning 1:10',p:55,e:55},
+ {n:'Hillcrest',c:'Salads',i:'Dressing 12:35',p:23,e:24},{n:'Marina',c:'Bowls',i:'Rice 12:36',p:29,e:30},{n:'Downtown',c:'Tacos',i:'Catching up',p:49,e:52},{n:'Parkway',c:'Bowls',i:'8 in queue',p:31,e:30},{n:'Northgate',c:'Burgers',i:'Patties 12:30',p:50,e:55},
+];
+const pct=x=>Math.round((x.p-x.e)/x.e*100);
+const order={now:0,watch:1};
+const light=x=>x.s==='now'?'red':x.s==='watch'?'amber':'';
+function render(){
+  const now=S.filter(x=>x.s==='now'), watch=S.filter(x=>x.s==='watch'), fine=S.filter(x=>!x.s).sort((a,b)=>pct(a)-pct(b));
+  document.getElementById('now').innerHTML=now.map(x=>`<button class="card now" ${x.href?`onclick="location.href='${x.href}'"`:''}>
+    <div class="top"><i class="light red"></i><span class="nm">${x.n}<small>${x.c}</small></span></div>
+    <div class="what">${x.what}${x.run?`<span class="run">${x.run}</span>`:''}</div>
+    <div class="k"><b class="num">${x.k}</b><span>${x.l}</span></div>
+    <div class="go">${x.go} ›</div></button>`).join('');
+  document.getElementById('watch').innerHTML=watch.map(x=>`<button class="card watch">
+    <div class="top"><i class="light amber"></i><span class="nm">${x.n}<small>${x.c}</small></span></div>
+    <div class="what">${x.what}</div>
+    <div class="k"><b class="num">${x.l==='of plan'?(100+x.k)+'%':x.k}</b><span>${x.l}</span></div>
+    ${x.p?`<div class="thr"><span><b class="num">${x.p*6}</b> /hr</span><span><b class="num">:${Math.round(600/x.p)}</b> ea</span></div>`:''}</button>`).join('');
+  document.getElementById('fine').innerHTML=fine.map(x=>{const d=pct(x),hr=x.p*6,sec=Math.round(3600/hr);return `<div class="chip" title="${x.i}">
+    <div class="top"><i class="light"></i><span class="nm">${x.n}</span></div>
+    <span class="p num ${d<0?'down':''}">${100+d}%</span>
+    <div class="thr"><span>${x.c}</span><span><b class="num">${hr}</b><em>/hr</em> &nbsp; <b class="num">:${sec}</b><em>ea</em></span></div></div>`;}).join('');
+  document.getElementById('needCount').textContent=now.length;
+  document.getElementById('watchCount').textContent=watch.length;
+  document.getElementById('fineCount').textContent=fine.length;
+  document.getElementById('active').innerHTML=S.filter(x=>x.p>0).length+'<small>/'+S.length+'</small>';
+  const run=S.filter(x=>x.p>0);const P=run.reduce((a,x)=>a+x.p,0),E=run.reduce((a,x)=>a+x.e,0);
+  document.getElementById('fleetPace').textContent=(P*6).toLocaleString();
+  const fp=Math.round((P-E)/E*100);const el=document.getElementById('fleetPct');el.textContent=(100+fp)+'%';el.parentElement.className='stat '+(fp>=0?'good':'bad');
+}
+render();
+/* LIVE: 1 real second = 6 seconds on the floor. */
+let NOW=12*60+18, SEC=0, TOGO=3180;
+const clock=t=>{const h=Math.floor(t/60),m=t%60;return (h>12?h-12:h)+':'+String(m).padStart(2,'0');};
+setInterval(()=>{
+  SEC+=6;
+  if(SEC>=60){ SEC-=60; NOW+=1;
+    S.forEach(x=>{ if(x.p>0){ x.p=Math.max(1, x.p+(Math.random()<0.5?-1:1)*(Math.random()<0.45?1:0)); } });
+    const mid=S.find(x=>x.n==='Midtown'); if(mid.s==='watch'&&mid.l==='min left'){ mid.k=Math.max(0,mid.k-1); if(mid.k===0){ mid.s=undefined; mid.p=30; mid.i='Back from cleaning'; } else mid.what='Cleaning · back '+clock(NOW+mid.k); }
+    S.filter(x=>x.s==='watch'&&x.l==='of plan').forEach(x=>{ x.k=pct(x); });
+    document.getElementById('clock').textContent=clock(NOW);
+    render();
+  }
+  TOGO=Math.max(0,TOGO-Math.round(S.reduce((a,x)=>a+x.p,0)/100));
+  document.getElementById('toGo').textContent=TOGO.toLocaleString();
+},1000);
+</script>
+<nav class="ttabs"><a href="orders-tall.html">Orders</a><a href="lunch-rush-tall.html">Assembly</a><a class="on" href="manager-tall.html">Manager</a><a class="bell" href="orders-tall.html">🔔<em></em></a></nav></body></html>

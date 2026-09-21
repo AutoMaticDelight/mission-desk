@@ -22,7 +22,13 @@ on day one" and to be shown on screen share.
   - `design-system.html` — tokens, live states, components, rules, CSS + JSON export
   - `prep.html` — interview prep (about you, call plan, keywords, say-this, panels)
   - `photos.html` — review sheet of all 16 ingredient photos as the panel crops them
-  - `large.html` — the **large tablet series**: every screen framed live at 1024×1366
+  - **Tall display series (the wall tablet on the machine, ≈16:36, built at 1080×2400):**
+    `orders-tall.html` (Orders list in Lab37's own IA: filters with counts, order rows with
+    station / bowls / notes / allergy chips, status pill, courier timer), `order-tall.html`
+    (order detail: Item / Goal / Actual grams, total, photo, release action),
+    `lunch-rush-tall.html` (Assembly = the worker panel), `manager-tall.html`. Bottom tab bar
+    Orders · Assembly · Manager · bell on all four. Skin: `tall.css`.
+  - `large.html` — the **large display series**: every screen framed live at 1024×1366
     portrait and 1366×1024 landscape, tap a name to open full size.
   - **Internal tools (one per posting item), shared skin `tools.css`:** `inventory.html`,
     `recipe-builder.html`, `schedule.html`, `training.html` (LMS), `metrics.html`.
