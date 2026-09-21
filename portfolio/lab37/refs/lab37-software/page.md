@@ -222,3 +222,7 @@ Font files downloaded to font/ (families the page declares explicitly; Framer's 
 | pK0VRPgxrWcQAkt33f9PY8n7KQ.jpg | 4466×6088 | (near) Intelligence that transforms kitchens | img src, img srcset, raw scan | https://framerusercontent.com/images/pK0VRPgxrWcQAkt33f9PY8n7KQ.jpg |
 | u8Q5P2udIHePSJsStqioYMqnb4.png | 180×180 | link rel=apple-touch-icon | link icon, raw scan | https://framerusercontent.com/images/u8Q5P2udIHePSJsStqioYMqnb4.png |
 | yDgux3gwMTX6CNMOWK89q1iF0.jpg | 7990×3989 | (near) Intelligence that transforms kitchens | img src, img srcset, raw scan | https://framerusercontent.com/images/yDgux3gwMTX6CNMOWK89q1iF0.jpg |
+
+## Screenshots
+
+desktop.png (1440 wide, full page), fold.png (1440×900 first screen), phone.png (390 wide, full page). Captured with headless Chromium through the session proxy (TLS errors ignored for the capture only). Framer's scroll-triggered blocks were forced visible before the shot; a few large lazy image panels (the hero and some section media) still render as blank grey/white boxes in the full-page capture — use the files in img/ for those.
