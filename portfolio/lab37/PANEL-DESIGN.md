@@ -81,6 +81,24 @@ green on this page is Apple system green `#34c759`; amber and lime unchanged.
 rows — Base, Sides, Sauces — showing the level as the fill alone, no number. Protein keeps its percent. HELD still
 shows as a word.
 
+## Lab37 skin — the machine's own screen (`l37/`, 2026-09-21)
+
+Built from the Bowl Builder screens on lab37.us/bowlbuilder/software (captures in `refs/lab37-software/`):
+a **portrait tablet mounted on the machine door**, measured at about 16 wide × 30 tall from the photo
+(bezel ≈ 15 × 32). Language read off the screens: white surface, near-black ink `#141414`, grey chips
+`#e0e0e0` / `#f7f7f7`, **black pill = selected**, hairline `#eee` dividers, pastel tags (`#acdba7` green,
+`#e5e8a0` yellow, `#f8c9d3` pink, `#dbc9a7` tan, `#c9e1f8` blue, `#d5d5d5` grey), one warm color
+`#fc762d` orange, link blue `#0099ff`, quiet Suisse Int'l Book/Medium (their actual woff2, served from refs),
+Suisse Mono for numbers, header "▮ Bowl Builder · time", big sentence-case title, chip filters, list rows
+with a status pill on the right, bottom tab bar with the active tab as a black pill. Tokens in `l37/l37.css`.
+
+`l37/supply.html` — the 30-bin panel as a Bowl Builder screen: chips (All · Low · Critical · Held · Protein ·
+Base · Sides · Sauces), grouped rows (bin number tile, name, status pill, 6px level track in the pastel of
+the state, mono percent, tags for temperature / hopper / source), tap a row for a sheet (level, temperature,
+range, use rate, Mark refilled / Hold bin). Orange is the critical color here, not lime; readability floors
+still hold (names 15px, labels 13px, tags 11px only inside chips). Framed on the grey stage their renders use;
+full-bleed on a phone.
+
 ## Machine layout (one shape, everywhere)
 Locked 2026-09-18, revised three times same day (diamond → one row per
 category → this, sized by real dispenser hardware). The machine has **18

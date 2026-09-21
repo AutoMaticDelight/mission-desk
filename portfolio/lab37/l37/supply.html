@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Bowl Builder · Supply — Lab37 skin</title>
+<link rel="stylesheet" href="l37.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{background:var(--stage);font-family:var(--font);font-weight:450;color:var(--ink);-webkit-font-smoothing:antialiased;letter-spacing:-.01em;display:grid;place-items:center;overflow:hidden}
+/* the mounted screen: portrait, 9:17 as measured from the door-mounted tablet in the Lab37 photos */
+.device{--h:min(100vh - 24px,980px);height:var(--h);width:calc(var(--h) * .53);background:#0a0a0a;border-radius:30px;padding:12px;box-shadow:0 30px 60px rgba(0,0,0,.18),0 2px 6px rgba(0,0,0,.2)}
+.screen{width:100%;height:100%;background:var(--paper);border-radius:20px;overflow:hidden;display:grid;grid-template-rows:auto auto auto minmax(0,1fr) auto;position:relative}
+@media(max-width:600px){body{display:block;overflow:auto}.device{--h:auto;height:auto;width:100%;padding:0;border-radius:0;box-shadow:none}.screen{border-radius:0;min-height:100vh;height:100vh}}
+/* header */
+.hd{display:flex;align-items:center;justify-content:space-between;padding:14px 18px 6px;font-size:13px;font-weight:500}
+.hd .brand::before{content:'';display:inline-block;width:7px;height:12px;background:var(--ink);border-radius:2px;margin-right:8px;vertical-align:-1px}
+.hd .time{color:var(--dim);font-weight:450;font-variant-numeric:tabular-nums}
+.tt{display:flex;align-items:center;justify-content:space-between;padding:6px 18px 12px}
+.tt h1{font-size:30px;font-weight:450;letter-spacing:-.02em;line-height:1}
+.btn{font:inherit;font-size:13px;font-weight:500;border:0;background:var(--ink);color:#fff;border-radius:var(--r-pill);padding:10px 14px;min-height:36px;cursor:pointer}
+.btn.line{background:#fff;color:var(--ink);box-shadow:inset 0 0 0 1px #d9d9d9}
+/* filter chips */
+.chips{display:flex;gap:6px;padding:0 18px 12px;overflow-x:auto;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;font:inherit;font-size:13px;font-weight:500;border:0;background:var(--chip2);box-shadow:inset 0 0 0 1px #e6e6e6;color:var(--ink);border-radius:var(--r-pill);padding:7px 11px;min-height:32px;display:flex;align-items:center;gap:6px;cursor:pointer}
+.chip small{font-size:11px;color:var(--dim);background:#fff;border-radius:999px;padding:1px 6px;font-variant-numeric:tabular-nums}
+.chip.on{background:var(--ink);color:#fff;box-shadow:none}.chip.on small{background:rgba(255,255,255,.18);color:#fff}
+/* list */
+.list{overflow-y:auto;padding:0 0 12px;scrollbar-width:none}
+.list::-webkit-scrollbar{display:none}
+.sec{font-size:12px;font-weight:500;color:var(--dim);padding:14px 18px 6px;display:flex;justify-content:space-between}
+.row{display:grid;grid-template-columns:34px minmax(0,1fr) auto;grid-template-rows:auto auto;column-gap:12px;row-gap:6px;align-items:center;padding:11px 18px;border-top:1px solid var(--line);cursor:pointer}
+.row:active{background:var(--chip2)}
+.ico{grid-row:1/3;width:34px;height:34px;border-radius:9px;background:var(--chip);display:grid;place-items:center;font-family:var(--mono);font-size:12px;color:var(--ink)}
+.row.held .ico{background:var(--tag-grey)}
+.nm{display:flex;align-items:baseline;gap:8px;min-width:0}
+.nm b{font-size:15px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nm span{font-family:var(--mono);font-size:12px;color:var(--mute)}
+.st{grid-column:3;grid-row:1;display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:500;background:var(--chip2);box-shadow:inset 0 0 0 1px #e6e6e6;border-radius:var(--r-pill);padding:4px 9px;white-space:nowrap}
+.st i{width:7px;height:7px;border-radius:50%;background:#2fb457}
+.row.low .st i{background:#d9a300}.row.now .st i{background:var(--orange)}.row.held .st i{background:var(--mute)}
+.row.now .st{background:#fff2ea;box-shadow:inset 0 0 0 1px #ffd6be}
+.meta{grid-column:2/4;grid-row:2;display:grid;grid-template-columns:minmax(0,1fr) 44px;align-items:center;gap:10px}
+.track{height:6px;border-radius:3px;background:#e9e9e9;overflow:hidden}
+.track i{display:block;height:100%;width:calc(var(--l,0)*1%);background:var(--tag-green);border-radius:3px;transition:width .6s cubic-bezier(.2,.7,.2,1),background-color .35s}
+.row.low .track i{background:var(--tag-yellow)}.row.now .track i{background:var(--orange)}.row.held .track i{background:var(--tag-grey)}
+.pct{font-family:var(--mono);font-size:13px;text-align:right;color:var(--ink);font-variant-numeric:tabular-nums}
+.row.held .pct{color:var(--mute)}
+.tags{grid-column:2/4;grid-row:3;display:flex;gap:6px;flex-wrap:wrap}
+.tag{font-size:11px;font-weight:500;padding:3px 7px;border-radius:6px;background:var(--chip2);color:var(--dim)}
+.tag.warm{background:var(--tag-pink);color:#5a2230}.tag.temp{font-family:var(--mono)}
+.row.talert .tag.temp{background:var(--tag-pink);color:#5a2230}
+/* bottom tabs */
+.tabs{display:flex;gap:6px;padding:10px 12px calc(12px + env(safe-area-inset-bottom));border-top:1px solid var(--line);background:#fff}
+.tab{flex:1;font:inherit;font-size:13px;font-weight:500;border:0;background:var(--chip2);box-shadow:inset 0 0 0 1px #e6e6e6;border-radius:var(--r-pill);min-height:38px;color:var(--ink);cursor:pointer}
+.tab.on{background:var(--ink);color:#fff;box-shadow:none}
+.tab.bell{flex:0 0 44px;font-size:15px}
+/* sheet */
+.dim{position:absolute;inset:0;background:rgba(0,0,0,.28);opacity:0;pointer-events:none;transition:opacity .2s}
+.sheet{position:absolute;left:0;right:0;bottom:0;background:#fff;border-radius:20px 20px 0 0;padding:14px 18px calc(18px + env(safe-area-inset-bottom));transform:translateY(105%);transition:transform .28s cubic-bezier(.2,.7,.2,1);box-shadow:0 -10px 30px rgba(0,0,0,.12)}
+.screen.open .dim{opacity:1;pointer-events:auto}.screen.open .sheet{transform:none}
+.sheet .grab{width:36px;height:4px;border-radius:2px;background:#ddd;margin:0 auto 14px}
+.sheet h2{font-size:22px;font-weight:450;letter-spacing:-.02em}
+.sheet .sub{font-size:13px;color:var(--dim);margin-top:2px}
+.sheet .big{display:flex;align-items:baseline;gap:14px;margin:18px 0 6px}
+.sheet .big b{font-size:44px;font-weight:450;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.sheet .big span{font-size:13px;color:var(--dim)}
+.sheet .track{height:8px;border-radius:4px;margin:6px 0 16px}
+.sheet .kv{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:16px}
+.sheet .kv div{background:var(--chip2);border-radius:var(--r-tile);padding:10px 12px}
+.sheet .kv small{display:block;font-size:11px;color:var(--dim);margin-bottom:3px}
+.sheet .kv b{font-size:15px;font-weight:500;font-variant-numeric:tabular-nums}
+.sheet .acts{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.sheet .btn{min-height:46px;font-size:14px}
+.sheet .btn.wide{grid-column:1/3}
+</style></head>
+<body>
+<div class="device"><div class="screen" id="screen">
+  <div class="hd"><span class="brand">Bowl Builder</span><span class="time" id="time">12:18 PM · Sep 21, 2026</span></div>
+  <div class="tt"><h1>Supply</h1><button class="btn" onclick="toast('Refill logged')">Log refill</button></div>
+  <div class="chips" id="chips"></div>
+  <div class="list" id="list"></div>
+  <div class="tabs"><button class="tab">Orders</button><button class="tab on">Supply</button><button class="tab">Assembly</button><button class="tab">Settings</button><button class="tab bell" aria-label="Alerts">🔔</button></div>
+  <div class="dim" onclick="closeSheet()"></div>
+  <div class="sheet" id="sheet"></div>
+</div></div>
+<script>
+const H=[
+ {slot:1,n:'Fried Chicken',row:'P',sz:'L',hot:1,l:58,b:2.4,t:150,crit:30,low:50,src:'fryer 1'},
+ {slot:2,n:'BBQ Chicken',row:'P',sz:'L',hot:1,l:44,b:2.1,t:152,crit:30,low:50,src:'grill'},
+ {slot:3,n:'BBQ Steak',row:'P',sz:'L',hot:1,l:27,b:1.9,t:148,crit:30,low:45,src:'grill'},
+ {slot:4,n:'Tofu',row:'P',sz:'L',hot:1,l:71,b:.9,t:146,crit:25,low:40,src:'oven'},
+ {slot:5,n:'Cauliflower',row:'P',sz:'L',hot:1,l:63,b:1.2,t:151,crit:25,low:40,src:'fryer 2'},
+ {slot:7,n:'White Rice',row:'B',sz:'L',hot:1,l:49,b:2.6,t:161,crit:25,low:45,src:'cooker 1'},
+ {slot:8,n:'Power Grains',row:'B',sz:'L',hot:1,l:0,b:1.8,t:131,crit:25,low:45,held:1,src:'cooker 2'},
+ {slot:9,n:'Cauli Rice',row:'B',sz:'L',hot:1,l:66,b:1.1,t:150,crit:20,low:40,src:'steamer'},
+ {slot:10,n:'Greens',row:'B',sz:'L',hot:0,l:80,b:1.3,t:36,crit:20,low:40,src:'walk-in'},
+ {slot:11,n:'Jammy Egg',row:'M',sz:'M',hot:0,l:52,b:1.4,t:38,crit:20,low:35},
+ {slot:12,n:'Avocado',row:'M',sz:'M',hot:0,l:31,b:1.6,t:38,crit:25,low:40},
+ {slot:13,n:'Tzatziki',row:'M',sz:'M',hot:0,l:74,b:.9,t:37,crit:15,low:30},
+ {slot:14,n:'Hummus',row:'M',sz:'M',hot:0,l:60,b:.8,t:38,crit:15,low:30},
+ {slot:15,n:'Broccoli',row:'M',sz:'M',hot:1,l:22,b:1.9,t:146,crit:25,low:40},
+ {slot:16,n:'Sweet Potato',row:'M',sz:'M',hot:1,l:57,b:1.5,t:148,crit:20,low:35},
+ {slot:17,n:'Mushrooms',row:'M',sz:'M',hot:1,l:45,b:1.1,t:145,crit:20,low:35},
+ {slot:18,n:'Kale Slaw',row:'M',sz:'M',hot:0,l:68,b:1.0,t:37,crit:20,low:35},
+ {slot:19,n:'Kimchi',row:'M',sz:'M',hot:0,l:83,b:.7,t:38,crit:15,low:30},
+ {slot:20,n:'Pickled Onion',row:'M',sz:'M',hot:0,l:90,b:.5,t:39,crit:10,low:25},
+ {slot:21,n:'Greek Salad',row:'M',sz:'M',hot:0,l:38,b:1.2,t:37,crit:20,low:40},
+ {slot:22,n:'Black Beans',row:'M',sz:'M',hot:1,l:64,b:1.3,t:150,crit:20,low:35},
+ {slot:23,n:'BBQ',row:'S',sz:'S',hot:0,l:36,b:1.5,t:38,crit:25,low:40},
+ {slot:24,n:'Ranch',row:'S',sz:'S',hot:0,l:72,b:.9,t:38,crit:15,low:30},
+ {slot:25,n:'Spicy Mayo',row:'S',sz:'S',hot:0,l:55,b:1.0,t:39,crit:15,low:30},
+ {slot:26,n:'Tzatziki Sauce',row:'S',sz:'S',hot:0,l:61,b:.8,t:38,crit:15,low:30},
+ {slot:27,n:'Garlic White',row:'S',sz:'S',hot:0,l:47,b:.7,t:38,crit:15,low:30},
+ {slot:28,n:'Hot Sauce',row:'S',sz:'S',hot:0,l:88,b:.4,t:40,crit:10,low:20},
+ {slot:29,n:'Tahini',row:'S',sz:'S',hot:0,l:58,b:.6,t:38,crit:15,low:30},
+];
+const ROWS={P:'Protein',B:'Base',M:'Sides',S:'Sauces'}; const SRC={P:'Protein hopper',B:'Base hopper',M:'Sides bin',S:'Sauce dispenser'};
+const RANGE={hot:[140,165],cold:[34,41]}; const tempOK=x=>{const r=RANGE[x.hot?'hot':'cold'];return x.t>=r[0]&&x.t<=r[1];};
+const st=x=>x.held?'held':x.l<(x.crit??25)?'now':x.l<(x.low??40)?'low':'ok';
+const WORD={ok:'Fine',low:'Low',now:'Scrape it',held:'Held'};
+let FILTER='all'; let NOW=12*60+18, SEC=0; const pace=t=>t<12*60+45?1.35:1.0;
+const CHIPS=[['all','All'],['low','Low'],['now','Critical'],['held','Held'],['P','Protein'],['B','Base'],['M','Sides'],['S','Sauces']];
+const count=k=>k==='all'?H.length:['low','now','held'].includes(k)?H.filter(x=>st(x)===k).length:H.filter(x=>x.row===k).length;
+function chips(){document.getElementById('chips').innerHTML=CHIPS.map(([k,l])=>`<button class="chip ${FILTER===k?'on':''}" onclick="FILTER='${k}';render()">${l}<small>${count(k)}</small></button>`).join('');}
+const rowHTML=x=>{const z=st(x),ok=tempOK(x);return `<div class="row ${z} ${ok?'':'talert'}" onclick="openSheet(${x.slot})">
+  <div class="ico">${x.slot}</div>
+  <div class="nm"><b>${x.n}</b><span>#${x.slot}</span></div>
+  <span class="st"><i></i>${WORD[z]}</span>
+  <div class="meta"><div class="track"><i style="--l:${x.held?0:x.l}"></i></div><div class="pct">${x.held?'—':Math.round(x.l)+'%'}</div></div>
+  <div class="tags"><span class="tag temp">${x.t}°${ok?'':' · out of range'}</span><span class="tag">${SRC[x.row]}</span>${x.src?`<span class="tag">${x.src}</span>`:''}${x.just?'<span class="tag">Refilled · '+x.just+'</span>':''}</div>
+</div>`;};
+function render(){
+  chips();
+  const keep=x=>FILTER==='all'||(['low','now','held'].includes(FILTER)?st(x)===FILTER:x.row===FILTER);
+  let html='';
+  for(const r of ['P','B','M','S']){const xs=H.filter(x=>x.row===r&&keep(x)); if(!xs.length) continue;
+    const low=xs.filter(x=>st(x)!=='ok').length;
+    html+=`<div class="sec"><span>${ROWS[r]}</span><span>${xs.length} bins${low?' · '+low+' need you':''}</span></div>`+xs.map(rowHTML).join('');}
+  document.getElementById('list').innerHTML=html||'<div class="sec">Nothing here</div>';
+}
+function openSheet(slot){const x=H.find(y=>y.slot===slot),z=st(x);
+  document.getElementById('sheet').innerHTML=`<div class="grab"></div><h2>${x.n}</h2><div class="sub">#${x.slot} · ${SRC[x.row]}${x.src?' · '+x.src:''}</div>
+  <div class="big"><b>${x.held?'Held':Math.round(x.l)+'%'}</b><span>${x.held?'not dispensing':WORD[z]+' · about '+Math.max(1,Math.round(x.l/x.b))+' min at this pace'}</span></div>
+  <div class="track"><i style="--l:${x.held?0:x.l};background:${z==='ok'?'var(--tag-green)':z==='low'?'var(--tag-yellow)':z==='now'?'var(--orange)':'var(--tag-grey)'}"></i></div>
+  <div class="kv"><div><small>Temperature</small><b>${x.t}°</b></div><div><small>Range</small><b>${x.hot?'140–165°':'34–41°'}</b></div><div><small>Use rate</small><b>${x.b}%/min</b></div></div>
+  <div class="acts"><button class="btn wide" onclick="refill(${x.slot})">Mark refilled</button><button class="btn line" onclick="hold(${x.slot})">${x.held?'Release hold':'Hold bin'}</button><button class="btn line" onclick="closeSheet()">Close</button></div>`;
+  document.getElementById('screen').classList.add('open');}
+function closeSheet(){document.getElementById('screen').classList.remove('open');}
+function refill(slot){const x=H.find(y=>y.slot===slot);x.l=100;x.held=0;x.just='Maya';setTimeout(()=>{x.just=null;render();},60000);closeSheet();render();}
+function hold(slot){const x=H.find(y=>y.slot===slot);x.held=x.held?0:1;closeSheet();render();}
+function toast(t){const s=document.getElementById('sheet');s.innerHTML=`<div class="grab"></div><h2>${t}</h2><div class="sub">Every refill is on the record with a time and a name.</div><div class="acts" style="margin-top:16px"><button class="btn wide" onclick="closeSheet()">Done</button></div>`;document.getElementById('screen').classList.add('open');}
+render();
+setInterval(()=>{SEC+=6;if(SEC>=60){SEC-=60;NOW+=1;const h=Math.floor(NOW/60),m=NOW%60;document.getElementById('time').textContent=`${h>12?h-12:h}:${String(m).padStart(2,'0')} PM · Sep 21, 2026`;}
+  H.forEach(x=>{if(x.held||x.just) return; x.l=Math.max(0,+(x.l-x.b*pace(NOW)/10).toFixed(2)); if(x.l<=12&&!x.due) x.due=NOW+1; if(x.due&&NOW>=x.due){x.due=null;x.l=100;x.just='Jordan';setTimeout(()=>{x.just=null;render();},60000);}});
+  if(!document.getElementById('screen').classList.contains('open')) render();},6000);
+</script>
+</body></html>

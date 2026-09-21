@@ -1,0 +1,25 @@
+/* Lab37 skin tokens — read off the Bowl Builder screens on lab37.us/bowlbuilder/software (refs/lab37-software).
+   White surface, black ink, grey chips, black selected state, pastel tags, quiet Suisse Int'l type, pill radii. */
+@font-face{font-family:'Suisse';src:url(../refs/lab37-software/font/qvA5wqLtbmOgLCmmrYdSOyruno4.woff2) format('woff2');font-weight:450;font-style:normal;font-display:swap}
+@font-face{font-family:'Suisse';src:url(../refs/lab37-software/font/asv9ET0ieem6ynchnrrX6ULzY.woff2) format('woff2');font-weight:400;font-style:normal;font-display:swap}
+@font-face{font-family:'Suisse';src:url(../refs/lab37-software/font/Qlp3Z6sPWeAIuawmm7Jun21DRZ4.woff2) format('woff2');font-weight:500;font-style:normal;font-display:swap}
+@font-face{font-family:'Suisse';src:url(../refs/lab37-software/font/miRXdXC9g2TgQxTTrSNb57M1dY.woff2) format('woff2');font-weight:700;font-style:normal;font-display:swap}
+@font-face{font-family:'Suisse Mono';src:url(../refs/lab37-software/font/oiKUPfsDn5rkT8tkG25Pimnrnzc.woff2) format('woff2');font-weight:400;font-style:normal;font-display:swap}
+:root{
+  --paper:#ffffff;      /* screen surface */
+  --stage:#ededed;      /* the grey their renders sit on */
+  --ink:#141414;        /* their near-black token */
+  --ink2:#050505;
+  --dim:#767676;        /* their grey token */
+  --mute:#aaaaaa;       /* their #aaa token */
+  --line:#eeeeee;       /* hairline dividers */
+  --chip:#e0e0e0;       /* grey chip / settings tile */
+  --chip2:#f7f7f7;      /* selected nav row */
+  --field:rgba(187,187,187,.15);
+  --blue:#0099ff;       /* their link / Ready blue */
+  --orange:#fc762d;     /* rgb(252,118,45) in their stylesheet — the one warm color */
+  --tag-green:#acdba7; --tag-yellow:#e5e8a0; --tag-blue:#c9e1f8; --tag-pink:#f8c9d3; --tag-tan:#dbc9a7; --tag-sand:#ded4c5; --tag-grey:#d5d5d5;
+  --font:'Suisse','Switzer',Inter,-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;
+  --mono:'Suisse Mono','SF Mono',ui-monospace,Menlo,monospace;
+  --r-pill:999px; --r-card:16px; --r-tile:12px; --r-chip:8px;
+}
