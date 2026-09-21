@@ -168,6 +168,24 @@ h3::after{content:'';flex:1;height:1px;background:var(--line-2);opacity:.7}
 .demo b{display:block;font:600 16px/1.25 var(--display);letter-spacing:-.01em;margin-bottom:2px}
 .demo .say{font-size:15px}
 .demo .say::before{content:'SAY';font:600 11px var(--mono);letter-spacing:.06em;color:var(--accent);margin-right:8px}
+.lines{display:grid;gap:12px}
+.line-card{border:1px solid var(--line);border-radius:12px;background:#fff;padding:14px 16px;display:grid;gap:8px}
+.line-card .q{font:600 17px/1.3 var(--display);letter-spacing:-.01em}
+.line-card .q::before{content:"THEY SAY";display:block;font:600 11px var(--mono);letter-spacing:.06em;color:var(--ink-3);margin-bottom:2px}
+.line-card .row3{display:grid;gap:10px}
+@media(min-width:720px){.line-card .row3{grid-template-columns:1.1fr 1fr 1fr}}
+.line-card .cell{background:var(--panel);border-radius:8px;padding:8px 12px;font-size:14px;color:var(--ink-2)}
+.line-card .cell b.h{display:block;font:600 11px var(--mono);letter-spacing:.06em;color:var(--accent);margin-bottom:3px}
+.line-card .cell a{font-weight:700}
+.line-card .say{font-size:15px;padding:8px 12px;background:var(--accent-bg);border-radius:8px;color:var(--ink)}
+.line-card .say::before{content:"SAY";font:600 11px var(--mono);letter-spacing:.06em;color:var(--accent);margin-right:8px}
+.tools{display:grid;gap:8px}
+@media(min-width:720px){.tools{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.tool{display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 12px;align-items:baseline;border:1px solid var(--line);border-radius:10px;background:#fff;padding:10px 14px}
+.tool .k{font:600 15px/1.2 var(--display);color:var(--ink);white-space:nowrap}
+.tool .k::after{content:" →";color:var(--ink-3)}
+.tool a{font-weight:700}
+.tool .s{grid-column:1/-1;font-size:14px;color:var(--ink-2)}
 .days{display:grid;gap:10px}
 @media(min-width:720px){.days{grid-template-columns:repeat(3,minmax(0,1fr))}}
 .day{background:var(--card);border-radius:12px;padding:14px 16px}
@@ -185,7 +203,7 @@ h3::after{content:'';flex:1;height:1px;background:var(--line-2);opacity:.7}
     <div class="count" id="count"><span>Call</span><b id="countv">—</b></div>
   </div>
   <nav class="nav" id="nav" aria-label="Sections">
-    <a href="#about">About you</a><a href="#call">Call plan</a><a href="#posting">Posting</a><a href="#embedded">Embedded?</a><a href="#map">Keywords</a><a href="#say">Say this</a><a href="#vocab">Vocabulary</a><a href="#gaps">Gaps</a><a href="#proof">Proof</a><a href="#panels">The panels</a><a href="#demo">Demo script</a><a href="#cues">Design cues</a><a href="#dayone">Day one</a><a href="#ask">Ask her</a>
+    <a href="#about">About you</a><a href="#call">Call plan</a><a href="#posting">Posting</a><a href="#embedded">Embedded?</a><a href="#map">Keywords</a><a href="#say">Say this</a><a href="#vocab">Vocabulary</a><a href="#gaps">Gaps</a><a href="#proof">Proof</a><a href="#panels">The panels</a><a href="#lines">Line by line</a><a href="#demo">Demo script</a><a href="#cues">Design cues</a><a href="#dayone">Day one</a><a href="#ask">Ask her</a>
   </nav>
 </header>
 
@@ -425,6 +443,64 @@ h3::after{content:'';flex:1;height:1px;background:var(--line-2);opacity:.7}
     <div><span class="w">Recipe</span><span>Each machine is a company; each order is a series of bowls for one customer. À la carte within a range, or a <b>recipe</b>: "SF-0912 · Salesforce · 50 bowls · Salesforce Tower · Wed 12:30". The recipe row shows progress, minutes to due, and the hoppers it depends on with problems first; those hoppers carry an SF tag. That is the bridge between the order system and the machine.</span></div>
     <div><span class="w">Scripted shift</span><span>It's a scene, not a mock: quinoa under-dispenses, the worker reroutes, then a quick fix, a release, a door interlock, a cleaning cycle, then chicken runs low. Manager numbers drift live.</span></div>
     <div><span class="w">Process</span><span>Built in one session from the job description: the worker asked for calm colors, one key fact per box, mains bigger than toppings, and a dock. Every revision was <b>verified on iPad sizes in the browser</b> before it shipped. The rules are written down (<a href="PANEL-DESIGN.md">PANEL-DESIGN.md</a>) so the next designer keeps them.</span></div>
+  </div>
+</section>
+
+<section id="lines">
+  <h2>The posting, line by line</h2>
+  <p class="lede">Every responsibility in their words. For each: what you've already done, what you built this week to prove it, and the sentence to say. The internal-tools list gets one live screen per item.</p>
+  <h3>Internal tools · one of each</h3>
+  <div class="tools">
+    <div class="tool"><span class="k">Inventory tracking</span><a href="inventory.html">inventory</a><span class="s">Hoppers + walk-in, days of cover at the Thursday pace, par ticks, order-now, deliveries, waste. Career: Target Living Catalog (sold-out in real time), ten years of par levels behind the line.</span></div>
+    <div class="tool"><span class="k">Recipe development</span><a href="recipe-builder.html">recipe-builder</a><span class="s">Build SF-0912: base, protein, veg, sauces, dairy in grams; cost, margin, line time, hopper load, allergens, the veg variant. Career: Feed.me, NoshR, InstaOvers menus and modifiers.</span></div>
+    <div class="tool"><span class="k">Learning management</span><a href="training.html">training</a><span class="s">Certification grid per crew member, modules that are runs of the scripted shift, food-handler cards, line readiness. Career: Istation LMS from zero on iPad (4M students); GenOn compliance LMS.</span></div>
+    <div class="tool"><span class="k">Manager dashboards</span><a href="manager-fleet.html">manager-fleet</a><span class="s">Twenty stores, three questions, 100% = on plan, tap into any store. Career: GenOn power-station compliance dashboard; Hyundai fleet → region → defect; GFA four-role dashboards.</span></div>
+    <div class="tool"><span class="k">Performance metrics</span><a href="metrics.html">metrics</a><span class="s">Time to act, refills before empty, taps per task, false alerts, recipes on time, glances per bowl; by store; what changed this week and its effect. Career: Bench instruments its own taps; AllRegs 22 calls → 1.</span></div>
+    <div class="tool"><span class="k">Robot user interface</span><a href="lunch-rush-light.html">lunch-rush-light</a><span class="s">The worker panel: one screen, state is the color, glove-first, scripted shift. Career: iRobot telepresence remote-drive controller; Bench gloved tablet; Toyota Entune.</span></div>
+    <div class="tool"><span class="k">Task scheduling</span><a href="schedule.html">schedule</a><span class="s">Machines, recipes, cleaning windows, refill forecast and crew on one 11–2 timeline, with conflicts and the fix. Career: Bench planner scheduling and exception views.</span></div>
+  </div>
+  <h3>Every line</h3>
+  <div class="lines">
+    <div class="line-card"><div class="q">Own the UX and visual-design vision across one or more robotic systems and internal tools.</div><div class="row3">
+      <div class="cell"><b class="h">DONE IT</b>Istation: one component system across eight products. AUTH57: Figma → Tailwind → shipped React library. Apple Premium Partners: held the system against what shipped.</div>
+      <div class="cell"><b class="h">BUILT THIS WEEK</b>One token source drives the worker panel (two skins), the manager console and five internal tools. <a href="design-system.html">design-system</a> · <a href="PANEL-DESIGN.md">PANEL-DESIGN.md</a></div>
+      <div class="cell"><b class="h">THE VISION IN ONE LINE</b>State is the color, the number is the detail, the button is the verb. Same rules on the robot, in the office and on the phone.</div></div>
+      <div class="say">I don't own a look; I own the rules. Seven surfaces share one page of tokens, and firmware, cloud and UX build against it.</div></div>
+    <div class="line-card"><div class="q">Design UI for on-robot displays, customer-facing applications, culinary brands, and internal operational tools.</div><div class="row3">
+      <div class="cell"><b class="h">DONE IT</b>On-robot: iRobot, Bench, Toyota Entune, Honda 0 Series. Customer: four food apps, link.me (100M weekly). Brands: 40+ identities, Apple HIG storefronts, the Lexus mobile guide. Ops: Hyundai, AllRegs, GenOn.</div>
+      <div class="cell"><b class="h">BUILT THIS WEEK</b>Robot: <a href="lunch-rush-light.html">worker panel</a>. Ops: five tools above. Brand: Bowl-O-Matic 5000 mark and wordmark. Customer: the recipe is the customer's order (Salesforce ×50).</div>
+      <div class="cell"><b class="h">WHY ALL FOUR AT ONCE</b>They're one product seen from four seats. The recipe row on the robot is the same object the customer ordered and the manager scheduled.</div></div>
+      <div class="say">Robot screen, ops tool, customer app, brand: I've shipped all four, and this week I shipped all four again for your product.</div></div>
+    <div class="line-card"><div class="q">Internal tools: inventory tracking, recipe development, learning management systems, manager dashboards, performance metrics, robot user interfaces, task scheduling.</div><div class="row3">
+      <div class="cell"><b class="h">DONE IT</b>Each one before, by hand and on screen: par levels and prep lists for ten years; Istation and GenOn for LMS; GenOn and Hyundai for dashboards; Bench for scheduling and metrics.</div>
+      <div class="cell"><b class="h">BUILT THIS WEEK</b>One live screen per item, in the list above, all from the same tokens, all one iPad screen with a dock and one verb.</div>
+      <div class="cell"><b class="h">THE TELL</b>They share objects. The recipe built in Recipes shows up on the Schedule, tags hoppers on the panel, and is the batch the Metrics page scores.</div></div>
+      <div class="say">Seven tools, one system. I built one of each this week so we could talk about the objects they share, not the screens.</div></div>
+    <div class="line-card"><div class="q">Translate user needs, business goals, and technical constraints into scalable design; drive concept through launch.</div><div class="row3">
+      <div class="cell"><b class="h">DONE IT</b>Hyundai: three weeks embedded with recall analysts, replaced a rejected dashboard with the workflow they ran. Acts: five approved web iterations, then React Native and TestFlight in a day.</div>
+      <div class="cell"><b class="h">BUILT THIS WEEK</b>User need: see it from six feet in gloves. Business goal: recipes on time. Constraint: one iPad, no scroll, held hoppers. Result: the panel, verified at four sizes.</div>
+      <div class="cell"><b class="h">HOW I SCALE IT</b>Rules, not comps. Every decision is a line in PANEL-DESIGN.md so the next surface inherits it.</div></div>
+      <div class="say">I start at the line, not the whiteboard. The constraint list writes the design; the token page makes it scale.</div></div>
+    <div class="line-card"><div class="q">Plan and run qualitative and quantitative user research: interviews, usability testing.</div><div class="row3">
+      <div class="cell"><b class="h">DONE IT</b>Hyundai: daily prototyping with analysts for three weeks. VW: 30-day war room under daily exec review. Bench instruments its own tap count and task time.</div>
+      <div class="cell"><b class="h">BUILT THIS WEEK</b>The <a href="metrics.html">metrics</a> page is the quant plan: time to act, refills before empty, taps per task, false alerts. The scripted shift is the usability protocol.</div>
+      <div class="cell"><b class="h">DAY-ONE PLAN</b>Stand at a line during a rush; count taps and glances; put the current panel next to mine and ask the worker which they'd keep.</div></div>
+      <div class="say">Qual is standing at the line. Quant is the panel measuring itself. I'd have both running in week one.</div></div>
+    <div class="line-card"><div class="q">Develop, document, and maintain the Lab37 design system, visual identity, and brand guidelines.</div><div class="row3">
+      <div class="cell"><b class="h">DONE IT</b>AUTH57 Figma → Tailwind v4 → published React library. Acts precommit token guard (blocks new violations). Apple atomic template. 40+ brand identities.</div>
+      <div class="cell"><b class="h">BUILT THIS WEEK</b><a href="design-system.html">design-system</a>: tokens for two skins, live states, type scale with floors, spacing, depth, motion, the mark with usage rules, CSS + JSON export.</div>
+      <div class="cell"><b class="h">MAINTAIN</b>Rules are written the day they're decided. A guard in the build rejects new hex or off-scale type. Reskin via tokens, never rewrite.</div></div>
+      <div class="say">The system is a page, not a Figma file. Engineers read it, the build enforces it, and the second concept ships without a rewrite.</div></div>
+    <div class="line-card"><div class="q">High-fidelity mockups, prototypes, user flows with clear specs for engineering.</div><div class="row3">
+      <div class="cell"><b class="h">DONE IT</b>GFA: token system, component library, five production screens from Claude Code, then design QA on every built screen. "Hawkeye" at Apple: caught what shipped versus what was drawn.</div>
+      <div class="cell"><b class="h">BUILT THIS WEEK</b>Not mockups: working prototypes with a scripted shift, live numbers and hold-to-confirm, plus the spec (tokens, sizes, floors) engineering can read as CSS or JSON.</div>
+      <div class="cell"><b class="h">THE FLOW</b>Alert → reroute → quick fix → release → door → clean → chicken low. Seven states, one panel, every transition designed.</div></div>
+      <div class="say">I hand engineers working states, not comps. The prototype is the spec, and the token page is the contract.</div></div>
+    <div class="line-card"><div class="q">Cross-functional with PMs and engineers through the whole lifecycle.</div><div class="row3">
+      <div class="cell"><b class="h">DONE IT</b>Hyundai: 80 people, five companies, no direct authority, one roadmap. "The developer whisperer": reads constraints back to engineers before they have to say them.</div>
+      <div class="cell"><b class="h">BUILT THIS WEEK</b>The machine line and the recipe row are the firmware and cloud contracts made visible. Day-one plan: get the real state list from firmware and the real alert list from cloud first.</div>
+      <div class="cell"><b class="h">HOW I WORK THE LOOP</b>Weekly HMI review at a store with the crew, PM and an engineer. Bring the numbers, leave with three changes.</div></div>
+      <div class="say">I sit between mechanics, firmware, cloud and the worker. My job is that they all read the same screen the same way.</div></div>
   </div>
 </section>
 

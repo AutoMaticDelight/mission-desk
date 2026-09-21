@@ -22,6 +22,9 @@ on day one" and to be shown on screen share.
   - `design-system.html` — tokens, live states, components, rules, CSS + JSON export
   - `prep.html` — interview prep (about you, call plan, keywords, say-this, panels)
   - `photos.html` — review sheet of all 16 ingredient photos as the panel crops them
+  - **Internal tools (one per posting item), shared skin `tools.css`:** `inventory.html`,
+    `recipe-builder.html`, `schedule.html`, `training.html` (LMS), `metrics.html`.
+    Manager dashboard = `manager-fleet.html`; robot UI = the worker panels.
   - `lunch-rush-tiles.html` — the 18-slot panel with **Square-tile cards** (alternate card anatomy, 2026-09-20)
   - `lunch-rush-light-slots.html` — the **18-slot worker panel** (**the locked one**, refined through 2026-09-20: meter, temps, badges, square rows)
   - `recipe-controller.html` — the **Recipe Controller** (2026-09-19): bowl build-sequence drawing, portions, machine, send
@@ -134,7 +137,8 @@ Photos never flash and always fill their slot (fixed 2026-09-19).
    carries a `/heic` skill (`.claude/skills/heic/`, pillow-heif converter) — use it the
    moment one arrives; never say HEIC can't be read. Convert on the Mac if the upload
    itself is refused, or drop the file into `refs/` on GitHub as the Mac session did.
-2. Manager console has not had the finesse pass the worker panels got. (2026-09-19:
+2. Manager console has not had the finesse pass the worker panels got. The five
+   internal tools are static (no live numbers); they scroll inside their main area. (2026-09-19:
    its card-grid bug is fixed — store names no longer truncate — and the header no
    longer runs off the screen on iPad; the phone layer is in. It still uses red for
    "needs you now", which the worker panels do not.)
