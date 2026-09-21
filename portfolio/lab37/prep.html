@@ -1,5 +1,5 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="robots" content="noindex,nofollow">
-<title>Lab37 Prep</title>
+<title>Bowl-O-Matic 5000 · Lab37 Prep</title>
 <link rel="icon" href="logo.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700&family=Public+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap">
@@ -136,15 +136,56 @@ blockquote mark{background:var(--today-bg);color:var(--today);padding:0 3px;bord
 .foot{max-width:960px;margin:40px auto 0;padding:16px;color:var(--ink-3);font-size:13px;border-top:1px solid var(--line)}
 .foot a{color:var(--ink-2)}
 @media (max-width:480px){.brand{font-size:18px}.count{margin-left:0}}
+
+/* BOWL-O-MATIC SKIN: the prep page uses the product's own cues */
+:root{--accent:#5a6b00;--accent-ink:#0b120e;--accent-bg:#f8ffd6;--hot:#c8f000;--dock:#1c1c1e;--card:#e2e7f1}
+.brand{align-items:center;gap:10px}.brand .mark{width:30px;height:30px;flex:none}
+.brand small{color:var(--ink-3)}
+.nav a.on{background:var(--dock);border-color:var(--dock)}
+h2{font-size:24px}
+h3{font-size:13px;letter-spacing:.14em;color:var(--ink);display:flex;align-items:center;gap:12px}
+h3::after{content:'';flex:1;height:1px;background:var(--line-2);opacity:.7}
+.next{background:var(--dock);color:#fff;border:0;border-left:10px solid var(--hot);border-radius:14px;padding:18px 20px}
+.next .when{color:var(--hot)}.next .sub{color:#c7c7cc}.next .sub .mono{color:#fff}
+.next .btn{background:rgba(255,255,255,.06);border:2px solid rgba(255,255,255,.45);color:#fff;height:48px;font-weight:700}
+.next .btn.p{background:var(--hot);border-color:var(--hot);color:var(--accent-ink);font-weight:800}
+.btn.p{background:var(--hot);border-color:var(--hot);color:var(--accent-ink);font-weight:800}
+.story .line::before,.name .q{color:var(--accent)}
+#about b.k{color:var(--accent)}
+.count{background:var(--card);color:#1c2740}
+/* new sections */
+.cues{display:grid;gap:10px}
+@media(min-width:720px){.cues{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.cue{border:1px solid var(--line);border-radius:12px;background:#fff;padding:12px 14px;display:grid;gap:4px}
+.cue b{font:600 16px/1.25 var(--display);letter-spacing:-.01em}
+.cue .why{font-size:14px;color:var(--ink-2)}
+.cue .say{font-size:15px;padding:8px 12px;background:var(--panel);border-radius:8px}
+.cue .say::before{content:'SAY';font:600 11px var(--mono);letter-spacing:.06em;color:var(--accent);margin-right:8px}
+.plan .w{color:var(--accent)}
+.demo{display:grid;gap:8px}
+.demo>div{display:grid;grid-template-columns:56px minmax(0,1fr);gap:12px;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:#fff;align-items:start}
+.demo .t{font:600 13px var(--mono);color:var(--accent);padding-top:3px}
+.demo b{display:block;font:600 16px/1.25 var(--display);letter-spacing:-.01em;margin-bottom:2px}
+.demo .say{font-size:15px}
+.demo .say::before{content:'SAY';font:600 11px var(--mono);letter-spacing:.06em;color:var(--accent);margin-right:8px}
+.days{display:grid;gap:10px}
+@media(min-width:720px){.days{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.day{background:var(--card);border-radius:12px;padding:14px 16px}
+.day h4{margin:0 0 6px;font:600 17px/1.2 var(--display);letter-spacing:-.01em;color:#1c2740}
+.day ul{padding-left:18px;font-size:15px}.day li{margin:0 0 6px}
+.measure{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px}
+.measure div{background:var(--panel);border-radius:10px;padding:12px 14px}
+.measure b{display:block;font:600 17px/1.2 var(--display);letter-spacing:-.01em}
+.measure span{font-size:14px;color:var(--ink-2)}
 </style></head><body>
 
 <header class="top">
   <div class="top-in">
-    <div class="brand"><a href="/">Mission Desk</a> <small>Lab37 · prep</small></div>
+    <div class="brand"><svg class="mark" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="20" fill="#c8f000"/><g transform="translate(20 20.6) scale(.62) translate(-20 -21)"><circle cx="20" cy="11.5" r="6.5" fill="#0b120e"/><path d="M4.5 21.5h31a1.5 1.5 0 0 1 1.5 1.6C36.2 30.6 29 36.5 20 36.5S3.8 30.6 3 23.1a1.5 1.5 0 0 1 1.5-1.6z" fill="#0b120e"/></g></svg><a href="/">Bowl-O-Matic 5000</a> <small>Lab37 · prep</small></div>
     <div class="count" id="count"><span>Call</span><b id="countv">—</b></div>
   </div>
   <nav class="nav" id="nav" aria-label="Sections">
-    <a href="#about">About you</a><a href="#call">Call plan</a><a href="#posting">Posting</a><a href="#embedded">Embedded?</a><a href="#map">Keywords</a><a href="#say">Say this</a><a href="#vocab">Vocabulary</a><a href="#gaps">Gaps</a><a href="#proof">Proof</a><a href="#panels">The panels</a><a href="#ask">Ask her</a>
+    <a href="#about">About you</a><a href="#call">Call plan</a><a href="#posting">Posting</a><a href="#embedded">Embedded?</a><a href="#map">Keywords</a><a href="#say">Say this</a><a href="#vocab">Vocabulary</a><a href="#gaps">Gaps</a><a href="#proof">Proof</a><a href="#panels">The panels</a><a href="#demo">Demo script</a><a href="#cues">Design cues</a><a href="#dayone">Day one</a><a href="#ask">Ask her</a>
   </nav>
 </header>
 
@@ -198,13 +239,15 @@ blockquote mark{background:var(--today-bg);color:var(--today);padding:0 3px;bord
 
 <section id="call">
   <div class="next">
-    <div class="when">TUE SEP 22 · TIME TBC (11 AM PT PLACEHOLDER) · 30 MIN</div>
+    <div class="when">TUE SEP 22 · 11:00 AM PT · 30 MIN · GOOGLE MEET</div>
     <h1>Initial call · Kristin Gonzales</h1>
     <div class="sub">Sr. Technical Recruiter, Atoms (Lab37's parent). Google Meet: <span class="mono">meet.google.com/mcj-behw-xmq</span>. Open this page in Chrome and tap Join. Share link to paste at the start: <span class="mono">mission-desk-smoky.vercel.app/show#lab37</span></div>
     <div class="acts">
       <a class="btn p" href="https://meet.google.com/mcj-behw-xmq" target="_blank" rel="noopener">Join Google Meet</a>
       <a class="btn" href="/show#lab37" target="_blank" rel="noopener">Show page</a>
-      <a class="btn" href="/portfolio/lab37/" target="_blank" rel="noopener">22 screens</a>
+      <a class="btn" href="/portfolio/lab37/lunch-rush-light.html" target="_blank" rel="noopener">Worker panel</a>
+      <a class="btn" href="/portfolio/lab37/design-system.html" target="_blank" rel="noopener">Design system</a>
+      <a class="btn" href="/portfolio/lab37/" target="_blank" rel="noopener">29 screens</a>
       <a class="btn" href="https://job-boards.greenhouse.io/lab37/jobs/8614557002" target="_blank" rel="noopener">Posting ↗</a>
       <a class="btn" href="/">Desk</a>
     </div>
@@ -222,7 +265,7 @@ blockquote mark{background:var(--today-bg);color:var(--today);padding:0 3px;bord
   <div class="plan">
     <div><span class="w">0:00</span><span>One line on you (the 45-second intro below, cut to one breath).</span></div>
     <div><span class="w">0:03</span><span>Why Lab37: ten years in kitchens and bars, then twenty designing tools for people under pressure. The posting asks for robot screens, internal ops tools, and food ordering at once. You have done all three, and you have worked the line.</span></div>
-    <div><span class="w">0:05</span><span>Three minutes of screens: Bowl Builder at a glance, then the lunch-rush service command. Stop at three.</span></div>
+    <div><span class="w">0:05</span><span>Three minutes of screens, in the order of the <a href="#demo">demo script</a>: worker panel → reroute → manager → design system. Stop at three.</span></div>
     <div><span class="w">0:10</span><span>Her questions. Three sentences each. Tick the five boxes as they come up.</span></div>
     <div><span class="w">0:20</span><span>Your three questions (bottom of this page).</span></div>
     <div><span class="w">0:27</span><span>Next steps and when. Ask who the hiring manager is and what the loop looks like.</span></div>
@@ -382,6 +425,74 @@ blockquote mark{background:var(--today-bg);color:var(--today);padding:0 3px;bord
     <div><span class="w">Recipe</span><span>Each machine is a company; each order is a series of bowls for one customer. À la carte within a range, or a <b>recipe</b>: "SF-0912 · Salesforce · 50 bowls · Salesforce Tower · Wed 12:30". The recipe row shows progress, minutes to due, and the hoppers it depends on with problems first; those hoppers carry an SF tag. That is the bridge between the order system and the machine.</span></div>
     <div><span class="w">Scripted shift</span><span>It's a scene, not a mock: quinoa under-dispenses, the worker reroutes, then a quick fix, a release, a door interlock, a cleaning cycle, then chicken runs low. Manager numbers drift live.</span></div>
     <div><span class="w">Process</span><span>Built in one session from the job description: the worker asked for calm colors, one key fact per box, mains bigger than toppings, and a dock. Every revision was <b>verified on iPad sizes in the browser</b> before it shipped. The rules are written down (<a href="PANEL-DESIGN.md">PANEL-DESIGN.md</a>) so the next designer keeps them.</span></div>
+  </div>
+</section>
+
+<section id="demo">
+  <h2>Screen-share script · three minutes</h2>
+  <p class="lede">One Chrome tab per link, opened before the call, in this order. Say one line per screen, then stop. If share fails, paste the links in the Meet chat and narrate.</p>
+  <div class="demo">
+    <div><span class="t">0:00</span><div><b>Worker panel · light</b><span class="say">This is the worker's iPad on the wall during a lunch rush. One screen, no scroll. Header is the machine, the card is the food, the dock is what to do.</span></div></div>
+    <div><span class="t">0:20</span><div><b>Top lockup: title, recipe, machines</b><span class="say">The recipe row is the job: Salesforce, fifty bowls, due 12:30, 19 left. Every hopper it depends on is tagged. Under it, every machine component is one dot and one word.</span></div></div>
+    <div><span class="t">0:45</span><div><b>Status card</b><span class="say">Mains bigger than toppings, grouped by taxonomy. Each box is a photo, a percent, and a refill-by time forecast off the Thursday curve. The level bar is the message; the number confirms it.</span></div></div>
+    <div><span class="t">1:10</span><div><b>State is the color</b><span class="say">No red on this panel. Needs-you-now is the same hot yellow-green as the button that fixes it. A low box goes dark with yellow numbers so it reads from across the room.</span></div></div>
+    <div><span class="t">1:30</span><div><b>Actions dock · tap Reroute</b><span class="say">Minutes-until-late is the hero. One verb-specific button. Watch: hold two seconds, it commits, and the next task appears. Send tech is a real button, not a link, because gloves.</span></div></div>
+    <div><span class="t">2:00</span><div><b>Manager console · tap Uptown</b><span class="say">Twenty stores, three questions: who needs me, who's off plan, what's throughput. 100% means on plan. Uptown drops you into the panel we just saw.</span></div></div>
+    <div><span class="t">2:30</span><div><b>Design system</b><span class="say">One token source, two skins. Every color, size and rule is written down so firmware, cloud and UX build against the same contract. That page is what I'd hand the team on day one.</span></div></div>
+    <div><span class="t">2:55</span><div><b>Stop</b><span class="say">That's the prototype. It's a scripted shift, not a mock. What would you like me to go deeper on?</span></div></div>
+  </div>
+</section>
+
+<section id="cues">
+  <h2>Design cues · say them like you mean them</h2>
+  <p class="lede">The rules the prototype runs on, each with the why. These are the sentences that make you sound like the person who already owns the panel.</p>
+  <div class="cues">
+    <div class="cue"><b>State is the color; the number is the detail.</b><div class="why">A worker across the room reads color in 100 ms and numbers in a second. Color answers "do I move"; the number answers "how much".</div><div class="say">Every state is a color first. If you can't tell the state from six feet, the panel failed.</div></div>
+    <div class="cue"><b>No red.</b><div class="why">About 8% of men can't separate red from green, and kitchen light is warm. The alert color is the action color, so the eye lands on the fix.</div><div class="say">I took red out. Needs-you-now is the hot yellow-green of the button that fixes it.</div></div>
+    <div class="cue"><b>The progress bar is the message.</b><div class="why">A fill level is pre-attentive. The worker doesn't read 16%; they see a short bar.</div><div class="say">The bar is the message. The percent and the refill-by time confirm it.</div></div>
+    <div class="cue"><b>Fixed header, floating status, fixed dock.</b><div class="why">Three zones a hand learns. The machine at the top, the food in the middle, the next action at the bottom, always in the same place.</div><div class="say">Nothing moves. The dock is hooked to the bottom edge so the thumb finds the button without looking.</div></div>
+    <div class="cue"><b>Glove-first.</b><div class="why">48pt minimum, 72pt for the one action, hold-to-confirm for anything with a cost. No text links, no double-tap zoom, no text selection.</div><div class="say">This is an HMI, not a web page. Everything tappable is a button a gloved hand can't miss.</div></div>
+    <div class="cue"><b>Mains bigger than toppings.</b><div class="why">Proteins and bases stop the line; cilantro doesn't. Size is priority.</div><div class="say">Chicken and rice can be read from across the kitchen. The toppings are scannable up close.</div></div>
+    <div class="cue"><b>One verb per alert.</b><div class="why">A generic OK makes the worker decide. "Tap to start reroute" tells them what will happen.</div><div class="say">The button says the verb. Reroute, release, start cleaning. The worker never has to think about what OK does.</div></div>
+    <div class="cue"><b>Minutes-until-late is the hero.</b><div class="why">Time pressure decides the next move; counts explain it.</div><div class="say">Of the three numbers, the minutes lead. The other two sit under it.</div></div>
+    <div class="cue"><b>Recipe = the job.</b><div class="why">Each machine is a company; each order is bowls for one customer. À la carte within a range, or a named batch.</div><div class="say">The recipe row is the bridge between the order system and the machine. It tags the hoppers it depends on.</div></div>
+    <div class="cue"><b>One token source, two skins.</b><div class="why">Light and dark share every size, radius, spacing and rule; only the color layer changes. The design system is the contract.</div><div class="say">Reskin via tokens, never rewrite. Firmware, cloud and UX read the same page.</div></div>
+    <div class="cue"><b>No small text.</b><div class="why">Body 14px, labels 13px, on a wall-mounted iPad. Bigger, bolder, higher contrast, never cute.</div><div class="say">I set floors. Nothing on the panel is under 13 points.</div></div>
+    <div class="cue"><b>Done = verified on the device.</b><div class="why">Every change was measured at four iPad sizes before it shipped. A panel that clips is a panel that lies.</div><div class="say">I don't ship a screen I haven't seen on the hardware it lives on.</div></div>
+  </div>
+</section>
+
+<section id="dayone">
+  <h2>Day one, week one, month one</h2>
+  <p class="lede">If she asks "what would you do first", this is the answer. It is the plan the prototype was built to prove.</p>
+  <div class="days">
+    <div class="day"><h4>Day one</h4><ul>
+      <li>Stand at a line during a lunch rush. Watch hands, not screens. Count taps and glances.</li>
+      <li>Get the machine's real state list from firmware and the real alert list from cloud. Those become the color map.</li>
+      <li>Put the current panel on the wall next to my prototype and ask the worker which one they'd keep.</li>
+      <li>Meet the mechanical, electronics, firmware and cloud leads. Ask each what the screen gets wrong today.</li>
+    </ul></div>
+    <div class="day"><h4>Week one</h4><ul>
+      <li>Publish the token page as the contract: states, colors, sizes, floors. Firmware, cloud and UX build against it.</li>
+      <li>Ship worker panel v1 on the real data: one screen, three zones, no red, glove-first.</li>
+      <li>Define the taxonomy with the food team and the recipe model with ops. Names on the boxes are theirs, not mine.</li>
+      <li>Instrument it: time-to-act per alert, taps per task, refills before empty, false alerts.</li>
+    </ul></div>
+    <div class="day"><h4>Month one</h4><ul>
+      <li>Manager console from the same tokens: who needs me, who's off plan, throughput.</li>
+      <li>A weekly HMI review at a store with the crew. Bring the numbers, leave with three changes.</li>
+      <li>The scripted-shift prototype becomes the onboarding: a new worker runs the shift before they run the line.</li>
+      <li>Second skin, second concept (tacos, burgers) from the same system, no rewrite.</li>
+    </ul></div>
+  </div>
+  <h3>What I'd measure</h3>
+  <div class="measure">
+    <div><b>Time to act</b><span>alert shown → first correct tap</span></div>
+    <div><b>Refills before empty</b><span>the forecast is doing its job</span></div>
+    <div><b>Taps per task</b><span>reroute, refill, release, clean</span></div>
+    <div><b>False alerts</b><span>alerts dismissed with no action</span></div>
+    <div><b>Glances per bowl</b><span>how often eyes leave the food</span></div>
+    <div><b>Recipe on time</b><span>batches done before due</span></div>
   </div>
 </section>
 
