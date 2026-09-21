@@ -99,6 +99,18 @@ range, use rate, Mark refilled / Hold bin). Orange is the critical color here, n
 still hold (names 15px, labels 13px, tags 11px only inside chips). Framed on the grey stage their renders use;
 full-bleed on a phone.
 
+The set, all on the same frame and chrome (`l37/chrome.css`), tabs linking between them:
+- `l37/supply.html` — the 30 bins (above).
+- `l37/orders.html` — the Picnic queue in their Orders language: chips (All · Held · In progress · Ready ·
+  Picked up), rows with initial tile, name + order number, status pill (Ready = their blue, Held = orange),
+  tags (station, progress, pickup time, "N short" in pink when a bin in the order is low/held), tap → items with
+  supply state and Reroute / Hold / Mark picked up.
+- `l37/recipe.html` — the Recipe Controller as their recipe card: Active pill, protein and base as segmented
+  black-pill choices (Chicken · Steak · ½·½), portions table Goal / Set with glove steppers, total, allergy tags,
+  Send to line · Test bowl.
+- `l37/group.html` — Picnic group order: Set the mix (Chicken/Beef and Rice/Quinoa sliders with a split bar) or
+  Everyone picks (responses locked / closes at, people list), Send links, Place order.
+
 ## Machine layout (one shape, everywhere)
 Locked 2026-09-18, revised three times same day (diamond → one row per
 category → this, sized by real dispenser hardware). The machine has **18

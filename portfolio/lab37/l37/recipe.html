@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Bowl Builder · Recipe — Lab37 skin</title>
+<link rel="stylesheet" href="l37.css"><link rel="stylesheet" href="chrome.css">
+<style>
+.tt h1{display:flex;align-items:center;gap:10px}
+.back{width:34px;height:34px;border-radius:50%;box-shadow:inset 0 0 0 1px #d9d9d9;background:#fff;display:grid;place-items:center;font-size:16px;text-decoration:none;color:var(--ink)}
+.card{margin:0 18px 14px;border-radius:var(--r-card);box-shadow:0 1px 2px rgba(0,0,0,.06),0 0 0 1px #ececec;padding:16px;background:#fff}
+.card h2{font-size:20px;font-weight:450;letter-spacing:-.02em;display:flex;align-items:center;gap:8px}
+.card .sub{font-size:12px;color:var(--dim);margin-top:3px}
+.pill{font-size:11px;font-weight:500;padding:3px 8px;border-radius:999px;background:var(--tag-blue);color:#1c3d5c}
+.photo{display:block;width:100%;margin:14px 0 6px;height:120px;border-radius:12px;object-fit:cover;background:#f0f0f0}
+.lbl{font-size:12px;color:var(--dim);margin:14px 0 6px}
+.seg{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px}
+.seg button{font:inherit;font-size:13px;font-weight:500;min-height:38px;border:0;border-radius:var(--r-tile);background:var(--chip);color:var(--ink);cursor:pointer}
+.seg button.on{background:var(--ink);color:#fff}
+.tbl{border-top:1px solid var(--line)}
+.tr{display:grid;grid-template-columns:minmax(0,1fr) 84px 96px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line);font-size:14px}
+.tr small{display:block;font-size:11px;color:var(--mute)}
+.tr .g{font-family:var(--mono);font-size:13px;text-align:right;color:var(--dim);padding-right:14px}
+.tr .stp{display:flex;justify-content:flex-end;gap:4px;align-items:center}
+.stp button{width:30px;height:30px;border-radius:50%;border:0;background:var(--chip);font-size:16px;line-height:1;cursor:pointer}
+.stp b{font-family:var(--mono);font-size:13px;min-width:40px;text-align:center;font-weight:400}
+.th{display:grid;grid-template-columns:minmax(0,1fr) 84px 96px;font-size:12px;color:var(--dim);padding:0 0 6px}
+.th span:not(:first-child){text-align:right}
+.tot{display:grid;grid-template-columns:minmax(0,1fr) 84px 96px;padding:10px 0 0;font-size:15px;font-weight:500}
+.tot .g{font-family:var(--mono);text-align:right;font-weight:400}.tot .g:first-of-type{padding-right:14px}
+.foot{display:flex;gap:8px;margin-top:16px}
+.foot .btn{flex:1;min-height:44px;font-size:14px}
+.tags{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
+</style></head>
+<body>
+<div class="device"><div class="screen" id="screen">
+  <div class="hd"><span class="brand">Bowl Builder</span><span class="time">12:18 PM · Sep 21, 2026</span></div>
+  <div class="tt"><h1><a class="back" href="orders.html">←</a>Recipe</h1><button class="btn line" onclick="toast('Saved','This version is live on every station.')">Edit</button></div>
+  <div class="list">
+    <div class="card">
+      <h2 id="title">Fried Chicken Bowl <span class="pill">Active</span></h2>
+      <div class="sub">Modified 2 days ago by Bryan · Picnic Mall · Adeline St</div>
+      <img class="photo" src="../img/fried-chicken.jpg" alt="" onerror="this.remove()">
+      <div class="lbl">Protein</div><div class="seg" id="meat"><button class="on">Fried Chicken</button><button>BBQ Steak</button><button>½ · ½</button></div>
+      <div class="lbl">Base</div><div class="seg" id="base"><button class="on">Power Grains</button><button>White Rice</button><button>Greens</button></div>
+      <div class="lbl">Portions</div>
+      <div class="th"><span>Item</span><span>Goal</span><span>Set</span></div>
+      <div class="tbl" id="tbl"></div>
+      <div class="tot"><span>Total</span><span class="g" id="goal">—</span><span class="g" id="set">—</span></div>
+      <div class="lbl">Allergies</div><div class="tags"><span class="tag" style="background:var(--tag-pink);color:#5a2230">Egg</span><span class="tag" style="background:var(--tag-tan);color:#4a3a20">Sesame</span></div>
+      <div class="foot"><button class="btn" onclick="toast('Sent to the line','14 bowls queued at Bowl 01. First one at 12:20.')">Send to line · 14 bowls</button><button class="btn line" onclick="toast('Test bowl','One bowl runs now so you can weigh it.')">Test bowl</button></div>
+    </div>
+  </div>
+  <div class="tabs"><a class="tab" href="orders.html" style="display:grid;place-items:center;text-decoration:none">Orders</a><a class="tab" href="supply.html" style="display:grid;place-items:center;text-decoration:none">Supply</a><button class="tab on">Assembly</button><button class="tab">Settings</button><button class="tab bell" aria-label="Alerts">🔔</button></div>
+  <div class="dim" onclick="closeSheet()"></div>
+  <div class="sheet" id="sheet"></div>
+</div></div>
+<script>
+const P=[{n:'Fried Chicken',s:'protein',g:90,v:90},{n:'Power Grains',s:'base',g:79,v:80},{n:'Jammy Egg',s:'side',g:50,v:50},{n:'Broccoli',s:'side',g:39,v:45},{n:'Kimchi',s:'side',g:38,v:38},{n:'Avocado',s:'side',g:42,v:42},{n:'BBQ',s:'sauce',g:22,v:30}];
+function render(){document.getElementById('tbl').innerHTML=P.map((p,i)=>`<div class="tr"><div>${p.n}<small>${p.s}</small></div><div class="g">${p.g}g</div><div class="stp"><button onclick="bump(${i},-5)">−</button><b>${p.v}g</b><button onclick="bump(${i},5)">+</button></div></div>`).join('');
+  document.getElementById('goal').textContent=P.reduce((s,p)=>s+p.g,0)+'g';document.getElementById('set').textContent=P.reduce((s,p)=>s+p.v,0)+'g';}
+function bump(i,d){P[i].v=Math.max(0,P[i].v+d);render();}
+for(const id of ['meat','base']) document.getElementById(id).querySelectorAll('button').forEach(b=>b.onclick=()=>{b.parentElement.querySelectorAll('button').forEach(x=>x.classList.remove('on'));b.classList.add('on');if(id==='meat'){P[0].n=b.textContent==='½ · ½'?'Chicken ½ · Steak ½':b.textContent;}else P[1].n=b.textContent;render();});
+function closeSheet(){document.getElementById('screen').classList.remove('open');}
+function toast(t,d){const s=document.getElementById('sheet');s.innerHTML=`<div class="grab"></div><h2>${t}</h2><div class="sub">${d||''}</div><div class="acts" style="margin-top:16px"><button class="btn wide" onclick="closeSheet()">Done</button></div>`;document.getElementById('screen').classList.add('open');}
+render();
+</script>
+</body></html>

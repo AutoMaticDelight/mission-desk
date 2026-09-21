@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Bowl Builder · Orders — Lab37 skin</title>
+<link rel="stylesheet" href="l37.css"><link rel="stylesheet" href="chrome.css">
+<style>
+.row.o{grid-template-columns:34px minmax(0,1fr) auto;grid-template-rows:auto auto}
+.row.o .ico{font-family:var(--font);font-weight:500;font-size:13px}
+.row.o .nm span{font-family:var(--mono)}
+.row.o .tags{grid-column:2/3;grid-row:2}
+.row.o .eta{grid-column:3;grid-row:2;font-size:12px;color:var(--dim);white-space:nowrap;justify-self:end;font-variant-numeric:tabular-nums}
+.st.ready i{background:var(--blue)}.st.ready{color:var(--blue)}
+.st.hold i{background:var(--orange)}.st.hold{background:#fff2ea;box-shadow:inset 0 0 0 1px #ffd6be}
+.st.wait i{background:var(--mute)}
+.tag.short{background:var(--tag-pink);color:#5a2230}.tag.pick{background:var(--tag-blue);color:#1c3d5c}
+.sheet .items{display:grid;gap:0;margin:12px 0 16px;border-top:1px solid var(--line)}
+.sheet .items div{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--line);font-size:14px}
+.sheet .items div span{font-family:var(--mono);font-size:12px;color:var(--dim)}
+.sheet .items div.short span{color:#b23a1a}
+</style></head>
+<body>
+<div class="device"><div class="screen" id="screen">
+  <div class="hd"><span class="brand">Bowl Builder</span><span class="time" id="time">12:18 PM · Sep 21, 2026</span></div>
+  <div class="tt"><h1>Orders</h1><button class="btn" onclick="toast('Order added','Walk-in order goes to the back of the queue.')">Add order</button></div>
+  <div class="chips" id="chips"></div>
+  <div class="list" id="list"></div>
+  <div class="tabs"><button class="tab on">Orders</button><a class="tab" href="supply.html" style="display:grid;place-items:center;text-decoration:none">Supply</a><button class="tab">Assembly</button><button class="tab">Settings</button><button class="tab bell" aria-label="Alerts">🔔</button></div>
+  <div class="dim" onclick="closeSheet()"></div>
+  <div class="sheet" id="sheet"></div>
+</div></div>
+<script>
+const SUPPLY={'Power Grains':'held','BBQ Steak':'now','Broccoli':'now','Avocado':'low','BBQ':'low','Greek Salad':'low','BBQ Chicken':'low'};
+const Q=[
+ {id:'#4412',who:'Maya C.',bowl:'Fried Chicken Bowl',items:['Fried Chicken','Power Grains','Jammy Egg','Broccoli','Kimchi','BBQ','Avocado'],st:'hold',where:'Bowler',n:'3/7',pick:'12:22',via:'Picnic app',note:'Power Grains held — reroute to White Rice?'},
+ {id:'#4413',who:'Adam W.',bowl:'Steak Bowl',items:['BBQ Steak','White Rice','Sweet Potato','Greek Salad','Black Beans','Ranch'],st:'prog',where:'Bowler',n:'0/6',pick:'12:26',via:'Picnic app'},
+ {id:'#4414',who:'Priya P.',bowl:'Tofu Bowl',items:['Tofu','Greens','Hummus','Kale Slaw','Pickled Onion','Tahini'],st:'prog',where:'Queued',n:'0/6',pick:'12:27',via:'Picnic app'},
+ {id:'#4415',who:'Jordan L.',bowl:'BBQ Chicken Bowl',items:['BBQ Chicken','Cauli Rice','Mushrooms','Avocado','Tzatziki','Spicy Mayo'],st:'prog',where:'Queued',n:'0/6',pick:'12:29',via:'Picnic app'},
+ {id:'#4416',who:'Salesforce · 12 of 50',bowl:'Group order · Chicken / Rice',items:['Fried Chicken','White Rice','Corn','Pico','Cheese','Guac'],st:'prog',where:'Queued',n:'0/6',pick:'12:30',via:'Picnic group',group:1},
+ {id:'#4409',who:'Will C.',bowl:'Steak Bowl',items:['BBQ Steak','Cauli Rice','Greek Salad','Ranch'],st:'ready',where:'Cubby 3',n:'4/4',pick:'12:18',via:'Picnic app'},
+ {id:'#4410',who:'Heather S.',bowl:'Tofu Bowl',items:['Tofu','Greens','Hummus','Tahini'],st:'ready',where:'Cubby 5',n:'4/4',pick:'12:19',via:'Walk-in'},
+ {id:'#4411',who:'Josh M.',bowl:'Fried Chicken Bowl',items:['Fried Chicken','White Rice','Kimchi','Spicy Mayo'],st:'done',where:'Picked up',n:'4/4',pick:'12:15',via:'Picnic app'},
+];
+const WORD={prog:'In progress',hold:'Held',ready:'Ready',done:'Picked up'};
+let FILTER='all';
+const CHIPS=[['all','All'],['hold','Held'],['prog','In progress'],['ready','Ready'],['done','Picked up']];
+const cnt=k=>k==='all'?Q.length:Q.filter(o=>o.st===k).length;
+function chips(){document.getElementById('chips').innerHTML=CHIPS.map(([k,l])=>`<button class="chip ${FILTER===k?'on':''}" onclick="FILTER='${k}';render()">${l}<small>${cnt(k)}</small></button>`).join('');}
+const shorts=o=>o.items.filter(i=>SUPPLY[i]);
+const rowHTML=o=>{const sh=shorts(o);return `<div class="row o" onclick="open('${o.id}')">
+  <div class="ico">${o.group?'G':o.who[0]}</div>
+  <div class="nm"><b>${o.who}</b><span>${o.id}</span></div>
+  <span class="st ${o.st==='ready'?'ready':o.st==='hold'?'hold':o.st==='done'?'wait':''}"><i></i>${WORD[o.st]}</span>
+  <div class="tags"><span class="tag">${o.where}</span><span class="tag">${o.n}</span><span class="tag pick">Pickup ${o.pick}</span>${sh.length?`<span class="tag short">${sh.length} short</span>`:''}</div>
+  <div class="eta">${o.bowl}</div>
+</div>`;};
+function render(){chips();const xs=Q.filter(o=>FILTER==='all'||o.st===FILTER);
+  const order={hold:0,ready:1,prog:2,done:3}; xs.sort((a,b)=>order[a.st]-order[b.st]);
+  document.getElementById('list').innerHTML=`<div class="sec"><span>Queue</span><span>${xs.length} orders · ${Q.filter(o=>o.st==='hold').length} held</span></div>`+xs.map(rowHTML).join('');}
+function open(id){const o=Q.find(x=>x.id===id);
+  document.getElementById('sheet').innerHTML=`<div class="grab"></div><h2>${o.who} <span style="font-family:var(--mono);font-size:14px;color:var(--mute)">${o.id}</span></h2><div class="sub">${o.bowl} · ${o.via} · pickup ${o.pick}</div>
+  ${o.note?`<div class="tag short" style="display:inline-block;margin-top:10px;font-size:12px;padding:6px 9px">${o.note}</div>`:''}
+  <div class="items">${o.items.map(i=>`<div class="${SUPPLY[i]?'short':''}">${i}<span>${SUPPLY[i]==='held'?'held':SUPPLY[i]==='now'?'scrape it':SUPPLY[i]==='low'?'low':'ok'}</span></div>`).join('')}</div>
+  <div class="acts">${o.st==='hold'?`<button class="btn wide" onclick="act('${o.id}','prog')">Reroute and run</button>`:o.st==='ready'?`<button class="btn wide" onclick="act('${o.id}','done')">Mark picked up</button>`:`<button class="btn wide" onclick="act('${o.id}','hold')">Hold order</button>`}<button class="btn line" onclick="closeSheet()">Close</button><button class="btn line" onclick="toast('Order edited','Quantities and sauces updated. The line re-sequences itself.')">Edit</button></div>`;
+  document.getElementById('screen').classList.add('open');}
+function act(id,st){const o=Q.find(x=>x.id===id);o.st=st;if(st==='prog'){o.where='Bowler';o.note=null;}closeSheet();render();}
+function closeSheet(){document.getElementById('screen').classList.remove('open');}
+function toast(t,d){const s=document.getElementById('sheet');s.innerHTML=`<div class="grab"></div><h2>${t}</h2><div class="sub">${d||''}</div><div class="acts" style="margin-top:16px"><button class="btn wide" onclick="closeSheet()">Done</button></div>`;document.getElementById('screen').classList.add('open');}
+render();
+</script>
+</body></html>

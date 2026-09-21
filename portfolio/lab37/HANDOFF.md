@@ -31,7 +31,7 @@ on day one" and to be shown on screen share.
   - `picnic-mall-squares.html` — Picnic Mall variant (2026-09-20): all **12 sides in one row of squares**, card is the bar, bin tag on top, name, percent
   - `picnic-mall-topdown.html` — squares variant where the sides/sauce fill is a **gravity level** (sits on the bottom, drains down; words on top)
   - `picnic-mall-nopct.html` — gravity variant where Base, Sides and Sauces show the **fill only, no percent**
-  - `l37/supply.html` + `l37/l37.css` — the **Lab37 skin** (2026-09-21): the 30-bin panel as a Bowl Builder screen on the machine's own portrait tablet; tokens read off lab37.us captures in `refs/lab37-software/`
+  - `l37/` — the **Lab37 skin** (2026-09-21): Bryan's work as Bowl Builder screens on the machine's own portrait tablet (`supply`, `orders`, `recipe`, `group`; tokens `l37.css`, chrome `chrome.css`); tokens read off lab37.us captures in `refs/lab37-software/`
   - `picnic-kiosk.html` — the **kiosk / register**: Square-Register layout (rail · tabs · photo-tile grid · ticket · Pay), landscape 14×24; reference photo `refs/square-pos-favorites.jpg` (read-only refs from Bryan's Mac session)
   - `PANEL-DESIGN.md` — the **locked** design rules (read before touching UI)
   - `logo.svg`, `img/README.md` (photo stash), `index.html` (29 screens)

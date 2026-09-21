@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Bowl Builder · Group order — Lab37 skin</title>
+<link rel="stylesheet" href="l37.css"><link rel="stylesheet" href="chrome.css">
+<style>
+.card{margin:0 18px 14px;border-radius:var(--r-card);box-shadow:0 1px 2px rgba(0,0,0,.06),0 0 0 1px #ececec;padding:16px;background:#fff}
+.card h2{font-size:20px;font-weight:450;letter-spacing:-.02em}
+.card .sub{font-size:12px;color:var(--dim);margin-top:3px}
+.lbl{font-size:12px;color:var(--dim);margin:14px 0 6px}
+.seg{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.seg button{font:inherit;font-size:13px;font-weight:500;min-height:38px;border:0;border-radius:var(--r-tile);background:var(--chip);color:var(--ink);cursor:pointer}
+.seg button.on{background:var(--ink);color:#fff}
+.split{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:10px;margin-top:8px}
+.split .k{background:var(--chip2);border-radius:var(--r-tile);padding:10px 12px}
+.split small{display:block;font-size:11px;color:var(--dim)}
+.split b{font-size:22px;font-weight:450;font-variant-numeric:tabular-nums}
+.split input{width:100%;accent-color:#141414}
+.bar{height:10px;border-radius:5px;background:var(--tag-tan);overflow:hidden;margin-top:10px}
+.bar i{display:block;height:100%;width:calc(var(--p)*1%);background:var(--tag-green);transition:width .3s}
+.people{border-top:1px solid var(--line);margin-top:8px}
+.pr{display:grid;grid-template-columns:30px minmax(0,1fr) auto;gap:10px;align-items:center;padding:9px 0;border-bottom:1px solid var(--line);font-size:14px}
+.pr .av{width:30px;height:30px;border-radius:50%;background:var(--chip);display:grid;place-items:center;font-size:12px;font-weight:500}
+.pr small{display:block;font-size:11px;color:var(--mute)}
+.foot{display:flex;gap:8px;margin-top:16px}.foot .btn{flex:1;min-height:44px;font-size:14px}
+</style></head>
+<body>
+<div class="device"><div class="screen" id="screen">
+  <div class="hd"><span class="brand">Bowl Builder</span><span class="time">12:18 PM · Sep 21, 2026</span></div>
+  <div class="tt"><h1>Group order</h1><button class="btn line" onclick="toast('Link sent','50 people got an email and a text. Each one picks meat, base, amount and sauces on their phone.')">Send links</button></div>
+  <div class="list">
+    <div class="card">
+      <h2>Salesforce · 50 bowls</h2>
+      <div class="sub">Salesforce Tower 45F · pickup 12:30 · Picnic group</div>
+      <div class="lbl">How it's ordered</div>
+      <div class="seg" id="mode"><button class="on" onclick="mode(0,this)">Set the mix</button><button onclick="mode(1,this)">Everyone picks</button></div>
+      <div id="mix">
+        <div class="lbl">Protein split</div>
+        <div class="split"><div class="k"><small>Chicken</small><b id="c">25</b></div><input type="range" min="0" max="50" value="25" oninput="setMix(+this.value)"><div class="k"><small>Beef</small><b id="b">25</b></div></div>
+        <div class="bar"><i id="bar" style="--p:50"></i></div>
+        <div class="lbl">Base split</div>
+        <div class="split"><div class="k"><small>Rice</small><b id="r">30</b></div><input type="range" min="0" max="50" value="30" oninput="setBase(+this.value)"><div class="k"><small>Quinoa</small><b id="q">20</b></div></div>
+      </div>
+      <div id="pick" style="display:none">
+        <div class="lbl">Responses</div>
+        <div class="split"><div class="k"><small>Locked in</small><b>31</b></div><div style="font-size:12px;color:var(--dim)">of 50</div><div class="k"><small>Closes</small><b>11:45</b></div></div>
+        <div class="bar"><i style="--p:62"></i></div>
+        <div class="people" id="people"></div>
+      </div>
+      <div class="foot"><button class="btn" onclick="toast('Order placed','50 bowls at 12:30. The line starts at 12:02.')">Place order · 50 bowls</button></div>
+    </div>
+  </div>
+  <div class="tabs"><a class="tab" href="orders.html" style="display:grid;place-items:center;text-decoration:none">Orders</a><a class="tab" href="supply.html" style="display:grid;place-items:center;text-decoration:none">Supply</a><a class="tab" href="recipe.html" style="display:grid;place-items:center;text-decoration:none">Assembly</a><button class="tab on">Settings</button><button class="tab bell" aria-label="Alerts">🔔</button></div>
+  <div class="dim" onclick="closeSheet()"></div>
+  <div class="sheet" id="sheet"></div>
+</div></div>
+<script>
+const PEOPLE=[['Maya Chen','Chicken · Rice · Regular · Guac, Pico'],['Adam W.','Beef · Quinoa · Large · Chipotle'],['Priya P.','½ · ½ · Rice · Regular · Verde'],['Jordan L.','Chicken · Quinoa · Small · Roja'],['Will C.','Beef · Rice · Regular · Guac'],['Heather S.','Chicken · Rice · Regular · Ranch, Pico']];
+document.getElementById('people').innerHTML=PEOPLE.map(([n,d])=>`<div class="pr"><div class="av">${n[0]}</div><div>${n}<small>${d}</small></div><span class="tag" style="background:var(--tag-green);color:#1f4a24">Locked</span></div>`).join('')+`<div class="pr"><div class="av">…</div><div>19 more<small>waiting on their pick</small></div><span class="tag">Reminder</span></div>`;
+function mode(i,b){b.parentElement.querySelectorAll('button').forEach(x=>x.classList.remove('on'));b.classList.add('on');document.getElementById('mix').style.display=i?'none':'';document.getElementById('pick').style.display=i?'':'none';}
+function setMix(c){document.getElementById('c').textContent=c;document.getElementById('b').textContent=50-c;document.getElementById('bar').style.setProperty('--p',c*2);}
+function setBase(r){document.getElementById('r').textContent=r;document.getElementById('q').textContent=50-r;}
+function closeSheet(){document.getElementById('screen').classList.remove('open');}
+function toast(t,d){const s=document.getElementById('sheet');s.innerHTML=`<div class="grab"></div><h2>${t}</h2><div class="sub">${d||''}</div><div class="acts" style="margin-top:16px"><button class="btn wide" onclick="closeSheet()">Done</button></div>`;document.getElementById('screen').classList.add('open');}
+</script>
+</body></html>
