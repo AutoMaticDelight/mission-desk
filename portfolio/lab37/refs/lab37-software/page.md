@@ -219,6 +219,6 @@ Font files downloaded to font/ (families the page declares explicitly; Framer's 
 | YiUNp98QLkYaZL1BQJyVvWXkc.png | 2331×3141 | (near) 02 / Order feed / Every order. Effortlessly in sync. Track, edit, and manage o | img src, img srcset, raw scan | https://framerusercontent.com/images/YiUNp98QLkYaZL1BQJyVvWXkc.png |
 | ZY60qkfDGpCfffRyfHa2rvUVd0.jpg | 1438×2094 | (near) 02 / Order feed / Every order. Effortlessly in sync. Track, edit, and manage o | img src, img srcset, raw scan | https://framerusercontent.com/images/ZY60qkfDGpCfffRyfHa2rvUVd0.jpg |
 | kpgG9ku3jjjEDYGCTTClSfHVrQA.png | 32×32 | link rel=icon | link icon, raw scan | https://framerusercontent.com/images/kpgG9ku3jjjEDYGCTTClSfHVrQA.png |
-| pK0VRPgxrWcQAkt33f9PY8n7KQ.jpg | 4466×6088 | (near) Intelligencethattransformskitchens | img src, img srcset, raw scan | https://framerusercontent.com/images/pK0VRPgxrWcQAkt33f9PY8n7KQ.jpg |
+| pK0VRPgxrWcQAkt33f9PY8n7KQ.jpg | 4466×6088 | (near) Intelligence that transforms kitchens | img src, img srcset, raw scan | https://framerusercontent.com/images/pK0VRPgxrWcQAkt33f9PY8n7KQ.jpg |
 | u8Q5P2udIHePSJsStqioYMqnb4.png | 180×180 | link rel=apple-touch-icon | link icon, raw scan | https://framerusercontent.com/images/u8Q5P2udIHePSJsStqioYMqnb4.png |
-| yDgux3gwMTX6CNMOWK89q1iF0.jpg | 7990×3989 | (near) Intelligencethattransformskitchens | img src, img srcset, raw scan | https://framerusercontent.com/images/yDgux3gwMTX6CNMOWK89q1iF0.jpg |
+| yDgux3gwMTX6CNMOWK89q1iF0.jpg | 7990×3989 | (near) Intelligence that transforms kitchens | img src, img srcset, raw scan | https://framerusercontent.com/images/yDgux3gwMTX6CNMOWK89q1iF0.jpg |
