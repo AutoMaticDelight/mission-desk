@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>The Pattern</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Public+Sans:wght@400;500;600;700;800&display=swap">
+<style>
+:root{
+  --bg:#faf7f2;--card:#ffffff;--ink:#241f1a;--ink2:#6b6154;--line:#eae3d8;
+  --terracotta:#e2643a;--sage:#5c8a6e;--sky:#4a90a4;--mustard:#e0a339;--plum:#8a5a7a;
+  --serif:'Fraunces',Georgia,serif;--sans:'Public Sans',-apple-system,BlinkMacSystemFont,sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg)}
+body{color:var(--ink);font-family:var(--sans);line-height:1.5;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+h1,h2{font-family:var(--serif);font-weight:600;letter-spacing:-.01em;margin:0}
+.scene{max-width:900px;margin:0 auto;padding:70px 24px;display:grid;gap:28px;justify-items:center;text-align:center}
+.scene:first-child{padding-top:64px}
+.kicker{font:700 13px/1 var(--sans);letter-spacing:1.5px;text-transform:uppercase;color:var(--ink2)}
+.scene h2{font-size:clamp(28px,4.2vw,42px);line-height:1.15;max-width:16ch}
+.scene p.sub{font-size:18px;color:var(--ink2);max-width:46ch;margin:0}
+.stage{width:100%;max-width:640px}
+.divider{width:100%;max-width:900px;margin:0 auto;height:1px;background:var(--line)}
+
+/* ===== SCENE 1: one guy ===== */
+.s1-fig{display:flex;align-items:flex-end;justify-content:center;gap:18px;height:180px}
+.chef{display:flex;flex-direction:column;align-items:center;gap:0}
+.chef .hat{width:38px;height:26px;background:#fff;border:3px solid var(--ink);border-radius:14px 14px 4px 4px;margin-bottom:-4px}
+.chef .head{width:34px;height:34px;background:#f2c9a0;border:3px solid var(--ink);border-radius:50%}
+.chef .body{width:58px;height:64px;background:var(--terracotta);border:3px solid var(--ink);border-radius:16px 16px 6px 6px;margin-top:-2px}
+.cart{width:120px;height:70px;background:var(--card);border:3px solid var(--ink);border-radius:10px;position:relative;display:flex;align-items:center;justify-content:center;gap:8px}
+.bowl{width:26px;height:16px;background:var(--mustard);border:3px solid var(--ink);border-radius:0 0 14px 14px}
+
+/* ===== SCENE 2: three people, chaos ===== */
+.s2-fig{display:flex;align-items:flex-end;justify-content:center;gap:10px;height:180px;position:relative}
+.chef.small .head{width:28px;height:28px}.chef.small .body{width:46px;height:52px}
+.steam{position:absolute;top:-10px;font-size:22px;opacity:.5}
+.count{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;max-width:420px}
+.count span{background:var(--ink);color:#fff;font:800 13px/1 var(--sans);padding:6px 10px;border-radius:999px}
+
+/* ===== SCENE 3: hub and channels ===== */
+.hub-wrap{display:grid;place-items:center;position:relative;height:340px;width:100%}
+.hub{width:88px;height:88px;background:var(--terracotta);border:3px solid var(--ink);border-radius:50%;display:grid;place-items:center;font-size:34px;z-index:2}
+.spoke{position:absolute;width:2px;background:var(--line);z-index:0}
+.channel{position:absolute;display:grid;place-items:center;gap:6px;text-align:center;z-index:1}
+.channel .ic{width:56px;height:56px;border-radius:16px;border:3px solid var(--ink);display:grid;place-items:center;background:#fff}
+.icon svg{width:26px;height:26px;display:block;stroke:var(--ink)}
+.hub svg{width:38px;height:38px;stroke:#fff}
+.onebox svg{width:52px;height:52px;stroke:#fff}
+.tl-dot{font:800 16px/1 var(--sans);color:var(--ink)}
+.tl-item.now .tl-dot svg{stroke:#fff}
+.tl-item.now .tl-dot{color:#fff}
+.channel span{font:700 12px/1.2 var(--sans);color:var(--ink2);max-width:80px}
+
+/* ===== SCENE 4: line into a box ===== */
+.line-wrap{display:flex;flex-direction:column;align-items:center;gap:22px;width:100%}
+.stations{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.station{width:64px;height:64px;background:#fff;border:3px solid var(--ink);border-radius:12px;display:grid;place-items:center}
+.station svg{width:28px;height:28px;stroke:var(--ink);display:block}
+.arrow-down svg{width:28px;height:28px;stroke:var(--ink2);display:block}
+.onebox{width:180px;height:100px;background:var(--sky);border:3px solid var(--ink);border-radius:16px;display:grid;place-items:center;color:#fff}
+
+/* ===== SCENE 5: the timeline ===== */
+.timeline{display:flex;gap:0;width:100%;padding:20px 0 8px;justify-content:center}
+.tl-item{flex:0 0 100px;display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;position:relative;padding:0 5px}
+.tl-item:not(:last-child)::after{content:'';position:absolute;top:24px;left:calc(50% + 24px);width:calc(100% - 24px);height:2px;background:var(--line)}
+.tl-dot{width:48px;height:48px;border-radius:50%;border:3px solid var(--ink);display:grid;place-items:center;font-size:15px;background:#fff;z-index:1}
+.tl-dot svg{width:24px;height:24px;stroke:var(--ink);display:block}
+.tl-item b{font:800 12px/1.2 var(--sans)}
+.tl-item span{font-size:10.5px;color:var(--ink2);line-height:1.3}
+.tl-item.now .tl-dot{background:var(--terracotta);color:#fff}
+
+/* ===== SCENE 6: 50 bowls, one delivery ===== */
+.grid50{display:grid;grid-template-columns:repeat(10,1fr);gap:6px;max-width:420px;width:100%}
+.dot50{aspect-ratio:1;border-radius:50%;border:2.5px solid var(--ink)}
+.closing{font-family:var(--serif);font-size:clamp(24px,3.6vw,34px);line-height:1.3;max-width:20ch}
+.closing em{font-style:normal;color:var(--terracotta)}
+
+footer{text-align:center;padding:50px 24px 70px;color:var(--ink2);font-size:14px}
+
+@media(max-width:640px){
+  .scene{padding:50px 20px}
+  .hub-wrap{height:auto;display:flex;flex-direction:column;gap:20px}
+  .spoke{display:none}
+  .channel{position:static}
+  .channel-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px 10px}
+}
+</style>
+</head>
+<body>
+
+<section class="scene">
+  <div class="kicker">One guy</div>
+  <div class="s1-fig">
+    <div class="chef"><div class="hat"></div><div class="head"></div><div class="body"></div></div>
+    <div class="cart"><div class="bowl"></div><div class="bowl"></div><div class="bowl"></div></div>
+  </div>
+  <h2>A guy who's good at this sells as many bowls as he can make.</h2>
+  <p class="sub">One person, one cart, one line out the door. It works — right up until it doesn't.</p>
+</section>
+
+<div class="divider"></div>
+
+<section class="scene">
+  <div class="kicker">Then it's real</div>
+  <div class="s2-fig">
+    <span class="steam" style="left:38%"><svg width="22" height="14" viewBox="0 0 24 16" fill="none" stroke="var(--ink2)" stroke-width="2"><path d="M2 8c2-4 4-4 6 0s4 4 6 0 4-4 6 0 4 4 6 0"/></svg></span><span class="steam" style="left:52%"><svg width="22" height="14" viewBox="0 0 24 16" fill="none" stroke="var(--ink2)" stroke-width="2"><path d="M2 8c2-4 4-4 6 0s4 4 6 0 4-4 6 0 4 4 6 0"/></svg></span>
+    <div class="chef small"><div class="hat"></div><div class="head"></div><div class="body"></div></div>
+    <div class="chef small"><div class="hat"></div><div class="head"></div><div class="body" style="background:var(--sage)"></div></div>
+    <div class="chef small"><div class="hat"></div><div class="head"></div><div class="body" style="background:var(--sky)"></div></div>
+  </div>
+  <h2>Now it's him, a dishwasher, and a sous chef.</h2>
+  <p class="sub">Three people trying to get 500 bowls out at lunch, all at once, all correct.</p>
+  <div class="count"><span>500 bowls</span><span>1 lunch rush</span><span>3 people</span></div>
+</section>
+
+<div class="divider"></div>
+
+<section class="scene">
+  <div class="kicker">Same bowl, everywhere</div>
+  <div class="hub-wrap">
+    <div class="hub"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.2"><path d="M3 10h18c0 5-4 9-9 9s-9-4-9-9Z"/><path d="M7 10c0-3 2-6 5-6"/></svg></div>
+    <div class="channel" style="top:8px;left:50%;transform:translateX(-50%)"><div class="ic icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.2"><circle cx="12" cy="5" r="2.4"/><path d="M12 9v6M12 9l-4 3M12 9l4 3M12 15l-3 6M12 15l3 6"/></svg></div><span>Walk up</span></div>
+    <div class="channel" style="top:26%;right:6%"><div class="ic icon" style="background:#fdece4"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.2"><path d="M6 9h12l-1 11H7L6 9Z"/><path d="M9 9V7a3 3 0 0 1 6 0v2"/></svg></div><span>DoorDash</span></div>
+    <div class="channel" style="bottom:26%;right:10%"><div class="ic icon" style="background:#e8f2ee"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.2"><path d="M6 9h12l-1 11H7L6 9Z"/><path d="M9 9V7a3 3 0 0 1 6 0v2"/></svg></div><span>Uber Eats</span></div>
+    <div class="channel" style="bottom:8px;left:50%;transform:translateX(-50%)"><div class="ic icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.2"><circle cx="9" cy="8" r="3"/><circle cx="16" cy="9" r="2.4"/><path d="M4 20c0-3.3 2.2-6 5-6s5 2.7 5 6M14 20c0-2.6 1.6-4.8 3.8-5.6"/></svg></div><span>Group order</span></div>
+    <div class="channel" style="bottom:26%;left:10%"><div class="ic icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.2"><rect x="5" y="4" width="14" height="17"/><path d="M9 8h2M13 8h2M9 12h2M13 12h2M9 16h2M13 16h2"/></svg></div><span>50 to a conference</span></div>
+    <div class="channel" style="top:26%;left:6%"><div class="ic icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.2"><rect x="6" y="3" width="12" height="18" rx="2"/><path d="M11 18h2"/></svg></div><span>App pickup</span></div>
+  </div>
+  <h2>The same kitchen has to answer a dozen doors at once.</h2>
+  <p class="sub">Walk-up, delivery apps, a group order, fifty bowls to a Salesforce conference — one system, every channel, same order.</p>
+</section>
+
+<div class="divider"></div>
+
+<section class="scene">
+  <div class="kicker">One box, not a whole line</div>
+  <div class="line-wrap">
+    <div class="stations">
+      <div class="station" title="Grill"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.2"><path d="M12 3c2 3-1 4-1 6 0 1.5 1 2 2 2 1.5 0 2.5-1.2 2.5-2.5C17 12 19 14 19 16.5A7 7 0 1 1 6 15c0-2 1-3 2-4.5C9.5 8.5 10 6 12 3Z"/></svg></div>
+      <div class="station" title="Chop"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.2"><rect x="2" y="9" width="6" height="6" rx="1.5"/><path d="M8 10h9c2 0 3 1 3 2s-1 2-3 2H8"/></svg></div>
+      <div class="station" title="Dress"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.2"><path d="M5 19c0-8 4-14 14-14 0 10-6 14-14 14Z"/><path d="M5 19c3-4 6-7 12-11"/></svg></div>
+      <div class="station" title="Sauce"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.2"><path d="M10 3h4v3l2 2v11a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2V8l2-2V3Z"/><path d="M9 13h6"/></svg></div>
+      <div class="station" title="Cheese"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.2"><path d="M3 18 12 4l9 14H3Z"/><circle cx="11" cy="14" r="1" fill="var(--ink)" stroke="none"/><circle cx="15" cy="15.5" r="1" fill="var(--ink)" stroke="none"/></svg></div>
+      <div class="station" title="Expo"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.2"><path d="M3 8l9-5 9 5-9 5-9-5Z"/><path d="M3 8v9l9 5 9-5V8"/><path d="M12 13v9"/></svg></div>
+    </div>
+    <div class="arrow-down"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.5"><path d="M12 4v14M6 13l6 6 6-6"/></svg></div>
+    <div class="onebox"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.2"><rect x="5" y="8" width="14" height="11" rx="3"/><path d="M12 8V5"/><circle cx="12" cy="4" r="1.2" fill="#fff" stroke="none"/><circle cx="9.5" cy="13" r="1.3" fill="#fff" stroke="none"/><circle cx="14.5" cy="13" r="1.3" fill="#fff" stroke="none"/><path d="M9 17h6"/></svg></div>
+  </div>
+  <h2>A whole process line, in one machine.</h2>
+  <p class="sub">Grill, chop, dress, sauce, cheese, expo — every station a place like Chipotle runs as a line of people, built into one box that runs the same line by itself.</p>
+</section>
+
+<div class="divider"></div>
+
+<section class="scene">
+  <div class="kicker">This is the shape I keep building</div>
+  <h2 style="max-width:22ch">One template. Fits whoever buys it. Every time.</h2>
+  <div class="timeline">
+    <div class="tl-item"><div class="tl-dot">I</div><b>Istation</b><span>One system, 8 products, 4M students</span></div>
+    <div class="tl-item"><div class="tl-dot">Ap</div><b>Apple</b><span>Templates that populate 20 languages</span></div>
+    <div class="tl-item"><div class="tl-dot">iR</div><b>iRobot</b><span>One controller, drive any unit</span></div>
+    <div class="tl-item"><div class="tl-dot">M</div><b>Museum kiosk</b><span>One kiosk, every exhibit</span></div>
+    <div class="tl-item"><div class="tl-dot">B</div><b>Bench</b><span>One token set, glove worker + planner</span></div>
+    <div class="tl-item"><div class="tl-dot">57</div><b>Auth57</b><span>One pipeline, 11,000 rules, 51 states</span></div>
+    <div class="tl-item now"><div class="tl-dot"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.2"><path d="M3 11h18c0 4.5-3.5 8-9 8s-9-3.5-9-8Z"/><path d="M8 11c0-2 1-4 4-4"/></svg></div><b>This</b><span>One machine, every customer's bowl</span></div>
+  </div>
+  <p class="sub">Seven times now: build the template once, let it customize per customer, and it fits everywhere you sell it.</p>
+</section>
+
+<div class="divider"></div>
+
+<section class="scene">
+  <div class="kicker">The point</div>
+  <div class="grid50" id="grid50"></div>
+  <p class="closing">Fifty people can each customize their own bowl — <em>and all fifty still arrive together, on time, correct.</em></p>
+  <p class="sub">One order, one at a time, or five hundred at once — same system, no seams.</p>
+</section>
+
+<footer>Bryan S. Holland · Automatic Delight — built for the Lab37 conversation, no branding on purpose.</footer>
+
+<script>
+const colors=['#e2643a','#5c8a6e','#4a90a4','#e0a339','#8a5a7a'];
+document.getElementById('grid50').innerHTML=Array.from({length:50},(_,i)=>`<div class="dot50" style="background:${colors[i%colors.length]}"></div>`).join('');
+</script>
+</body></html>
