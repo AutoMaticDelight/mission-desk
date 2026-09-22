@@ -10,181 +10,727 @@
 <style>
 :root{
   --bg:#faf7f2;--card:#ffffff;--ink:#241f1a;--ink2:#6b6154;--line:#eae3d8;
-  --terracotta:#e2643a;--sage:#5c8a6e;--sky:#4a90a4;--mustard:#e0a339;--plum:#8a5a7a;
+  --terracotta:#e2643a;--sage:#5c8a6e;--sky:#4a90a4;--mustard:#e0a339;--plum:#8a5a7a;--teal:#3a8f8a;--rose:#c9647f;
   --serif:'Fraunces',Georgia,serif;--sans:'Public Sans',-apple-system,BlinkMacSystemFont,sans-serif;
+  --ease:cubic-bezier(.22,1,.36,1);
+  /* live skin tokens (the design system). Default = light skin from design-system.html */
+  --k-bg:#f2f2f7;--k-box:#ffffff;--k-card:#e2e7f1;--k-ink:#1d1d1f;--k-dim:#6e6e73;--k-hot:#c8f000;--k-hot-ink:#5a6b00;--k-ok:#1fa36a;--k-low:#f0a000;--k-held:#d8dfeb;--k-dock:#1c1c1e;--k-dock-ink:#ffffff;--k-line:#d9dde6;--k-radius:14px;
   color-scheme:light;
 }
 *{box-sizing:border-box}
-html,body{margin:0;background:var(--bg)}
-body{color:var(--ink);font-family:var(--sans);line-height:1.5;-webkit-font-smoothing:antialiased;overflow-x:hidden}
-h1,h2{font-family:var(--serif);font-weight:600;letter-spacing:-.01em;margin:0}
-.scene{max-width:900px;margin:0 auto;padding:70px 24px;display:grid;gap:28px;justify-items:center;text-align:center}
-.scene:first-child{padding-top:64px}
+html,body{margin:0;background:var(--bg);height:100%}
+body{color:var(--ink);font-family:var(--sans);line-height:1.5;-webkit-font-smoothing:antialiased;overflow:hidden}
+h1,h2,h3{font-family:var(--serif);font-weight:600;letter-spacing:-.01em;margin:0}
+
+/* ===== one scene per screen ===== */
+.deck{height:100svh;overflow-y:auto;overflow-x:hidden;scroll-snap-type:y mandatory;overscroll-behavior-y:contain;scroll-behavior:smooth}
+.scene{min-height:100svh;scroll-snap-align:start;scroll-snap-stop:always;display:grid;grid-template-columns:minmax(0,1fr);align-content:center;justify-items:center;text-align:center;gap:20px;padding:56px 24px 92px;max-width:1000px;margin:0 auto;width:100%}
+.scene>*{max-width:100%}
 .kicker{font:700 13px/1 var(--sans);letter-spacing:1.5px;text-transform:uppercase;color:var(--ink2)}
-.scene h2{font-size:clamp(28px,4.2vw,42px);line-height:1.15;max-width:16ch}
-.scene p.sub{font-size:18px;color:var(--ink2);max-width:46ch;margin:0}
-.stage{width:100%;max-width:640px}
-.divider{width:100%;max-width:900px;margin:0 auto;height:1px;background:var(--line)}
+.scene h2{font-size:clamp(28px,4vw,40px);line-height:1.12;max-width:min(24ch,100%);text-wrap:balance}
+.scene p.sub{font-size:18px;color:var(--ink2);max-width:min(50ch,100%);margin:0}
 
-/* ===== SCENE 1: one guy ===== */
-.s1-fig{display:flex;align-items:flex-end;justify-content:center;gap:18px;height:180px}
-.chef{display:flex;flex-direction:column;align-items:center;gap:0}
-.chef .hat{width:38px;height:26px;background:#fff;border:3px solid var(--ink);border-radius:14px 14px 4px 4px;margin-bottom:-4px}
-.chef .head{width:34px;height:34px;background:#f2c9a0;border:3px solid var(--ink);border-radius:50%}
-.chef .body{width:58px;height:64px;background:var(--terracotta);border:3px solid var(--ink);border-radius:16px 16px 6px 6px;margin-top:-2px}
-.cart{width:120px;height:70px;background:var(--card);border:3px solid var(--ink);border-radius:10px;position:relative;display:flex;align-items:center;justify-content:center;gap:8px}
-.bowl{width:26px;height:16px;background:var(--mustard);border:3px solid var(--ink);border-radius:0 0 14px 14px}
+/* Apple-style reveal */
+.reveal{opacity:1;transform:none;transition:opacity .9s var(--ease),transform .9s var(--ease)}
+.scene:not(.in) .reveal{opacity:0;transform:translateY(28px) scale(.98)}
+.scene.in .reveal:nth-child(2){transition-delay:.08s}
+.scene.in .reveal:nth-child(3){transition-delay:.16s}
+.scene.in .reveal:nth-child(4){transition-delay:.24s}
+.scene.in .reveal:nth-child(5){transition-delay:.32s}
 
-/* ===== SCENE 2: three people, chaos ===== */
-.s2-fig{display:flex;align-items:flex-end;justify-content:center;gap:10px;height:180px;position:relative}
-.chef.small .head{width:28px;height:28px}.chef.small .body{width:46px;height:52px}
-.steam{position:absolute;top:-10px;font-size:22px;opacity:.5}
-.count{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;max-width:420px}
-.count span{background:var(--ink);color:#fff;font:800 13px/1 var(--sans);padding:6px 10px;border-radius:999px}
+/* page dots + next button */
+.dots{position:fixed;right:14px;top:50%;transform:translateY(-50%);display:grid;gap:10px;z-index:9}
+.dots a{width:10px;height:10px;border-radius:50%;background:var(--line);border:2px solid transparent;display:block;transition:background .3s,transform .3s}
+.dots a.on{background:var(--ink);transform:scale(1.25)}
+.dots a:focus-visible{outline:2px solid var(--sky);outline-offset:2px}
+.next{position:fixed;left:50%;bottom:calc(18px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:9;width:56px;height:56px;border-radius:50%;border:3px solid var(--ink);background:var(--card);color:var(--ink);cursor:pointer;display:grid;place-items:center;box-shadow:0 8px 0 -3px rgba(36,31,26,.14);transition:transform .4s var(--ease),background .3s}
+.next svg{width:26px;height:26px;fill:none;stroke:currentColor;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;transition:transform .4s var(--ease)}
+.next:hover{background:var(--ink);color:#fff}
+.next:focus-visible{outline:3px solid var(--sky);outline-offset:3px}
+.next.last svg{transform:rotate(180deg)}
+@media(prefers-reduced-motion:no-preference){.next:not(.last) svg{animation:nudge 2.2s var(--ease) infinite}}
+@keyframes nudge{0%,100%{transform:translateY(0)}50%{transform:translateY(4px)}}
 
-/* ===== SCENE 3: hub and channels ===== */
-.hub-wrap{display:grid;place-items:center;position:relative;height:340px;width:100%}
-.hub{width:88px;height:88px;background:var(--terracotta);border:3px solid var(--ink);border-radius:50%;display:grid;place-items:center;font-size:34px;z-index:2}
-.spoke{position:absolute;width:2px;background:var(--line);z-index:0}
-.channel{position:absolute;display:grid;place-items:center;gap:6px;text-align:center;z-index:1}
-.channel .ic{width:56px;height:56px;border-radius:16px;border:3px solid var(--ink);display:grid;place-items:center;background:#fff}
-.icon svg{width:26px;height:26px;display:block;stroke:var(--ink)}
-.hub svg{width:38px;height:38px;stroke:#fff}
-.onebox svg{width:52px;height:52px;stroke:#fff}
-.tl-dot{font:800 16px/1 var(--sans);color:var(--ink)}
-.tl-item.now .tl-dot svg{stroke:#fff}
-.tl-item.now .tl-dot{color:#fff}
-.channel span{font:700 12px/1.2 var(--sans);color:var(--ink2);max-width:80px}
+/* ===== icon tiles ===== */
+.tile{display:grid;place-items:center;border-radius:18px;border:3px solid var(--ink);background:var(--c,#fff);box-shadow:0 6px 0 -2px rgba(36,31,26,.12)}
+.tile svg{width:58%;height:58%;display:block;fill:none;stroke:#fff;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.tile.round{border-radius:50%}
 
-/* ===== SCENE 4: line into a box ===== */
-.line-wrap{display:flex;flex-direction:column;align-items:center;gap:22px;width:100%}
-.stations{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
-.station{width:64px;height:64px;background:#fff;border:3px solid var(--ink);border-radius:12px;display:grid;place-items:center}
-.station svg{width:28px;height:28px;stroke:var(--ink);display:block}
-.arrow-down svg{width:28px;height:28px;stroke:var(--ink2);display:block}
-.onebox{width:180px;height:100px;background:var(--sky);border:3px solid var(--ink);border-radius:16px;display:grid;place-items:center;color:#fff}
+/* ===== SCENE 2 chips ===== */
+.count{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;max-width:460px}
+.count span{color:#fff;font:800 14px/1 var(--sans);padding:8px 13px;border-radius:999px;border:3px solid var(--ink)}
 
-/* ===== SCENE 5: the timeline ===== */
-.timeline{display:flex;gap:0;width:100%;padding:20px 0 8px;justify-content:center}
-.tl-item{flex:0 0 100px;display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;position:relative;padding:0 5px}
-.tl-item:not(:last-child)::after{content:'';position:absolute;top:24px;left:calc(50% + 24px);width:calc(100% - 24px);height:2px;background:var(--line)}
-.tl-dot{width:48px;height:48px;border-radius:50%;border:3px solid var(--ink);display:grid;place-items:center;font-size:15px;background:#fff;z-index:1}
-.tl-dot svg{width:24px;height:24px;stroke:var(--ink);display:block}
-.tl-item b{font:800 12px/1.2 var(--sans)}
-.tl-item span{font-size:10.5px;color:var(--ink2);line-height:1.3}
-.tl-item.now .tl-dot{background:var(--terracotta);color:#fff}
+/* ===== SCENE 3 ===== */
+.hub-wrap{display:grid;place-items:center;position:relative;height:360px;width:100%;max-width:640px}
+.hub{width:96px;height:96px;z-index:2;--c:var(--terracotta)}
+.hub svg{width:56px;height:56px}
+.channel{position:absolute;display:grid;place-items:center;gap:8px;text-align:center;z-index:1;left:calc(50% + var(--x));top:calc(50% + var(--y));transform:translate(-50%,-50%)}
+.channel .tile{width:60px;height:60px}
+.channel span{font:700 13px/1.2 var(--sans);color:var(--ink);max-width:90px}
+.spoke{position:absolute;left:50%;top:50%;width:2px;height:108px;background:var(--line);transform-origin:top center;z-index:0}
 
-/* ===== SCENE 6: 50 bowls, one delivery ===== */
-.grid50{display:grid;grid-template-columns:repeat(10,1fr);gap:6px;max-width:420px;width:100%}
-.dot50{aspect-ratio:1;border-radius:50%;border:2.5px solid var(--ink)}
-.closing{font-family:var(--serif);font-size:clamp(24px,3.6vw,34px);line-height:1.3;max-width:20ch}
-.closing em{font-style:normal;color:var(--terracotta)}
+/* ===== SCENE 4 ===== */
+.line-wrap{display:flex;flex-direction:column;align-items:center;gap:20px;width:100%}
+.stations{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;max-width:520px}
+.station{display:grid;gap:6px;justify-items:center}
+.station .tile{width:64px;height:64px}
+.station span{font:700 13px/1 var(--sans);color:var(--ink2);letter-spacing:.5px;text-transform:uppercase}
+.arrow-down svg{width:30px;height:30px;stroke:var(--ink2);fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;display:block}
+.art{max-width:100%;height:auto;display:block}
+.art.machine{width:540px}
 
-footer{text-align:center;padding:50px 24px 70px;color:var(--ink2);font-size:14px}
+/* ===== SCENE 5: design system ===== */
+.ds{display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:14px;width:100%;max-width:900px;text-align:left}
+.ds .blk{background:var(--card);border:3px solid var(--ink);border-radius:18px;padding:16px;display:grid;gap:10px;align-content:start}
+.ds .blk h3{font:800 13px/1 var(--sans);letter-spacing:1.2px;text-transform:uppercase;color:var(--ink2)}
+.sw{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.sw div{display:grid;gap:3px;font:600 13px/1.2 var(--sans);color:var(--ink2)}
+.sw i{display:block;height:34px;border-radius:9px;border:2px solid var(--ink)}
+.sw b{color:var(--ink);font-size:13px}
+.ty div{display:flex;align-items:baseline;justify-content:space-between;gap:10px;border-bottom:1px solid var(--line);padding:5px 0}
+.ty div:last-child{border:0}
+.ty .t1{font:800 30px/1 var(--sans)}.ty .t2{font:600 18px/1 var(--sans)}.ty .t3{font:700 14px/1 var(--sans);letter-spacing:1px;text-transform:uppercase}
+.ty small{font:600 13px/1 var(--sans);color:var(--ink2);white-space:nowrap}
+.sz{display:grid;gap:8px}
+.sz div{display:grid;grid-template-columns:1fr auto;align-items:center;gap:10px;font:700 13px/1 var(--sans)}
+.sz i{display:block;height:var(--h);width:100%;border-radius:12px;background:var(--k-dock);border:2px solid var(--ink)}
+.sz span{font-weight:600;color:var(--ink2);white-space:nowrap}
+.rules{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.rules span{font:700 13px/1 var(--sans);padding:9px 12px;border-radius:999px;border:2px solid var(--ink);background:var(--card)}
+.rules span.hot{background:var(--k-hot);color:var(--k-hot-ink)}
 
+/* ===== SCENE 6: instant customization ===== */
+.chips{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.chips button{appearance:none;border:2px solid var(--ink);background:var(--card);color:var(--ink);font:700 14px/1 var(--sans);padding:10px 14px;border-radius:999px;cursor:pointer;min-height:40px;display:inline-flex;align-items:center;gap:8px}
+.chips button i{width:14px;height:14px;border-radius:50%;border:2px solid var(--ink);background:var(--swatch,#fff)}
+.chips button.on{background:var(--ink);color:#fff}
+.chips button.on i{border-color:#fff}
+.chips button:focus-visible{outline:3px solid var(--sky);outline-offset:2px}
+.chips .lbl{font:700 13px/1 var(--sans);letter-spacing:1px;text-transform:uppercase;color:var(--ink2);align-self:center;margin-right:2px}
+.hmi{width:100%;max-width:560px;background:var(--k-bg);border:3px solid var(--ink);border-radius:22px;overflow:hidden;text-align:left;color:var(--k-ink);transition:background .35s,color .35s;box-shadow:0 10px 0 -4px rgba(36,31,26,.14)}
+.hmi-top{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:var(--k-box);border-bottom:1px solid var(--k-line);font:800 14px/1 var(--sans);transition:background .35s}
+.hmi-top .ln{display:flex;align-items:center;gap:6px;font-weight:700;color:var(--k-dim)}
+.hmi-top .ln i{width:10px;height:10px;border-radius:50%;background:var(--k-ok)}
+.hmi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:10px 12px;background:var(--k-card);transition:background .35s}
+.hbox{background:var(--k-box);border-radius:var(--k-radius);padding:8px 9px;display:grid;gap:5px;transition:background .35s,box-shadow .35s}
+.hbox .nm{font:800 13px/1 var(--sans);display:flex;justify-content:space-between;align-items:center}
+.hbox .nm b{font:800 14px/1 var(--sans);font-variant-numeric:tabular-nums}
+.hbox .bar{height:12px;border-radius:6px;background:var(--k-held);overflow:hidden}
+.hbox .bar i{display:block;height:100%;width:var(--p);background:var(--k-ok);border-radius:6px;transition:width .6s var(--ease),background .35s}
+.hbox.low .bar i{background:var(--k-low)}
+.hbox.now .bar i{background:var(--k-hot)}
+.hbox.now{box-shadow:inset 0 0 0 2px var(--k-hot)}
+.hmi-dock{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;padding:12px 14px;background:var(--k-dock);color:var(--k-dock-ink);transition:background .35s}
+.hmi-dock .al{display:grid;gap:2px;font:600 13px/1.2 var(--sans)}
+.hmi-dock .al b{font:800 22px/1 var(--sans);font-variant-numeric:tabular-nums}
+.hmi-dock .al b em{font:700 13px/1 var(--sans);font-style:normal;margin-left:4px}
+.hmi-dock .go{background:var(--k-hot);color:var(--k-hot-ink);font:800 14px/1 var(--sans);padding:0 16px;height:48px;border-radius:12px;display:inline-flex;align-items:center;white-space:nowrap;transition:background .35s,color .35s}
+
+/* ===== SCENE 7: templates ===== */
+.sys{display:grid;grid-template-columns:230px 1fr;gap:18px;width:100%;max-width:960px;align-items:start;text-align:left}
+.src{background:var(--card);border:3px solid var(--ink);border-radius:20px;padding:14px;display:grid;gap:10px;position:relative;box-shadow:0 8px 0 -3px rgba(36,31,26,.14)}
+.src h3{font:800 13px/1 var(--sans);letter-spacing:1.2px;text-transform:uppercase;color:var(--ink2)}
+.src .brand{font:800 18px/1.1 var(--sans);color:var(--ink)}
+.src .tok{display:grid;grid-template-columns:22px 1fr auto;align-items:center;gap:8px;font:700 13px/1 var(--sans);color:var(--ink);padding:5px 0;border-top:1px solid var(--line)}
+.src .tok i{width:22px;height:22px;border-radius:7px;border:2px solid var(--ink);background:var(--v);transition:background .35s}
+.src .tok code{font:600 13px/1 ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--ink2)}
+.src .tok.ty i{border:0;background:none;font:800 16px/22px var(--sans);text-align:center;color:var(--ink)}
+.src .go{position:absolute;right:-14px;top:50%;transform:translateY(-50%);width:28px;height:28px;border-radius:50%;background:var(--ink);color:#fff;display:grid;place-items:center}
+.src .go svg{width:16px;height:16px;fill:none;stroke:#fff;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+.tpls{display:grid;grid-template-columns:repeat(5,1fr);gap:10px 12px}
+.tpl{display:grid;gap:6px}
+.tpl span{font:700 13px/1.2 var(--sans);color:var(--ink);text-align:center}
+.th{aspect-ratio:4/3;border:3px solid var(--ink);border-radius:12px;background:var(--k-bg);overflow:hidden;display:grid;grid-template-rows:auto 1fr;transition:background .35s;box-shadow:0 5px 0 -2px rgba(36,31,26,.12)}
+.th .hd{height:22%;background:var(--k-dock);display:flex;align-items:center;padding:0 7%;gap:5%;transition:background .35s}
+.th .hd i{height:38%;width:34%;background:var(--k-dock-ink);opacity:.9;border-radius:99px}
+.th .hd s{height:38%;width:18%;background:var(--k-hot);border-radius:99px;margin-left:auto;transition:background .35s}
+.th .bd{padding:6%;display:grid;gap:5%}
+.th .bd>*{border-radius:5px;min-height:0;transition:background .35s,border-color .35s}
+.th .bx{background:var(--k-box);display:grid;align-content:end;padding:12%;}
+.th .bx i{display:block;height:5px;border-radius:3px;background:var(--k-held);overflow:hidden;position:relative}
+.th .bx i::after{content:'';position:absolute;inset:0;width:var(--p,60%);border-radius:3px;background:var(--k-ok);transition:background .35s}
+.th .bx.low i::after{background:var(--k-low)}
+.th .bx.now{box-shadow:inset 0 0 0 2px var(--k-hot)}.th .bx.now i::after{background:var(--k-hot)}
+.th .row{background:var(--k-box);display:flex;align-items:center;justify-content:space-between;padding:0 8%}
+.th .row i{display:block;height:4px;width:45%;border-radius:2px;background:var(--k-held)}
+.th .row s{display:block;height:6px;width:22%;border-radius:3px;background:var(--k-ok)}
+.th .row s.hot{background:var(--k-hot)}.th .row s.held{background:var(--k-held)}
+.th .btn{background:var(--k-hot);border-radius:6px}
+.th .fld{background:var(--k-box);border:1.5px solid var(--k-line)}
+.th .cell{background:var(--k-box)}.th .cell.dim{background:var(--k-card)}.th .cell.hot{background:var(--k-hot)}
+.th .bar{background:var(--k-ok);align-self:end;height:var(--h);border-radius:3px 3px 0 0}.th .bar.hot{background:var(--k-hot)}
+.th .av{background:var(--k-card);border-radius:50%;aspect-ratio:1;align-self:center;justify-self:center;width:70%}
+.th .tile{background:var(--k-box)}
+.th.worker .bd{grid-template-columns:repeat(3,1fr);grid-template-rows:1fr 1fr}
+.th.orders .bd{grid-template-rows:repeat(3,1fr)}
+.th.manager .bd{grid-template-columns:repeat(6,1fr);align-items:end;border-bottom:2px solid var(--k-line);margin:6% 6% 0;padding:0 0 0}
+.th.inventory .bd{grid-template-columns:repeat(3,1fr);grid-template-rows:1fr 1fr}
+.th.recipe .bd{grid-template-rows:1fr 1fr 1.2fr}
+.th.schedule .bd{grid-template-columns:repeat(4,1fr);grid-template-rows:repeat(3,1fr)}
+.th.training .bd{grid-template-rows:repeat(3,1fr)}
+.th.training .row i{width:70%;height:6px;background:var(--k-held);position:relative;overflow:hidden}
+.th.training .row i::after{content:'';position:absolute;inset:0;width:var(--p);background:var(--k-ok);transition:background .35s}
+.th.metrics .bd{padding:6%}
+.th.metrics svg{width:100%;height:100%;display:block}
+.th.kiosk .bd{grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr .8fr}
+.th.kiosk .btn{grid-column:1/-1}
+.th.group .bd{grid-template-columns:repeat(4,1fr);grid-template-rows:1fr .8fr}
+.th.group .btn{grid-column:1/-1}
+
+/* ===== SCENE: Liz at Salesforce ===== */
+.liz{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;width:100%;max-width:900px}
+.liz .pnl{display:grid;gap:8px;justify-items:center}
+.liz .pnl svg{width:230px;max-width:100%;height:auto;display:block}
+.liz .pnl b{font:800 14px/1.2 var(--sans);color:var(--ink)}
+.liz .pnl span{font:600 13px/1.3 var(--sans);color:var(--ink2);max-width:230px}
+.liz .arr{width:30px;height:30px;flex:0 0 30px}
+.liz .arr svg{width:30px;height:30px;fill:none;stroke:var(--ink2);stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
 @media(max-width:640px){
-  .scene{padding:50px 20px}
-  .hub-wrap{height:auto;display:flex;flex-direction:column;gap:20px}
+  .liz{display:grid;grid-template-columns:1fr 1fr;gap:12px 10px}
+  .liz .arr{display:none}
+  .liz .pnl{gap:4px}
+  .liz .pnl svg{width:100%}
+  .liz .pnl:last-child{grid-column:1/-1}
+  .liz .pnl:last-child svg{width:200px}
+  .liz svg text{display:none}
+}
+
+/* ===== SCENE: plugs in ===== */
+.chain{display:grid;grid-template-columns:1fr auto 1fr auto 1fr auto 1fr;gap:10px;align-items:start;width:100%;max-width:960px}
+.node{display:grid;gap:8px;justify-items:center;text-align:center}
+.node .tile{width:76px;height:76px}
+.node .tile svg{width:60%;height:60%}
+.node b{font:800 15px/1.2 var(--sans);color:var(--ink)}
+.node em{font:700 13px/1 var(--sans);font-style:normal;letter-spacing:1px;text-transform:uppercase;color:var(--c)}
+.node span{font:600 13px/1.35 var(--sans);color:var(--ink2);max-width:210px}
+.chain .arr{width:28px;height:28px;margin-top:24px}
+.chain .arr svg{width:28px;height:28px;fill:none;stroke:var(--ink2);stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+@media(max-width:640px){
+  .chain{grid-template-columns:1fr 1fr;gap:14px 10px}
+  .chain .arr{display:none}
+  .node .tile{width:64px;height:64px}
+  .node span{max-width:170px}
+}
+
+/* ===== SCENE: real estate ===== */
+.floor{display:grid;grid-template-columns:1.25fr 1fr;gap:16px;width:100%;max-width:960px;align-items:center}
+.wh{width:100%}
+.wh svg{width:100%;height:auto;display:block}
+.vend{display:grid;grid-template-columns:1fr 1fr;gap:8px;width:100%;text-align:left}
+.vend .v{border:3px solid var(--ink);border-radius:16px;padding:10px 12px;background:var(--card);display:grid;gap:4px;border-left-width:10px;border-left-color:var(--c)}
+.vend .v b{font:800 14px/1.2 var(--sans);color:var(--c)}
+.vend .v span{font:600 13px/1.35 var(--sans);color:var(--ink)}
+.vend .v small{font:600 13px/1.3 var(--sans);color:var(--ink2)}
+@media(max-width:760px){.floor{grid-template-columns:1fr;gap:10px}.wh{max-width:420px;margin:0 auto}}
+@media(max-width:640px){
+  .vend{gap:6px}
+  .vend .v{padding:7px 9px;gap:2px;border-left-width:8px}
+  .vend .v small{display:none}
+  .wh{max-width:330px}
+}
+
+/* ===== SCENE 8: timeline ===== */
+.timeline{display:flex;width:100%;max-width:880px;padding:16px 0 4px;justify-content:center}
+.tl-item{flex:1 1 0;min-width:0;display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;position:relative;padding:0 6px}
+.tl-item:not(:last-child)::after{content:'';position:absolute;top:26px;left:calc(50% + 28px);width:calc(100% - 56px);height:3px;border-radius:3px;background:linear-gradient(90deg,var(--c),var(--cn))}
+.tl-item .tile{width:56px;height:56px;z-index:1}
+.tl-item .txt{display:grid;gap:3px}
+.tl-item b{font:800 13px/1.2 var(--sans);color:var(--c)}
+.tl-item span{font-size:13px;color:var(--ink2);line-height:1.3}
+.tl-item.now .tile{transform:scale(1.12);box-shadow:0 0 0 6px color-mix(in srgb,var(--c) 22%,transparent)}
+
+/* ===== SCENE 9 ===== */
+.grid50{display:grid;grid-template-columns:repeat(10,1fr);gap:6px;max-width:460px;width:100%}
+.grid50 svg{width:100%;height:auto;display:block}
+.closing{font-family:var(--serif);font-size:clamp(24px,3.6vw,36px);line-height:1.3;max-width:22ch;text-wrap:balance;margin:0}
+.closing em{font-style:normal;color:var(--terracotta)}
+.foot{color:var(--ink2);font-size:14px;margin-top:10px}
+
+@media(max-width:760px){
+  .ds{grid-template-columns:1fr 1fr}
+  .ds .blk.rl{grid-column:1/-1}
+  .tpls{grid-template-columns:repeat(4,1fr)}
+  .sys{grid-template-columns:200px 1fr}
+}
+@media(max-width:640px){
+  .scene{padding:56px 18px 96px;gap:18px}
+  .scene h2{font-size:clamp(24px,6.6vw,32px)}
+  .scene p.sub{font-size:16px}
+  .hub-wrap{height:auto;display:flex;flex-direction:column;gap:18px}
   .spoke{display:none}
-  .channel{position:static}
-  .channel-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px 10px}
+  .channel{position:static;transform:none}
+  .channel-grid{display:grid !important;grid-template-columns:repeat(3,1fr);gap:16px 8px;width:100%}
+  .stations{display:grid;grid-template-columns:repeat(3,auto);gap:12px 18px;justify-content:center}
+  .station .tile{width:56px;height:56px}
+  .ds{grid-template-columns:1fr 1fr;gap:8px}
+  .ds .blk{padding:10px;gap:8px}
+  .ds .blk:first-child{grid-column:1/-1}
+  .sw i{height:24px}
+  .ty .t1{font-size:22px}
+  .ty .t2{font-size:15px}
+  .ty small{display:none}
+  .rules span{font-size:13px;padding:7px 10px}
+  .sys{grid-template-columns:1fr;gap:12px}
+  .src{grid-template-columns:repeat(4,1fr);gap:6px 8px;padding:10px 12px}
+  .src h3,.src .brand{grid-column:1/-1}
+  .src .tok{grid-template-columns:18px 1fr;border-top:0;padding:2px 0;gap:6px}
+  .src .tok i{width:18px;height:18px}
+  .src .tok code{display:none}
+  .src .tok.ty i{font-size:13px;line-height:18px}
+  .src .go{display:none}
+  .tpls{grid-template-columns:repeat(4,1fr);gap:6px 8px}
+  .tpl{gap:4px}
+  .tpl span{font-size:13px}
+  .src{padding:8px 12px}
+  .hmi-grid{grid-template-columns:repeat(3,1fr);gap:6px;padding:8px}
+  .hbox{padding:7px}
+  .hmi-dock .go{height:44px;padding:0 12px;font-size:13px}
+  .timeline{display:grid;grid-template-columns:1fr 1fr;gap:12px 10px;padding:0}
+  .tl-item{flex-direction:row;text-align:left;align-items:center;gap:10px;padding:0}
+  .tl-item::after{display:none}
+  .tl-item .tile{width:44px;height:44px;flex:0 0 44px}
+  .tl-item span{font-size:11.5px}
+  .tl-item.now{grid-column:1/-1}
+  .dots{right:8px;gap:8px}
+  .dots a{width:8px;height:8px}
+}
+@media(max-height:700px){.deck{scroll-snap-type:y proximity}}
+@media(prefers-reduced-motion:reduce){
+  .deck{scroll-behavior:auto}
+  .reveal,.scene:not(.in) .reveal{opacity:1;transform:none;transition:none}
 }
 </style>
 </head>
 <body>
 
-<section class="scene">
-  <div class="kicker">One guy</div>
-  <div class="s1-fig">
-    <div class="chef"><div class="hat"></div><div class="head"></div><div class="body"></div></div>
-    <div class="cart"><div class="bowl"></div><div class="bowl"></div><div class="bowl"></div></div>
-  </div>
-  <h2>A guy who's good at this sells as many bowls as he can make.</h2>
-  <p class="sub">One person, one cart, one line out the door. It works — right up until it doesn't.</p>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-bowl" viewBox="0 0 24 24"><path d="M3 11h18a9 9 0 0 1-18 0Z"/><path d="M6 20h12"/><path d="M9 7c0-1.6 1.2-2 1.2-3.6M14 7c0-1.6 1.2-2 1.2-3.6"/></symbol>
+  <symbol id="i-walk" viewBox="0 0 24 24"><circle cx="13" cy="4" r="2"/><path d="M12.5 8 9 11l1 4 3 2 1 4M9 11l-2 3M12.5 8l3 2 2.5-1M10 15l-3 6"/></symbol>
+  <symbol id="i-bike" viewBox="0 0 24 24"><circle cx="5.5" cy="17" r="3.5"/><circle cx="18.5" cy="17" r="3.5"/><path d="M5.5 17l4-8h5l4 8M9.5 9 8 6h3.5M14.5 9l1.5-3"/></symbol>
+  <symbol id="i-car" viewBox="0 0 24 24"><path d="M4 16v-3l2-5.5A2 2 0 0 1 7.9 6h8.2a2 2 0 0 1 1.9 1.5L20 13v3"/><path d="M4 13h16"/><path d="M4 16v3h3v-3M17 16v3h3v-3"/><path d="M7 16h.01M17 16h.01"/></symbol>
+  <symbol id="i-group" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9.5" r="2.5"/><path d="M3 20c0-3.6 2.7-6 6-6s6 2.4 6 6"/><path d="M15.5 20c0-2.5 1.5-4.4 3.8-5"/></symbol>
+  <symbol id="i-building" viewBox="0 0 24 24"><path d="M5 21V4h14v17"/><path d="M3 21h18"/><path d="M9 8h2M13 8h2M9 12h2M13 12h2"/><path d="M10 21v-4h4v4"/></symbol>
+  <symbol id="i-phone" viewBox="0 0 24 24"><rect x="6.5" y="2.5" width="11" height="19" rx="2.5"/><path d="M11 18.5h2"/><path d="M9 10.5l2 2 4-4.5"/></symbol>
+  <symbol id="i-flame" viewBox="0 0 24 24"><path d="M12 3c1 3.5-2 5-2 8a2 2 0 0 0 4 0c0-1 .5-1.5.9-2.1C17 10.7 18 13 18 15a6 6 0 0 1-12 0c0-2.4 1.2-3.8 2.4-5.2C9.6 8.4 11 6.5 12 3Z"/></symbol>
+  <symbol id="i-knife" viewBox="0 0 24 24"><path d="M14 4l6 6-9 9H5v-6l9-9Z"/><path d="M5 13l6 6"/><path d="M12 6l6 6"/></symbol>
+  <symbol id="i-leaf" viewBox="0 0 24 24"><path d="M4 20C4 10 10 4 20 4c0 10-6 16-16 16Z"/><path d="M4 20c4-5 8-9 12-12"/></symbol>
+  <symbol id="i-sauce" viewBox="0 0 24 24"><path d="M10 2h4v3l2 2v11a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2V7l2-2V2Z"/><path d="M8 12h8"/></symbol>
+  <symbol id="i-cheese" viewBox="0 0 24 24"><path d="M3 17V10l18-4v11H3Z"/><circle cx="8" cy="13" r="1.2"/><circle cx="13" cy="14.5" r="1"/><circle cx="16.5" cy="11" r="1.1"/></symbol>
+  <symbol id="i-bell" viewBox="0 0 24 24"><path d="M5 16a7 7 0 0 1 14 0"/><path d="M12 9V6"/><path d="M10 6h4"/><path d="M3 16h18"/><path d="M4 19h16"/></symbol>
+  <symbol id="i-robot" viewBox="0 0 24 24"><rect x="3" y="8" width="18" height="11" rx="3"/><path d="M12 8V5"/><circle cx="12" cy="4" r="1.3" fill="#fff" stroke="none"/><circle cx="8.5" cy="13" r="1.4" fill="#fff" stroke="none"/><circle cx="15.5" cy="13" r="1.4" fill="#fff" stroke="none"/><path d="M9 16.5h6"/><path d="M3 22h18"/></symbol>
+  <symbol id="i-book" viewBox="0 0 24 24"><path d="M4 4h6a2 2 0 0 1 2 2v14a2 2 0 0 0-2-2H4V4Z"/><path d="M20 4h-6a2 2 0 0 0-2 2v14a2 2 0 0 1 2-2h6V4Z"/></symbol>
+  <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/></symbol>
+  <symbol id="i-pad" viewBox="0 0 24 24"><path d="M7 7h10a5 5 0 0 1 5 5v2.5a3.5 3.5 0 0 1-6.3 2.1L14.5 15h-5l-1.2 1.6A3.5 3.5 0 0 1 2 14.5V12a5 5 0 0 1 5-5Z"/><path d="M7.5 10.5v3M6 12h3"/><path d="M16 11h.01M18 13h.01"/></symbol>
+  <symbol id="i-museum" viewBox="0 0 24 24"><path d="M3 9l9-5 9 5H3Z"/><path d="M5 9v8M9.7 9v8M14.3 9v8M19 9v8"/><path d="M3 17h18M3 21h18"/></symbol>
+  <symbol id="i-wrench" viewBox="0 0 24 24"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4L15 12l-3-3 2.7-2.7Z"/></symbol>
+  <symbol id="i-basket" viewBox="0 0 24 24"><path d="M3 10h18l-2 10H5L3 10Z"/><path d="M8 10l3-6M16 10l-3-6"/><path d="M3 14h18"/><path d="M9 10v10M15 10v10"/></symbol>
+  <symbol id="i-merge" viewBox="0 0 24 24"><path d="M4 5h5l3 7 3-7h5"/><path d="M12 12v9"/><path d="M9 18l3 3 3-3"/><path d="M4 12h3M17 12h3"/></symbol>
+  <symbol id="i-machine" viewBox="0 0 24 24"><rect x="2" y="9" width="20" height="9" rx="2"/><path d="M5 9V5h4v4M15 9V5h4v4"/><path d="M8 13h.01M11 13h.01M14 13h.01M17 13h.01"/><path d="M4 21h16"/></symbol>
+  <symbol id="i-table" viewBox="0 0 24 24"><circle cx="8" cy="6" r="2.5"/><circle cx="16" cy="6" r="2.5"/><path d="M3 14h18"/><path d="M5 14v6M19 14v6"/><path d="M4 12c0-2 1.5-3 4-3s4 1 4 3M12 12c0-2 1.5-3 4-3s4 1 4 3"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3l7 3v5c0 5-3.5 8.5-7 10-3.5-1.5-7-5-7-10V6l7-3Z"/><path d="M9 12l2 2 4-4"/></symbol>
+</svg>
+
+<nav class="dots" aria-label="Scenes"></nav>
+<button class="next" id="nextBtn" aria-label="Next"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12l7 7 7-7"/></svg></button>
+
+<main class="deck" id="deck">
+
+<section class="scene in" id="s1" data-title="One guy">
+  <div class="kicker reveal">One guy</div>
+  <svg class="art reveal" viewBox="0 0 360 220" width="360" height="220" aria-label="A cook at a bowl cart">
+    <g fill="none" stroke="var(--ink)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 206h336"/>
+      <rect x="126" y="48" width="212" height="16" rx="5" fill="var(--terracotta)"/>
+      <path d="M130 64a10 10 0 0 0 20 0M150 64a10 10 0 0 0 20 0M170 64a10 10 0 0 0 20 0M190 64a10 10 0 0 0 20 0M210 64a10 10 0 0 0 20 0M230 64a10 10 0 0 0 20 0M250 64a10 10 0 0 0 20 0M270 64a10 10 0 0 0 20 0M290 64a10 10 0 0 0 20 0M310 64a10 10 0 0 0 20 0" fill="var(--card)"/>
+      <path d="M140 64v50M324 64v50"/>
+      <rect x="128" y="112" width="208" height="14" rx="4" fill="var(--mustard)"/>
+      <rect x="132" y="126" width="200" height="64" rx="8" fill="var(--card)"/>
+      <rect x="190" y="142" width="84" height="30" rx="7" fill="var(--card)"/>
+      <circle cx="166" cy="198" r="13" fill="var(--card)"/><circle cx="166" cy="198" r="4" fill="var(--ink)"/>
+      <circle cx="298" cy="198" r="13" fill="var(--card)"/><circle cx="298" cy="198" r="4" fill="var(--ink)"/>
+      <path d="M188 112a16 12 0 0 0 32 0Z" fill="var(--mustard)"/><path d="M230 112a16 12 0 0 0 32 0Z" fill="var(--sage)"/><path d="M272 112a16 12 0 0 0 32 0Z" fill="var(--sky)"/>
+      <path d="M200 100c0-4 3-5 3-9M212 98c0-4 3-5 3-9" stroke="var(--ink2)" stroke-width="2.5"/>
+      <path d="M60 80q0-24 20-24t20 24" fill="var(--card)"/><rect x="56" y="78" width="48" height="10" rx="4" fill="var(--card)"/>
+      <circle cx="80" cy="102" r="18" fill="#f2c9a0"/>
+      <path d="M72 104q8 8 16 0" stroke-width="2.5"/><circle cx="74" cy="98" r="1.8" fill="var(--ink)" stroke="none"/><circle cx="86" cy="98" r="1.8" fill="var(--ink)" stroke="none"/>
+      <path d="M50 130q0-10 10-10h40q10 0 10 10v48H50Z" fill="var(--terracotta)"/>
+      <rect x="60" y="136" width="40" height="42" rx="5" fill="var(--card)"/>
+      <path d="M110 128q18-4 26-10" stroke-width="5"/>
+      <rect x="56" y="178" width="18" height="26" fill="var(--ink2)"/><rect x="86" y="178" width="18" height="26" fill="var(--ink2)"/>
+      <path d="M50 206h28M82 206h28" stroke-width="5"/>
+    </g>
+  </svg>
+  <h2 class="reveal">A guy who's good at this sells as many bowls as he can make.</h2>
+  <p class="sub reveal">One person, one cart, one line out the door. It works, right up until it doesn't.</p>
 </section>
 
-<div class="divider"></div>
-
-<section class="scene">
-  <div class="kicker">Then it's real</div>
-  <div class="s2-fig">
-    <span class="steam" style="left:38%"><svg width="22" height="14" viewBox="0 0 24 16" fill="none" stroke="var(--ink2)" stroke-width="2"><path d="M2 8c2-4 4-4 6 0s4 4 6 0 4-4 6 0 4 4 6 0"/></svg></span><span class="steam" style="left:52%"><svg width="22" height="14" viewBox="0 0 24 16" fill="none" stroke="var(--ink2)" stroke-width="2"><path d="M2 8c2-4 4-4 6 0s4 4 6 0 4-4 6 0 4 4 6 0"/></svg></span>
-    <div class="chef small"><div class="hat"></div><div class="head"></div><div class="body"></div></div>
-    <div class="chef small"><div class="hat"></div><div class="head"></div><div class="body" style="background:var(--sage)"></div></div>
-    <div class="chef small"><div class="hat"></div><div class="head"></div><div class="body" style="background:var(--sky)"></div></div>
-  </div>
-  <h2>Now it's him, a dishwasher, and a sous chef.</h2>
-  <p class="sub">Three people trying to get 500 bowls out at lunch, all at once, all correct.</p>
-  <div class="count"><span>500 bowls</span><span>1 lunch rush</span><span>3 people</span></div>
+<section class="scene" id="s2" data-title="Then it's real">
+  <div class="kicker reveal">Then it's real</div>
+  <svg class="art reveal" viewBox="0 0 440 220" width="440" height="220" aria-label="Three cooks behind a counter at the lunch rush">
+    <g fill="none" stroke="var(--ink)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M30 34h380"/>
+      <g fill="var(--card)"><rect x="52" y="34" width="26" height="34" rx="3"/><rect x="92" y="34" width="26" height="34" rx="3"/><rect x="132" y="34" width="26" height="34" rx="3"/><rect x="172" y="34" width="26" height="34" rx="3"/><rect x="212" y="34" width="26" height="34" rx="3"/><rect x="252" y="34" width="26" height="34" rx="3"/><rect x="292" y="34" width="26" height="34" rx="3"/><rect x="332" y="34" width="26" height="34" rx="3"/><rect x="372" y="34" width="26" height="34" rx="3"/></g>
+      <g stroke="var(--ink2)" stroke-width="2"><path d="M58 44h14M58 50h14M58 56h10M98 44h14M98 50h14M138 44h14M138 50h14M138 56h10M178 44h14M178 50h14M218 44h14M218 50h14M218 56h10M258 44h14M258 50h14M298 44h14M298 50h14M298 56h10M338 44h14M338 50h14M378 44h14M378 50h14M378 56h10"/></g>
+      <g id="cook"><path d="M78 96q0-22 18-22t18 22" fill="var(--card)"/><rect x="74" y="94" width="44" height="9" rx="4" fill="var(--card)"/><circle cx="96" cy="116" r="16" fill="#f2c9a0"/><path d="M90 119q6 5 12 0" stroke-width="2.5"/><path d="M70 142q0-10 10-10h32q10 0 10 10v30H70Z" fill="var(--terracotta)"/></g>
+      <g><path d="M198 96q0-22 18-22t18 22" fill="var(--card)"/><rect x="194" y="94" width="44" height="9" rx="4" fill="var(--card)"/><circle cx="216" cy="116" r="16" fill="#e6b48a"/><path d="M210 119q6 5 12 0" stroke-width="2.5"/><path d="M190 142q0-10 10-10h32q10 0 10 10v30h-52Z" fill="var(--sage)"/></g>
+      <g><path d="M318 96q0-22 18-22t18 22" fill="var(--card)"/><rect x="314" y="94" width="44" height="9" rx="4" fill="var(--card)"/><circle cx="336" cy="116" r="16" fill="#c99a6e"/><path d="M330 119q6 5 12 0" stroke-width="2.5"/><path d="M310 142q0-10 10-10h32q10 0 10 10v30h-52Z" fill="var(--sky)"/></g>
+      <rect x="20" y="172" width="400" height="26" rx="6" fill="var(--mustard)"/>
+      <path d="M40 172a14 10 0 0 0 28 0ZM74 172a14 10 0 0 0 28 0ZM108 172a14 10 0 0 0 28 0Z" fill="var(--sky)"/>
+      <path d="M150 172a14 10 0 0 0 28 0ZM184 172a14 10 0 0 0 28 0Z" fill="var(--sage)"/>
+      <path d="M232 172a14 10 0 0 0 28 0ZM266 172a14 10 0 0 0 28 0ZM300 172a14 10 0 0 0 28 0ZM334 172a14 10 0 0 0 28 0ZM368 172a14 10 0 0 0 28 0Z" fill="var(--terracotta)"/>
+      <path d="M150 158c0-4 3-5 3-9M166 156c0-4 3-5 3-9M300 158c0-4 3-5 3-9M316 156c0-4 3-5 3-9" stroke="var(--ink2)" stroke-width="2.5"/>
+      <path d="M12 208h416"/>
+    </g>
+  </svg>
+  <h2 class="reveal">Now it's him, a dishwasher, and a sous chef.</h2>
+  <p class="sub reveal">Three people trying to get 500 bowls out at lunch, all at once, all correct.</p>
+  <div class="count reveal"><span style="background:var(--terracotta)">500 bowls</span><span style="background:var(--mustard)">1 lunch rush</span><span style="background:var(--sky)">3 people</span></div>
 </section>
 
-<div class="divider"></div>
-
-<section class="scene">
-  <div class="kicker">Same bowl, everywhere</div>
-  <div class="hub-wrap">
-    <div class="hub"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.2"><path d="M3 10h18c0 5-4 9-9 9s-9-4-9-9Z"/><path d="M7 10c0-3 2-6 5-6"/></svg></div>
-    <div class="channel" style="top:8px;left:50%;transform:translateX(-50%)"><div class="ic icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.2"><circle cx="12" cy="5" r="2.4"/><path d="M12 9v6M12 9l-4 3M12 9l4 3M12 15l-3 6M12 15l3 6"/></svg></div><span>Walk up</span></div>
-    <div class="channel" style="top:26%;right:6%"><div class="ic icon" style="background:#fdece4"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.2"><path d="M6 9h12l-1 11H7L6 9Z"/><path d="M9 9V7a3 3 0 0 1 6 0v2"/></svg></div><span>DoorDash</span></div>
-    <div class="channel" style="bottom:26%;right:10%"><div class="ic icon" style="background:#e8f2ee"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.2"><path d="M6 9h12l-1 11H7L6 9Z"/><path d="M9 9V7a3 3 0 0 1 6 0v2"/></svg></div><span>Uber Eats</span></div>
-    <div class="channel" style="bottom:8px;left:50%;transform:translateX(-50%)"><div class="ic icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.2"><circle cx="9" cy="8" r="3"/><circle cx="16" cy="9" r="2.4"/><path d="M4 20c0-3.3 2.2-6 5-6s5 2.7 5 6M14 20c0-2.6 1.6-4.8 3.8-5.6"/></svg></div><span>Group order</span></div>
-    <div class="channel" style="bottom:26%;left:10%"><div class="ic icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.2"><rect x="5" y="4" width="14" height="17"/><path d="M9 8h2M13 8h2M9 12h2M13 12h2M9 16h2M13 16h2"/></svg></div><span>50 to a conference</span></div>
-    <div class="channel" style="top:26%;left:6%"><div class="ic icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.2"><rect x="6" y="3" width="12" height="18" rx="2"/><path d="M11 18h2"/></svg></div><span>App pickup</span></div>
-  </div>
-  <h2>The same kitchen has to answer a dozen doors at once.</h2>
-  <p class="sub">Walk-up, delivery apps, a group order, fifty bowls to a Salesforce conference — one system, every channel, same order.</p>
-</section>
-
-<div class="divider"></div>
-
-<section class="scene">
-  <div class="kicker">One box, not a whole line</div>
-  <div class="line-wrap">
-    <div class="stations">
-      <div class="station" title="Grill"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.2"><path d="M12 3c2 3-1 4-1 6 0 1.5 1 2 2 2 1.5 0 2.5-1.2 2.5-2.5C17 12 19 14 19 16.5A7 7 0 1 1 6 15c0-2 1-3 2-4.5C9.5 8.5 10 6 12 3Z"/></svg></div>
-      <div class="station" title="Chop"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.2"><rect x="2" y="9" width="6" height="6" rx="1.5"/><path d="M8 10h9c2 0 3 1 3 2s-1 2-3 2H8"/></svg></div>
-      <div class="station" title="Dress"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.2"><path d="M5 19c0-8 4-14 14-14 0 10-6 14-14 14Z"/><path d="M5 19c3-4 6-7 12-11"/></svg></div>
-      <div class="station" title="Sauce"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.2"><path d="M10 3h4v3l2 2v11a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2V8l2-2V3Z"/><path d="M9 13h6"/></svg></div>
-      <div class="station" title="Cheese"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.2"><path d="M3 18 12 4l9 14H3Z"/><circle cx="11" cy="14" r="1" fill="var(--ink)" stroke="none"/><circle cx="15" cy="15.5" r="1" fill="var(--ink)" stroke="none"/></svg></div>
-      <div class="station" title="Expo"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.2"><path d="M3 8l9-5 9 5-9 5-9-5Z"/><path d="M3 8v9l9 5 9-5V8"/><path d="M12 13v9"/></svg></div>
+<section class="scene" id="s3" data-title="Same bowl, everywhere">
+  <div class="kicker reveal">Same bowl, everywhere</div>
+  <div class="hub-wrap reveal">
+    <div class="spoke" style="transform:rotate(180deg)"></div><div class="spoke" style="transform:rotate(-120deg)"></div><div class="spoke" style="transform:rotate(-60deg)"></div><div class="spoke" style="transform:rotate(0deg)"></div><div class="spoke" style="transform:rotate(60deg)"></div><div class="spoke" style="transform:rotate(120deg)"></div>
+    <div class="hub tile round"><svg><use href="#i-bowl"/></svg></div>
+    <div class="channel-grid" style="display:contents">
+      <div class="channel" style="--x:0px;--y:-136px"><div class="tile" style="--c:var(--sage)"><svg><use href="#i-walk"/></svg></div><span>Walk up</span></div>
+      <div class="channel" style="--x:120px;--y:-68px"><div class="tile" style="--c:var(--terracotta)"><svg><use href="#i-bike"/></svg></div><span>DoorDash</span></div>
+      <div class="channel" style="--x:120px;--y:68px"><div class="tile" style="--c:var(--teal)"><svg><use href="#i-car"/></svg></div><span>Uber Eats</span></div>
+      <div class="channel" style="--x:0px;--y:136px"><div class="tile" style="--c:var(--plum)"><svg><use href="#i-group"/></svg></div><span>Group order</span></div>
+      <div class="channel" style="--x:-120px;--y:68px"><div class="tile" style="--c:var(--mustard)"><svg><use href="#i-building"/></svg></div><span>50 to a conference</span></div>
+      <div class="channel" style="--x:-120px;--y:-68px"><div class="tile" style="--c:var(--sky)"><svg><use href="#i-phone"/></svg></div><span>App pickup</span></div>
     </div>
-    <div class="arrow-down"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.5"><path d="M12 4v14M6 13l6 6 6-6"/></svg></div>
-    <div class="onebox"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.2"><rect x="5" y="8" width="14" height="11" rx="3"/><path d="M12 8V5"/><circle cx="12" cy="4" r="1.2" fill="#fff" stroke="none"/><circle cx="9.5" cy="13" r="1.3" fill="#fff" stroke="none"/><circle cx="14.5" cy="13" r="1.3" fill="#fff" stroke="none"/><path d="M9 17h6"/></svg></div>
   </div>
-  <h2>A whole process line, in one machine.</h2>
-  <p class="sub">Grill, chop, dress, sauce, cheese, expo — every station a place like Chipotle runs as a line of people, built into one box that runs the same line by itself.</p>
+  <h2 class="reveal">The same kitchen has to answer a dozen doors at once.</h2>
+  <p class="sub reveal">Walk-up, delivery apps, a group order, fifty bowls to a Salesforce conference. One system, every channel, same order.</p>
 </section>
 
-<div class="divider"></div>
-
-<section class="scene">
-  <div class="kicker">This is the shape I keep building</div>
-  <h2 style="max-width:22ch">One template. Fits whoever buys it. Every time.</h2>
-  <div class="timeline">
-    <div class="tl-item"><div class="tl-dot">I</div><b>Istation</b><span>One system, 8 products, 4M students</span></div>
-    <div class="tl-item"><div class="tl-dot">Ap</div><b>Apple</b><span>Templates that populate 20 languages</span></div>
-    <div class="tl-item"><div class="tl-dot">iR</div><b>iRobot</b><span>One controller, drive any unit</span></div>
-    <div class="tl-item"><div class="tl-dot">M</div><b>Museum kiosk</b><span>One kiosk, every exhibit</span></div>
-    <div class="tl-item"><div class="tl-dot">B</div><b>Bench</b><span>One token set, glove worker + planner</span></div>
-    <div class="tl-item"><div class="tl-dot">57</div><b>Auth57</b><span>One pipeline, 11,000 rules, 51 states</span></div>
-    <div class="tl-item now"><div class="tl-dot"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.2"><path d="M3 11h18c0 4.5-3.5 8-9 8s-9-3.5-9-8Z"/><path d="M8 11c0-2 1-4 4-4"/></svg></div><b>This</b><span>One machine, every customer's bowl</span></div>
+<section class="scene" id="s4" data-title="One box">
+  <div class="kicker reveal">One box, not a whole line</div>
+  <div class="line-wrap reveal" style="gap:14px">
+    <div class="stations">
+      <div class="station"><div class="tile" style="--c:var(--terracotta)"><svg><use href="#i-flame"/></svg></div><span>Grill</span></div>
+      <div class="station"><div class="tile" style="--c:var(--sky)"><svg><use href="#i-knife"/></svg></div><span>Chop</span></div>
+      <div class="station"><div class="tile" style="--c:var(--sage)"><svg><use href="#i-leaf"/></svg></div><span>Dress</span></div>
+      <div class="station"><div class="tile" style="--c:var(--rose)"><svg><use href="#i-sauce"/></svg></div><span>Sauce</span></div>
+      <div class="station"><div class="tile" style="--c:var(--mustard)"><svg><use href="#i-cheese"/></svg></div><span>Cheese</span></div>
+      <div class="station"><div class="tile" style="--c:var(--plum)"><svg><use href="#i-bell"/></svg></div><span>Expo</span></div>
+    </div>
+    <div class="arrow-down"><svg viewBox="0 0 24 24"><path d="M12 4v14M6 13l6 6 6-6"/></svg></div>
+    <svg class="art machine" viewBox="0 0 540 210" width="540" height="210" aria-label="The bowl line as one machine: bowl tower, dispenser row with status lights, screen tower, conveyor">
+      <g fill="none" stroke="var(--ink)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="18" y="62" width="504" height="112" rx="12" fill="#e6e7eb"/>
+        <rect x="104" y="56" width="322" height="10" rx="3" fill="#f7f7f9"/>
+        <rect x="28" y="16" width="70" height="158" rx="10" fill="#dcdde3"/>
+        <path d="M44 46a19 12 0 0 0 38 0ZM44 66a19 12 0 0 0 38 0ZM44 86a19 12 0 0 0 38 0Z" fill="var(--card)"/>
+        <rect x="42" y="118" width="42" height="40" rx="6" fill="var(--card)"/><circle cx="63" cy="138" r="9" fill="var(--sage)"/>
+        <g fill="#f4f4f6" stroke-width="2.5"><rect x="114" y="78" width="24" height="58" rx="4"/><rect x="144" y="78" width="24" height="58" rx="4"/><rect x="174" y="78" width="24" height="58" rx="4"/><rect x="204" y="78" width="24" height="58" rx="4"/><rect x="234" y="78" width="24" height="58" rx="4"/><rect x="264" y="78" width="24" height="58" rx="4"/><rect x="294" y="78" width="24" height="58" rx="4"/><rect x="324" y="78" width="24" height="58" rx="4"/><rect x="354" y="78" width="24" height="58" rx="4"/><rect x="384" y="78" width="24" height="58" rx="4"/></g>
+        <g fill="var(--sky)" stroke="none"><circle cx="126" cy="71" r="4"/><circle cx="156" cy="71" r="4"/><circle cx="186" cy="71" r="4"/><circle cx="216" cy="71" r="4"/><circle cx="276" cy="71" r="4"/><circle cx="306" cy="71" r="4"/><circle cx="336" cy="71" r="4"/><circle cx="396" cy="71" r="4"/></g>
+        <g fill="var(--mustard)" stroke="none"><circle cx="246" cy="71" r="4"/><circle cx="366" cy="71" r="4"/></g>
+        <rect x="436" y="16" width="76" height="158" rx="10" fill="#dcdde3"/>
+        <rect x="448" y="36" width="52" height="82" rx="5" fill="var(--card)"/>
+        <g fill="var(--sky)" stroke="none"><rect x="455" y="92" width="7" height="18" rx="2"/><rect x="465" y="70" width="7" height="40" rx="2"/><rect x="475" y="80" width="7" height="30" rx="2"/><rect x="485" y="58" width="7" height="52" rx="2"/></g>
+        <path d="M455 46h38M455 54h24" stroke="var(--ink2)" stroke-width="2.5"/>
+        <rect x="464" y="0" width="20" height="16" rx="3" fill="var(--sage)"/><rect x="464" y="0" width="20" height="5" fill="var(--sky)" stroke="none"/><rect x="464" y="5.5" width="20" height="5" fill="var(--mustard)" stroke="none"/>
+        <rect x="104" y="146" width="322" height="16" rx="8" fill="#cfd2d9"/>
+        <g fill="var(--ink2)" stroke="none"><circle cx="124" cy="154" r="3"/><circle cx="164" cy="154" r="3"/><circle cx="204" cy="154" r="3"/><circle cx="244" cy="154" r="3"/><circle cx="284" cy="154" r="3"/><circle cx="324" cy="154" r="3"/><circle cx="364" cy="154" r="3"/><circle cx="404" cy="154" r="3"/></g>
+        <path d="M250 146a16 11 0 0 0 32 0Z" fill="var(--terracotta)"/><rect x="248" y="130" width="36" height="6" rx="3" fill="var(--card)"/>
+        <path d="M382 146v-22q0-6 6-6h20q6 0 6 6v22Z" fill="var(--mustard)"/><path d="M388 118q10-14 20 0" stroke-width="2.5"/>
+        <rect x="40" y="174" width="12" height="26" fill="var(--ink2)"/><rect x="488" y="174" width="12" height="26" fill="var(--ink2)"/>
+        <path d="M12 202h516"/>
+      </g>
+    </svg>
   </div>
-  <p class="sub">Seven times now: build the template once, let it customize per customer, and it fits everywhere you sell it.</p>
+  <h2 class="reveal">A whole process line, in one machine.</h2>
+  <p class="sub reveal">Grill, chop, dress, sauce, cheese, expo. Every station a place like Chipotle runs as a line of people, built into one box that runs the same line by itself.</p>
 </section>
 
-<div class="divider"></div>
-
-<section class="scene">
-  <div class="kicker">The point</div>
-  <div class="grid50" id="grid50"></div>
-  <p class="closing">Fifty people can each customize their own bowl — <em>and all fifty still arrive together, on time, correct.</em></p>
-  <p class="sub">One order, one at a time, or five hundred at once — same system, no seams.</p>
+<section class="scene" id="s5" data-title="The design system">
+  <div class="kicker reveal">The design system I'd manage</div>
+  <h2 class="reveal">One token source. Every screen reads from it.</h2>
+  <div class="ds reveal">
+    <div class="blk">
+      <h3>Color · state is the message</h3>
+      <div class="sw">
+        <div><i style="background:var(--k-hot)"></i><b>Hot</b>needs you now</div>
+        <div><i style="background:var(--k-low)"></i><b>Low</b>refill soon</div>
+        <div><i style="background:var(--k-ok)"></i><b>OK</b>running</div>
+        <div><i style="background:var(--k-held)"></i><b>Held</b>paused</div>
+        <div><i style="background:var(--k-ink)"></i><b>Ink</b>text</div>
+        <div><i style="background:var(--k-dock)"></i><b>Dock</b>actions</div>
+        <div><i style="background:var(--k-card)"></i><b>Card</b>status</div>
+        <div><i style="background:var(--k-box)"></i><b>Box</b>hopper</div>
+      </div>
+    </div>
+    <div class="blk">
+      <h3>Type · readability floors</h3>
+      <div class="ty">
+        <div><span class="t1">4 min</span><small>Alert · hero number</small></div>
+        <div><span class="t2">Refill quinoa</span><small>Body · 16 min</small></div>
+        <div><span class="t3">Proteins</span><small>Label · 13 min</small></div>
+      </div>
+    </div>
+    <div class="blk">
+      <h3>Size · gloves on</h3>
+      <div class="sz">
+        <div><i style="--h:22px"></i><span>Button 48</span></div>
+        <div><i style="--h:26px"></i><span>Glove 56</span></div>
+        <div><i style="--h:32px"></i><span>Big 72</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="rules reveal"><span class="hot">No red, anywhere</span><span>Nothing under 13px</span><span>Every tap is a button</span><span>Hold 2s to confirm</span><span>Light and dark from one set</span></div>
 </section>
 
-<footer>Bryan S. Holland · Automatic Delight — built for the Lab37 conversation, no branding on purpose.</footer>
+<section class="scene" id="s6" data-title="Instantly customized">
+  <div class="kicker reveal">The food computer, customized in a tap</div>
+  <h2 class="reveal">Same screen. New brand, new menu. Instantly.</h2>
+  <div class="chips reveal" id="skinChips">
+    <span class="lbl">Brand</span>
+    <button class="on" data-skin="light" style="--swatch:#c8f000"><i></i>Bowl-O-Matic</button>
+    <button data-skin="lab37" style="--swatch:#2563eb"><i></i>Lab37</button>
+    <button data-skin="cowgirl" style="--swatch:#e2643a"><i></i>Hungry Cowgirl</button>
+    <button data-skin="dark" style="--swatch:#0b120e"><i></i>Night shift</button>
+  </div>
+  <div class="hmi reveal" id="hmi">
+    <div class="hmi-top"><span id="hmiBrand">Bowl-O-Matic 5000</span><span class="ln"><i></i><span id="hmiLine">Running · 15/16</span></span></div>
+    <div class="hmi-grid" id="hmiGrid"></div>
+    <div class="hmi-dock"><div class="al"><b>4<em>min</em></b><span id="hmiAlert">until late · refill quinoa on chute 2</span></div><span class="go" id="hmiGo">Refill quinoa</span></div>
+  </div>
+  <div class="chips reveal" id="menuChips">
+    <span class="lbl">Menu</span>
+    <button class="on" data-menu="bowl">Bowl shop</button>
+    <button data-menu="taco">Taco line</button>
+    <button data-menu="salad">Salad bar</button>
+  </div>
+</section>
+
+<section class="scene" id="s7" data-title="Every template ties to it">
+  <div class="kicker reveal">Every template ties to it</div>
+  <h2 class="reveal">Change a token once. Ten tools change with it.</h2>
+  <div class="sys reveal">
+    <div class="src">
+      <h3>Source · design system</h3>
+      <div class="brand" id="srcBrand">Bowl-O-Matic 5000</div>
+      <div class="tok"><i style="--v:var(--k-hot)"></i>Hot<code>--hot</code></div>
+      <div class="tok"><i style="--v:var(--k-ok)"></i>OK<code>--ok</code></div>
+      <div class="tok"><i style="--v:var(--k-low)"></i>Low<code>--low</code></div>
+      <div class="tok"><i style="--v:var(--k-dock)"></i>Dock<code>--dock</code></div>
+      <div class="tok"><i style="--v:var(--k-card)"></i>Card<code>--card</code></div>
+      <div class="tok ty"><i>Aa</i>Public Sans<code>13 / 16 / 30</code></div>
+      <div class="tok"><i style="--v:var(--k-box);border-radius:var(--k-radius)"></i>Radius<code id="srcRadius">14</code></div>
+      <div class="go" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+    </div>
+    <div class="tpls">
+      <div class="tpl"><div class="th worker"><div class="hd"><i></i><s></s></div><div class="bd"><div class="bx"><i style="--p:70%"></i></div><div class="bx low"><i style="--p:22%"></i></div><div class="bx now"><i style="--p:8%"></i></div><div class="bx"><i style="--p:55%"></i></div><div class="bx"><i style="--p:80%"></i></div><div class="bx"><i style="--p:64%"></i></div></div></div><span>Worker panel</span></div>
+      <div class="tpl"><div class="th orders"><div class="hd"><i></i><s></s></div><div class="bd"><div class="row"><i></i><s class="hot"></s></div><div class="row"><i></i><s></s></div><div class="row"><i></i><s class="held"></s></div></div></div><span>Orders queue</span></div>
+      <div class="tpl"><div class="th manager"><div class="hd"><i></i><s></s></div><div class="bd"><div class="bar" style="--h:40%"></div><div class="bar" style="--h:70%"></div><div class="bar hot" style="--h:96%"></div><div class="bar" style="--h:55%"></div><div class="bar" style="--h:82%"></div><div class="bar" style="--h:62%"></div></div></div><span>Manager console</span></div>
+      <div class="tpl"><div class="th inventory"><div class="hd"><i></i><s></s></div><div class="bd"><div class="bx"><i style="--p:88%"></i></div><div class="bx"><i style="--p:60%"></i></div><div class="bx"><i style="--p:74%"></i></div><div class="bx low"><i style="--p:18%"></i></div><div class="bx now"><i style="--p:5%"></i></div><div class="bx"><i style="--p:50%"></i></div></div></div><span>Inventory</span></div>
+      <div class="tpl"><div class="th recipe"><div class="hd"><i></i><s></s></div><div class="bd"><div class="fld"></div><div class="fld"></div><div class="btn"></div></div></div><span>Recipe builder</span></div>
+      <div class="tpl"><div class="th schedule"><div class="hd"><i></i><s></s></div><div class="bd"><div class="cell dim"></div><div class="cell"></div><div class="cell"></div><div class="cell dim"></div><div class="cell"></div><div class="cell hot"></div><div class="cell"></div><div class="cell"></div><div class="cell dim"></div><div class="cell"></div><div class="cell dim"></div><div class="cell"></div></div></div><span>Task scheduling</span></div>
+      <div class="tpl"><div class="th training"><div class="hd"><i></i><s></s></div><div class="bd"><div class="row"><i style="--p:100%"></i></div><div class="row"><i style="--p:60%"></i></div><div class="row"><i style="--p:20%"></i><s class="hot"></s></div></div></div><span>Training · LMS</span></div>
+      <div class="tpl"><div class="th metrics"><div class="hd"><i></i><s></s></div><div class="bd"><svg viewBox="0 0 100 60" preserveAspectRatio="none"><path d="M0 50h100" stroke="var(--k-line)" stroke-width="2"/><polyline points="2,44 18,38 34,42 50,26 66,30 82,14 98,18" fill="none" stroke="var(--k-ok)" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/><circle cx="82" cy="14" r="6" fill="var(--k-hot)"/></svg></div></div><span>Performance metrics</span></div>
+      <div class="tpl"><div class="th kiosk"><div class="hd"><i></i><s></s></div><div class="bd"><div class="tile"></div><div class="tile"></div><div class="tile"></div><div class="tile"></div><div class="btn"></div></div></div><span>Kiosk · register</span></div>
+      <div class="tpl"><div class="th group"><div class="hd"><i></i><s></s></div><div class="bd"><div class="av"></div><div class="av"></div><div class="av"></div><div class="av"></div><div class="btn"></div></div></div><span>Group order</span></div>
+    </div>
+  </div>
+  <p class="sub reveal">Pick a brand on the last screen. All ten follow.</p>
+</section>
+
+<section class="scene" id="liz" data-title="Liz at Salesforce">
+  <div class="kicker reveal">One order, fifty people, one car</div>
+  <h2 class="reveal">Liz orders once. Fifty people customize. A Waymo drops it at Salesforce Plaza.</h2>
+  <div class="liz reveal">
+    <div class="pnl">
+      <svg viewBox="0 0 230 170" aria-label="Liz at her desk placing a group order on her phone">
+        <g fill="none" stroke="var(--ink)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="14" y="118" width="202" height="14" rx="4" fill="var(--mustard)"/>
+          <path d="M28 132v26M202 132v26"/>
+          <path d="M96 40q0-22 20-22t20 22" fill="#3b2a1a"/><circle cx="116" cy="20" r="9" fill="#3b2a1a"/>
+          <circle cx="116" cy="52" r="18" fill="#e6b48a"/><path d="M109 56q7 6 14 0" stroke-width="2.5"/><circle cx="110" cy="50" r="1.8" fill="var(--ink)" stroke="none"/><circle cx="122" cy="50" r="1.8" fill="var(--ink)" stroke="none"/>
+          <path d="M84 86q0-14 14-14h36q14 0 14 14v32H84Z" fill="var(--plum)"/>
+          <path d="M148 92q14 2 16 14" stroke-width="5"/>
+          <rect x="156" y="84" width="34" height="52" rx="6" fill="var(--card)"/>
+          <rect x="160" y="90" width="26" height="30" rx="3" fill="var(--sky)"/><rect x="164" y="98" width="18" height="5" rx="2" fill="#fff" stroke="none"/><rect x="164" y="107" width="12" height="5" rx="2" fill="#fff" stroke="none"/>
+          <rect x="2" y="4" width="90" height="44" rx="10" fill="var(--card)"/><path d="M70 48l14 12-30-12Z" fill="var(--card)"/>
+        </g>
+        <text x="47" y="23" text-anchor="middle" font-family="Public Sans,sans-serif" font-weight="800" font-size="14" fill="var(--ink)">50 bowls</text>
+        <text x="47" y="40" text-anchor="middle" font-family="Public Sans,sans-serif" font-weight="600" font-size="13" fill="var(--ink2)">Wed · 12:30</text>
+      </svg>
+      <b>Liz orders once</b><span>One group link, one due time, one address.</span>
+    </div>
+    <div class="arr"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+    <div class="pnl">
+      <svg viewBox="0 0 230 170" aria-label="Eight employees, each with their own customized bowl">
+        <g fill="none" stroke="var(--ink)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <g><circle cx="34" cy="24" r="13" fill="#f2c9a0"/><path d="M18 56q0-12 12-12h8q12 0 12 12v4H18Z" fill="var(--terracotta)"/><path d="M20 70a14 10 0 0 0 28 0Z" fill="var(--sage)"/></g>
+          <g><circle cx="88" cy="24" r="13" fill="#c99a6e"/><path d="M72 56q0-12 12-12h8q12 0 12 12v4H72Z" fill="var(--sky)"/><path d="M74 70a14 10 0 0 0 28 0Z" fill="var(--terracotta)"/></g>
+          <g><circle cx="142" cy="24" r="13" fill="#8d5a3c"/><path d="M126 56q0-12 12-12h8q12 0 12 12v4h-32Z" fill="var(--mustard)"/><path d="M128 70a14 10 0 0 0 28 0Z" fill="var(--plum)"/></g>
+          <g><circle cx="196" cy="24" r="13" fill="#e6b48a"/><path d="M180 56q0-12 12-12h8q12 0 12 12v4h-32Z" fill="var(--sage)"/><path d="M182 70a14 10 0 0 0 28 0Z" fill="var(--mustard)"/></g>
+          <g><circle cx="34" cy="106" r="13" fill="#5b3a29"/><path d="M18 138q0-12 12-12h8q12 0 12 12v4H18Z" fill="var(--plum)"/><path d="M20 152a14 10 0 0 0 28 0Z" fill="var(--sky)"/></g>
+          <g><circle cx="88" cy="106" r="13" fill="#f2c9a0"/><path d="M72 138q0-12 12-12h8q12 0 12 12v4H72Z" fill="var(--teal)"/><path d="M74 152a14 10 0 0 0 28 0Z" fill="var(--rose)"/></g>
+          <g><circle cx="142" cy="106" r="13" fill="#c99a6e"/><path d="M126 138q0-12 12-12h8q12 0 12 12v4h-32Z" fill="var(--rose)"/><path d="M128 152a14 10 0 0 0 28 0Z" fill="var(--teal)"/></g>
+          <rect x="174" y="112" width="46" height="30" rx="15" fill="var(--ink)"/>
+        </g>
+        <text x="197" y="132" text-anchor="middle" font-family="Public Sans,sans-serif" font-weight="800" font-size="14" fill="#fff">+43</text>
+      </svg>
+      <b>Fifty people customize</b><span>Each picks their own bowl from the same link. No two alike.</span>
+    </div>
+    <div class="arr"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+    <div class="pnl">
+      <svg viewBox="0 0 230 170" aria-label="A Waymo car arriving at Salesforce Plaza">
+        <g fill="none" stroke="var(--ink)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M150 150V52q0-10 10-14l18-8 18 8q10 4 10 14v98Z" fill="#dfe3ea"/>
+          <g stroke="var(--sky)" stroke-width="2.5"><path d="M164 62h28M164 74h28M164 86h28M164 98h28M164 110h28M164 122h28"/></g>
+          <path d="M8 150h214"/>
+          <path d="M18 138v-14q0-6 6-6l14-2 14-18q4-4 10-4h36q6 0 10 4l16 18 10 2q6 0 6 6v14H18Z" fill="var(--card)"/>
+          <path d="M56 118l12-16h30l14 16Z" fill="var(--sky)"/>
+          <rect x="74" y="88" width="18" height="10" rx="4" fill="var(--ink)"/>
+          <circle cx="42" cy="140" r="11" fill="var(--card)"/><circle cx="42" cy="140" r="3.5" fill="var(--ink)"/>
+          <circle cx="118" cy="140" r="11" fill="var(--card)"/><circle cx="118" cy="140" r="3.5" fill="var(--ink)"/>
+          <path d="M96 118v-8q0-5 5-5h12q5 0 5 5v8Z" fill="var(--mustard)"/>
+          <path d="M24 150h-12M20 142h-10" stroke="var(--ink2)" stroke-width="2.5"/>
+        </g>
+        <text x="178" y="18" text-anchor="middle" font-family="Public Sans,sans-serif" font-weight="800" font-size="13" fill="var(--ink)">Salesforce Plaza</text>
+      </svg>
+      <b>A Waymo delivers</b><span>Bagged together, on the car at 12:10, at Salesforce Plaza by 12:30.</span>
+    </div>
+  </div>
+  <p class="sub reveal">One order in, fifty bowls out, all correct, all at once. The machine does not care that they are all different.</p>
+</section>
+
+<section class="scene" id="plug" data-title="Plugs into Atoms">
+  <div class="kicker reveal">It plugs into what Atoms already runs</div>
+  <h2 class="reveal">Picnic takes it. Otter routes it. Bowl Builder makes it. Atoms staff eat it first.</h2>
+  <div class="chain reveal">
+    <div class="node" style="--c:var(--plum)"><div class="tile" style="--c:var(--plum)"><svg><use href="#i-basket"/></svg></div><em>Order</em><b>Picnic</b><span>Liz's group link. Fifty people pick, one order lands, one due time.</span></div>
+    <div class="arr"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+    <div class="node" style="--c:var(--sky)"><div class="tile" style="--c:var(--sky)"><svg><use href="#i-merge"/></svg></div><em>Route</em><b>Otter</b><span>Merges it with walk-up, DoorDash and Uber Eats into one queue the machine reads.</span></div>
+    <div class="arr"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+    <div class="node" style="--c:var(--terracotta)"><div class="tile" style="--c:var(--terracotta)"><svg><use href="#i-machine"/></svg></div><em>Make</em><b>Bowl Builder</b><span>Lab37's line builds each bowl in turn, exact grams, photo and fingerprint on every one.</span></div>
+    <div class="arr"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+    <div class="node" style="--c:var(--sage)"><div class="tile" style="--c:var(--sage)"><svg><use href="#i-table"/></svg></div><em>Eat</em><b>Atoms.co staff at Pronto</b><span>The first eaters are in-house. The team at Pronto lives on it before any customer sees it.</span></div>
+  </div>
+  <p class="sub reveal">Nothing new to install. The order, the routing and the kitchen are already Atoms. The screens are the part that's missing.</p>
+</section>
+
+<section class="scene" id="estate" data-title="The real estate play">
+  <div class="kicker reveal">The real estate play</div>
+  <h2 class="reveal">Twenty machines in one warehouse. Fifty vendors on the same screens.</h2>
+  <div class="floor reveal">
+  <div class="wh">
+    <svg viewBox="0 0 520 250" aria-label="Warehouse floor plan with twenty bowl machines in four rows, colored by vendor type, and a loading dock">
+      <defs><symbol id="m-unit" viewBox="0 0 64 30"><rect x="2" y="7" width="60" height="20" rx="4" fill="var(--c)" stroke="var(--ink)" stroke-width="2.5"/><rect x="47" y="10" width="11" height="14" rx="2" fill="#fff" stroke="none"/><g fill="#fff"><circle cx="10" cy="17" r="2.4"/><circle cx="18" cy="17" r="2.4"/><circle cx="26" cy="17" r="2.4"/><circle cx="34" cy="17" r="2.4"/><circle cx="42" cy="17" r="2.4"/></g><path d="M8 3h48" stroke="var(--ink)" stroke-width="2.5" stroke-linecap="round"/></symbol></defs>
+      <g fill="none" stroke="var(--ink)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="14" y="14" width="492" height="222" rx="8" fill="#f1eee8"/>
+        <path d="M14 70h492M14 120h492M14 170h492" stroke="var(--line)" stroke-width="2" stroke-dasharray="6 6"/>
+        <rect x="410" y="222" width="80" height="14" fill="var(--mustard)"/><path d="M410 236v-14h80v14"/>
+        <rect x="30" y="222" width="80" height="14" fill="var(--mustard)"/><path d="M30 236v-14h80v14"/>
+      </g>
+      <g>
+        <use href="#m-unit" x="34" y="26" width="72" height="34" style="--c:var(--terracotta)"/><use href="#m-unit" x="128" y="26" width="72" height="34" style="--c:var(--terracotta)"/><use href="#m-unit" x="222" y="26" width="72" height="34" style="--c:var(--sky)"/><use href="#m-unit" x="316" y="26" width="72" height="34" style="--c:var(--terracotta)"/><use href="#m-unit" x="410" y="26" width="72" height="34" style="--c:var(--plum)"/>
+        <use href="#m-unit" x="34" y="76" width="72" height="34" style="--c:var(--sky)"/><use href="#m-unit" x="128" y="76" width="72" height="34" style="--c:var(--terracotta)"/><use href="#m-unit" x="222" y="76" width="72" height="34" style="--c:var(--terracotta)"/><use href="#m-unit" x="316" y="76" width="72" height="34" style="--c:var(--sky)"/><use href="#m-unit" x="410" y="76" width="72" height="34" style="--c:var(--terracotta)"/>
+        <use href="#m-unit" x="34" y="126" width="72" height="34" style="--c:var(--plum)"/><use href="#m-unit" x="128" y="126" width="72" height="34" style="--c:var(--sky)"/><use href="#m-unit" x="222" y="126" width="72" height="34" style="--c:var(--terracotta)"/><use href="#m-unit" x="316" y="126" width="72" height="34" style="--c:var(--terracotta)"/><use href="#m-unit" x="410" y="126" width="72" height="34" style="--c:var(--sky)"/>
+        <use href="#m-unit" x="34" y="176" width="72" height="34" style="--c:var(--sage)"/><use href="#m-unit" x="128" y="176" width="72" height="34" style="--c:var(--terracotta)"/><use href="#m-unit" x="222" y="176" width="72" height="34" style="--c:var(--plum)"/><use href="#m-unit" x="316" y="176" width="72" height="34" style="--c:var(--sky)"/><use href="#m-unit" x="410" y="176" width="72" height="34" style="--c:var(--sage)"/>
+      </g>
+      <text x="70" y="233" text-anchor="middle" font-family="Public Sans,sans-serif" font-weight="800" font-size="13" fill="var(--ink)">DOCK</text>
+      <text x="450" y="233" text-anchor="middle" font-family="Public Sans,sans-serif" font-weight="800" font-size="13" fill="var(--ink)">DOCK</text>
+    </svg>
+  </div>
+  <div class="vend">
+    <div class="v" style="--c:var(--terracotta)"><b>One-person shops</b><span>Maria's Poke · Kenji Bowls · the guy from screen one</span><small>Rent a slot, not a kitchen. Their name on the screen.</small></div>
+    <div class="v" style="--c:var(--sky)"><b>Brand names</b><span>Hungry Cowgirl Cocina · a national chain's bowl line</span><small>One menu, pushed to every machine that carries it.</small></div>
+    <div class="v" style="--c:var(--plum)"><b>Events</b><span>Steve-O's wedding · Sat · 200 bowls. Salesforce · Wed · 50.</span><small>Book a machine for a day. Guests customize from the invite.</small></div>
+    <div class="v" style="--c:var(--sage)"><b>House</b><span>Atoms.co staff at Pronto</span><small>The in-house line. First to eat, first to break it, first to fix it.</small></div>
+  </div>
+  </div>
+  <div class="count reveal"><span style="background:var(--terracotta)">20 machines</span><span style="background:var(--sky)">50 vendors</span><span style="background:var(--plum)">1 lease</span><span style="background:var(--sage)">1 design system</span></div>
+</section>
+
+<section class="scene" id="s8" data-title="The pattern">
+  <div class="kicker reveal">This is the shape I keep building</div>
+  <h2 class="reveal" style="max-width:min(24ch,100%)">One template. Fits whoever buys it. Every time.</h2>
+  <div class="timeline reveal">
+    <div class="tl-item" style="--c:var(--sky);--cn:var(--sage)"><div class="tile round"><svg><use href="#i-book"/></svg></div><div class="txt"><b>Istation</b><span>One system, 8 products, 4M students</span></div></div>
+    <div class="tl-item" style="--c:var(--sage);--cn:var(--mustard)"><div class="tile round"><svg><use href="#i-globe"/></svg></div><div class="txt"><b>Apple</b><span>Templates that populate 20 languages</span></div></div>
+    <div class="tl-item" style="--c:var(--mustard);--cn:var(--plum)"><div class="tile round"><svg><use href="#i-pad"/></svg></div><div class="txt"><b>iRobot</b><span>One controller, drive any unit</span></div></div>
+    <div class="tl-item" style="--c:var(--plum);--cn:var(--teal)"><div class="tile round"><svg><use href="#i-museum"/></svg></div><div class="txt"><b>Museum kiosk</b><span>One kiosk, every exhibit</span></div></div>
+    <div class="tl-item" style="--c:var(--teal);--cn:var(--rose)"><div class="tile round"><svg><use href="#i-wrench"/></svg></div><div class="txt"><b>Bench</b><span>One token set, glove worker + planner</span></div></div>
+    <div class="tl-item" style="--c:var(--rose);--cn:var(--terracotta)"><div class="tile round"><svg><use href="#i-shield"/></svg></div><div class="txt"><b>Auth57</b><span>One pipeline, 11,000 rules, 51 states</span></div></div>
+    <div class="tl-item now" style="--c:var(--terracotta);--cn:var(--terracotta)"><div class="tile round"><svg><use href="#i-bowl"/></svg></div><div class="txt"><b>Lab37</b><span>One machine, every customer's bowl</span></div></div>
+  </div>
+  <p class="sub reveal">Seven times now: build the template once, let it customize per customer, and it fits everywhere you sell it.</p>
+</section>
+
+<section class="scene" id="s9" data-title="The point">
+  <div class="kicker reveal">The point</div>
+  <div class="grid50 reveal" id="grid50"></div>
+  <p class="closing reveal">Fifty people can each customize their own bowl, <em>and all fifty still arrive together, on time, correct.</em></p>
+  <p class="sub reveal">One order, one at a time, or five hundred at once. Same system, no seams.</p>
+  <div class="foot reveal">Bryan S. Holland · Automatic Delight. Built for the Lab37 conversation, no branding on purpose.</div>
+</section>
+
+</main>
 
 <script>
-const colors=['#e2643a','#5c8a6e','#4a90a4','#e0a339','#8a5a7a'];
-document.getElementById('grid50').innerHTML=Array.from({length:50},(_,i)=>`<div class="dot50" style="background:${colors[i%colors.length]}"></div>`).join('');
+/* ---------- 50 dots ---------- */
+const colors=['#e2643a','#5c8a6e','#4a90a4','#e0a339','#8a5a7a','#3a8f8a','#c9647f'];
+document.getElementById('grid50').innerHTML=Array.from({length:50},(_,i)=>`<svg viewBox="0 0 40 34" aria-hidden="true"><g fill="none" stroke="var(--ink)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"><path d="M4 14h32a16 13 0 0 1-32 0Z" fill="${colors[i%colors.length]}"/><path d="M12 30h16"/><path d="M15 9c0-2.5 2-3 2-5.5M23 9c0-2.5 2-3 2-5.5" stroke="var(--ink2)" stroke-width="2"/></g></svg>`).join('');
+
+/* ---------- skins: one token set, swapped live ---------- */
+const SKINS={
+  light:{brand:'Bowl-O-Matic 5000',bg:'#f2f2f7',box:'#ffffff',card:'#e2e7f1',ink:'#1d1d1f',dim:'#6e6e73',hot:'#c8f000','hot-ink':'#5a6b00',ok:'#1fa36a',low:'#f0a000',held:'#d8dfeb',dock:'#1c1c1e','dock-ink':'#ffffff',line:'#d9dde6',radius:'14px'},
+  lab37:{brand:'Bowl Builder 01',bg:'#ffffff',box:'#f7f7f7',card:'#f2f2f2',ink:'#141414',dim:'#767676',hot:'#2563eb','hot-ink':'#ffffff',ok:'#2f7a3e',low:'#d9930f',held:'#e8e8e8',dock:'#141414','dock-ink':'#ffffff',line:'#d5d5d5',radius:'10px'},
+  cowgirl:{brand:'Hungry Cowgirl Cocina',bg:'#fbf3e6',box:'#ffffff',card:'#f3e4cc',ink:'#3b2a1a',dim:'#8a6f55',hot:'#e2643a','hot-ink':'#ffffff',ok:'#5c8a6e',low:'#e0a339',held:'#e9dcc6',dock:'#3b2a1a','dock-ink':'#ffffff',line:'#e3d3ba',radius:'18px'},
+  dark:{brand:'Bowl-O-Matic 5000',bg:'#0b120e',box:'#17231c',card:'#111a15',ink:'#ffffff',dim:'#c7d1ca',hot:'#cfff3e','hot-ink':'#0b120e',ok:'#1fa36a',low:'#f0a000',held:'#3d4a42',dock:'#141d18','dock-ink':'#ffffff',line:'#2c3a31',radius:'14px'}
+};
+const MENUS={
+  bowl:{items:[['Chicken',72,''],['Rice',58,''],['Quinoa',6,'now'],['Beans',44,''],['Guac',18,'low'],['Cheese',63,'']],alert:'until late · refill quinoa on chute 2',go:'Refill quinoa',line:'Running · 15/16'},
+  taco:{items:[['Carnitas',66,''],['Tortilla',9,'now'],['Pico',51,''],['Onion',37,''],['Verde',22,'low'],['Cotija',70,'']],alert:'until late · refill tortillas on chute 1',go:'Refill tortillas',line:'Running · 11/12'},
+  salad:{items:[['Greens',48,''],['Kale',61,''],['Tomato',15,'low'],['Cucumber',55,''],['Ranch',4,'now'],['Feta',69,'']],alert:'until late · refill ranch on chute 5',go:'Refill ranch',line:'Running · 17/18'}
+};
+const root=document.documentElement;
+function setSkin(k){
+  const s=SKINS[k];
+  for(const [key,v] of Object.entries(s)){ if(key!=='brand') root.style.setProperty('--k-'+key,v); }
+  document.getElementById('hmiBrand').textContent=s.brand;
+  document.getElementById('srcBrand').textContent=s.brand;
+  document.getElementById('srcRadius').textContent=parseInt(s.radius);
+  document.querySelectorAll('#skinChips button').forEach(b=>b.classList.toggle('on',b.dataset.skin===k));
+}
+function setMenu(k){
+  const m=MENUS[k];
+  document.getElementById('hmiGrid').innerHTML=m.items.map(([n,p,st])=>`<div class="hbox ${st}"><div class="nm"><span>${n}</span><b>${p}%</b></div><div class="bar"><i style="--p:${p}%"></i></div></div>`).join('');
+  document.getElementById('hmiAlert').textContent=m.alert;
+  document.getElementById('hmiGo').textContent=m.go;
+  document.getElementById('hmiLine').textContent=m.line;
+  document.querySelectorAll('#menuChips button').forEach(b=>b.classList.toggle('on',b.dataset.menu===k));
+}
+document.getElementById('skinChips').addEventListener('click',e=>{const b=e.target.closest('button');if(b)setSkin(b.dataset.skin);});
+document.getElementById('menuChips').addEventListener('click',e=>{const b=e.target.closest('button');if(b)setMenu(b.dataset.menu);});
+setSkin('light');setMenu('bowl');
+
+/* ---------- deck: one scene per screen ---------- */
+const deck=document.getElementById('deck');
+const scenes=[...document.querySelectorAll('.scene')];
+const nav=document.querySelector('.dots');
+nav.innerHTML=scenes.map((s,i)=>`<a href="#${s.id}" class="${i===0?'on':''}" aria-label="${s.dataset.title}"></a>`).join('');
+const dots=[...nav.querySelectorAll('a')];
+const nextBtn=document.getElementById('nextBtn');
+let cur=0;
+function setCur(i){cur=i;dots.forEach((d,j)=>d.classList.toggle('on',j===i));nextBtn.classList.toggle('last',i===scenes.length-1);nextBtn.setAttribute('aria-label',i===scenes.length-1?'Back to top':'Next');}
+const io=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); setCur(scenes.indexOf(e.target)); } });
+},{root:deck,threshold:.5});
+scenes.forEach(s=>io.observe(s));
+function go(i,instant){const n=Math.max(0,Math.min(scenes.length-1,i));scenes[n].scrollIntoView({behavior:instant?'instant':'smooth',block:'start'});}
+dots.forEach((d,i)=>d.addEventListener('click',ev=>{ev.preventDefault();go(i);}));
+nextBtn.addEventListener('click',()=>go(cur===scenes.length-1?0:cur+1));
+document.addEventListener('keydown',ev=>{
+  if(ev.target.tagName==='BUTTON'&&ev.key===' ')return;
+  if(ev.key==='ArrowDown'||ev.key==='PageDown'||ev.key===' '||ev.key==='Enter'){ev.preventDefault();go(cur+1);}
+  if(ev.key==='ArrowUp'||ev.key==='PageUp'){ev.preventDefault();go(cur-1);}
+});
+const h=scenes.findIndex(s=>'#'+s.id===location.hash);if(h>0)go(h,true);
 </script>
 </body></html>

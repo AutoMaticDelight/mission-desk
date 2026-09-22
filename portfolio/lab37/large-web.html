@@ -1,0 +1,101 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Bowl-O-Matic 5000 · Large display stage</title><link rel="icon" href="logo.svg" type="image/svg+xml">
+<style>
+:root{--bg:#f2f2f7;--panel:#ffffff;--ink:#1d1d1f;--muted:#6e6e73;--line:#e5e5ea;--lime:#c8f000;--frame:#1c1c1e;color-scheme:light}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text",Inter,Helvetica,Arial,sans-serif;overflow:hidden}
+body{display:grid;grid-template-rows:auto auto 1fr}
+
+.bar{display:flex;align-items:center;gap:14px;padding:10px 18px;background:var(--panel);border-bottom:1px solid var(--line);min-height:56px}
+.bar h1{display:flex;align-items:center;gap:10px;font-size:18px;margin:0;font-weight:800;white-space:nowrap}
+.bar h1 span{color:#5a6b00;font-weight:600}
+.seg{display:flex;background:var(--bg);border-radius:10px;padding:3px;gap:2px;margin-left:auto}
+.seg button{border:0;background:transparent;font:600 14px/1 inherit;padding:9px 14px;border-radius:8px;color:var(--muted);cursor:pointer;min-height:36px}
+.seg button.on{background:var(--panel);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.12)}
+.bar .hint{color:var(--muted);font-size:13px;white-space:nowrap}
+.bar .open{border:1px solid var(--line);background:var(--panel);color:var(--ink);font:600 14px/1 inherit;padding:9px 12px;border-radius:8px;text-decoration:none;min-height:36px;display:inline-flex;align-items:center}
+
+.strip{display:flex;gap:8px;padding:8px 18px;background:var(--panel);border-bottom:1px solid var(--line);overflow-x:auto;scrollbar-width:thin}
+.strip button{border:1px solid var(--line);background:var(--panel);color:var(--ink);font:600 14px/1 inherit;padding:9px 13px;border-radius:999px;cursor:pointer;white-space:nowrap;min-height:38px}
+.strip button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+
+.stage{position:relative;display:grid;place-items:center;padding:18px;min-height:0}
+.dev{position:relative;border-radius:26px;background:var(--frame);padding:12px;box-shadow:0 18px 50px rgba(0,0,0,.18);overflow:hidden}
+.dev iframe{position:absolute;left:12px;top:12px;border:0;border-radius:16px;background:#fff;transform-origin:0 0}
+.arrow{position:absolute;top:50%;transform:translateY(-50%);width:44px;height:44px;border-radius:50%;border:1px solid var(--line);background:var(--panel);color:var(--ink);font-size:22px;line-height:1;cursor:pointer;display:grid;place-items:center;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.arrow.l{left:14px}.arrow.r{right:14px}
+.cap{position:absolute;left:50%;bottom:8px;transform:translateX(-50%);font-size:13px;color:var(--muted);background:rgba(255,255,255,.85);padding:5px 10px;border-radius:999px;white-space:nowrap}
+body.clean .bar,body.clean .strip,body.clean .arrow,body.clean .cap{display:none}
+body.clean{grid-template-rows:1fr}
+body.clean .stage{padding:0}
+body.clean .dev{border-radius:0;padding:0;box-shadow:none}
+body.clean .dev iframe{left:0;top:0;border-radius:0}
+@media(max-width:700px){.bar .hint,.bar .open{display:none}.bar h1 span{display:none}}
+</style></head><body>
+
+<div class="bar">
+  <h1><svg viewBox="0 0 40 40" width="26" height="26" aria-hidden="true"><circle cx="20" cy="20" r="20" fill="#c8f000"/><g transform="translate(20 20.6) scale(.62) translate(-20 -21)"><circle cx="20" cy="11.5" r="6.5" fill="#0b120e"/><path d="M4.5 21.5h31a1.5 1.5 0 0 1 1.5 1.6C36.2 30.6 29 36.5 20 36.5S3.8 30.6 3 23.1a1.5 1.5 0 0 1 1.5-1.6z" fill="#0b120e"/></g></svg>Bowl-O-Matic 5000 <span>Large display stage</span></h1>
+  <div class="seg" id="seg"></div>
+  <span class="hint">← → switch · F clean · G grid</span>
+  <a class="open" id="openFull" href="orders-tall.html" target="_blank" rel="noopener">Open full size</a>
+</div>
+<div class="strip" id="strip"></div>
+<div class="stage" id="stage">
+  <button class="arrow l" id="prev" aria-label="Previous screen">‹</button>
+  <div class="dev" id="dev"><iframe id="frame" title="Screen"></iframe></div>
+  <button class="arrow r" id="next" aria-label="Next screen">›</button>
+  <div class="cap" id="cap"></div>
+</div>
+
+<script>
+const SERIES=[
+ {key:'tall',name:'Tall · on the machine',w:1080,h:2400,screens:[
+   ['orders-tall.html','Orders'],['order-tall.html','Order detail'],['lunch-rush-tall.html','Assembly · worker panel'],['manager-tall.html','Manager']]},
+ {key:'portrait',name:'Portrait 12.9″',w:1024,h:1366,screens:[
+   ['lunch-rush-light.html','Worker panel'],['manager-fleet.html','Manager console'],['inventory.html','Inventory'],['recipe-builder.html','Recipe builder'],['schedule.html','Schedule'],['training.html','Training'],['metrics.html','Metrics']]},
+ {key:'landscape',name:'Landscape 12.9″',w:1366,h:1024,screens:[
+   ['lunch-rush-light.html','Worker panel'],['manager-fleet.html','Manager console'],['inventory.html','Inventory'],['recipe-builder.html','Recipe builder'],['schedule.html','Schedule'],['training.html','Training'],['metrics.html','Metrics']]}
+];
+let si=0,ci=0;
+const seg=document.getElementById('seg'),strip=document.getElementById('strip'),stage=document.getElementById('stage'),dev=document.getElementById('dev'),frame=document.getElementById('frame'),cap=document.getElementById('cap'),openFull=document.getElementById('openFull');
+
+function render(){
+  const S=SERIES[si];
+  seg.innerHTML=SERIES.map((s,i)=>`<button class="${i===si?'on':''}" data-s="${i}">${s.name}</button>`).join('');
+  strip.innerHTML=S.screens.map((s,i)=>`<button class="${i===ci?'on':''}" data-c="${i}">${s[1]}</button>`).join('');
+  const [file,name]=S.screens[ci];
+  if(frame.dataset.src!==file){frame.src=file;frame.dataset.src=file;}
+  frame.width=S.w;frame.height=S.h;frame.style.width=S.w+'px';frame.style.height=S.h+'px';
+  cap.textContent=`${name} · ${S.w}×${S.h}`;
+  openFull.href=file;
+  location.hash=`${S.key}/${ci}`;
+  fit();
+}
+function fit(){
+  const S=SERIES[si];
+  const pad=document.body.classList.contains('clean')?0:12;
+  const availW=stage.clientWidth-(document.body.classList.contains('clean')?0:36)-pad*2;
+  const availH=stage.clientHeight-(document.body.classList.contains('clean')?0:36)-pad*2;
+  const s=Math.min(availW/S.w,availH/S.h);
+  dev.style.width=(S.w*s+pad*2)+'px';dev.style.height=(S.h*s+pad*2)+'px';
+  frame.style.transform=`scale(${s})`;
+}
+function go(d){const n=SERIES[si].screens.length;ci=(ci+d+n)%n;render();}
+seg.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;si=+b.dataset.s;ci=0;render();});
+strip.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;ci=+b.dataset.c;render();});
+document.getElementById('prev').onclick=()=>go(-1);
+document.getElementById('next').onclick=()=>go(1);
+addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight')go(1);
+  if(e.key==='ArrowLeft')go(-1);
+  if(e.key==='ArrowDown'){si=(si+1)%SERIES.length;ci=0;render();}
+  if(e.key==='ArrowUp'){si=(si-1+SERIES.length)%SERIES.length;ci=0;render();}
+  if(e.key==='f'||e.key==='F'){document.body.classList.toggle('clean');fit();}
+  if(e.key==='g'||e.key==='G'){location.href='large.html';}
+});
+addEventListener('resize',fit);
+// deep link: #tall/2 or #portrait/0
+const m=location.hash.match(/^#(\w+)\/(\d+)$/);
+if(m){const i=SERIES.findIndex(s=>s.key===m[1]);if(i>=0){si=i;ci=Math.min(+m[2],SERIES[i].screens.length-1);}}
+render();
+addEventListener('hashchange',()=>{const m=location.hash.match(/^#(\w+)\/(\d+)$/);if(!m)return;const i=SERIES.findIndex(s=>s.key===m[1]);if(i<0)return;if(i===si&&+m[2]===ci)return;si=i;ci=Math.min(+m[2],SERIES[i].screens.length-1);render();});
+</script></body></html>
