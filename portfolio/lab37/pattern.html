@@ -241,10 +241,10 @@ h1,h2,h3{font-family:var(--serif);font-weight:600;letter-spacing:-.01em;margin:0
 .store .tx b{font:800 16px/1.2 var(--sans)}
 .store .tx span{font:600 13px/1.3 var(--sans);color:var(--k-dim)}
 .store .tx i{font:700 13px/1 var(--sans);font-style:normal;color:var(--k-ok)}
-.bag{width:100%;max-width:260px;background:var(--k-box);border:3px solid var(--ink);border-radius:8px;padding:12px 14px;text-align:left;display:grid;grid-template-columns:1fr auto;gap:6px 10px;color:var(--k-ink);position:relative;background-image:linear-gradient(var(--k-line),var(--k-line));background-size:100% 3px;background-repeat:no-repeat;background-position:0 46px}
-.bag .nm{font:800 16px/1.1 var(--sans);grid-column:1/-1;padding-bottom:10px}
+.bag{width:100%;max-width:260px;background:var(--k-box);border:3px solid var(--ink);border-radius:8px;padding:12px 14px;text-align:left;display:grid;grid-template-columns:1fr auto;gap:6px 10px;color:var(--k-ink);position:relative}
+.bag .nm{font:800 16px/1.1 var(--sans);grid-column:1/-1;padding-bottom:8px;border-bottom:3px solid var(--k-line);margin-bottom:2px}
 .bag .who{font:800 15px/1.2 var(--sans)}
-.bag .code{font:700 13px/1 ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--k-dim);text-align:right;align-self:start}
+.bag .code{font:700 13px/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--k-dim);text-align:right;align-self:baseline;white-space:nowrap}
 .bag .mods{grid-column:1/-1;font:600 13px/1.35 var(--sans);color:var(--k-dim)}
 .bag .qr{grid-column:1/-1;display:flex;align-items:center;gap:10px;margin-top:4px}
 .bag .qr i{width:36px;height:36px;border:2.5px solid var(--k-ink);border-radius:4px;background:repeating-linear-gradient(90deg,var(--k-ink) 0 4px,transparent 4px 8px),repeating-linear-gradient(0deg,var(--k-ink) 0 4px,transparent 4px 8px);background-blend-mode:multiply;opacity:.9}
@@ -286,9 +286,15 @@ h1,h2,h3{font-family:var(--serif);font-weight:600;letter-spacing:-.01em;margin:0
   .bs:last-child{grid-column:1/-1}
 }
 @media(max-width:640px){
+  #brand .chips{display:none}
   .brandrow{grid-template-columns:1fr 1fr;gap:10px}
-  .bs:last-child{display:none}
-  .store .ph{height:72px}
+  .bs:last-child{grid-column:1/-1}
+  .bs:last-child .pick{max-width:none;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:auto 1fr}
+  .bs:last-child .pick .top{grid-column:1/-1}
+  .bs:last-child .pick .cub{padding:0 12px 12px 0;align-self:center}
+  .store .ph{height:64px}
+  .store .tx{padding:8px 10px}
+  .bag{padding:8px 10px}
   .bag{padding:10px 12px}
   .rec .btns{grid-template-columns:1fr 1fr}
   .rec .btns span:last-child{grid-column:1/-1;min-height:48px}
@@ -625,7 +631,7 @@ h1,h2,h3{font-family:var(--serif);font-weight:600;letter-spacing:-.01em;margin:0
 
 <section class="scene" id="brand" data-title="The brand on the bag">
   <div class="kicker reveal">Culinary brands, from the same source</div>
-  <h2 class="reveal">Alberto's storefront, Alberto's bag, Alberto's pickup screen. One token set.</h2>
+  <h2 class="reveal">Alberto's storefront, bag and pickup screen. One token set.</h2>
   <div class="chips reveal">
     <span class="lbl">Brand</span>
     <button data-skin="alberto" style="--swatch:#e2643a"><i></i>Alberto's</button>
