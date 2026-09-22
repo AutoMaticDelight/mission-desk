@@ -179,7 +179,54 @@ h2{font-size:26px!important;letter-spacing:2.6px}
 .ttabs{background:#fff;border-top:1px solid var(--line);padding:20px 44px calc(24px + env(safe-area-inset-bottom));display:grid;grid-template-columns:1fr 1fr 1fr 120px;gap:16px;margin:0 -28px}
 .ttabs a{height:104px;border-radius:26px;display:grid;place-items:center;font-size:32px;font-weight:800;background:#f2f2f7;color:#1d1d1f;text-decoration:none}
 .ttabs a.on{background:#1c1c1e;color:#fff}.ttabs a.bell{font-size:40px;position:relative}.ttabs a.bell em{position:absolute;top:22px;right:26px;width:18px;height:18px;border-radius:50%;background:#c8f000;border:3px solid #fff}
-</style></head>
+</style>
+<style id="tall-clean">
+/* TALL 1080x2400 CLEANUP: one grid for the numbers, equal cards, the big number in the same place on every card, no red. */
+@media(orientation:portrait) and (min-width:900px){
+  :root{--red:#ff7a1a;--redink:#b84a00}
+  .light{width:16px !important;height:16px !important}
+  .light.red{box-shadow:0 0 0 4px rgba(255,122,26,.22) !important}
+  body{gap:22px !important;padding:22px 26px !important}
+  .band{display:grid !important;grid-template-columns:repeat(5,minmax(0,1fr)) !important;grid-template-rows:auto auto !important;row-gap:18px !important;column-gap:16px !important;padding:20px 26px 22px !important;min-height:0 !important;border-radius:22px !important}
+  .where{grid-column:1/4 !important;grid-row:1 !important;font-size:34px !important}
+  .where span{font-size:22px !important}
+  .where .logo{width:40px !important;height:40px !important}
+  .when{grid-column:4/-1 !important;grid-row:1 !important;justify-self:end !important;margin:0 !important;font-size:22px !important}
+  .stat{grid-row:2 !important;display:grid !important;grid-template-rows:auto auto !important;gap:6px !important;padding:0 !important;border-left:0 !important;justify-content:start !important;white-space:nowrap !important}
+  .stat b{font-size:60px !important;letter-spacing:-.04em !important}
+  .stat b small{font-size:.55em !important}
+  .stat span{font-size:20px !important}
+  h2{font-size:22px !important}
+  h2 i{width:14px !important;height:14px !important}
+  section{gap:12px !important}
+  #now{grid-template-columns:1fr 1fr !important;gap:16px !important}
+  #watch{grid-template-columns:repeat(3,minmax(0,1fr)) !important;gap:16px !important}
+  .card{padding:24px 26px !important;column-gap:20px !important;row-gap:10px !important;border-radius:22px !important}
+  .card .nm{font-size:32px !important}
+  .card .what{font-size:24px !important;line-height:1.3 !important}
+  .card .what .run{font-size:20px !important;margin-top:10px !important}
+  .card.now{grid-template-columns:minmax(0,1fr) max-content !important;grid-template-rows:auto auto minmax(0,1fr) auto !important}
+  .card.now .k{grid-column:2 !important;grid-row:1/4 !important;text-align:right !important;align-self:start !important}
+  .card.now .k b{font-size:104px !important;line-height:.9 !important}
+  .card.now .k span{font-size:18px !important;margin-top:6px !important;display:block !important}
+  .card.now .go{grid-column:1/-1 !important;grid-row:4 !important;align-self:end !important;font-size:22px !important;margin-top:8px !important}
+  .card.watch{grid-template-columns:minmax(0,1fr) !important;grid-template-rows:auto auto minmax(0,1fr) auto !important}
+  .card.watch .k{grid-column:1 !important;grid-row:3 !important;text-align:left !important;align-self:center !important;margin:0 !important}
+  .card.watch .k b{display:block !important;font-size:92px !important;line-height:.9 !important;margin:0 !important}
+  .card.watch .k span{display:block !important;font-size:18px !important;margin-top:8px !important}
+  .card.watch .thr{grid-row:4 !important;font-size:20px !important;padding-top:14px !important}
+  .card.watch .thr b{font-size:28px !important}
+  .fine{grid-template-columns:repeat(3,minmax(0,1fr)) !important;gap:16px !important;grid-auto-rows:minmax(0,1fr) !important;align-content:stretch !important}
+  .chip{grid-template-columns:minmax(0,1fr) max-content !important;grid-template-rows:auto auto !important;align-content:center !important;row-gap:16px !important;padding:18px 24px !important;border-radius:20px !important}
+  .chip .nm{font-size:28px !important}
+  .chip .p{font-size:40px !important}
+  .chip .p.down{color:var(--amberink) !important}
+  .chip .thr{font-size:20px !important;padding-top:14px !important}
+  .chip .thr b{font-size:32px !important}
+  .chip .thr em{font-size:18px !important}
+}
+</style></style>
+</head>
 <body>
   <header class="band">
     <div class="where"><svg class="logo" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="20" fill="#c8f000"/><g transform="translate(20 20.6) scale(.62) translate(-20 -21)"><circle cx="20" cy="11.5" r="6.5" fill="#0b120e"/><path d="M4.5 21.5h31a1.5 1.5 0 0 1 1.5 1.6C36.2 30.6 29 36.5 20 36.5S3.8 30.6 3 23.1a1.5 1.5 0 0 1 1.5-1.6z" fill="#0b120e"/></g></svg> Bowl-O-Matic 5000 <span>All stores</span></div>
@@ -218,7 +265,7 @@ function render(){
     <div class="top"><i class="light amber"></i><span class="nm">${x.n}<small>${x.c}</small></span></div>
     <div class="what">${x.what}</div>
     <div class="k"><b class="num">${x.l==='of plan'?(100+x.k)+'%':x.k}</b><span>${x.l}</span></div>
-    ${x.p?`<div class="thr"><span><b class="num">${x.p*6}</b> /hr</span><span><b class="num">:${Math.round(600/x.p)}</b> ea</span></div>`:''}</button>`).join('');
+    ${x.p?`<div class="thr"><span><b class="num">${x.p*6}</b> /hr</span><span><b class="num">:${Math.round(600/x.p)}</b> ea</span></div>`:`<div class="thr"><span>${x.c}</span><span>line paused</span></div>`}</button>`).join('');
   document.getElementById('fine').innerHTML=fine.map(x=>{const d=pct(x),hr=x.p*6,sec=Math.round(3600/hr);return `<div class="chip" title="${x.i}">
     <div class="top"><i class="light"></i><span class="nm">${x.n}</span></div>
     <span class="p num ${d<0?'down':''}">${100+d}%</span>
