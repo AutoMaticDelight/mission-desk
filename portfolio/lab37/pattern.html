@@ -77,7 +77,7 @@ h1,h2,h3{font-family:var(--serif);font-weight:600;letter-spacing:-.01em;margin:0
 .station span{font:700 13px/1 var(--sans);color:var(--ink2);letter-spacing:.5px;text-transform:uppercase}
 .arrow-down svg{width:30px;height:30px;stroke:var(--ink2);fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;display:block}
 .art{max-width:100%;height:auto;display:block}
-.art.machine{width:540px}
+.art.machine{width:560px}
 
 /* ===== SCENE 5: design system ===== */
 .ds{display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:14px;width:100%;max-width:900px;text-align:left}
@@ -393,6 +393,7 @@ h1,h2,h3{font-family:var(--serif);font-weight:600;letter-spacing:-.01em;margin:0
   <symbol id="i-pad" viewBox="0 0 24 24"><path d="M7 7h10a5 5 0 0 1 5 5v2.5a3.5 3.5 0 0 1-6.3 2.1L14.5 15h-5l-1.2 1.6A3.5 3.5 0 0 1 2 14.5V12a5 5 0 0 1 5-5Z"/><path d="M7.5 10.5v3M6 12h3"/><path d="M16 11h.01M18 13h.01"/></symbol>
   <symbol id="i-museum" viewBox="0 0 24 24"><path d="M3 9l9-5 9 5H3Z"/><path d="M5 9v8M9.7 9v8M14.3 9v8M19 9v8"/><path d="M3 17h18M3 21h18"/></symbol>
   <symbol id="i-wrench" viewBox="0 0 24 24"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4L15 12l-3-3 2.7-2.7Z"/></symbol>
+  <symbol id="cook" viewBox="0 0 80 130"><g fill="none" stroke="var(--ink)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle cx="40" cy="12" r="8" fill="#3b2a1a"/><path d="M21 42q0-23 19-23t19 23v5H21Z" fill="#3b2a1a"/><circle cx="40" cy="48" r="18" fill="#e6b48a"/><path d="M30 40l8-3M45 39l8 1" stroke-width="2.5"/><circle cx="34" cy="46" r="1.8" fill="var(--ink)" stroke="none"/><circle cx="47" cy="46" r="1.8" fill="var(--ink)" stroke="none"/><path d="M28 56c4-6 9-5 12-2 3-3 8-4 12 2-4 3-8 3-12 1-4 2-8 2-12-1Z" fill="var(--ink)" stroke="none"/><path d="M33 62q7 6 14 0" stroke-width="2.5"/><path d="M12 80q0-12 12-12h32q12 0 12 12v34H12Z" fill="var(--terracotta)"/><rect x="22" y="86" width="36" height="28" rx="5" fill="var(--card)"/><path d="M18 114h14v14H18ZM48 114h14v14H48Z" fill="var(--ink2)"/></g></symbol>
   <symbol id="i-basket" viewBox="0 0 24 24"><path d="M3 10h18l-2 10H5L3 10Z"/><path d="M8 10l3-6M16 10l-3-6"/><path d="M3 14h18"/><path d="M9 10v10M15 10v10"/></symbol>
   <symbol id="i-merge" viewBox="0 0 24 24"><path d="M4 5h5l3 7 3-7h5"/><path d="M12 12v9"/><path d="M9 18l3 3 3-3"/><path d="M4 12h3M17 12h3"/></symbol>
   <symbol id="i-machine" viewBox="0 0 24 24"><rect x="2" y="9" width="20" height="9" rx="2"/><path d="M5 9V5h4v4M15 9V5h4v4"/><path d="M8 13h.01M11 13h.01M14 13h.01M17 13h.01"/><path d="M4 21h16"/></symbol>
@@ -454,7 +455,7 @@ h1,h2,h3{font-family:var(--serif);font-weight:600;letter-spacing:-.01em;margin:0
       <path d="M30 34h380"/>
       <g fill="var(--card)"><rect x="52" y="34" width="26" height="34" rx="3"/><rect x="92" y="34" width="26" height="34" rx="3"/><rect x="132" y="34" width="26" height="34" rx="3"/><rect x="172" y="34" width="26" height="34" rx="3"/><rect x="212" y="34" width="26" height="34" rx="3"/><rect x="252" y="34" width="26" height="34" rx="3"/><rect x="292" y="34" width="26" height="34" rx="3"/><rect x="332" y="34" width="26" height="34" rx="3"/><rect x="372" y="34" width="26" height="34" rx="3"/></g>
       <g stroke="var(--ink2)" stroke-width="2"><path d="M58 44h14M58 50h14M58 56h10M98 44h14M98 50h14M138 44h14M138 50h14M138 56h10M178 44h14M178 50h14M218 44h14M218 50h14M218 56h10M258 44h14M258 50h14M298 44h14M298 50h14M298 56h10M338 44h14M338 50h14M378 44h14M378 50h14M378 56h10"/></g>
-      <g id="cook"><path d="M78 96q0-22 18-22t18 22" fill="var(--card)"/><rect x="74" y="94" width="44" height="9" rx="4" fill="var(--card)"/><circle cx="96" cy="116" r="16" fill="#f2c9a0"/><path d="M90 119q6 5 12 0" stroke-width="2.5"/><path d="M70 142q0-10 10-10h32q10 0 10 10v30H70Z" fill="var(--terracotta)"/></g>
+      <use href="#cook" x="54" y="64" width="84" height="120"/>
       <g><path d="M198 96q0-22 18-22t18 22" fill="var(--card)"/><rect x="194" y="94" width="44" height="9" rx="4" fill="var(--card)"/><circle cx="216" cy="116" r="16" fill="#e6b48a"/><path d="M210 119q6 5 12 0" stroke-width="2.5"/><path d="M190 142q0-10 10-10h32q10 0 10 10v30h-52Z" fill="var(--sage)"/></g>
       <g><path d="M318 96q0-22 18-22t18 22" fill="var(--card)"/><rect x="314" y="94" width="44" height="9" rx="4" fill="var(--card)"/><circle cx="336" cy="116" r="16" fill="#c99a6e"/><path d="M330 119q6 5 12 0" stroke-width="2.5"/><path d="M310 142q0-10 10-10h32q10 0 10 10v30h-52Z" fill="var(--sky)"/></g>
       <rect x="20" y="172" width="400" height="26" rx="6" fill="var(--mustard)"/>
@@ -500,7 +501,7 @@ h1,h2,h3{font-family:var(--serif);font-weight:600;letter-spacing:-.01em;margin:0
       <div class="station"><div class="tile" style="--c:var(--plum)"><svg><use href="#i-bell"/></svg></div><span>Expo</span></div>
     </div>
     <div class="arrow-down"><svg viewBox="0 0 24 24"><path d="M12 4v14M6 13l6 6 6-6"/></svg></div>
-    <svg class="art machine" viewBox="0 0 540 210" width="540" height="210" aria-label="The bowl line as one machine: bowl tower, dispenser row with status lights, screen tower, conveyor">
+    <svg class="art machine" viewBox="0 0 560 210" width="560" height="210" aria-label="The bowl line as one machine, with the cook at its screen: bowl tower, dispenser row with status lights, screen tower, conveyor">
       <g fill="none" stroke="var(--ink)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
         <rect x="18" y="62" width="504" height="112" rx="12" fill="#e6e7eb"/>
         <rect x="104" y="56" width="322" height="10" rx="3" fill="#f7f7f9"/>
@@ -522,6 +523,8 @@ h1,h2,h3{font-family:var(--serif);font-weight:600;letter-spacing:-.01em;margin:0
         <rect x="40" y="174" width="12" height="26" fill="var(--ink2)"/><rect x="488" y="174" width="12" height="26" fill="var(--ink2)"/>
         <path d="M12 202h516"/>
       </g>
+      <use href="#cook" x="470" y="86" width="80" height="118"/>
+      <path d="M492 128l-28-26" stroke="var(--ink)" stroke-width="7" stroke-linecap="round"/><path d="M492 128l-28-26" stroke="#e6b48a" stroke-width="3" stroke-linecap="round"/><circle cx="462" cy="100" r="5" fill="#e6b48a" stroke="var(--ink)" stroke-width="3"/>
     </svg>
   </div>
   <h2 class="reveal">A whole process line, in one machine.</h2>
