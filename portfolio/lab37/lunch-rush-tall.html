@@ -1060,7 +1060,7 @@ html:not([data-photo="0"]) .big .bar .n{white-space:normal!important;font-size:2
 <style id="tall-clean">
 /* TALL 1080x2400 CLEANUP: nothing clips, every number sits on the same line, the actions block reads alert, numbers, one button, then the two verbs. */
 @media(orientation:portrait) and (min-width:900px){
-  .big .bar{padding:12px 16px 26px !important;gap:4px !important;overflow:hidden !important;justify-content:flex-end !important;--phw:22%}
+  .big .bar{padding:12px 16px 26px calc(var(--phw) + 16px) !important;gap:4px !important;overflow:hidden !important;justify-content:flex-end !important;--phw:22%}
   .big .bar .n{font-size:24px !important;margin-top:30px !important}
   .big .bar .m{min-width:0 !important;max-width:100% !important}
   .big .bar .m b{font-size:62px !important;letter-spacing:-.05em !important;white-space:nowrap !important}
@@ -1077,6 +1077,12 @@ html:not([data-photo="0"]) .big .bar .n{white-space:normal!important;font-size:2
   section#alert .ahead i{width:22px !important;height:22px !important}
   section#alert .ahead small{font-size:24px !important}
   section#alert div.nums{order:2 !important;display:grid !important;grid-template-columns:repeat(3,minmax(0,1fr)) !important;gap:14px !important;padding:0 !important;border:0 !important;background:none !important;justify-self:stretch !important}
+  section#alert div.nums>div.num:nth-child(2){grid-column:1 !important;grid-row:1 !important;order:0 !important}
+  section#alert div.nums>div.num:nth-child(1){grid-column:2 !important;grid-row:1 !important;order:0 !important}
+  section#alert div.nums>div.num:nth-child(3){grid-column:3 !important;grid-row:1 !important;order:0 !important}
+  section#alert div.nums>div.num:nth-child(2) b{font-size:84px !important}
+  section#alert div.nums{width:100% !important;justify-items:stretch !important}
+  section#alert div.nums>div.num{width:auto !important;justify-self:stretch !important}
   section#alert div.nums>div.num{display:grid !important;grid-template-rows:auto auto !important;align-content:end !important;gap:6px !important;background:rgba(255,255,255,.08) !important;border-radius:18px !important;padding:18px 20px 16px !important;min-width:0 !important;color:#fff !important}
   section#alert .num b{font-size:76px !important;line-height:.9 !important;letter-spacing:-.05em !important;text-align:left !important;font-variant-numeric:tabular-nums !important;white-space:nowrap !important;color:#fff !important}
   section#alert .num span{font-size:22px !important;text-transform:none !important;letter-spacing:0 !important;white-space:normal !important;line-height:1.2 !important;color:rgba(255,255,255,.72) !important}
