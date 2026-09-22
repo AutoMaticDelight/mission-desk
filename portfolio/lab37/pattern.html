@@ -229,6 +229,76 @@ h1,h2,h3{font-family:var(--serif);font-weight:600;letter-spacing:-.01em;margin:0
   .wh{max-width:330px}
 }
 
+/* ===== SCENE: brand on the bag ===== */
+.brandrow{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;width:100%;max-width:900px;align-items:start}
+.bs{display:grid;gap:8px;justify-items:center}
+.bs>span{font:700 13px/1.2 var(--sans);color:var(--ink2);text-transform:uppercase;letter-spacing:1px}
+.store{width:100%;max-width:260px;background:var(--k-box);border:3px solid var(--ink);border-radius:18px;overflow:hidden;text-align:left;color:var(--k-ink)}
+.store .ph{height:96px;background:var(--k-card);display:grid;place-items:center;position:relative}
+.store .ph svg{width:64px;height:64px;fill:none;stroke:var(--k-ink);stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.store .ph b{position:absolute;left:10px;top:10px;background:var(--k-hot);color:var(--k-hot-ink);font:800 13px/1 var(--sans);padding:6px 9px;border-radius:999px}
+.store .tx{padding:10px 12px;display:grid;gap:4px}
+.store .tx b{font:800 16px/1.2 var(--sans)}
+.store .tx span{font:600 13px/1.3 var(--sans);color:var(--k-dim)}
+.store .tx i{font:700 13px/1 var(--sans);font-style:normal;color:var(--k-ok)}
+.bag{width:100%;max-width:260px;background:var(--k-box);border:3px solid var(--ink);border-radius:8px;padding:12px 14px;text-align:left;display:grid;grid-template-columns:1fr auto;gap:6px 10px;color:var(--k-ink);position:relative;background-image:linear-gradient(var(--k-line),var(--k-line));background-size:100% 3px;background-repeat:no-repeat;background-position:0 46px}
+.bag .nm{font:800 16px/1.1 var(--sans);grid-column:1/-1;padding-bottom:10px}
+.bag .who{font:800 15px/1.2 var(--sans)}
+.bag .code{font:700 13px/1 ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--k-dim);text-align:right;align-self:start}
+.bag .mods{grid-column:1/-1;font:600 13px/1.35 var(--sans);color:var(--k-dim)}
+.bag .qr{grid-column:1/-1;display:flex;align-items:center;gap:10px;margin-top:4px}
+.bag .qr i{width:36px;height:36px;border:2.5px solid var(--k-ink);border-radius:4px;background:repeating-linear-gradient(90deg,var(--k-ink) 0 4px,transparent 4px 8px),repeating-linear-gradient(0deg,var(--k-ink) 0 4px,transparent 4px 8px);background-blend-mode:multiply;opacity:.9}
+.bag .qr s{text-decoration:none;font:800 13px/1 var(--sans);background:var(--k-hot);color:var(--k-hot-ink);padding:7px 10px;border-radius:999px}
+.pick{width:100%;max-width:260px;background:var(--k-bg);border:3px solid var(--ink);border-radius:18px;overflow:hidden;text-align:left;color:var(--k-ink)}
+.pick .top{background:var(--k-dock);color:var(--k-dock-ink);padding:10px 12px;font:800 14px/1 var(--sans);display:flex;justify-content:space-between}
+.pick .big{padding:12px;display:grid;gap:4px}
+.pick .big b{font:800 30px/1 var(--sans);font-variant-numeric:tabular-nums}
+.pick .big span{font:600 13px/1.3 var(--sans);color:var(--k-dim)}
+.pick .cub{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;padding:0 12px 12px}
+.pick .cub i{aspect-ratio:1;border-radius:8px;background:var(--k-box);border:2px solid var(--k-line);display:grid;place-items:center;font:800 13px/1 var(--sans);font-style:normal}
+.pick .cub i.hot{background:var(--k-hot);color:var(--k-hot-ink);border-color:var(--k-hot)}
+
+/* ===== SCENE: when it breaks ===== */
+.states{display:flex;gap:8px;align-items:center;justify-content:center;flex-wrap:wrap}
+.st{display:inline-flex;align-items:center;gap:8px;font:800 14px/1 var(--sans);padding:10px 14px;border-radius:999px;border:3px solid var(--ink);background:var(--card)}
+.st i{width:12px;height:12px;border-radius:50%;background:var(--c)}
+.st.now{background:var(--ink);color:#fff}
+.states .a{font:800 18px/1 var(--sans);color:var(--ink2)}
+.hmi.broken .hmi-top .ln i{background:var(--k-low)}
+.hmi-dock.rec{grid-template-columns:1fr;gap:10px}
+.rec .al{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.rec .btns{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.rec .btns span{display:inline-flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;min-height:56px;padding:8px 10px;border-radius:12px;font:800 14px/1.2 var(--sans);background:var(--k-box);color:var(--k-ink);border:2px solid var(--k-line)}
+.rec .btns span.hot{background:var(--k-hot);color:var(--k-hot-ink);border-color:var(--k-hot)}
+.rec .btns span small{display:block;font:600 13px/1.2 var(--sans);opacity:.75;margin-top:3px}
+.cons{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.cons span{font:700 13px/1 var(--sans);padding:9px 12px;border-radius:999px;border:2px solid var(--ink);background:var(--card)}
+
+/* ===== SCENE: tested daily ===== */
+.loop{display:grid;grid-template-columns:1fr 1fr;gap:16px;width:100%;max-width:900px;align-items:center}
+.loop svg{width:100%;max-width:360px;height:auto;display:block;margin:0 auto}
+.proof{display:grid;gap:10px;text-align:left}
+.proof .pr{border:3px solid var(--ink);border-radius:16px;padding:12px 14px;background:var(--card);border-left-width:10px;border-left-color:var(--c);display:grid;gap:4px}
+.proof .pr b{font:800 15px/1.2 var(--sans);color:var(--c)}
+.proof .pr span{font:600 14px/1.4 var(--sans);color:var(--ink)}
+@media(max-width:760px){
+  .brandrow{grid-template-columns:1fr 1fr}
+  .bs:last-child{grid-column:1/-1}
+}
+@media(max-width:640px){
+  .brandrow{grid-template-columns:1fr 1fr;gap:10px}
+  .bs:last-child{display:none}
+  .store .ph{height:72px}
+  .bag{padding:10px 12px}
+  .rec .btns{grid-template-columns:1fr 1fr}
+  .rec .btns span:last-child{grid-column:1/-1;min-height:48px}
+  .st{font-size:13px;padding:8px 11px}
+  .loop{grid-template-columns:1fr;gap:10px}
+  .loop svg{max-width:250px}
+  .proof .pr{padding:9px 11px}
+  .proof .pr span{font-size:13px}
+}
+
 /* ===== SCENE 8: timeline ===== */
 .timeline{display:flex;width:100%;max-width:880px;padding:16px 0 4px;justify-content:center}
 .tl-item{flex:1 1 0;min-width:0;display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;position:relative;padding:0 6px}
@@ -537,6 +607,30 @@ h1,h2,h3{font-family:var(--serif);font-weight:600;letter-spacing:-.01em;margin:0
   <p class="sub reveal">Pick a brand on the last screen. All ten follow.</p>
 </section>
 
+<section class="scene" id="brand" data-title="The brand on the bag">
+  <div class="kicker reveal">Culinary brands, from the same source</div>
+  <h2 class="reveal">The storefront, the bag and the pickup screen. One brand, one token set.</h2>
+  <div class="chips reveal">
+    <span class="lbl">Brand</span>
+    <button data-skin="light" style="--swatch:#c8f000"><i></i>Bowl-O-Matic</button>
+    <button data-skin="lab37" style="--swatch:#2563eb"><i></i>Lab37</button>
+    <button data-skin="cowgirl" style="--swatch:#e2643a"><i></i>Hungry Cowgirl</button>
+    <button data-skin="dark" style="--swatch:#0b120e"><i></i>Night shift</button>
+  </div>
+  <div class="brandrow reveal">
+    <div class="bs"><span>Storefront · delivery app</span>
+      <div class="store"><div class="ph"><b>Top rated</b><svg viewBox="0 0 24 24"><use href="#i-bowl"/></svg></div><div class="tx"><b class="bname">Bowl-O-Matic 5000</b><span>Bowls · Build your own · $$</span><i>Open · 20–30 min</i></div></div>
+    </div>
+    <div class="bs"><span>Bag label · printed at the bagger</span>
+      <div class="bag"><div class="nm bname">Bowl-O-Matic 5000</div><div class="who">Maya C.</div><div class="code">#SF-0912 · 31/50</div><div class="mods">Quinoa · 12 veg · no cilantro · extra verde</div><div class="qr"><i></i><s>Salesforce Plaza · 12:30</s></div></div>
+    </div>
+    <div class="bs"><span>Pickup screen · at the cubby wall</span>
+      <div class="pick"><div class="top"><span class="bname">Bowl-O-Matic 5000</span><span>12:18</span></div><div class="big"><b>C7</b><span>Maya C. · ready</span></div><div class="cub"><i>C5</i><i>C6</i><i class="hot">C7</i><i>C8</i></div></div>
+    </div>
+  </div>
+  <p class="sub reveal">A one-person shop gets a real brand on every surface a customer touches. They never open a design tool.</p>
+</section>
+
 <section class="scene" id="liz" data-title="Liz at Salesforce">
   <div class="kicker reveal">One order, fifty people, one car</div>
   <h2 class="reveal">Liz orders once. Fifty people customize. A Waymo drops it at Salesforce Plaza.</h2>
@@ -647,6 +741,58 @@ h1,h2,h3{font-family:var(--serif);font-weight:600;letter-spacing:-.01em;margin:0
   <div class="count reveal"><span style="background:var(--terracotta)">20 machines</span><span style="background:var(--sky)">50 vendors</span><span style="background:var(--plum)">1 lease</span><span style="background:var(--sage)">1 design system</span></div>
 </section>
 
+<section class="scene" id="break" data-title="When it breaks">
+  <div class="kicker reveal">When it breaks</div>
+  <h2 class="reveal">A held chute at 12:12 is the whole design problem.</h2>
+  <div class="states reveal">
+    <span class="st" style="--c:var(--k-ok)"><i></i>Running</span><span class="a">›</span>
+    <span class="st now" style="--c:var(--k-low)"><i></i>Held</span><span class="a">›</span>
+    <span class="st" style="--c:var(--k-held)"><i></i>Paused</span><span class="a">›</span>
+    <span class="st" style="--c:var(--ink)"><i></i>E-stop · physical only</span>
+  </div>
+  <div class="hmi broken reveal">
+    <div class="hmi-top"><span>Bowl-O-Matic 5000</span><span class="ln"><i></i>Held · chute 2 · 15/16</span></div>
+    <div class="hmi-grid">
+      <div class="hbox"><div class="nm"><span>Chicken</span><b>72%</b></div><div class="bar"><i style="--p:72%"></i></div></div>
+      <div class="hbox now"><div class="nm"><span>Quinoa</span><b>Held</b></div><div class="bar"><i style="--p:6%"></i></div></div>
+      <div class="hbox"><div class="nm"><span>Rice</span><b>58%</b></div><div class="bar"><i style="--p:58%"></i></div></div>
+    </div>
+    <div class="hmi-dock rec">
+      <div class="al"><b>3<em>bowls</em></b><span>waiting on quinoa · Salesforce due 12:30 · 18 min</span></div>
+      <div class="btns"><span class="hot">Reroute to chute 9<small>rice base · same recipe</small></span><span>Skip quinoa on 3<small>note on the bag</small></span><span>Pause line<small>hold 2 s</small></span></div>
+    </div>
+  </div>
+  <div class="cons reveal"><span>No hover</span><span>Gloves on</span><span>Loud room</span><span>Screen never claims the e-stop</span><span>Every state has a next tap</span></div>
+</section>
+
+<section class="scene" id="test" data-title="Tested daily">
+  <div class="kicker reveal">How I know it works</div>
+  <h2 class="reveal">Sit with the people who use it. Iterate daily, test daily, until it's nailed.</h2>
+  <div class="loop reveal">
+    <svg viewBox="0 0 360 300" aria-label="A daily loop: design in the morning, test with the users, measure, ship, repeat">
+      <g fill="none" stroke="var(--ink)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="180" cy="150" r="104" stroke-dasharray="8 8" stroke="var(--line)"/>
+        <path d="M262 92a104 104 0 0 1 22 58" /><path d="M279 138l5 14 10-11" />
+        <path d="M262 208a104 104 0 0 1-82 46"/><path d="M194 256l-14-2 8-12"/>
+        <path d="M98 208a104 104 0 0 1-22-58"/><path d="M81 162l-5-14-10 11"/>
+        <path d="M98 92a104 104 0 0 1 82-46"/><path d="M166 44l14 2-8 12"/>
+      </g>
+      <g font-family="Public Sans,sans-serif" font-weight="800" text-anchor="middle">
+        <circle cx="180" cy="46" r="34" fill="var(--sky)" stroke="var(--ink)" stroke-width="3"/><text x="180" y="51" font-size="14" fill="#fff">Design</text>
+        <circle cx="284" cy="150" r="34" fill="var(--terracotta)" stroke="var(--ink)" stroke-width="3"/><text x="284" y="146" font-size="14" fill="#fff">Test</text><text x="284" y="162" font-size="13" fill="#fff" font-weight="600">with them</text>
+        <circle cx="180" cy="254" r="34" fill="var(--mustard)" stroke="var(--ink)" stroke-width="3"/><text x="180" y="259" font-size="14" fill="#fff">Measure</text>
+        <circle cx="76" cy="150" r="34" fill="var(--sage)" stroke="var(--ink)" stroke-width="3"/><text x="76" y="155" font-size="14" fill="#fff">Ship</text>
+        <text x="180" y="144" font-size="26" fill="var(--ink)" font-family="Fraunces,Georgia,serif" font-weight="600">Daily</text><text x="180" y="166" font-size="13" fill="var(--ink2)" font-weight="600">until it's nailed</text>
+      </g>
+    </svg>
+    <div class="proof">
+      <div class="pr" style="--c:var(--terracotta)"><b>Hyundai · the data scientists</b><span>I worked directly with the data scientists and built the tools inside their workflow. Iterated daily, tested daily, until we nailed it.</span></div>
+      <div class="pr" style="--c:var(--sky)"><b>The floor · gloves on</b><span>Usability runs on the line, not in a lab. The panel counts its own taps and times each task, so every version has a number.</span></div>
+      <div class="pr" style="--c:var(--mustard)"><b>The machine · numbers for free</b><span>Grams per bowl, a photo per bowl, defects per hundred. The quantitative side is already logged. Design reads it back.</span></div>
+    </div>
+  </div>
+</section>
+
 <section class="scene" id="s8" data-title="The pattern">
   <div class="kicker reveal">This is the shape I keep building</div>
   <h2 class="reveal" style="max-width:min(24ch,100%)">One template. Fits whoever buys it. Every time.</h2>
@@ -696,7 +842,8 @@ function setSkin(k){
   document.getElementById('hmiBrand').textContent=s.brand;
   document.getElementById('srcBrand').textContent=s.brand;
   document.getElementById('srcRadius').textContent=parseInt(s.radius);
-  document.querySelectorAll('#skinChips button').forEach(b=>b.classList.toggle('on',b.dataset.skin===k));
+  document.querySelectorAll('.bname').forEach(el=>el.textContent=s.brand);
+  document.querySelectorAll('button[data-skin]').forEach(b=>b.classList.toggle('on',b.dataset.skin===k));
 }
 function setMenu(k){
   const m=MENUS[k];
@@ -706,7 +853,7 @@ function setMenu(k){
   document.getElementById('hmiLine').textContent=m.line;
   document.querySelectorAll('#menuChips button').forEach(b=>b.classList.toggle('on',b.dataset.menu===k));
 }
-document.getElementById('skinChips').addEventListener('click',e=>{const b=e.target.closest('button');if(b)setSkin(b.dataset.skin);});
+document.addEventListener('click',e=>{const b=e.target.closest('button[data-skin]');if(b)setSkin(b.dataset.skin);});
 document.getElementById('menuChips').addEventListener('click',e=>{const b=e.target.closest('button');if(b)setMenu(b.dataset.menu);});
 setSkin('light');setMenu('bowl');
 
